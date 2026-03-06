@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semana 05 — Arduino UNO & Portas Lógicas Físicas | ADS 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a0a;--bg2:#0a0f0f;--bg3:#0f1a14;--card:#0d1a12;
+  --border:#1a3320;--green:#00ff88;--green2:#00cc66;--green3:#00ff88;
+  --amber:#f59e0b;--red:#ef4444;--blue:#38bdf8;--purple:#a78bfa;
+  --pink:#f472b6;--orange:#fb923c;--teal:#2dd4bf;
+  --text:#c8ffd4;--text2:#6b9e78;
+  --glow:0 0 20px rgba(0,255,136,.25);--glow2:0 0 30px rgba(0,255,136,.4);
+  --scanline:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:var(--scanline);pointer-events:none;z-index:0;opacity:.3}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+/* HEADER */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);box-shadow:0 0 40px rgba(0,255,136,.15);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1200px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.boot-badge{font-family:'IBM Plex Mono',monospace;background:var(--green3);color:var(--bg);border-radius:4px;padding:4px 12px;font-size:.75em;font-weight:700;letter-spacing:.08em;white-space:nowrap;box-shadow:var(--glow)}
+.header-text{flex:1}
+.header-text h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(.85em,2vw,1.25em);font-weight:700;color:var(--green3);text-shadow:0 0 20px rgba(0,255,136,.5)}
+.header-text p{color:var(--text2);font-size:.76em;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);color:var(--green);border-radius:4px;padding:6px 14px;font-size:.76em;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap}
+.back-btn:hover{background:rgba(0,255,136,.18);box-shadow:var(--glow)}
+.hud{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hud-pill{font-family:'IBM Plex Mono',monospace;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);border-radius:4px;padding:5px 12px;text-align:center;min-width:68px}
+.hud-pill .v{font-size:1.1em;font-weight:700;color:var(--green);display:block;line-height:1}
+.hud-pill .l{font-size:.52em;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-top:2px}
+.hud-xp{min-width:155px}
+.hud-xp-label{display:flex;justify-content:space-between;font-size:.56em;color:var(--text2);margin-bottom:4px}
+.hud-bar-bg{background:rgba(0,0,0,.4);border-radius:100px;height:5px;overflow:hidden;border:1px solid var(--border)}
+.hud-bar{height:100%;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:100px;transition:width .8s ease;box-shadow:0 0 8px rgba(0,255,136,.5)}
+
+/* PROGRESS */
+.prog-wrap{background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 32px}
+.prog-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.prog-label{font-family:'IBM Plex Mono',monospace;font-size:.67em;color:var(--text2);white-space:nowrap}
+.prog-track{flex:1;height:5px;background:var(--bg3);border:1px solid var(--border);overflow:hidden;border-radius:100px}
+.prog-fill{height:100%;background:var(--green);box-shadow:0 0 8px var(--green);border-radius:100px;transition:width .8s ease}
+
+.container{max-width:1200px;margin:0 auto;padding:28px 32px;position:relative;z-index:1}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:#0d1a12;border:1px solid rgba(0,255,136,.4);border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.6),0 0 20px rgba(0,255,136,.3);transform:translateY(100px) scale(.9);opacity:0;transition:all .4s cubic-bezier(.175,.885,.32,1.275);max-width:320px}
+.toast.show{transform:translateY(0) scale(1);opacity:1}
+.toast-icon{font-size:1.5em}
+.toast-title{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.85em;color:var(--green)}
+.toast-msg{font-size:.72em;color:var(--text2);margin-top:2px}
+
+/* HERO */
+.hero{background:var(--card);border:1px solid var(--green2);padding:36px;margin-bottom:22px;position:relative;overflow:hidden;box-shadow:var(--glow),inset 0 0 60px rgba(0,255,136,.02)}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),var(--amber),transparent)}
+.hero::after{content:'[SEMANA 05]';position:absolute;right:28px;top:20px;font-family:'IBM Plex Mono',monospace;font-size:.68em;color:var(--text2);letter-spacing:.15em}
+.hero-cont{font-family:'IBM Plex Mono',monospace;font-size:.68em;color:var(--amber);letter-spacing:.12em;margin-bottom:6px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);display:inline-block;padding:3px 10px;border-radius:3px}
+.hero h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(1.3em,3vw,2em);color:var(--green3);margin-bottom:8px;text-shadow:0 0 20px rgba(0,255,136,.4);line-height:1.2}
+.hero h1 span{color:var(--amber)}
+.hero p{color:var(--text2);font-size:.9em;max-width:680px;margin-bottom:18px;line-height:1.7}
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:.7em;font-weight:600;padding:4px 12px;border:1px solid;border-radius:3px}
+.cg{color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.06)}
+.ca{color:var(--amber);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.06)}
+.cb{color:var(--blue);border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}
+.cp{color:var(--purple);border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.co{color:var(--orange);border-color:rgba(251,146,60,.3);background:rgba(251,146,60,.06)}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);padding:26px;margin-bottom:20px;position:relative;overflow:hidden;animation:fadeIn .4s ease both}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--green2)}
+.card:hover{border-color:var(--green2);box-shadow:var(--glow);transition:all .25s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.card-icon{font-size:1.3em}
+.card-title{font-family:'IBM Plex Mono',monospace;font-size:.98em;color:var(--green3);font-weight:700}
+.card-sub{font-size:.74em;color:var(--text2);font-family:'IBM Plex Mono',monospace;margin-top:2px}
+.xp-badge{font-family:'IBM Plex Mono',monospace;margin-left:auto;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--amber);padding:3px 10px;border-radius:3px;font-size:.7em;font-weight:700;white-space:nowrap}
+
+/* SECTION TITLE */
+.stitle{font-family:'IBM Plex Mono',monospace;font-size:.63em;letter-spacing:.2em;color:var(--text2);text-transform:uppercase;margin:18px 0 12px;display:flex;align-items:center;gap:10px}
+.stitle::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* OBJECTIVES */
+.obj-list{display:flex;flex-direction:column;gap:7px}
+.obj-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(0,255,136,.03);border:1px solid rgba(0,255,136,.1);cursor:pointer;transition:all .2s;font-size:.87em;font-weight:500;border-radius:2px}
+.obj-item:hover{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.25)}
+.obj-item.done{background:rgba(0,255,136,.07);border-color:rgba(0,255,136,.3);text-decoration:line-through;color:var(--text2)}
+.obj-check{width:20px;height:20px;border:2px solid rgba(0,255,136,.3);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8em;transition:all .3s}
+.obj-item.done .obj-check{background:var(--green);border-color:var(--green);color:#000;content:'✓'}
+
+/* INFO / WARN / DANGER */
+.ibox{background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.2);padding:12px 15px;font-size:.83em;color:#7dd3fc;margin:10px 0;line-height:1.65}
+.ibox b{color:var(--blue)}
+.wbox{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2);padding:12px 15px;font-size:.83em;color:#fde68a;margin:10px 0;line-height:1.65}
+.wbox b{color:var(--amber)}
+.dbox{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);padding:12px 15px;font-size:.83em;color:#fca5a5;margin:10px 0;line-height:1.65}
+.dbox b{color:var(--red)}
+.gbox{background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.2);padding:12px 15px;font-size:.83em;color:var(--green);margin:10px 0;line-height:1.65}
+
+/* ARDUINO PINOUT */
+.arduino-wrap{position:relative;display:flex;justify-content:center;padding:20px 0}
+.pin-tooltip{position:absolute;background:#0d1a12;border:1px solid var(--green2);border-radius:6px;padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text);z-index:50;pointer-events:none;max-width:220px;box-shadow:var(--glow);display:none}
+.pin-tooltip.show{display:block}
+.pin-tooltip .pt-name{color:var(--green);font-weight:700;font-size:.9em;margin-bottom:4px}
+.pin-tooltip .pt-fn{color:var(--text2);line-height:1.5}
+
+/* PIN TABLE */
+.pin-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.8em}
+.pin-table th{background:rgba(0,255,136,.1);color:var(--green);padding:7px 12px;border:1px solid var(--border);text-align:left}
+.pin-table td{padding:7px 12px;border:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5}
+.pin-table tr:hover td{background:rgba(0,255,136,.03)}
+.pin-badge{display:inline-block;font-size:.72em;font-weight:700;padding:1px 7px;border-radius:2px;margin-right:4px}
+.pin-d{background:rgba(0,255,136,.15);color:var(--green)}
+.pin-a{background:rgba(56,189,248,.15);color:var(--blue)}
+.pin-p{background:rgba(167,139,250,.15);color:var(--purple)}
+.pin-v{background:rgba(239,68,68,.15);color:var(--red)}
+.pin-g{background:rgba(100,100,100,.2);color:#aaa}
+.pin-r{background:rgba(245,158,11,.15);color:var(--amber)}
+
+/* PROTOBOARD */
+.proto-wrap{background:#020a06;border:1px solid rgba(0,255,136,.12);border-radius:6px;padding:20px;overflow-x:auto;margin:14px 0}
+.proto-title{font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
+
+/* STEP ACCORDION */
+.step-acc{display:flex;flex-direction:column;gap:10px}
+.step-item{border:1px solid var(--border);border-radius:3px;overflow:hidden;transition:border-color .2s}
+.step-item:hover{border-color:rgba(0,255,136,.2)}
+.step-item.open{border-color:rgba(0,255,136,.35)}
+.step-head{display:flex;align-items:center;gap:14px;padding:13px 16px;cursor:pointer;background:rgba(0,0,0,.3);user-select:none;transition:background .2s}
+.step-head:hover{background:rgba(0,255,136,.04)}
+.step-num{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--green2),var(--green));color:#000;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:.85em;font-weight:700}
+.step-info{flex:1}
+.step-title{font-family:'IBM Plex Mono',monospace;font-size:.88em;font-weight:700;color:var(--text)}
+.step-meta{font-size:.7em;color:var(--text2);margin-top:2px}
+.step-xp{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--amber);border:1px solid rgba(245,158,11,.25);background:rgba(245,158,11,.07);padding:2px 8px;border-radius:2px}
+.step-arrow{color:var(--text2);font-size:.8em;transition:transform .3s;flex-shrink:0}
+.step-item.open .step-arrow{transform:rotate(180deg)}
+.step-body{max-height:0;overflow:hidden;transition:max-height .45s ease,padding .3s}
+.step-item.open .step-body{max-height:3000px;padding:4px 16px 18px}
+
+/* CODE BLOCK */
+.code-block{background:#020a06;border:1px solid rgba(0,255,136,.15);border-radius:4px;padding:16px 18px;font-family:'IBM Plex Mono',monospace;font-size:.8em;line-height:1.8;overflow-x:auto;position:relative;margin:10px 0}
+.code-block .cm{color:#3a5540}
+.code-block .ck{color:var(--purple)}
+.code-block .cf{color:var(--green)}
+.code-block .cv{color:var(--blue)}
+.code-block .cn{color:var(--amber)}
+.code-block .cs{color:#f472b6}
+.code-copy{position:absolute;top:10px;right:10px;font-family:'IBM Plex Mono',monospace;font-size:.65em;padding:3px 10px;border:1px solid rgba(0,255,136,.2);background:rgba(0,255,136,.06);color:var(--green);cursor:pointer;border-radius:2px;transition:all .2s}
+.code-copy:hover{background:rgba(0,255,136,.15)}
+
+/* WIRING TABLE */
+.wire-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.8em;margin:10px 0}
+.wire-table th{background:rgba(0,255,136,.08);color:var(--green);padding:7px 12px;border:1px solid var(--border);text-align:left}
+.wire-table td{padding:7px 12px;border:1px solid var(--border);vertical-align:middle}
+.wire-table tr:hover td{background:rgba(0,255,136,.03)}
+.wire-color{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+.wire-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;display:inline-block}
+
+/* QUIZ */
+.qcard{display:none}
+.qcard.active{display:block}
+.q-prog-wrap{margin-bottom:14px}
+.q-prog-label{font-size:.7em;color:var(--text2);font-family:'IBM Plex Mono',monospace;display:flex;justify-content:space-between;margin-bottom:5px}
+.q-prog-bg{background:rgba(255,255,255,.06);border-radius:100px;height:4px;overflow:hidden}
+.q-prog-fill{height:100%;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:100px;transition:width .5s ease}
+.qcard h4{font-size:.88em;font-weight:700;color:var(--text);margin-bottom:14px;line-height:1.5;font-family:'IBM Plex Mono',monospace}
+.qopts{display:flex;flex-direction:column;gap:7px}
+.qopt{font-family:'IBM Plex Mono',monospace;padding:10px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);color:var(--text);cursor:pointer;font-size:.82em;text-align:left;transition:all .2s}
+.qopt:hover:not(:disabled){border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.06);color:var(--green)}
+.qopt.correct{border-color:rgba(0,255,136,.5);background:rgba(0,255,136,.1);color:var(--green3);font-weight:700}
+.qopt.wrong{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.07);color:var(--red)}
+.qopt:disabled{cursor:default}
+.q-fb{display:none;padding:9px 13px;font-size:.8em;font-family:'IBM Plex Mono',monospace;line-height:1.5;margin:8px 0}
+.q-fb.show{display:block}
+.q-fb.ok{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.2);color:var(--green)}
+.q-fb.fail{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:var(--red)}
+.q-next{display:none;justify-content:flex-end;margin-top:8px}
+.q-next.show{display:flex}
+.q-next-btn{font-family:'IBM Plex Mono',monospace;padding:7px 18px;border:1px solid rgba(0,255,136,.3);background:rgba(0,255,136,.08);color:var(--green);font-size:.78em;cursor:pointer;transition:all .2s}
+.q-next-btn:hover{background:rgba(0,255,136,.18)}
+.q-result{display:none;text-align:center;padding:28px 0}
+.q-result.show{display:block}
+.q-score-big{font-family:'IBM Plex Mono',monospace;font-size:3.2em;font-weight:700;color:var(--green);text-shadow:var(--glow2);display:block;margin-bottom:8px}
+.q-msg{color:var(--text2);font-size:.88em;margin-bottom:12px}
+.q-xp-e{color:var(--amber);font-weight:700;font-family:'IBM Plex Mono',monospace;font-size:.83em;margin-bottom:14px}
+.q-restart{font-family:'IBM Plex Mono',monospace;padding:9px 22px;border:1px solid rgba(0,255,136,.3);background:rgba(0,255,136,.08);color:var(--green);font-size:.82em;cursor:pointer;transition:all .2s}
+.q-restart:hover{background:rgba(0,255,136,.18);box-shadow:var(--glow)}
+
+/* ACHIEVEMENTS */
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.ach-item{background:rgba(0,0,0,.4);border:1px solid var(--border);padding:14px 10px;text-align:center;transition:all .4s;filter:grayscale(1) opacity(.3)}
+.ach-item.unlocked{filter:none;border-color:rgba(0,255,136,.35);background:rgba(0,255,136,.05);box-shadow:var(--glow);animation:achPop .5s ease}
+@keyframes achPop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.ach-ico{font-size:1.9em;display:block;margin-bottom:5px}
+.ach-name{font-family:'IBM Plex Mono',monospace;font-size:.6em;color:var(--text2);line-height:1.3}
+.ach-item.unlocked .ach-name{color:var(--green)}
+
+/* PROTOBOARD SVG */
+.pb-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+.pb-leg-item{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2)}
+.pb-leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+
+/* COMPLETE BTN */
+.complete-btn{width:100%;margin-top:14px;padding:13px;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:.85em;font-weight:700;background:linear-gradient(135deg,rgba(0,255,136,.12),rgba(0,255,136,.06));border:1px solid rgba(0,255,136,.3);color:var(--green);transition:all .3s;letter-spacing:.08em;border-radius:3px}
+.complete-btn:hover:not(:disabled){background:linear-gradient(135deg,rgba(0,255,136,.22),rgba(0,255,136,.12));box-shadow:var(--glow);transform:translateY(-1px)}
+.complete-btn:disabled{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.3);color:var(--green);cursor:default;transform:none}
+
+/* NAV BREADCRUMB */
+.breadcrumb{display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2);margin-bottom:20px;padding:10px 14px;background:rgba(0,0,0,.2);border:1px solid var(--border)}
+.breadcrumb a{color:var(--green2);text-decoration:none}
+.breadcrumb a:hover{color:var(--green)}
+.breadcrumb .sep{color:var(--border)}
+
+/* HIGHLIGHT COORD */
+.coord{font-family:'IBM Plex Mono',monospace;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber);padding:0 6px;border-radius:2px;font-size:.9em;white-space:nowrap}
+.pin-ref{font-family:'IBM Plex Mono',monospace;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.25);color:var(--green);padding:0 6px;border-radius:2px;font-size:.9em;white-space:nowrap}
+.component{font-family:'IBM Plex Mono',monospace;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);color:var(--blue);padding:0 6px;border-radius:2px;font-size:.9em}
+
+@media(max-width:700px){
+  .container{padding:18px 14px}
+  .header-inner{padding:12px 14px}
+  .hud{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="t-ico">⚡</div>
+  <div><div class="toast-title" id="t-title">+XP</div><div class="toast-msg" id="t-msg"></div></div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="boot-badge">BOOT</div>
+    <div class="header-text">
+      <h1>SEMANA 05 — ARDUINO UNO & PORTAS LÓGICAS FÍSICAS</h1>
+      <p>Arquitetura e Organização de Computadores · ADS 2026 · Fatec Ourinhos</p>
+    </div>
+    <a href="arquitetura_semana04_portas_logicas.html" class="back-btn">← Semana 04</a>
+    <a href="index_arquitetura.html" class="back-btn">🏠 Índice</a>
+    <div class="hud">
+      <div class="hud-pill"><span class="v" id="hud-xp">0</span><span class="l">XP</span></div>
+      <div class="hud-pill"><span class="v" id="hud-streak">0</span><span class="l">Streak</span></div>
+      <div class="hud-pill"><span class="v" id="hud-badges">0</span><span class="l">Badges</span></div>
+      <div class="hud-pill hud-xp">
+        <div class="hud-xp-label"><span id="hud-level">Iniciante</span><span id="hud-pct">0%</span></div>
+        <div class="hud-bar-bg"><div class="hud-bar" id="hud-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-inner">
+    <span class="prog-label">Progresso</span>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <span class="prog-label" id="prog-txt">0 / 10 atividades</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="index_arquitetura.html">🏠 ADS 2026</a>
+  <span class="sep">▶</span>
+  <a href="arquitetura_semana04_portas_logicas.html">Semana 04 — Portas Lógicas</a>
+  <span class="sep">▶</span>
+  <span style="color:var(--green)">Semana 05 — Arduino UNO (continuação)</span>
+</div>
+
+<!-- ══════════════════════════════
+     HERO
+═══════════════════════════════ -->
+<div class="hero">
+  <div class="hero-cont">↩ CONTINUAÇÃO DA SEMANA 04 — PORTAS LÓGICAS</div>
+  <h1>Arduino UNO: <span>Portas Lógicas no Mundo Real</span></h1>
+  <p>Na semana anterior você aprendeu AND, OR, NOT e XOR no papel e no CircuitVerse. Agora vamos implementar essas mesmas portas com código real no Arduino UNO, LEDs, botões e resistores no protoboard — cada fio tem posição exata indicada!</p>
+  <div class="hero-chips">
+    <span class="chip cg">⏱ 90 min</span>
+    <span class="chip ca">⚡ 500 XP</span>
+    <span class="chip cb">🔬 4 Experimentos</span>
+    <span class="chip cp">🏆 10 Conquistas</span>
+    <span class="chip co">🔌 Hardware Real</span>
+    <span class="chip cg">📍 Posições Exatas no Protoboard</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     LISTA DE MATERIAIS
+═══════════════════════════════ -->
+<div class="card">
+  <div class="card-head">
+    <span class="card-icon">🧰</span>
+    <div><div class="card-title">LISTA DE COMPONENTES</div><div class="card-sub">Verifique todos antes de começar</div></div>
+    <span class="xp-badge">+10 XP ao confirmar</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px" id="mat-grid">
+    <!-- items built by JS -->
+  </div>
+  <button class="complete-btn" id="btn-mat" onclick="confirmMaterials()">✅ CONFIRMAR — TENHO TODOS OS COMPONENTES</button>
+</div>
+
+<!-- ══════════════════════════════
+     OBJETIVOS
+═══════════════════════════════ -->
+<div class="card">
+  <div class="card-head">
+    <span class="card-icon">🎯</span>
+    <div><div class="card-title">OBJETIVOS DO MÓDULO</div><div class="card-sub">Marque conforme for concluindo</div></div>
+    <span class="xp-badge">+30 XP</span>
+  </div>
+  <div class="obj-list" id="obj-list"></div>
+</div>
+
+<!-- ══════════════════════════════
+     ARDUINO UNO — MAPA COMPLETO
+═══════════════════════════════ -->
+<div class="card">
+  <div class="card-head">
+    <span class="card-icon">🤖</span>
+    <div><div class="card-title">ARDUINO UNO — MAPA COMPLETO DE PINOS</div><div class="card-sub">Conheça cada pino antes de conectar qualquer fio</div></div>
+    <span class="xp-badge">+20 XP ao explorar</span>
+  </div>
+
+  <!-- SVG Arduino UNO detalhado -->
+  <div class="arduino-wrap">
+    <svg id="arduino-svg" width="620" height="320" viewBox="0 0 620 320" style="max-width:100%">
+      <!-- PCB body -->
+      <rect x="10" y="30" width="600" height="260" rx="12" fill="#1a3a1a" stroke="#2d6e2d" stroke-width="2.5"/>
+      <!-- USB connector -->
+      <rect x="10" y="120" width="28" height="60" rx="4" fill="#444" stroke="#666" stroke-width="1.5"/>
+      <rect x="14" y="128" width="20" height="44" rx="2" fill="#222"/>
+      <text x="16" y="155" fill="#888" font-family="IBM Plex Mono" font-size="7" transform="rotate(-90,16,155)">USB</text>
+      <!-- Power jack -->
+      <circle cx="42" cy="286" r="14" fill="#333" stroke="#555" stroke-width="1.5"/>
+      <circle cx="42" cy="286" r="7" fill="#111"/>
+      <text x="30" y="308" fill="#888" font-family="IBM Plex Mono" font-size="7">PWR</text>
+
+      <!-- Chip ATmega328P -->
+      <rect x="220" y="110" width="120" height="80" rx="4" fill="#111" stroke="#333" stroke-width="1.5"/>
+      <text x="256" y="148" fill="#555" font-family="IBM Plex Mono" font-size="9">ATmega</text>
+      <text x="258" y="160" fill="#555" font-family="IBM Plex Mono" font-size="9">328P</text>
+
+      <!-- Crystal -->
+      <rect x="200" y="130" width="16" height="40" rx="3" fill="#888" stroke="#aaa" stroke-width="1"/>
+      <text x="195" y="125" fill="#666" font-family="IBM Plex Mono" font-size="7">16MHz</text>
+
+      <!-- Reset button -->
+      <rect x="362" y="55" width="22" height="22" rx="3" fill="#cc3333" stroke="#ff4444" stroke-width="1.5"/>
+      <text x="358" y="92" fill="#ff4444" font-family="IBM Plex Mono" font-size="7">RESET</text>
+
+      <!-- LED builtin -->
+      <circle cx="430" cy="66" r="6" fill="#00cc44" stroke="#00ff88" stroke-width="1" id="led13" style="cursor:pointer" onclick="showPinTip(this,'LED 13 (Built-in)','LED embutido na placa conectado ao pino digital 13. Acende com digitalWrite(13, HIGH). Ótimo para testes sem componentes externos.')"/>
+      <text x="415" y="85" fill="#00cc44" font-family="IBM Plex Mono" font-size="7">L</text>
+      <circle cx="445" cy="66" r="5" fill="#eeaa00" stroke="#ffcc00" stroke-width="1"/>
+      <text x="430" y="85" fill="#eeaa00" font-family="IBM Plex Mono" font-size="7">TX</text>
+      <circle cx="460" cy="66" r="5" fill="#eeaa00" stroke="#ffcc00" stroke-width="1"/>
+      <text x="445" y="85" fill="#eeaa00" font-family="IBM Plex Mono" font-size="7">RX</text>
+      <circle cx="475" cy="66" r="5" fill="#ee0000" stroke="#ff4444" stroke-width="1"/>
+      <text x="463" y="85" fill="#ee0000" font-family="IBM Plex Mono" font-size="7">PWR</text>
+
+      <!-- ── POWER HEADER (left side top) ── -->
+      <text x="75" y="50" fill="#6b9e78" font-family="IBM Plex Mono" font-size="8" font-weight="700">ALIMENTAÇÃO</text>
+      <!-- IOREF -->
+      <circle cx="82" cy="62" r="5" fill="#555" stroke="#888" stroke-width="1" class="pin-dot" style="cursor:pointer" onclick="showPinTip(this,'IOREF','Referência de tensão para shields. Indica a tensão lógica do Arduino (5V no UNO). Shields usam este pino para se adaptar ao nível lógico.')"/>
+      <text x="72" y="75" fill="#888" font-family="IBM Plex Mono" font-size="7">IOREF</text>
+      <!-- RESET -->
+      <circle cx="100" cy="62" r="5" fill="#cc3333" stroke="#ff4444" stroke-width="1" style="cursor:pointer" onclick="showPinTip(this,'RESET','Reinicia o Arduino quando conectado ao GND. Equivale a pressionar o botão RESET da placa. Nunca conecte ao 5V.')"/>
+      <text x="90" y="75" fill="#ff4444" font-family="IBM Plex Mono" font-size="7">RST</text>
+      <!-- 3.3V -->
+      <circle cx="118" cy="62" r="5" fill="#ff6633" stroke="#ff8855" stroke-width="1" style="cursor:pointer" onclick="showPinTip(this,'3.3V','Saída de 3.3V gerada pelo regulador interno. Corrente máxima: 50mA. Use para sensores e módulos que operam em 3.3V.')"/>
+      <text x="109" y="75" fill="#ff8855" font-family="IBM Plex Mono" font-size="7">3.3V</text>
+      <!-- 5V -->
+      <circle cx="136" cy="62" r="5" fill="#ee0000" stroke="#ff4444" stroke-width="1" style="cursor:pointer" onclick="showPinTip(this,'5V','Tensão de alimentação 5V. Alimenta componentes como LEDs (com resistor), sensores e módulos. Corrente máxima: 400–500mA via USB.')"/>
+      <text x="129" y="75" fill="#ff4444" font-family="IBM Plex Mono" font-size="7">5V</text>
+      <!-- GND x2 -->
+      <circle cx="154" cy="62" r="5" fill="#333" stroke="#666" stroke-width="1" style="cursor:pointer" onclick="showPinTip(this,'GND (Terra)','Terra / Ground — referência 0V de toda a circuitaria. SEMPRE conecte o GND do Arduino ao GND do seu circuito no protoboard. Existem 3 pinos GND na placa.')"/>
+      <text x="147" y="75" fill="#888" font-family="IBM Plex Mono" font-size="7">GND</text>
+      <circle cx="172" cy="62" r="5" fill="#333" stroke="#666" stroke-width="1"/>
+      <text x="165" y="75" fill="#888" font-family="IBM Plex Mono" font-size="7">GND</text>
+      <!-- VIN -->
+      <circle cx="190" cy="62" r="5" fill="#ff4444" stroke="#ff6666" stroke-width="1" style="cursor:pointer" onclick="showPinTip(this,'VIN','Tensão de entrada (7–12V). Permite alimentar o Arduino por uma fonte externa sem usar USB. O regulador interno converte para 5V.')"/>
+      <text x="183" y="75" fill="#ff6666" font-family="IBM Plex Mono" font-size="7">VIN</text>
+
+      <!-- ── ANALOG HEADER ── -->
+      <text x="75" y="275" fill="#6b9e78" font-family="IBM Plex Mono" font-size="8" font-weight="700">ANALÓGICO</text>
+      <g id="analog-pins">
+        <!-- A0–A5 -->
+        <circle cx="82" cy="258" r="5" fill="#1155cc" stroke="#38bdf8" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'A0 — Analógico 0','Entrada analógica de 10 bits (0–1023). Lê tensões de 0V a 5V. analogRead(A0). Pode ser usado como pino digital também.')"/>
+        <text x="76" y="248" fill="#38bdf8" font-family="IBM Plex Mono" font-size="7">A0</text>
+        <circle cx="100" cy="258" r="5" fill="#1155cc" stroke="#38bdf8" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'A1 — Analógico 1','Entrada analógica de 10 bits. Mesma função que A0. Use para potenciômetros, sensores de temperatura (LM35), sensores de luz (LDR).')"/>
+        <text x="94" y="248" fill="#38bdf8" font-family="IBM Plex Mono" font-size="7">A1</text>
+        <circle cx="118" cy="258" r="5" fill="#1155cc" stroke="#38bdf8" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'A2 — Analógico 2','Entrada analógica de 10 bits. Resolução: 4.88mV por unidade (5000mV ÷ 1024).')"/>
+        <text x="112" y="248" fill="#38bdf8" font-family="IBM Plex Mono" font-size="7">A2</text>
+        <circle cx="136" cy="258" r="5" fill="#1155cc" stroke="#38bdf8" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'A3 — Analógico 3','Entrada analógica de 10 bits.')"/>
+        <text x="130" y="248" fill="#38bdf8" font-family="IBM Plex Mono" font-size="7">A3</text>
+        <circle cx="154" cy="258" r="5" fill="#1155cc" stroke="#38bdf8" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'A4 — Analógico 4 / SDA','Entrada analógica + barramento I²C SDA (dados). Use para comunicar com displays OLED, sensores I²C (MPU6050, BMP180, etc).')"/>
+        <text x="148" y="248" fill="#38bdf8" font-family="IBM Plex Mono" font-size="7">A4</text>
+        <circle cx="172" cy="258" r="5" fill="#1155cc" stroke="#38bdf8" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'A5 — Analógico 5 / SCL','Entrada analógica + barramento I²C SCL (clock). Par com A4 para comunicação I²C.')"/>
+        <text x="166" y="248" fill="#38bdf8" font-family="IBM Plex Mono" font-size="7">A5</text>
+      </g>
+
+      <!-- ── DIGITAL HEADER (right side) ── -->
+      <text x="400" y="275" fill="#6b9e78" font-family="IBM Plex Mono" font-size="8" font-weight="700">DIGITAL (0–7)</text>
+      <text x="510" y="275" fill="#6b9e78" font-family="IBM Plex Mono" font-size="8" font-weight="700">DIGITAL (8–13)</text>
+      <g id="digital-pins">
+        <!-- 0 RX -->
+        <circle cx="390" cy="258" r="5" fill="#225522" stroke="#00cc44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D0 — RX (Recepção Serial)','Pino de RECEPÇÃO serial UART. Usado para comunicação serial via USB. CUIDADO: NÃO conecte nada aqui quando estiver usando comunicação serial (upload do código ou Serial.print).')"/>
+        <text x="383" y="248" fill="#00cc44" font-family="IBM Plex Mono" font-size="7">D0</text>
+        <text x="376" y="270" fill="#00cc44" font-family="IBM Plex Mono" font-size="6">RX</text>
+        <!-- 1 TX -->
+        <circle cx="408" cy="258" r="5" fill="#225522" stroke="#00cc44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D1 — TX (Transmissão Serial)','Pino de TRANSMISSÃO serial UART. Mesma restrição do D0. Evite usar D0 e D1 em projetos com comunicação serial ativa.')"/>
+        <text x="401" y="248" fill="#00cc44" font-family="IBM Plex Mono" font-size="7">D1</text>
+        <text x="394" y="270" fill="#00cc44" font-family="IBM Plex Mono" font-size="6">TX</text>
+        <!-- 2 INT0 -->
+        <circle cx="426" cy="258" r="5" fill="#225522" stroke="#00ff88" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D2 — Interrupção Externa INT0','Pino digital I/O + INTERRUPÇÃO EXTERNA. attachInterrupt(0, funcao, CHANGE). Detecta mudança de estado de forma instantânea sem polling. Ideal para botões e encoders.')"/>
+        <text x="419" y="248" fill="#00ff88" font-family="IBM Plex Mono" font-size="7">D2</text>
+        <text x="413" y="270" fill="#00ff88" font-family="IBM Plex Mono" font-size="6">INT0</text>
+        <!-- 3 PWM INT1 -->
+        <circle cx="444" cy="258" r="5" fill="#334411" stroke="#aaff44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D3 — PWM + Interrupção INT1','Digital I/O + PWM (modulação por largura de pulso) + interrupção externa. analogWrite(3, 0-255) para controlar brilho de LEDs ou velocidade de motores.')"/>
+        <text x="437" y="248" fill="#aaff44" font-family="IBM Plex Mono" font-size="7">D3</text>
+        <text x="430" y="270" fill="#aaff44" font-family="IBM Plex Mono" font-size="6">PWM</text>
+        <!-- 4 -->
+        <circle cx="462" cy="258" r="5" fill="#225522" stroke="#00ff88" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D4 — Digital I/O','Pino digital de entrada ou saída pura. pinMode(4, INPUT) ou pinMode(4, OUTPUT). Use para botões, LEDs, relés, sensores digitais.')"/>
+        <text x="455" y="248" fill="#00ff88" font-family="IBM Plex Mono" font-size="7">D4</text>
+        <!-- 5 PWM -->
+        <circle cx="480" cy="258" r="5" fill="#334411" stroke="#aaff44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D5 — PWM','Digital I/O + PWM. analogWrite(5, valor) para saída analógica simulada. Frequência PWM: ~980Hz.')"/>
+        <text x="473" y="248" fill="#aaff44" font-family="IBM Plex Mono" font-size="7">D5</text>
+        <text x="466" y="270" fill="#aaff44" font-family="IBM Plex Mono" font-size="6">PWM</text>
+        <!-- 6 PWM -->
+        <circle cx="498" cy="258" r="5" fill="#334411" stroke="#aaff44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D6 — PWM','Digital I/O + PWM. Frequência PWM: ~980Hz. Pode ser emparelhado com D5 pelo Timer0.')"/>
+        <text x="491" y="248" fill="#aaff44" font-family="IBM Plex Mono" font-size="7">D6</text>
+        <text x="482" y="270" fill="#aaff44" font-family="IBM Plex Mono" font-size="6">PWM</text>
+        <!-- 7 -->
+        <circle cx="516" cy="258" r="5" fill="#225522" stroke="#00ff88" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D7 — Digital I/O','Pino digital puro, sem PWM. Frequentemente usado como saída simples.')"/>
+        <text x="509" y="248" fill="#00ff88" font-family="IBM Plex Mono" font-size="7">D7</text>
+
+        <!-- 8 -->
+        <circle cx="390" cy="62" r="5" fill="#225522" stroke="#00ff88" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D8 — Digital I/O','Pino digital puro, sem PWM.')"/>
+        <text x="383" y="75" fill="#00ff88" font-family="IBM Plex Mono" font-size="7">D8</text>
+        <!-- 9 PWM -->
+        <circle cx="408" cy="62" r="5" fill="#334411" stroke="#aaff44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D9 — PWM','Digital I/O + PWM. Frequência: ~490Hz. Controlado pelo Timer1.')"/>
+        <text x="401" y="75" fill="#aaff44" font-family="IBM Plex Mono" font-size="7">D9</text>
+        <!-- 10 PWM/SS -->
+        <circle cx="426" cy="62" r="5" fill="#334411" stroke="#aaff44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D10 — PWM / SS (SPI)','PWM + Slave Select do barramento SPI. Use para comunicação com módulos SPI: cartão SD, display TFT, módulo RF.')"/>
+        <text x="417" y="75" fill="#aaff44" font-family="IBM Plex Mono" font-size="7">D10</text>
+        <!-- 11 PWM/MOSI -->
+        <circle cx="444" cy="62" r="5" fill="#334411" stroke="#aaff44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D11 — PWM / MOSI (SPI)','PWM + MOSI (Master Out Slave In) do SPI.')"/>
+        <text x="435" y="75" fill="#aaff44" font-family="IBM Plex Mono" font-size="7">D11</text>
+        <!-- 12 MISO -->
+        <circle cx="462" cy="62" r="5" fill="#225522" stroke="#00ff88" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D12 — MISO (SPI)','MISO (Master In Slave Out) do barramento SPI.')"/>
+        <text x="453" y="75" fill="#00ff88" font-family="IBM Plex Mono" font-size="7">D12</text>
+        <!-- 13 SCK LED -->
+        <circle cx="480" cy="62" r="5" fill="#334411" stroke="#aaff44" stroke-width="1.5" style="cursor:pointer" onclick="showPinTip(this,'D13 — SCK (SPI) + LED Built-in','SCK (clock SPI) + LED embutido L. É o pino mais famoso do Arduino: pisca o LED interno. CUIDADO: tem resistor interno na placa, mas na protoboard use resistor externo.')"/>
+        <text x="471" y="75" fill="#aaff44" font-family="IBM Plex Mono" font-size="7">D13</text>
+        <text x="466" y="88" fill="#aaff44" font-family="IBM Plex Mono" font-size="6">LED</text>
+      </g>
+
+      <!-- Legend -->
+      <rect x="20" y="98" width="8" height="8" fill="#334411" stroke="#aaff44" stroke-width="1"/>
+      <text x="32" y="107" fill="#aaff44" font-family="IBM Plex Mono" font-size="7">~ PWM</text>
+      <rect x="72" y="98" width="8" height="8" fill="#225522" stroke="#00ff88" stroke-width="1"/>
+      <text x="84" y="107" fill="#00ff88" font-family="IBM Plex Mono" font-size="7">Digital</text>
+      <rect x="130" y="98" width="8" height="8" fill="#1155cc" stroke="#38bdf8" stroke-width="1"/>
+      <text x="142" y="107" fill="#38bdf8" font-family="IBM Plex Mono" font-size="7">Analógico</text>
+
+      <!-- AREF / GND digital side -->
+      <circle cx="534" cy="62" r="5" fill="#555" stroke="#888" stroke-width="1" style="cursor:pointer" onclick="showPinTip(this,'AREF — Referência Analógica','Tensão de referência para o conversor analógico-digital. Por padrão usa 5V. Conecte aqui uma tensão de referência externa para maior precisão nas leituras analógicas.')"/>
+      <text x="525" y="75" fill="#888" font-family="IBM Plex Mono" font-size="7">AREF</text>
+      <circle cx="552" cy="62" r="5" fill="#333" stroke="#666" stroke-width="1" style="cursor:pointer" onclick="showPinTip(this,'GND Digital','Terra do lado digital. Mesmo potencial dos outros GNDs.')"/>
+      <text x="545" y="75" fill="#888" font-family="IBM Plex Mono" font-size="7">GND</text>
+    </svg>
+    <!-- Tooltip -->
+    <div class="pin-tooltip" id="pin-tooltip">
+      <div class="pt-name" id="pt-name">Pin</div>
+      <div class="pt-fn" id="pt-fn">Descrição</div>
+    </div>
+  </div>
+  <div class="ibox">💡 <b>Como ler o diagrama:</b> Clique em qualquer pino colorido para ver sua função detalhada. <b style="color:#aaff44">Amarelo/verde claro = PWM</b> · <b style="color:var(--green)">Verde = Digital puro</b> · <b style="color:var(--blue)">Azul = Analógico</b> · <b style="color:var(--red)">Vermelho = Alimentação</b>
+  </div>
+
+  <!-- PIN REFERENCE TABLE -->
+  <div class="stitle" style="margin-top:20px">Tabela de Referência Rápida — Todos os Pinos</div>
+  <div style="overflow-x:auto">
+  <table class="pin-table">
+    <thead><tr><th>Pino</th><th>Tipo</th><th>Função Principal</th><th>Uso nos Experimentos</th><th>Tensão / Corrente</th></tr></thead>
+    <tbody>
+      <tr><td><b style="color:var(--red)">5V</b></td><td><span class="pin-badge pin-v">PWR</span></td><td>Alimentação 5V</td><td>Linha positiva do protoboard</td><td>5V / 400mA (USB)</td></tr>
+      <tr><td><b style="color:#888">GND</b></td><td><span class="pin-badge pin-g">GND</span></td><td>Terra / 0V</td><td>Linha negativa do protoboard</td><td>0V referência</td></tr>
+      <tr><td><b style="color:var(--orange)">3.3V</b></td><td><span class="pin-badge pin-v">PWR</span></td><td>Alimentação 3.3V</td><td>Módulos Bluetooth/WiFi</td><td>3.3V / 50mA</td></tr>
+      <tr><td><b style="color:var(--green)">D2</b></td><td><span class="pin-badge pin-d">DIG</span><span class="pin-badge pin-r">INT</span></td><td>Digital + Interrupção</td><td>Botão A (Entrada AND/OR)</td><td>5V lógico, 40mA máx</td></tr>
+      <tr><td><b style="color:var(--green)">D3</b></td><td><span class="pin-badge pin-d">DIG</span><span class="pin-badge pin-p">PWM</span></td><td>Digital + PWM + INT1</td><td>Botão B (Entrada AND/OR)</td><td>5V lógico, 40mA máx</td></tr>
+      <tr><td><b style="color:var(--green)">D4</b></td><td><span class="pin-badge pin-d">DIG</span></td><td>Digital puro</td><td>Botão C (Entrada XOR)</td><td>5V lógico, 40mA máx</td></tr>
+      <tr><td><b style="color:#aaff44">D9</b></td><td><span class="pin-badge pin-d">DIG</span><span class="pin-badge pin-p">PWM</span></td><td>Digital + PWM</td><td>LED resultado porta AND</td><td>5V / 40mA máx</td></tr>
+      <tr><td><b style="color:#aaff44">D10</b></td><td><span class="pin-badge pin-d">DIG</span><span class="pin-badge pin-p">PWM</span></td><td>Digital + PWM / SS</td><td>LED resultado porta OR</td><td>5V / 40mA máx</td></tr>
+      <tr><td><b style="color:#aaff44">D11</b></td><td><span class="pin-badge pin-d">DIG</span><span class="pin-badge pin-p">PWM</span></td><td>Digital + PWM / MOSI</td><td>LED resultado porta NOT</td><td>5V / 40mA máx</td></tr>
+      <tr><td><b style="color:#aaff44">D12</b></td><td><span class="pin-badge pin-d">DIG</span></td><td>Digital / MISO</td><td>LED resultado porta XOR</td><td>5V / 40mA máx</td></tr>
+      <tr><td><b style="color:#aaff44">D13</b></td><td><span class="pin-badge pin-d">DIG</span><span class="pin-badge pin-p">LED</span></td><td>Digital + LED Built-in</td><td>Sinalização geral</td><td>5V / 40mA máx</td></tr>
+      <tr><td><b style="color:var(--blue)">A0</b></td><td><span class="pin-badge pin-a">ANA</span></td><td>Analógico 10-bit</td><td>Potenciômetro (opcional)</td><td>0–5V → 0–1023</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="wbox" style="margin-top:12px">⚠️ <b>Limite de corrente por pino:</b> Cada pino digital suporta no máximo <b>40mA</b>. SEMPRE use resistor de 220Ω–470Ω em série com LEDs para não queimar o pino ou o LED. A corrente total de todos os pinos não deve exceder <b>200mA</b>.</div>
+</div>
+
+<!-- ══════════════════════════════
+     PROTOBOARD — GUIA VISUAL
+═══════════════════════════════ -->
+<div class="card">
+  <div class="card-head">
+    <span class="card-icon">🔲</span>
+    <div><div class="card-title">PROTOBOARD — COMO FUNCIONA & COORDENADAS</div><div class="card-sub">Entenda o sistema de coordenadas antes de montar qualquer circuito</div></div>
+    <span class="xp-badge">+15 XP ao explorar</span>
+  </div>
+
+  <!-- Protoboard SVG explicativo -->
+  <div class="proto-wrap" onclick="addXP(5,'Protoboard explorado!','🔲');unlock('ach-proto')">
+    <div class="proto-title">Protoboard 830 pontos — Clique para ganhar XP</div>
+    <svg width="680" height="240" viewBox="0 0 680 240" style="max-width:100%">
+      <!-- Body -->
+      <rect x="10" y="10" width="660" height="220" rx="8" fill="#e8e0c8" stroke="#c8b880" stroke-width="2"/>
+      <!-- Middle gap -->
+      <rect x="10" y="118" width="660" height="10" rx="0" fill="#c8b880"/>
+      <text x="330" y="126" fill="#888" font-family="IBM Plex Mono" font-size="8" text-anchor="middle">CANAL CENTRAL (separa as duas metades)</text>
+
+      <!-- Rail top + -->
+      <rect x="20" y="16" width="640" height="14" rx="3" fill="#ffdddd" stroke="#ff8888" stroke-width="1"/>
+      <text x="28" y="26" fill="#cc0000" font-family="IBM Plex Mono" font-size="8" font-weight="700">+  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  POSITIVO (+5V)</text>
+      <!-- Rail top - -->
+      <rect x="20" y="33" width="640" height="14" rx="3" fill="#ddddff" stroke="#8888ff" stroke-width="1"/>
+      <text x="28" y="43" fill="#0000cc" font-family="IBM Plex Mono" font-size="8" font-weight="700">−  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  NEGATIVO (GND)</text>
+
+      <!-- Rail bot + -->
+      <rect x="20" y="200" width="640" height="14" rx="3" fill="#ffdddd" stroke="#ff8888" stroke-width="1"/>
+      <text x="28" y="210" fill="#cc0000" font-family="IBM Plex Mono" font-size="8" font-weight="700">+  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  +  POSITIVO (+5V)</text>
+      <!-- Rail bot - -->
+      <rect x="20" y="216" width="640" height="14" rx="3" fill="#ddddff" stroke="#8888ff" stroke-width="1"/>
+      <text x="28" y="226" fill="#0000cc" font-family="IBM Plex Mono" font-size="8" font-weight="700">−  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  −  NEGATIVO (GND)</text>
+
+      <!-- Column headers (numbers) -->
+      <text x="42" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">1</text>
+      <text x="64" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">2</text>
+      <text x="86" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">3</text>
+      <text x="108" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">4</text>
+      <text x="130" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">5</text>
+      <text x="152" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">6</text>
+      <text x="174" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">7</text>
+      <text x="196" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">8</text>
+      <text x="218" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">9</text>
+      <text x="237" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">10</text>
+      <text x="260" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">11</text>
+      <text x="282" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">12</text>
+      <text x="304" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">13</text>
+      <text x="326" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">14</text>
+      <text x="348" y="60" fill="#555" font-family="IBM Plex Mono" font-size="7">15</text>
+
+      <!-- Row headers A-E (top) -->
+      <text x="21" y="72" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">A</text>
+      <text x="21" y="83" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">B</text>
+      <text x="21" y="94" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">C</text>
+      <text x="21" y="105" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">D</text>
+      <text x="21" y="116" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">E</text>
+      <!-- Row headers F-J (bottom) -->
+      <text x="21" y="138" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">F</text>
+      <text x="21" y="149" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">G</text>
+      <text x="21" y="160" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">H</text>
+      <text x="21" y="171" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">I</text>
+      <text x="21" y="182" fill="#333" font-family="IBM Plex Mono" font-size="8" font-weight="700">J</text>
+
+      <!-- Holes grid (top half, A-E, cols 1-15 sample) -->
+      <g fill="#888" stroke="#999" stroke-width="0.5">
+        <script>/* holes drawn below */</script>
+        <!-- Row A -->
+        <circle cx="44" cy="70" r="3"/><circle cx="66" cy="70" r="3"/><circle cx="88" cy="70" r="3"/>
+        <circle cx="110" cy="70" r="3"/><circle cx="132" cy="70" r="3"/><circle cx="154" cy="70" r="3"/>
+        <circle cx="176" cy="70" r="3"/><circle cx="198" cy="70" r="3"/><circle cx="220" cy="70" r="3"/>
+        <circle cx="242" cy="70" r="3"/><circle cx="264" cy="70" r="3"/><circle cx="286" cy="70" r="3"/>
+        <circle cx="308" cy="70" r="3"/><circle cx="330" cy="70" r="3"/><circle cx="352" cy="70" r="3"/>
+        <!-- Row B -->
+        <circle cx="44" cy="81" r="3"/><circle cx="66" cy="81" r="3"/><circle cx="88" cy="81" r="3"/>
+        <circle cx="110" cy="81" r="3"/><circle cx="132" cy="81" r="3"/><circle cx="154" cy="81" r="3"/>
+        <circle cx="176" cy="81" r="3"/><circle cx="198" cy="81" r="3"/><circle cx="220" cy="81" r="3"/>
+        <circle cx="242" cy="81" r="3"/><circle cx="264" cy="81" r="3"/><circle cx="286" cy="81" r="3"/>
+        <!-- Row C -->
+        <circle cx="44" cy="92" r="3"/><circle cx="66" cy="92" r="3"/><circle cx="88" cy="92" r="3"/>
+        <circle cx="110" cy="92" r="3"/><circle cx="132" cy="92" r="3"/><circle cx="154" cy="92" r="3"/>
+        <!-- Row D -->
+        <circle cx="44" cy="103" r="3"/><circle cx="66" cy="103" r="3"/><circle cx="88" cy="103" r="3"/>
+        <!-- Row E -->
+        <circle cx="44" cy="114" r="3"/><circle cx="66" cy="114" r="3"/>
+
+        <!-- Row F (bottom half) -->
+        <circle cx="44" cy="136" r="3"/><circle cx="66" cy="136" r="3"/><circle cx="88" cy="136" r="3"/>
+        <circle cx="110" cy="136" r="3"/><circle cx="132" cy="136" r="3"/><circle cx="154" cy="136" r="3"/>
+        <!-- Row G -->
+        <circle cx="44" cy="147" r="3"/><circle cx="66" cy="147" r="3"/><circle cx="88" cy="147" r="3"/>
+        <circle cx="110" cy="147" r="3"/>
+        <!-- Row H -->
+        <circle cx="44" cy="158" r="3"/><circle cx="66" cy="158" r="3"/>
+        <!-- Row I -->
+        <circle cx="44" cy="169" r="3"/>
+        <!-- Row J -->
+        <circle cx="44" cy="180" r="3"/>
+      </g>
+
+      <!-- EXAMPLE: LED placement highlight -->
+      <circle cx="264" cy="70" r="5" fill="#ff4444" stroke="#ff8888" stroke-width="2" opacity=".9"/>
+      <circle cx="264" cy="81" r="5" fill="#553333" stroke="#aa4444" stroke-width="2" opacity=".9"/>
+      <line x1="264" y1="70" x2="264" y2="50" stroke="#ff4444" stroke-width="1.5" stroke-dasharray="3,2"/>
+      <text x="272" y="67" fill="#ff4444" font-family="IBM Plex Mono" font-size="8" font-weight="700">Ânodo (+) → A11</text>
+      <text x="272" y="78" fill="#ff8888" font-family="IBM Plex Mono" font-size="8">Cátodo (−) → B11</text>
+
+      <!-- Connection arrows showing A1-A5 connected -->
+      <line x1="44" y1="70" x2="132" y2="70" stroke="#00ff88" stroke-width="2" stroke-dasharray="4,2" opacity=".6"/>
+      <text x="68" y="65" fill="#00ff88" font-family="IBM Plex Mono" font-size="7">A1–A5 conectados internamente ↔</text>
+
+      <!-- Separation note -->
+      <line x1="44" y1="70" x2="44" y2="136" stroke="#ff8888" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+      <text x="380" y="126" fill="#888" font-family="IBM Plex Mono" font-size="7">A1↔E1 conectados   F1↔J1 conectados   mas E1 ≠ F1</text>
+    </svg>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px">
+    <div class="gbox" style="background:rgba(0,255,136,.05)">
+      <b>✅ Linhas horizontais (A–E / F–J):</b><br>
+      Todos os pontos na <b>mesma coluna</b> da mesma metade (ex: A1, B1, C1, D1, E1) estão <b>conectados entre si</b>.
+    </div>
+    <div class="wbox">
+      <b>⚠️ Canal central:</b><br>
+      O sulco no meio <b>isola A–E de F–J</b> na mesma coluna. Use para encaixar CIs (chips).
+    </div>
+    <div class="ibox">
+      <b>🔴🔵 Trilhas laterais (+ e −):</b><br>
+      Linhas vermelha (+) e azul (−) correm por toda a largura da placa. Conecte 5V na vermelha e GND na azul.
+    </div>
+    <div style="background:rgba(167,139,250,.05);border:1px solid rgba(167,139,250,.2);padding:12px 15px;font-size:.83em;color:#c4b5fd;line-height:1.65">
+      <b style="color:var(--purple)">📍 Sistema de Coordenadas:</b><br>
+      Letras = linhas (A, B, C... J)<br>
+      Números = colunas (1, 2, 3... 63)<br>
+      Exemplo: <span class="coord">A11</span> = linha A, coluna 11
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     EXPERIMENTOS
+═══════════════════════════════ -->
+<div class="card">
+  <div class="card-head">
+    <span class="card-icon">🔬</span>
+    <div><div class="card-title">EXPERIMENTOS PRÁTICOS — PORTAS LÓGICAS NO ARDUINO</div><div class="card-sub">4 experimentos com montagem exata no protoboard e código completo</div></div>
+    <span class="xp-badge">+200 XP total</span>
+  </div>
+  <div class="step-acc" id="exp-acc"></div>
+</div>
+
+<!-- ══════════════════════════════
+     QUIZ
+═══════════════════════════════ -->
+<div class="card">
+  <div class="card-head">
+    <span class="card-icon">🧠</span>
+    <div><div class="card-title">QUIZ — ARDUINO & PORTAS LÓGICAS</div><div class="card-sub">8 questões práticas sobre o hardware</div></div>
+    <span class="xp-badge">até +80 XP</span>
+  </div>
+  <div class="q-prog-wrap">
+    <div class="q-prog-label"><span>Questão</span><span id="q-cnt">0/8</span></div>
+    <div class="q-prog-bg"><div class="q-prog-fill" id="q-fill" style="width:0%"></div></div>
+  </div>
+  <div id="quiz-wrap"></div>
+</div>
+
+<!-- ══════════════════════════════
+     CONQUISTAS
+═══════════════════════════════ -->
+<div class="card">
+  <div class="card-head">
+    <span class="card-icon">🏆</span>
+    <div><div class="card-title">CONQUISTAS</div></div>
+  </div>
+  <div class="ach-grid">
+    <div class="ach-item" id="ach-start"><span class="ach-ico">🚀</span><div class="ach-name">Lab Iniciado</div></div>
+    <div class="ach-item" id="ach-mat"><span class="ach-ico">🧰</span><div class="ach-name">Componentes OK</div></div>
+    <div class="ach-item" id="ach-proto"><span class="ach-ico">🔲</span><div class="ach-name">Protoboard Expert</div></div>
+    <div class="ach-item" id="ach-pin"><span class="ach-ico">🤖</span><div class="ach-name">Mapa de Pinos</div></div>
+    <div class="ach-item" id="ach-exp1"><span class="ach-ico">💡</span><div class="ach-name">AND no Hardware</div></div>
+    <div class="ach-item" id="ach-exp2"><span class="ach-ico">🔀</span><div class="ach-name">OR Funcionando</div></div>
+    <div class="ach-item" id="ach-exp3"><span class="ach-ico">🔄</span><div class="ach-name">NOT Invertido</div></div>
+    <div class="ach-item" id="ach-exp4"><span class="ach-ico">⊕</span><div class="ach-name">XOR Exclusivo</div></div>
+    <div class="ach-item" id="ach-obj"><span class="ach-ico">🎯</span><div class="ach-name">Objetivos Todos</div></div>
+    <div class="ach-item" id="ach-quiz"><span class="ach-ico">🎓</span><div class="ach-name">Quiz Aprovado</div></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- PIN TOOLTIP (global) -->
+<div class="pin-tooltip" id="pin-tooltip2" style="position:fixed;z-index:200"></div>
+
+<script>
+// ══════════════════════════
+//  STATE
+// ══════════════════════════
+let xp=0, streak=0, badges=0, acts=0;
+const TOTAL_XP=500;
+const objDone=new Array(8).fill(false);
+let expDone=[false,false,false,false];
+
+// ── MATERIALS ──
+const MATS=[
+  {icon:'🤖',name:'Arduino UNO',qty:'1',detail:'Com cabo USB-B para programação'},
+  {icon:'🔲',name:'Protoboard',qty:'1',detail:'830 furos (tamanho padrão)'},
+  {icon:'💡',name:'LEDs 5mm',qty:'4',detail:'1× vermelho, 1× verde, 1× amarelo, 1× azul'},
+  {icon:'🔘',name:'Push buttons',qty:'2',detail:'Botão tátil 4 pinos (os pinos frontais são os que importam)'},
+  {icon:'⚡',name:'Resistores 220Ω',qty:'4',detail:'Para os LEDs (faixa vermelho-vermelho-marrom)'},
+  {icon:'⚡',name:'Resistores 10kΩ',qty:'2',detail:'Pull-down para os botões (faixa marrom-preto-laranja)'},
+  {icon:'🔌',name:'Jumpers macho-macho',qty:'15',detail:'Fios de conexão coloridos — tente usar vermelho para VCC, preto para GND, coloridos para sinais'},
+  {icon:'💻',name:'Arduino IDE',qty:'1',detail:'Versão 2.x instalada · tinkercad.com (alternativa online)'},
+];
+function buildMaterials(){
+  const g=document.getElementById('mat-grid');
+  MATS.forEach(m=>{
+    const d=document.createElement('div');
+    d.style.cssText='background:rgba(0,0,0,.3);border:1px solid var(--border);padding:14px;display:flex;align-items:flex-start;gap:10px;border-radius:3px';
+    d.innerHTML=`<span style="font-size:1.8em;flex-shrink:0">${m.icon}</span>
+    <div>
+      <div style="font-family:IBM Plex Mono,monospace;font-size:.82em;font-weight:700;color:var(--text)">${m.name} <span style="color:var(--amber)">×${m.qty}</span></div>
+      <div style="font-size:.76em;color:var(--text2);line-height:1.5;margin-top:3px">${m.detail}</div>
+    </div>`;
+    g.appendChild(d);
+  });
+}
+
+// ── OBJECTIVES ──
+const OBJS=[
+  'Identificar e nomear todos os pinos do Arduino UNO e suas funções',
+  'Compreender o sistema de coordenadas do protoboard (letra + número)',
+  'Montar o circuito AND com 2 botões e 1 LED com posições exatas indicadas',
+  'Montar o circuito OR com 2 botões e 1 LED',
+  'Implementar a porta NOT (inversor) com 1 botão e 1 LED',
+  'Implementar a porta XOR com 2 botões e 1 LED',
+  'Fazer upload do código e validar funcionamento com tabela-verdade',
+  'Relacionar o comportamento físico com a teoria da Semana 04',
+];
+function buildObjs(){
+  const l=document.getElementById('obj-list');
+  OBJS.forEach((o,i)=>{
+    const d=document.createElement('div');
+    d.className='obj-item';
+    d.innerHTML=`<div class="obj-check" id="oc-${i}"></div>${o}`;
+    d.onclick=()=>checkObj(d,i);
+    l.appendChild(d);
+  });
+}
+
+function checkObj(el,i){
+  el.classList.toggle('done');
+  objDone[i]=el.classList.contains('done');
+  const c=el.querySelector('.obj-check');
+  if(objDone[i]){c.textContent='✓';addXP(5,'Objetivo!','🎯');streak++;}
+  else{c.textContent='';streak=Math.max(0,streak-1);}
+  if(objDone.every(Boolean)){addXP(30,'Todos os objetivos!','🎯');unlock('ach-obj');}
+  acts++;updateProg();updateHUD();
+}
+
+// ── EXPERIMENTS DATA ──
+const EXPS=[
+  {
+    id:'exp1',achId:'ach-exp1',
+    title:'Experimento 1 — Porta AND (A · B)',
+    meta:'⏱ 20 min · 2 botões + 1 LED vermelho · D2, D3, D9',
+    xp:50,
+    color:'#ef4444',
+    theory:'A porta AND ativa a saída SOMENTE se AMBAS as entradas forem 1. Com botões: o LED só acende quando os DOIS botões estiverem pressionados ao mesmo tempo.',
+    components:[
+      {c:'LED vermelho',pb_from:'ânodo (perna longa)',coord:'A11',pb_to:'cátodo (perna curta)',coord2:'A12',note:'Perna longa = polo positivo (+) = ânodo'},
+      {c:'Resistor 220Ω',pb_from:'perna 1',coord:'B12',pb_to:'perna 2',coord2:'B15',note:'Conecta cátodo do LED ao trilho GND'},
+      {c:'Fio jumper PRETO',pb_from:'B15',coord:'B15',pb_to:'GND trilho (−)',coord2:'linha azul',note:'Liga o resistor ao GND da trilha lateral'},
+      {c:'Fio jumper VERMELHO (LED)',pb_from:'Arduino pino D9',coord:'D9',pb_to:'A11',coord2:'A11',note:'Saída Arduino → ânodo LED'},
+      {c:'Push button A',pb_from:'pino 1 (esquerdo)',coord:'E20',pb_to:'pino 2 (direito)',coord2:'E22',note:'O botão cruza o canal central; E=cima, F=baixo'},
+      {c:'Resistor 10kΩ (pull-down A)',pb_from:'perna 1',coord:'F20',pb_to:'GND trilho',coord2:'linha azul',note:'Mantém entrada em LOW quando botão solto'},
+      {c:'Fio jumper LARANJA (btn A)',pb_from:'Arduino D2',coord:'pino D2',pb_to:'F20 / E20 junto',coord2:'F20',note:'Leitura do botão A no pino 2'},
+      {c:'Fio jumper VCC btn A',pb_from:'5V trilho (+)',coord:'linha vermelha',pb_to:'E22',coord2:'E22',note:'5V vai ao outro lado do botão'},
+      {c:'Push button B',pb_from:'pino 1',coord:'E25',pb_to:'pino 2',coord2:'E27',note:'Segundo botão, mesma lógica'},
+      {c:'Resistor 10kΩ (pull-down B)',pb_from:'perna 1',coord:'F25',pb_to:'GND trilho',coord2:'linha azul',note:'Pull-down do botão B'},
+      {c:'Fio jumper AMARELO (btn B)',pb_from:'Arduino D3',coord:'pino D3',pb_to:'F25',coord2:'F25',note:'Leitura do botão B no pino 3'},
+      {c:'Fio jumper VCC btn B',pb_from:'5V trilho (+)',coord:'linha vermelha',pb_to:'E27',coord2:'E27',note:'5V ao segundo pino do botão B'},
+      {c:'Fio GND Arduino→Protoboard',pb_from:'Arduino GND',coord:'pino GND',pb_to:'Trilho − (azul)',coord2:'linha azul',note:'ESSENCIAL: terra em comum'},
+      {c:'Fio 5V Arduino→Protoboard',pb_from:'Arduino 5V',coord:'pino 5V',pb_to:'Trilho + (vermelho)',coord2:'linha vermelha',note:'Alimentação do protoboard'},
+    ],
+    code:`<span class="cm">// ═══════════════════════════════
+// PORTA AND — Semana 05 ADS 2026
+// LED acende APENAS se btn A E btn B
+// ═══════════════════════════════</span>
+
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">btnA</span> = <span class="cn">2</span>;   <span class="cm">// Botão A → pino Digital 2</span>
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">btnB</span> = <span class="cn">3</span>;   <span class="cm">// Botão B → pino Digital 3</span>
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">ledAND</span> = <span class="cn">9</span>; <span class="cm">// LED resultado → pino Digital 9</span>
+
+<span class="ck">void</span> <span class="cf">setup</span>() {
+  <span class="cf">pinMode</span>(<span class="cv">btnA</span>, <span class="cn">INPUT</span>);    <span class="cm">// Botões como entrada (pull-down externo)</span>
+  <span class="cf">pinMode</span>(<span class="cv">btnB</span>, <span class="cn">INPUT</span>);
+  <span class="cf">pinMode</span>(<span class="cv">ledAND</span>, <span class="cn">OUTPUT</span>); <span class="cm">// LED como saída</span>
+  <span class="cf">Serial.begin</span>(<span class="cn">9600</span>);       <span class="cm">// Monitor serial para debug</span>
+}
+
+<span class="ck">void</span> <span class="cf">loop</span>() {
+  <span class="cv">int</span> <span class="cf">A</span> = <span class="cf">digitalRead</span>(<span class="cv">btnA</span>); <span class="cm">// Lê botão A: HIGH=1, LOW=0</span>
+  <span class="cv">int</span> <span class="cf">B</span> = <span class="cf">digitalRead</span>(<span class="cv">btnB</span>); <span class="cm">// Lê botão B</span>
+
+  <span class="cm">// ┌─────────────────────────────────────┐
+  // │  PORTA AND: S = A · B               │
+  // │  Saída 1 SOMENTE se A=1 E B=1       │
+  // └─────────────────────────────────────┘</span>
+  <span class="cv">int</span> <span class="cf">S_AND</span> = A &amp;&amp; B; <span class="cm">// Operador lógico AND do C++</span>
+
+  <span class="cf">digitalWrite</span>(<span class="cv">ledAND</span>, <span class="cv">S_AND</span>); <span class="cm">// Aciona LED conforme resultado</span>
+
+  <span class="cm">// Debug no Serial Monitor (Ctrl+Shift+M)</span>
+  <span class="cf">Serial.print</span>(<span class="cs">"A="</span>); <span class="cf">Serial.print</span>(<span class="cv">A</span>);
+  <span class="cf">Serial.print</span>(<span class="cs">"  B="</span>); <span class="cf">Serial.print</span>(<span class="cv">B</span>);
+  <span class="cf">Serial.print</span>(<span class="cs">"  AND(A,B)="</span>); <span class="cf">Serial.println</span>(<span class="cv">S_AND</span>);
+
+  <span class="cf">delay</span>(<span class="cn">100</span>); <span class="cm">// Pequeno delay anti-bounce</span>
+}`,
+    truthCheck:[
+      {state:'Nenhum botão pressionado',A:0,B:0,expected:0,hint:'AND: precisa dos dois'},
+      {state:'Apenas botão A pressionado',A:1,B:0,expected:0,hint:'AND: ainda falta B'},
+      {state:'Apenas botão B pressionado',A:0,B:1,expected:0,hint:'AND: ainda falta A'},
+      {state:'AMBOS os botões pressionados',A:1,B:1,expected:1,hint:'AND: A=1 E B=1 → LED ACENDE!'},
+    ]
+  },
+  {
+    id:'exp2',achId:'ach-exp2',
+    title:'Experimento 2 — Porta OR (A + B)',
+    meta:'⏱ 15 min · 2 botões + 1 LED verde · D2, D3, D10',
+    xp:50,
+    color:'#38bdf8',
+    theory:'A porta OR ativa a saída se PELO MENOS UMA entrada for 1. O LED acende se qualquer um dos botões estiver pressionado. Reuse a montagem do Exp.1 — só mude o pino do LED para D10 e altere o código.',
+    components:[
+      {c:'LED verde',pb_from:'ânodo (perna longa)',coord:'A30',pb_to:'cátodo (perna curta)',coord2:'A31',note:'Perna longa = ânodo (+)'},
+      {c:'Resistor 220Ω',pb_from:'perna 1',coord:'B31',pb_to:'GND trilho',coord2:'linha azul',note:'Resistor limitador de corrente'},
+      {c:'Fio jumper VERDE (LED OR)',pb_from:'Arduino D10',coord:'pino D10',pb_to:'A30',coord2:'A30',note:'Saída do Arduino para o LED verde'},
+      {c:'Botões A e B',pb_from:'Mesma montagem',coord:'E20/E25',pb_to:'do Exp. 1',coord2:' ','note':'Reutilize os botões do Exp. 1'},
+    ],
+    code:`<span class="cm">// ═══════════════════════════════
+// PORTA OR — Semana 05 ADS 2026
+// LED acende se btn A OU btn B
+// ═══════════════════════════════</span>
+
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">btnA</span>  = <span class="cn">2</span>;
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">btnB</span>  = <span class="cn">3</span>;
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">ledOR</span> = <span class="cn">10</span>;
+
+<span class="ck">void</span> <span class="cf">setup</span>() {
+  <span class="cf">pinMode</span>(<span class="cv">btnA</span>, <span class="cn">INPUT</span>);
+  <span class="cf">pinMode</span>(<span class="cv">btnB</span>, <span class="cn">INPUT</span>);
+  <span class="cf">pinMode</span>(<span class="cv">ledOR</span>, <span class="cn">OUTPUT</span>);
+  <span class="cf">Serial.begin</span>(<span class="cn">9600</span>);
+}
+
+<span class="ck">void</span> <span class="cf">loop</span>() {
+  <span class="cv">int</span> <span class="cf">A</span> = <span class="cf">digitalRead</span>(<span class="cv">btnA</span>);
+  <span class="cv">int</span> <span class="cf">B</span> = <span class="cf">digitalRead</span>(<span class="cv">btnB</span>);
+
+  <span class="cm">// ┌─────────────────────────────────────┐
+  // │  PORTA OR: S = A + B                │
+  // │  Saída 1 se A=1 OU B=1 (ou ambos)  │
+  // └─────────────────────────────────────┘</span>
+  <span class="cv">int</span> <span class="cf">S_OR</span> = A || B; <span class="cm">// Operador lógico OR do C++</span>
+
+  <span class="cf">digitalWrite</span>(<span class="cv">ledOR</span>, <span class="cv">S_OR</span>);
+
+  <span class="cf">Serial.print</span>(<span class="cs">"A="</span>); <span class="cf">Serial.print</span>(<span class="cv">A</span>);
+  <span class="cf">Serial.print</span>(<span class="cs">"  B="</span>); <span class="cf">Serial.print</span>(<span class="cv">B</span>);
+  <span class="cf">Serial.print</span>(<span class="cs">"  OR(A,B)="</span>); <span class="cf">Serial.println</span>(<span class="cv">S_OR</span>);
+  <span class="cf">delay</span>(<span class="cn">100</span>);
+}`,
+    truthCheck:[
+      {state:'Nenhum botão pressionado',A:0,B:0,expected:0,hint:'OR: 0+0=0'},
+      {state:'Apenas botão A',A:1,B:0,expected:1,hint:'OR: 1+0=1 → acende!'},
+      {state:'Apenas botão B',A:0,B:1,expected:1,hint:'OR: 0+1=1 → acende!'},
+      {state:'Ambos pressionados',A:1,B:1,expected:1,hint:'OR: 1+1=1 → acende!'},
+    ]
+  },
+  {
+    id:'exp3',achId:'ach-exp3',
+    title:'Experimento 3 — Porta NOT / Inversor (Ā)',
+    meta:'⏱ 10 min · 1 botão + 1 LED amarelo · D2, D11',
+    xp:50,
+    color:'#a78bfa',
+    theory:'A porta NOT inverte a entrada. Sem pressionar o botão (entrada=0), o LED fica ACESO. Ao pressionar (entrada=1), o LED APAGA. É o comportamento oposto do esperado!',
+    components:[
+      {c:'LED amarelo',pb_from:'ânodo (perna longa)',coord:'A35',pb_to:'cátodo (perna curta)',coord2:'A36',note:'Perna mais longa = ânodo'},
+      {c:'Resistor 220Ω',pb_from:'perna 1',coord:'B36',pb_to:'GND trilho',coord2:'linha azul',note:'Resistor em série com o cátodo'},
+      {c:'Fio AMARELO (LED NOT)',pb_from:'Arduino D11',coord:'pino D11',pb_to:'A35',coord2:'A35',note:'Pino 11 → ânodo LED amarelo'},
+      {c:'Botão A (já montado)',pb_from:'Reuse',coord:'E20',pb_to:'com pull-down',coord2:'F20',note:'Apenas 1 botão necessário'},
+    ],
+    code:`<span class="cm">// ═══════════════════════════════
+// PORTA NOT (INVERSOR) — Semana 05
+// LED acende quando botão SOLTO
+// LED apaga quando botão PRESSIONADO
+// ═══════════════════════════════</span>
+
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">btnA</span>   = <span class="cn">2</span>;
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">ledNOT</span> = <span class="cn">11</span>;
+
+<span class="ck">void</span> <span class="cf">setup</span>() {
+  <span class="cf">pinMode</span>(<span class="cv">btnA</span>,   <span class="cn">INPUT</span>);
+  <span class="cf">pinMode</span>(<span class="cv">ledNOT</span>, <span class="cn">OUTPUT</span>);
+  <span class="cf">Serial.begin</span>(<span class="cn">9600</span>);
+}
+
+<span class="ck">void</span> <span class="cf">loop</span>() {
+  <span class="cv">int</span> <span class="cf">A</span> = <span class="cf">digitalRead</span>(<span class="cv">btnA</span>);
+
+  <span class="cm">// ┌─────────────────────────────────────┐
+  // │  PORTA NOT: S = !A = Ā              │
+  // │  Inverte o estado da entrada         │
+  // └─────────────────────────────────────┘</span>
+  <span class="cv">int</span> <span class="cf">S_NOT</span> = !A; <span class="cm">// Operador NOT do C++ (! = negação lógica)</span>
+
+  <span class="cf">digitalWrite</span>(<span class="cv">ledNOT</span>, <span class="cv">S_NOT</span>);
+
+  <span class="cf">Serial.print</span>(<span class="cs">"A="</span>); <span class="cf">Serial.print</span>(<span class="cv">A</span>);
+  <span class="cf">Serial.print</span>(<span class="cs">"  NOT(A)="</span>); <span class="cf">Serial.println</span>(<span class="cv">S_NOT</span>);
+  <span class="cf">delay</span>(<span class="cn">100</span>);
+}`,
+    truthCheck:[
+      {state:'Botão SOLTO (A=0)',A:0,B:-1,expected:1,hint:'NOT inverte: 0 → 1. LED ACESO!'},
+      {state:'Botão PRESSIONADO (A=1)',A:1,B:-1,expected:0,hint:'NOT inverte: 1 → 0. LED APAGADO!'},
+    ]
+  },
+  {
+    id:'exp4',achId:'ach-exp4',
+    title:'Experimento 4 — Porta XOR (A ⊕ B) + Desafio',
+    meta:'⏱ 20 min · 2 botões + 1 LED azul · D2, D3, D12',
+    xp:50,
+    color:'#f59e0b',
+    theory:'O XOR (Exclusive OR) retorna 1 SOMENTE quando as entradas são DIFERENTES. Este é o circuito usado em somadores binários! A partir dos Exps 1–3, adicione apenas o LED azul no D12.',
+    components:[
+      {c:'LED azul',pb_from:'ânodo (perna longa)',coord:'A40',pb_to:'cátodo (perna curta)',coord2:'A41',note:'LED azul precisa de ~3.2V'},
+      {c:'Resistor 220Ω',pb_from:'perna 1',coord:'B41',pb_to:'GND trilho',coord2:'linha azul',note:'Resistor 220Ω ou 330Ω para LED azul'},
+      {c:'Fio AZUL (LED XOR)',pb_from:'Arduino D12',coord:'pino D12',pb_to:'A40',coord2:'A40',note:'D12 → ânodo do LED azul'},
+      {c:'Botões A e B',pb_from:'Reutilize',coord:'E20/E25',pb_to:'montagem anterior',coord2:' ',note:'Mesmos botões dos experimentos anteriores'},
+    ],
+    code:`<span class="cm">// ═══════════════════════════════
+// PORTA XOR — Semana 05 ADS 2026
+// LED acende quando entradas DIFERENTES
+// ═══════════════════════════════</span>
+
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">btnA</span>   = <span class="cn">2</span>;
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">btnB</span>   = <span class="cn">3</span>;
+<span class="ck">const</span> <span class="cv">int</span> <span class="cf">ledXOR</span> = <span class="cn">12</span>;
+
+<span class="ck">void</span> <span class="cf">setup</span>() {
+  <span class="cf">pinMode</span>(<span class="cv">btnA</span>,   <span class="cn">INPUT</span>);
+  <span class="cf">pinMode</span>(<span class="cv">btnB</span>,   <span class="cn">INPUT</span>);
+  <span class="cf">pinMode</span>(<span class="cv">ledXOR</span>, <span class="cn">OUTPUT</span>);
+  <span class="cf">Serial.begin</span>(<span class="cn">9600</span>);
+}
+
+<span class="ck">void</span> <span class="cf">loop</span>() {
+  <span class="cv">int</span> <span class="cf">A</span> = <span class="cf">digitalRead</span>(<span class="cv">btnA</span>);
+  <span class="cv">int</span> <span class="cf">B</span> = <span class="cf">digitalRead</span>(<span class="cv">btnB</span>);
+
+  <span class="cm">// ┌─────────────────────────────────────┐
+  // │  PORTA XOR: S = A ⊕ B              │
+  // │  Saída 1 quando A ≠ B              │
+  // │  C++ não tem operador XOR lógico   │
+  // │  Usamos: (A || B) &amp;&amp; !(A &amp;&amp; B)    │
+  // └─────────────────────────────────────┘</span>
+  <span class="cv">int</span> <span class="cf">S_XOR</span> = (A || B) &amp;&amp; !(A &amp;&amp; B);
+  <span class="cm">// Alternativa com operador ^ (XOR bit a bit):</span>
+  <span class="cm">// int S_XOR = A ^ B;</span>
+
+  <span class="cf">digitalWrite</span>(<span class="cv">ledXOR</span>, <span class="cv">S_XOR</span>);
+
+  <span class="cf">Serial.print</span>(<span class="cs">"A="</span>); <span class="cf">Serial.print</span>(<span class="cv">A</span>);
+  <span class="cf">Serial.print</span>(<span class="cs">"  B="</span>); <span class="cf">Serial.print</span>(<span class="cv">B</span>);
+  <span class="cf">Serial.print</span>(<span class="cs">"  XOR="</span>); <span class="cf">Serial.println</span>(<span class="cv">S_XOR</span>);
+  <span class="cf">delay</span>(<span class="cn">100</span>);
+}`,
+    truthCheck:[
+      {state:'A=0, B=0 (nenhum botão)',A:0,B:0,expected:0,hint:'XOR: iguais → 0. LED apagado.'},
+      {state:'A=1, B=0 (só botão A)',A:1,B:0,expected:1,hint:'XOR: diferentes (1≠0) → LED ACENDE!'},
+      {state:'A=0, B=1 (só botão B)',A:0,B:1,expected:1,hint:'XOR: diferentes (0≠1) → LED ACENDE!'},
+      {state:'A=1, B=1 (ambos)',A:1,B:1,expected:0,hint:'XOR: iguais (1=1) → 0. LED apagado.'},
+    ]
+  }
+];
+
+function buildExps(){
+  const acc=document.getElementById('exp-acc');
+  EXPS.forEach((e,ei)=>{
+    const div=document.createElement('div');
+    div.className='step-item';
+    div.id='si-'+e.id;
+
+    // wire table
+    let wtHtml='<div class="stitle">📍 Montagem Exata no Protoboard</div>';
+    wtHtml+=`<div class="ibox" style="margin-bottom:10px">💡 <b>Leia com atenção:</b> Cada linha indica <b>exatamente onde</b> conectar no protoboard. Use a coordenada (<b>letra+número</b>) como endereço do furo.</div>`;
+    wtHtml+='<div style="overflow-x:auto"><table class="wire-table"><thead><tr><th>Componente</th><th>De (pino/perna)</th><th>Posição no Protoboard</th><th>Para (outro pino)</th><th>Posição no Protoboard</th><th>Observação</th></tr></thead><tbody>';
+    e.components.forEach(w=>{
+      wtHtml+=`<tr>
+        <td><span class="component">${w.c}</span></td>
+        <td style="color:var(--text)">${w.pb_from}</td>
+        <td><span class="coord">${w.coord}</span></td>
+        <td style="color:var(--text)">${w.pb_to}</td>
+        <td><span class="coord">${w.coord2}</span></td>
+        <td style="color:var(--text2);font-size:.76em">${w.note}</td>
+      </tr>`;
+    });
+    wtHtml+='</tbody></table></div>';
+
+    // truth check
+    let tcHtml=`<div class="stitle" style="margin-top:16px">✅ Verificação — Teste o Circuito Fisicamente</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px">`;
+    e.truthCheck.forEach((t,ti)=>{
+      const Bval = t.B===-1?'—':t.B;
+      const exLabel = t.expected===1?'💡 LED ACENDE':'⭕ LED APAGADO';
+      const exColor = t.expected===1?'var(--green)':'var(--red)';
+      tcHtml+=`<div style="background:rgba(0,0,0,.3);border:1px solid var(--border);padding:12px;border-radius:3px;border-top:3px solid ${exColor}">
+        <div style="font-family:IBM Plex Mono,monospace;font-size:.72em;color:var(--text2);margin-bottom:6px">Teste ${ti+1}</div>
+        <div style="font-size:.8em;color:var(--text);font-weight:600;margin-bottom:4px">${t.state}</div>
+        <div style="font-family:IBM Plex Mono,monospace;font-size:.75em;margin:4px 0">A=<b style="color:${t.A?'var(--green)':'var(--red)'}">${t.A}</b>${t.B!==-1?' · B=<b style="color:'+(t.B?'var(--green)':'var(--red)')+'">'+t.B+'</b>':''}</div>
+        <div style="font-family:IBM Plex Mono,monospace;font-size:.82em;color:${exColor};font-weight:700">${exLabel}</div>
+        <div style="font-size:.72em;color:var(--text2);margin-top:4px">${t.hint}</div>
+      </div>`;
+    });
+    tcHtml+='</div>';
+
+    div.innerHTML=`
+    <div class="step-head" onclick="toggleExp('si-${e.id}','${e.achId}',${e.xp})">
+      <div class="step-num">${ei+1}</div>
+      <div class="step-info">
+        <div class="step-title">${e.title}</div>
+        <div class="step-meta">${e.meta}</div>
+      </div>
+      <span class="step-xp">+${e.xp} XP</span>
+      <span class="step-arrow">▼</span>
+    </div>
+    <div class="step-body">
+      <div style="background:rgba(0,0,0,.3);border-left:3px solid ${e.color};padding:12px 16px;margin-bottom:14px;font-size:.85em;color:var(--text2);line-height:1.65">
+        🧠 <b style="color:${e.color}">Teoria:</b> ${e.theory}
+      </div>
+
+      ${wtHtml}
+
+      <div class="stitle" style="margin-top:16px">💻 Código Arduino — Copie e faça Upload</div>
+      <div class="code-block">
+        <button class="code-copy" onclick="copyCode(this)">📋 Copiar</button>
+        <pre id="code-${e.id}">${e.code}</pre>
+      </div>
+
+      ${tcHtml}
+
+      <button class="complete-btn" id="btn-${e.id}" onclick="completeExp('${e.id}','${e.achId}',${e.xp},this)">
+        ✅ MARCAR EXPERIMENTO ${ei+1} COMO CONCLUÍDO (+${e.xp} XP)
+      </button>
+    </div>`;
+    acc.appendChild(div);
+  });
+}
+
+function toggleExp(id, achId, xp){
+  const el=document.getElementById(id);
+  const wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.step-item').forEach(s=>s.classList.remove('open'));
+  if(!wasOpen){
+    el.classList.add('open');
+    addXP(2,'Experimento aberto!','🔬');
+    unlock('ach-pin');
+  }
+}
+
+function completeExp(id, achId, xpVal, btn){
+  if(btn.disabled)return;
+  btn.disabled=true;
+  btn.textContent='✅ Concluído!';
+  btn.style.borderColor='var(--green)';
+  addXP(xpVal,'Experimento concluído!','🔬');
+  unlock(achId);
+  acts++;updateProg();
+  const idx=EXPS.findIndex(e=>e.id===id);
+  if(idx>=0) expDone[idx]=true;
+  if(expDone.every(Boolean)) { addXP(50,'Todos os experimentos!','🏆'); }
+  updateHUD();
+}
+
+function copyCode(btn){
+  const pre=btn.nextElementSibling;
+  const text=pre.innerText||pre.textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='✅ Copiado!';
+    setTimeout(()=>btn.textContent='📋 Copiar',2000);
+  }).catch(()=>{
+    btn.textContent='⚠️ Manual';
+  });
+}
+
+// ── QUIZ ──
+const QS=[
+  {q:'O que acontece se você conectar um LED diretamente entre 5V e GND no Arduino SEM resistor?',
+   opts:['O LED brilha mais forte','O LED e/ou o pino pode queimar (corrente excessiva)','Nada de especial','O Arduino reinicia'],
+   c:1,xp:10,fb:'✅ Sem resistor, a corrente é limitada apenas pela resistência interna do LED (~20–30Ω), causando corrente > 100mA — muito acima dos 40mA máximos do pino. O LED e o pino podem queimar.'},
+  {q:'Para um LED vermelho (Vf=2.0V) alimentado por 5V do Arduino, qual resistor escolher para ~15mA?',
+   opts:['100Ω','220Ω','1kΩ','10kΩ'],
+   c:1,xp:10,fb:'✅ R = (5V − 2V) / 15mA = 3V / 0.015A = 200Ω. O mais próximo disponível é 220Ω, que é a escolha correta e segura.'},
+  {q:'No protoboard, os furos E5 e F5 estão conectados internamente?',
+   opts:['Sim, mesma coluna conecta tudo','Não — o canal central separa E5 de F5','Sim, mas apenas nas trilhas laterais','Depende do fabricante'],
+   c:1,xp:10,fb:'✅ O canal central (sulco no meio) ISOLA a metade superior (A–E) da inferior (F–J) na mesma coluna. E5 e F5 NÃO estão conectados. A1 a E1 SIM estão conectados entre si.'},
+  {q:'Qual pino do Arduino UNO NÃO deve ser usado como saída digital simples para não afetar a comunicação serial?',
+   opts:['D4 e D5','D0 (RX) e D1 (TX)','D9 e D10','A0 e A1'],
+   c:1,xp:10,fb:'✅ D0 (RX) e D1 (TX) são usados pela comunicação serial UART com o computador. Conectar componentes nesses pinos pode impedir o upload de código e a comunicação com o Serial Monitor.'},
+  {q:'No código Arduino, qual função configura um pino como ENTRADA?',
+   opts:['digitalWrite(pino, INPUT)','analogRead(pino)','pinMode(pino, INPUT)','setInput(pino)'],
+   c:2,xp:10,fb:'✅ pinMode(pino, INPUT) configura o pino como entrada. Para saída: pinMode(pino, OUTPUT). Para leitura: digitalRead(pino). Para escrita: digitalWrite(pino, HIGH/LOW).'},
+  {q:'O resistor de pull-down (10kΩ entre o pino e o GND) nos botões serve para:',
+   opts:['Aumentar a corrente no botão','Garantir que a entrada leia LOW (0) quando o botão está solto','Proteger o LED','Limitar a corrente para 10mA'],
+   c:1,xp:10,fb:'✅ Sem pull-down, o pino fica "flutuando" — lê valores aleatórios entre HIGH e LOW. O pull-down conecta o pino ao GND garantindo leitura estável em LOW quando o botão não está pressionado.'},
+  {q:'Qual é o código correto em C++ (Arduino) para implementar a porta XOR usando operadores bit a bit?',
+   opts:['int s = A && B;','int s = A || B;','int s = A ^ B;','int s = A ~^ B;'],
+   c:2,xp:10,fb:'✅ O operador ^ em C++ é o XOR bit a bit. Para inteiros de 1 bit (0 ou 1), A ^ B funciona como XOR lógico. Para XOR lógico explícito: (A || B) && !(A && B).'},
+  {q:'O pino D13 do Arduino UNO tem uma característica especial diferente dos outros pinos digitais. Qual é?',
+   opts:['É o único com suporte a 12V','Tem um LED embutido na placa (LED L)','É o único PWM','Tem proteção contra curto-circuito'],
+   c:1,xp:10,fb:'✅ D13 tem um LED integrado na placa (LED L). Quando você faz digitalWrite(13, HIGH), o LED L acende. Isso é ótimo para testes rápidos sem montar circuito, mas significa que o pino tem resistência interna adicional.'},
+];
+
+function buildQuiz(){
+  const w=document.getElementById('quiz-wrap');
+  let h='';
+  QS.forEach((q,qi)=>{
+    const opts=q.opts.map((o,oi)=>`<button class="qopt" onclick="ansQ(${qi},${oi},${q.c})">${String.fromCharCode(65+oi)}) ${o}</button>`).join('');
+    h+=`<div class="qcard${qi===0?' active':''}" id="qc-${qi}">
+      <h4>Q${qi+1}. ${q.q}</h4>
+      <div class="qopts">${opts}</div>
+      <div class="q-fb" id="qfb-${qi}"></div>
+      <div class="q-next" id="qnx-${qi}">
+        <button class="q-next-btn" onclick="${qi<QS.length-1?`nextQ(${qi+1})`:'showResult()'}">${qi<QS.length-1?'Próxima →':'Ver Resultado ✨'}</button>
+      </div>
+    </div>`;
+  });
+  h+=`<div class="q-result" id="q-result">
+    <span class="q-score-big" id="q-score-big">0/8</span>
+    <div class="q-msg" id="q-msg"></div>
+    <div class="q-xp-e" id="q-xp-txt"></div>
+    <button class="q-restart" onclick="restartQuiz()">↺ Tentar Novamente</button>
+  </div>`;
+  w.innerHTML=h;
+}
+
+let qCorrect=0,qAnswers={};
+function ansQ(qi,chosen,correct){
+  const card=document.getElementById('qc-'+qi);
+  card.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  card.querySelectorAll('.qopt')[chosen].classList.add(chosen===correct?'correct':'wrong');
+  if(chosen!==correct) card.querySelectorAll('.qopt')[correct].classList.add('correct');
+  const fb=document.getElementById('qfb-'+qi);
+  const ok=chosen===correct;
+  fb.textContent=ok?QS[qi].fb:'❌ Incorreto. '+QS[qi].fb;
+  fb.className='q-fb show '+(ok?'ok':'fail');
+  document.getElementById('qnx-'+qi).classList.add('show');
+  if(ok){qCorrect++;addXP(QS[qi].xp,'Resposta correta!','🎯');streak++;}
+  else streak=Math.max(0,streak-1);
+  qAnswers[qi]=ok;
+  document.getElementById('q-fill').style.width=((qi+1)/QS.length*100)+'%';
+  document.getElementById('q-cnt').textContent=(qi+1)+'/'+QS.length;
+  updateHUD();
+}
+function nextQ(n){
+  document.querySelector('.qcard.active').classList.remove('active');
+  document.getElementById('qc-'+n).classList.add('active');
+}
+function showResult(){
+  document.querySelector('.qcard.active').classList.remove('active');
+  const r=document.getElementById('q-result');
+  r.classList.add('show');
+  document.getElementById('q-score-big').textContent=qCorrect+'/'+QS.length;
+  const msgs=['📚 Revise o material e tente novamente!','⚡ Está progredindo!','🔬 Bom domínio técnico!','🏆 Excelente! Hardwareiro de respeito!','💎 Perfeito! Arduino Master!'];
+  document.getElementById('q-msg').textContent=msgs[Math.min(Math.floor(qCorrect/2),4)];
+  const earned=Object.keys(qAnswers).filter(k=>qAnswers[k]).reduce((a,k)=>a+QS[+k].xp,0);
+  document.getElementById('q-xp-txt').textContent='+'+earned+' XP conquistados';
+  if(qCorrect>=6) unlock('ach-quiz');
+  acts++;updateProg();updateHUD();
+}
+function restartQuiz(){
+  qCorrect=0;qAnswers={};
+  document.getElementById('q-result').classList.remove('show');
+  document.getElementById('q-fill').style.width='0%';
+  document.getElementById('q-cnt').textContent='0/'+QS.length;
+  QS.forEach((_,qi)=>{
+    const c=document.getElementById('qc-'+qi);
+    c.classList.toggle('active',qi===0);
+    c.querySelectorAll('.qopt').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+    const fb=c.querySelector('.q-fb');if(fb){fb.className='q-fb';fb.textContent='';}
+    const nx=c.querySelector('.q-next');if(nx)nx.classList.remove('show');
+  });updateHUD();
+}
+
+// ── PIN TOOLTIP ──
+function showPinTip(el,name,fn){
+  const tip=document.getElementById('pin-tooltip2');
+  tip.innerHTML=`<div class="pt-name">${name}</div><div class="pt-fn">${fn}</div>`;
+  tip.style.display='block';
+  const rect=el.getBoundingClientRect();
+  tip.style.left=(rect.left+window.scrollX+20)+'px';
+  tip.style.top=(rect.top+window.scrollY-10)+'px';
+  tip.style.maxWidth='240px';
+  unlock('ach-pin');
+  addXP(1,'Pino explorado!','🤖');
+  setTimeout(()=>tip.style.display='none',3500);
+}
+
+// ── GAMIFICATION ──
+function confirmMaterials(){
+  const btn=document.getElementById('btn-mat');
+  if(btn.disabled)return;
+  btn.disabled=true;btn.textContent='✅ Materiais Confirmados!';
+  btn.style.borderColor='var(--green)';
+  addXP(10,'Componentes prontos!','🧰');
+  unlock('ach-mat');
+  acts++;updateProg();updateHUD();
+}
+function addXP(amount,msg,icon){
+  xp+=amount;updateHUD();
+  toast(icon||'⚡','+'+amount+' XP',msg);
+}
+function toast(icon,title,msg){
+  document.getElementById('t-ico').textContent=icon;
+  document.getElementById('t-title').textContent=title;
+  document.getElementById('t-msg').textContent=msg;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt=setTimeout(()=>t.classList.remove('show'),3000);
+}
+function unlock(id){
+  const el=document.getElementById(id);
+  if(el&&!el.classList.contains('unlocked')){
+    el.classList.add('unlocked');
+    badges++;updateHUD();
+    const name=el.querySelector('.ach-name').textContent;
+    toast('🏆','Badge!',name);
+  }
+}
+function updateHUD(){
+  document.getElementById('hud-xp').textContent=xp;
+  document.getElementById('hud-streak').textContent=streak;
+  document.getElementById('hud-badges').textContent=badges;
+  const pct=Math.min(Math.round(xp/TOTAL_XP*100),100);
+  document.getElementById('hud-bar').style.width=pct+'%';
+  document.getElementById('hud-pct').textContent=pct+'%';
+  const lvls=[[0,'Iniciante'],[50,'Montador'],[150,'Programador'],[280,'Técnico'],[400,'Engenheiro'],[500,'Arduino Master']];
+  let lv=lvls[0][1];
+  for(const [t,n] of lvls){if(xp>=t)lv=n;}
+  document.getElementById('hud-level').textContent=lv;
+  updateProg();
+}
+function updateProg(){
+  const total=10;const done=Math.min(acts,total);
+  document.getElementById('prog-fill').style.width=Math.round(done/total*100)+'%';
+  document.getElementById('prog-txt').textContent=done+' / '+total+' atividades';
+}
+
+// ── INIT ──
+buildMaterials();
+buildObjs();
+buildExps();
+buildQuiz();
+setTimeout(()=>{
+  unlock('ach-start');
+  addXP(5,'Laboratório Arduino iniciado!','🚀');
+  acts++;updateProg();
+},800);
+</script>
+</body>
+</html>
