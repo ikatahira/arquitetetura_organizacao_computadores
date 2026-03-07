@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semana 03 – Portas Lógicas e Álgebra Booleana | ADS 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a0a;--bg2:#0a0f0f;--bg3:#0f1a14;--card:#0d1a12;
+  --border:#1a3320;--green:#00ff88;--green2:#00cc66;--green3:#00ff88;
+  --amber:#f59e0b;--red:#ef4444;--blue:#38bdf8;--purple:#a78bfa;
+  --text:#c8ffd4;--text2:#6b9e78;--white:#ffffff;
+  --glow:0 0 20px rgba(0,255,136,.25);--glow2:0 0 30px rgba(0,255,136,.4);
+  --scanline:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;position:relative}
+body::before{content:'';position:fixed;inset:0;background:var(--scanline);pointer-events:none;z-index:0;opacity:.4}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+/* HEADER */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);box-shadow:0 0 40px rgba(0,255,136,.15);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1100px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.boot-badge{font-family:'IBM Plex Mono',monospace;background:var(--green3);color:var(--bg);border-radius:4px;padding:4px 12px;font-size:.78em;font-weight:700;letter-spacing:.08em;white-space:nowrap;box-shadow:var(--glow)}
+.header-text{flex:1}
+.header-text h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(1em,2.5vw,1.5em);font-weight:700;color:var(--green3);text-shadow:0 0 20px rgba(0,255,136,.5)}
+.header-text p{color:var(--text2);font-size:.82em;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+.xp-chip{font-family:'IBM Plex Mono',monospace;background:rgba(0,255,136,.1);border:1px solid var(--green2);color:var(--green);border-radius:4px;padding:4px 12px;font-size:.8em;font-weight:700;white-space:nowrap}
+.progress-bar-wrap{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 32px}
+.progress-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.progress-label{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2);white-space:nowrap}
+.progress-track{flex:1;height:6px;background:var(--bg3);border:1px solid var(--border);overflow:hidden}
+.progress-fill{height:100%;width:15%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pfill .8s ease-out forwards}
+@keyframes pfill{from{width:0}to{width:15%}}
+.progress-steps{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2);white-space:nowrap}
+.container{max-width:1100px;margin:0 auto;padding:32px;position:relative;z-index:1}
+
+/* MISSION */
+.mission-card{background:var(--card);border:1px solid var(--green2);padding:32px;margin-bottom:24px;box-shadow:var(--glow),inset 0 0 60px rgba(0,255,136,.03);position:relative;overflow:hidden}
+.mission-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.mission-card::after{content:'[MISSÃO 03]';position:absolute;right:28px;top:28px;font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--text2);letter-spacing:.15em}
+.mission-tag{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--green2);letter-spacing:.12em;margin-bottom:12px}
+.mission-card h2{font-family:'IBM Plex Mono',monospace;font-size:1.6em;color:var(--green3);margin-bottom:10px;text-shadow:0 0 15px rgba(0,255,136,.3)}
+.mission-card p{color:var(--text2);font-size:.95em;max-width:680px}
+.mission-rewards{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.reward-chip{font-family:'IBM Plex Mono',monospace;font-size:.78em;font-weight:600;padding:4px 12px;border:1px solid}
+.reward-chip.xp{color:var(--amber);border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.08)}
+.reward-chip.badge{color:var(--purple);border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.08)}
+.reward-chip.time{color:var(--blue);border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.08)}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);padding:28px;margin-bottom:20px;transition:border-color .2s,box-shadow .2s;animation:fadeIn .35s ease-out both;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--green2)}
+.card:hover{border-color:var(--green2);box-shadow:var(--glow)}
+.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.24s}.card:nth-child(5){animation-delay:.32s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-icon{font-size:1.3em}
+.card-title{font-family:'IBM Plex Mono',monospace;font-size:1.1em;color:var(--green3);font-weight:700}
+.card-subtitle{font-size:.8em;color:var(--text2);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+
+/* OBJ */
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.obj-item{background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);padding:12px 14px;display:flex;gap:10px;align-items:flex-start;transition:background .2s}
+.obj-item:hover{background:rgba(0,255,136,.08)}
+.obj-bullet{font-family:'IBM Plex Mono',monospace;color:var(--green);font-size:.85em;margin-top:2px;flex-shrink:0}
+.obj-text{font-size:.88em;color:var(--text);font-weight:500}
+
+/* TOPIC */
+.topic-block{background:var(--bg3);padding:20px 22px;margin-bottom:14px;border-left:3px solid var(--green2);transition:border-color .2s}
+.topic-block:hover{border-color:var(--green3)}
+.topic-block h3{font-family:'IBM Plex Mono',monospace;color:var(--green);font-size:.95em;font-weight:700;margin-bottom:10px;letter-spacing:.02em}
+.topic-block p{color:var(--text2);font-size:.9em;line-height:1.8;margin-bottom:8px}
+.topic-block p:last-child{margin-bottom:0}
+.info-box{background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.25);padding:12px 14px;margin-top:10px;font-size:.86em;color:#7dd3fc}
+.info-box strong{color:var(--blue)}
+.warn-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);padding:12px 14px;margin-top:10px;font-size:.86em;color:#fde68a}
+.warn-box strong{color:var(--amber)}
+
+/* GATE GRID */
+.gate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:12px}
+.gate-card{background:rgba(0,0,0,.4);border:1px solid var(--border);padding:18px;transition:border-color .2s,box-shadow .2s}
+.gate-card:hover{border-color:var(--green2);box-shadow:var(--glow)}
+.gate-name{font-family:'IBM Plex Mono',monospace;font-size:1em;color:var(--green3);font-weight:700;margin-bottom:4px}
+.gate-symbol{font-family:'IBM Plex Mono',monospace;font-size:1.3em;color:var(--amber);font-weight:700;margin-bottom:6px}
+.gate-expr{font-family:'IBM Plex Mono',monospace;font-size:.82em;color:var(--blue);margin-bottom:8px}
+.gate-desc{font-size:.82em;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.truth-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.78em}
+.truth-table th{background:rgba(0,255,136,.1);color:var(--green);padding:5px 10px;border:1px solid var(--border);text-align:center}
+.truth-table td{padding:4px 10px;border:1px solid var(--border);text-align:center;color:var(--text2)}
+.truth-table .t1{color:var(--green3);font-weight:700}
+.truth-table .t0{color:var(--red)}
+
+/* BOOLEAN RULES */
+.bool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:12px}
+.bool-rule{background:rgba(0,0,0,.4);border:1px solid var(--border);padding:12px 14px;font-family:'IBM Plex Mono',monospace}
+.bool-rule .expr{font-size:.9em;color:var(--green3);margin-bottom:4px;font-weight:700}
+.bool-rule .name{font-size:.75em;color:var(--text2)}
+.bool-rule .example{font-size:.78em;color:var(--blue);margin-top:4px}
+
+/* INTERACTIVE GATE SIMULATOR */
+.simulator{background:rgba(0,0,0,.6);border:1px solid var(--green2);padding:22px;margin-top:14px;box-shadow:var(--glow)}
+.sim-title{font-family:'IBM Plex Mono',monospace;font-size:.78em;color:var(--green2);letter-spacing:.1em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sim-pulse{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.sim-gate-select{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.gate-btn{font-family:'IBM Plex Mono',monospace;font-size:.75em;font-weight:700;padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;letter-spacing:.05em;transition:all .2s}
+.gate-btn:hover,.gate-btn.active{background:var(--green);color:var(--bg);border-color:var(--green);box-shadow:var(--glow)}
+.sim-body{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+.sim-inputs{display:flex;flex-direction:column;gap:12px}
+.input-row{display:flex;align-items:center;gap:12px}
+.input-label{font-family:'IBM Plex Mono',monospace;font-size:.85em;color:var(--text2);min-width:24px}
+.toggle-btn{width:60px;height:32px;border:1px solid var(--border);background:rgba(239,68,68,.2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:.8em;font-weight:700;color:var(--red);transition:all .2s;letter-spacing:.05em}
+.toggle-btn.on{background:rgba(0,255,136,.2);border-color:var(--green2);color:var(--green);box-shadow:0 0 8px rgba(0,255,136,.3)}
+.sim-output{display:flex;flex-direction:column;align-items:center;gap:10px}
+.output-lamp{width:70px;height:70px;border-radius:50%;border:2px solid var(--border);background:rgba(239,68,68,.1);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:.8em;color:var(--red);font-weight:700;transition:all .3s}
+.output-lamp.on{background:rgba(0,255,136,.2);border-color:var(--green);color:var(--green);box-shadow:0 0 20px rgba(0,255,136,.5),0 0 40px rgba(0,255,136,.2)}
+.output-label{font-family:'IBM Plex Mono',monospace;font-size:.75em;color:var(--text2);text-align:center}
+.sim-expression{font-family:'IBM Plex Mono',monospace;font-size:.85em;color:var(--blue);margin-top:12px;padding:8px 12px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.2);text-align:center}
+.sim-tt{margin-top:14px}
+.sim-tt-title{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2);letter-spacing:.08em;margin-bottom:6px}
+.sim-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.78em}
+.sim-table th{background:rgba(0,255,136,.1);color:var(--green);padding:6px 12px;border:1px solid var(--border);text-align:center}
+.sim-table td{padding:5px 12px;border:1px solid var(--border);text-align:center;color:var(--text2);transition:background .2s}
+.sim-table tr.active-row td{background:rgba(0,255,136,.08);color:var(--green3)}
+.sim-table .out1{color:var(--green3);font-weight:700}
+.sim-table .out0{color:var(--red)}
+
+/* TRUTH TABLE BUILDER */
+.tt-builder{background:rgba(0,0,0,.5);border:1px solid var(--green2);padding:20px;margin-top:14px}
+.ttb-title{font-family:'IBM Plex Mono',monospace;font-size:.78em;color:var(--green2);letter-spacing:.1em;margin-bottom:14px}
+.ttb-expr-input{background:var(--bg3);border:1px solid var(--border);color:var(--green3);font-family:'IBM Plex Mono',monospace;font-size:.9em;padding:8px 12px;width:100%;outline:none;margin-bottom:10px;transition:border-color .2s}
+.ttb-expr-input:focus{border-color:var(--green2)}
+.ttb-generate-btn{background:var(--green);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:.82em;font-weight:700;padding:8px 18px;border:none;cursor:pointer;letter-spacing:.05em;transition:all .2s;margin-bottom:14px}
+.ttb-generate-btn:hover{box-shadow:var(--glow2)}
+.ttb-output{font-family:'IBM Plex Mono',monospace;font-size:.82em}
+.ttb-error{color:var(--red);font-size:.82em;font-family:'IBM Plex Mono',monospace;margin-bottom:8px}
+
+/* EXERCÍCIOS */
+.quest-card{background:var(--bg3);border:1px solid var(--border);padding:22px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.quest-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--green),var(--green2))}
+.quest-card:hover{border-color:var(--green2);box-shadow:var(--glow)}
+.quest-header{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.quest-num{font-family:'IBM Plex Mono',monospace;background:var(--green);color:var(--bg);width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1em;flex-shrink:0;box-shadow:var(--glow)}
+.quest-info{flex:1}
+.quest-title{font-family:'IBM Plex Mono',monospace;font-size:.98em;font-weight:700;color:var(--green3);margin-bottom:5px}
+.quest-tags{display:flex;gap:6px;flex-wrap:wrap}
+.qtag{font-family:'IBM Plex Mono',monospace;font-size:.72em;font-weight:600;padding:2px 8px;border:1px solid var(--border);color:var(--text2)}
+.qtag.xp{color:var(--amber);border-color:rgba(245,158,11,.4)}.qtag.time{color:var(--blue);border-color:rgba(56,189,248,.3)}
+.quest-desc{color:var(--text2);font-size:.88em;line-height:1.7;margin-bottom:12px}
+.steps-label{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--green2);letter-spacing:.1em;margin-bottom:8px;font-weight:700}
+.steps-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.steps-list li{display:flex;gap:10px;align-items:flex-start;font-size:.85em;color:var(--text2);background:rgba(0,0,0,.25);padding:7px 11px;border:1px solid rgba(0,255,136,.06)}
+.step-n{font-family:'IBM Plex Mono',monospace;color:var(--green2);font-size:.8em;font-weight:700;flex-shrink:0;margin-top:1px;min-width:20px}
+.tip-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);padding:9px 12px;font-size:.82em;color:#fde68a;margin-top:10px;display:flex;gap:8px}
+.tip-box::before{content:'//';font-family:'IBM Plex Mono',monospace;color:var(--amber);flex-shrink:0}
+.acc-toggle{width:100%;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.2);padding:9px 12px;color:var(--green2);font-family:'IBM Plex Mono',monospace;font-size:.78em;font-weight:700;cursor:pointer;text-align:left;letter-spacing:.05em;margin-top:10px;transition:background .2s}
+.acc-toggle:hover{background:rgba(0,255,136,.1)}
+.acc-content{display:none;margin-top:6px}.acc-content.open{display:block}
+.rubrica-table{width:100%;border-collapse:collapse;font-size:.83em;margin-top:8px}
+.rubrica-table th{background:rgba(0,255,136,.1);color:var(--green);font-family:'IBM Plex Mono',monospace;padding:8px 12px;text-align:left;font-weight:700;border-bottom:1px solid var(--green2);letter-spacing:.05em}
+.rubrica-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.rubrica-table tr:last-child td{border-bottom:none}
+.rubrica-table tr:hover td{background:rgba(0,255,136,.03)}
+.sb{display:inline;padding:1px 6px;font-family:'IBM Plex Mono',monospace;font-size:.85em;font-weight:700}
+.sb10{color:#34d399;background:rgba(52,211,153,.15)}.sb7{color:#fbbf24;background:rgba(251,191,36,.15)}.sb4{color:#f87171;background:rgba(248,113,113,.15)}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.res-card{background:var(--bg3);border:1px solid var(--border);padding:16px;transition:border-color .2s,transform .15s}
+.res-card:hover{border-color:var(--green2);transform:translateY(-2px)}
+.res-icon{font-size:1.4em;margin-bottom:6px}
+.res-title{font-family:'IBM Plex Mono',monospace;font-size:.82em;font-weight:700;color:var(--green3);margin-bottom:3px}
+.res-desc{font-size:.78em;color:var(--text2)}
+.nav-bar{background:var(--card);border:1px solid var(--border);padding:14px 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.nav-btn{padding:9px 18px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.8em;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px;border:1px solid;letter-spacing:.03em}
+.nav-btn-primary{background:var(--green);color:var(--bg);border-color:var(--green);box-shadow:var(--glow)}
+.nav-btn-primary:hover{box-shadow:var(--glow2);transform:translateY(-1px)}
+.nav-btn-secondary{background:transparent;color:var(--text2);border-color:var(--border)}
+.nav-btn-secondary:hover{border-color:var(--green2);color:var(--green2)}
+.nav-btn-accent{background:rgba(52,211,153,.15);color:#34d399;border-color:rgba(52,211,153,.4)}
+.nav-btn-accent:hover{background:rgba(52,211,153,.25)}
+.nav-spacer{flex:1}
+@media(max-width:768px){.container{padding:16px}.card,.mission-card{padding:18px}.header-inner{padding:10px 16px}.sim-body{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <span class="boot-badge">▶ SEMANA_03</span>
+    <div class="header-text">
+      <h1>LOGIC: Portas Lógicas e Álgebra Booleana</h1>
+      <p>// Arquitetura e Organização de Computadores · ADS 2026</p>
+    </div>
+    <span class="xp-chip">★ 300 XP</span>
+  </div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-inner">
+    <span class="progress-label">PROGRESS:</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="progress-steps">03 / 20</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <nav class="nav-bar">
+    <a href="arquitetura_semana02_aula.html" class="nav-btn nav-btn-secondary">◀ ANTERIOR</a>
+    <a href="index_arquitetura.html" class="nav-btn nav-btn-secondary">⊞ ÍNDICE</a>
+    <a href="arquitetura_semana03_guia.html" class="nav-btn nav-btn-accent">✎ GUIA</a>
+    <span class="nav-spacer"></span>
+    <a href="arquitetura_semana04_aula.html" class="nav-btn nav-btn-primary">PRÓXIMA ▶</a>
+  </nav>
+
+  <div class="mission-card">
+    <div class="mission-tag">// MÓDULO 1 · FUNDAMENTOS DA ARQUITETURA</div>
+    <h2>LOGIC: Portas Lógicas e Álgebra Booleana</h2>
+    <p>Portas lógicas são os átomos da computação digital. Tudo que um processador faz — somar, comparar, decidir — se reduz a combinações de AND, OR e NOT. Entender como elas funcionam é a diferença entre um desenvolvedor que usa hardware e um que entende hardware. Nesta missão você vai simular, construir e analisar circuitos reais.</p>
+    <div class="mission-rewards">
+      <span class="reward-chip xp">★ +300 XP</span>
+      <span class="reward-chip badge">◈ Badge: Logic Designer</span>
+      <span class="reward-chip time">⏱ 4h-aula</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⊛</span>
+      <div>
+        <div class="card-title">OBJETIVOS_DA_MISSÃO</div>
+        <div class="card-subtitle">// competências ao final desta semana</div>
+      </div>
+    </div>
+    <div class="obj-grid">
+      <div class="obj-item"><div class="obj-bullet">→</div><span class="obj-text">Identificar e operar todas as portas lógicas básicas e universais</span></div>
+      <div class="obj-item"><div class="obj-bullet">→</div><span class="obj-text">Construir e analisar tabelas verdade para expressões booleanas</span></div>
+      <div class="obj-item"><div class="obj-bullet">→</div><span class="obj-text">Aplicar leis da álgebra booleana para simplificar expressões</span></div>
+      <div class="obj-item"><div class="obj-bullet">→</div><span class="obj-text">Projetar um circuito lógico a partir de uma especificação funcional</span></div>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">▤</span>
+      <div>
+        <div class="card-title">CONTEÚDO</div>
+        <div class="card-subtitle">// interaja com os simuladores enquanto lê — não é opcional</div>
+      </div>
+    </div>
+
+    <div class="topic-block">
+      <h3>// 3.1 — O que são portas lógicas?</h3>
+      <p>George Boole formalizou em 1854 a álgebra que opera apenas com dois valores: verdadeiro e falso (1 e 0). Claude Shannon mostrou em 1937 que essa álgebra podia ser implementada com circuitos elétricos. O resultado: toda operação computacional se reduz a combinações de três operações fundamentais — AND, OR, NOT.</p>
+      <p>Fisicamente, uma porta lógica é um conjunto de transistores conectados de forma específica. Uma porta AND com dois transistores em série: ambos precisam conduzir para a saída ter tensão. Uma porta OR com transistores em paralelo: qualquer um conduzindo já aciona a saída.</p>
+      <div class="info-box"><strong>No Arduino e FPGA:</strong> Quando você escreve <code style="font-family:'IBM Plex Mono'">if (a && b)</code> em código, o compilador gera instruções que eventualmente acionam portas AND no processador. Em FPGAs, você pode desenhar as próprias portas lógicas explicitamente em VHDL ou Verilog.</div>
+    </div>
+
+    <!-- REFERÊNCIA DE PORTAS -->
+    <div class="topic-block">
+      <h3>// 3.2 — Referência das Portas Lógicas</h3>
+      <p>Clique nas portas abaixo para ver detalhes. Use o simulador interativo na seção 3.3 para testá-las.</p>
+      <div class="gate-grid">
+        <div class="gate-card">
+          <div class="gate-name">AND (E lógico)</div>
+          <div class="gate-symbol">A · B</div>
+          <div class="gate-expr">Saída = A AND B</div>
+          <div class="gate-desc">Saída é 1 SOMENTE quando TODAS as entradas são 1. Analogia: chaves em série — ambas precisam fechar para a luz acender.</div>
+          <table class="truth-table"><tr><th>A</th><th>B</th><th>S</th></tr><tr><td class="t0">0</td><td class="t0">0</td><td class="t0">0</td></tr><tr><td class="t0">0</td><td class="t1">1</td><td class="t0">0</td></tr><tr><td class="t1">1</td><td class="t0">0</td><td class="t0">0</td></tr><tr><td class="t1">1</td><td class="t1">1</td><td class="t1">1</td></tr></table>
+        </div>
+        <div class="gate-card">
+          <div class="gate-name">OR (OU lógico)</div>
+          <div class="gate-symbol">A + B</div>
+          <div class="gate-expr">Saída = A OR B</div>
+          <div class="gate-desc">Saída é 1 quando QUALQUER entrada for 1. Analogia: chaves em paralelo — basta uma fechar para a luz acender.</div>
+          <table class="truth-table"><tr><th>A</th><th>B</th><th>S</th></tr><tr><td class="t0">0</td><td class="t0">0</td><td class="t0">0</td></tr><tr><td class="t0">0</td><td class="t1">1</td><td class="t1">1</td></tr><tr><td class="t1">1</td><td class="t0">0</td><td class="t1">1</td></tr><tr><td class="t1">1</td><td class="t1">1</td><td class="t1">1</td></tr></table>
+        </div>
+        <div class="gate-card">
+          <div class="gate-name">NOT (Inversor)</div>
+          <div class="gate-symbol">Ā (A barra)</div>
+          <div class="gate-expr">Saída = NOT A</div>
+          <div class="gate-desc">Inverte a entrada. É a operação mais simples: 0 vira 1, 1 vira 0. Implementada por um único transistor em configuração inversora.</div>
+          <table class="truth-table"><tr><th>A</th><th>S</th></tr><tr><td class="t0">0</td><td class="t1">1</td></tr><tr><td class="t1">1</td><td class="t0">0</td></tr></table>
+        </div>
+        <div class="gate-card">
+          <div class="gate-name">NAND (NOT-AND)</div>
+          <div class="gate-symbol">Ā·B̄ = NOT(A·B)</div>
+          <div class="gate-expr">Saída = NOT (A AND B)</div>
+          <div class="gate-desc">Inverso da AND. <strong>Porta universal:</strong> qualquer circuito digital pode ser construído usando apenas portas NAND. É a mais usada em fabricação de chips (menor área de silício).</div>
+          <table class="truth-table"><tr><th>A</th><th>B</th><th>S</th></tr><tr><td class="t0">0</td><td class="t0">0</td><td class="t1">1</td></tr><tr><td class="t0">0</td><td class="t1">1</td><td class="t1">1</td></tr><tr><td class="t1">1</td><td class="t0">0</td><td class="t1">1</td></tr><tr><td class="t1">1</td><td class="t1">1</td><td class="t0">0</td></tr></table>
+        </div>
+        <div class="gate-card">
+          <div class="gate-name">NOR (NOT-OR)</div>
+          <div class="gate-symbol">NOT(A+B)</div>
+          <div class="gate-expr">Saída = NOT (A OR B)</div>
+          <div class="gate-desc">Inverso da OR. Também é <strong>porta universal</strong>. Toda a lógica original dos primeiros CPUs da Intel era construída com NOR.</div>
+          <table class="truth-table"><tr><th>A</th><th>B</th><th>S</th></tr><tr><td class="t0">0</td><td class="t0">0</td><td class="t1">1</td></tr><tr><td class="t0">0</td><td class="t1">1</td><td class="t0">0</td></tr><tr><td class="t1">1</td><td class="t0">0</td><td class="t0">0</td></tr><tr><td class="t1">1</td><td class="t1">1</td><td class="t0">0</td></tr></table>
+        </div>
+        <div class="gate-card">
+          <div class="gate-name">XOR (OU exclusivo)</div>
+          <div class="gate-symbol">A ⊕ B</div>
+          <div class="gate-expr">Saída = A XOR B</div>
+          <div class="gate-desc">Saída é 1 quando as entradas são <strong>diferentes</strong>. Fundamental em circuitos aritméticos (somador binário) e criptografia. Propriedade: A⊕A=0, A⊕0=A.</div>
+          <table class="truth-table"><tr><th>A</th><th>B</th><th>S</th></tr><tr><td class="t0">0</td><td class="t0">0</td><td class="t0">0</td></tr><tr><td class="t0">0</td><td class="t1">1</td><td class="t1">1</td></tr><tr><td class="t1">1</td><td class="t0">0</td><td class="t1">1</td></tr><tr><td class="t1">1</td><td class="t1">1</td><td class="t0">0</td></tr></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMULADOR INTERATIVO -->
+    <div class="topic-block">
+      <h3>// 3.3 — Simulador Interativo de Portas Lógicas</h3>
+      <p>Selecione uma porta, clique nos botões de entrada A e B para alternar entre 0 e 1, e observe a saída em tempo real. A linha ativa na tabela verdade é destacada automaticamente.</p>
+      <div class="simulator">
+        <div class="sim-title">
+          <div class="sim-pulse"></div>
+          SIMULADOR_PORTAS_LÓGICAS · clique nas entradas para alternar
+        </div>
+        <div class="sim-gate-select">
+          <button class="gate-btn active" onclick="setGate('AND')">AND</button>
+          <button class="gate-btn" onclick="setGate('OR')">OR</button>
+          <button class="gate-btn" onclick="setGate('NOT')">NOT</button>
+          <button class="gate-btn" onclick="setGate('NAND')">NAND</button>
+          <button class="gate-btn" onclick="setGate('NOR')">NOR</button>
+          <button class="gate-btn" onclick="setGate('XOR')">XOR</button>
+          <button class="gate-btn" onclick="setGate('XNOR')">XNOR</button>
+        </div>
+        <div class="sim-body">
+          <div>
+            <div class="sim-inputs" id="simInputs">
+              <div class="input-row">
+                <span class="input-label">A =</span>
+                <button class="toggle-btn" id="btnA" onclick="toggleInput('A')">0</button>
+              </div>
+              <div class="input-row" id="rowB">
+                <span class="input-label">B =</span>
+                <button class="toggle-btn" id="btnB" onclick="toggleInput('B')">0</button>
+              </div>
+            </div>
+            <div class="sim-expression" id="simExpr">S = A · B = 0 · 0 = 0</div>
+          </div>
+          <div class="sim-output">
+            <div class="output-lamp" id="outputLamp">0</div>
+            <div class="output-label" id="outputLabel">SAÍDA = OFF</div>
+          </div>
+        </div>
+        <div class="sim-tt">
+          <div class="sim-tt-title">// TABELA VERDADE · linha atual destacada</div>
+          <table class="sim-table" id="simTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÁLGEBRA BOOLEANA -->
+    <div class="topic-block">
+      <h3>// 3.4 — Álgebra Booleana: Leis Fundamentais</h3>
+      <p>A álgebra booleana permite simplificar expressões lógicas, reduzindo o número de portas em um circuito — menos portas = menor consumo de energia, menor área no chip, maior velocidade.</p>
+      <div class="bool-grid">
+        <div class="bool-rule"><div class="expr">A · 0 = 0 &nbsp;&nbsp; A · 1 = A</div><div class="name">// Lei do Elemento Nulo / Identidade AND</div></div>
+        <div class="bool-rule"><div class="expr">A + 0 = A &nbsp;&nbsp; A + 1 = 1</div><div class="name">// Lei do Elemento Nulo / Identidade OR</div></div>
+        <div class="bool-rule"><div class="expr">A · A = A &nbsp;&nbsp; A + A = A</div><div class="name">// Lei da Idempotência</div></div>
+        <div class="bool-rule"><div class="expr">A · Ā = 0 &nbsp;&nbsp; A + Ā = 1</div><div class="name">// Lei do Complemento</div></div>
+        <div class="bool-rule"><div class="expr">NOT(NOT A) = A</div><div class="name">// Lei da Dupla Negação</div></div>
+        <div class="bool-rule"><div class="expr">A·B = B·A &nbsp;&nbsp; A+B = B+A</div><div class="name">// Lei Comutativa</div></div>
+        <div class="bool-rule"><div class="expr">A(B+C) = AB + AC</div><div class="name">// Lei Distributiva AND sobre OR</div></div>
+        <div class="bool-rule"><div class="expr">A+(B·C) = (A+B)·(A+C)</div><div class="name">// Lei Distributiva OR sobre AND</div></div>
+        <div class="bool-rule"><div class="expr">NOT(A·B) = Ā + B̄</div><div class="name">// Teorema De Morgan (1)</div><div class="example">// NAND = OR das inversões</div></div>
+        <div class="bool-rule"><div class="expr">NOT(A+B) = Ā · B̄</div><div class="name">// Teorema De Morgan (2)</div><div class="example">// NOR = AND das inversões</div></div>
+        <div class="bool-rule"><div class="expr">A + A·B = A</div><div class="name">// Lei da Absorção</div><div class="example">// A já contém A·B</div></div>
+        <div class="bool-rule"><div class="expr">A · (A+B) = A</div><div class="name">// Lei da Absorção (2)</div></div>
+      </div>
+      <div class="warn-box"><strong>De Morgan na prática:</strong> NOT(A AND B) = (NOT A) OR (NOT B). Em código: <code style="font-family:'IBM Plex Mono'">!(a && b)</code> é equivalente a <code style="font-family:'IBM Plex Mono'">(!a || !b)</code>. Você usa isso toda vez que inverte uma condição composta em if-else!</div>
+    </div>
+
+    <!-- GERADOR DE TABELA VERDADE -->
+    <div class="topic-block">
+      <h3>// 3.5 — Gerador de Tabela Verdade</h3>
+      <p>Digite qualquer expressão booleana usando as variáveis A, B, C e os operadores: <code style="font-family:'IBM Plex Mono';color:var(--green)">AND</code>, <code style="font-family:'IBM Plex Mono';color:var(--green)">OR</code>, <code style="font-family:'IBM Plex Mono';color:var(--green)">NOT</code>, <code style="font-family:'IBM Plex Mono';color:var(--green)">XOR</code>. Parênteses são suportados. Use para verificar suas simplificações.</p>
+      <div class="tt-builder">
+        <div class="ttb-title">// GERADOR_TABELA_VERDADE · expressões com A, B, C</div>
+        <input class="ttb-expr-input" id="ttbExpr" placeholder="ex: (A AND B) OR (NOT C)  |  A XOR B  |  NOT(A AND B)" value="(A AND B) OR NOT C">
+        <div><button class="ttb-generate-btn" onclick="generateTT()">▶ GERAR TABELA</button></div>
+        <div id="ttbError" class="ttb-error" style="display:none"></div>
+        <div id="ttbOutput" class="ttb-output"></div>
+      </div>
+    </div>
+
+    <!-- EXEMPLO DE SIMPLIFICAÇÃO -->
+    <div class="topic-block">
+      <h3>// 3.6 — Exemplo de Simplificação: Do Problema ao Circuito Mínimo</h3>
+      <p><strong>Problema:</strong> Um sistema de alarme dispara (S=1) quando: (a) é noite E a janela está aberta, OU (b) é noite E a porta está aberta, OU (c) a senha está errada.</p>
+      <p>Variáveis: N=noite, J=janela aberta, P=porta aberta, E=senha errada.</p>
+      <p><strong>Expressão inicial:</strong> <code style="font-family:'IBM Plex Mono';color:var(--green)">S = (N·J) + (N·P) + E</code></p>
+      <p><strong>Simplificação:</strong></p>
+      <p><code style="font-family:'IBM Plex Mono';color:var(--green3)">S = N·J + N·P + E</code></p>
+      <p><code style="font-family:'IBM Plex Mono';color:var(--green3)">S = N·(J + P) + E</code> <span style="color:var(--text2);font-size:.85em">← fatoramos N usando distributividade</span></p>
+      <p>Resultado: em vez de 3 portas AND + 2 portas OR = 5 portas, usamos apenas 1 AND + 2 OR = 3 portas. Um chip com essa lógica seria 40% menor.</p>
+      <div class="info-box"><strong>No Arduino:</strong> Se você programa <code style="font-family:'IBM Plex Mono'">if((night && window) || (night && door) || wrongPwd)</code>, o compilador GCC já faz essa simplificação automaticamente em nível de otimização O2+. Mas para FPGAs e hardware embarcado com recursos limitados, você precisa fazer manualmente.</div>
+    </div>
+
+  </div>
+
+  <!-- EXERCÍCIOS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⚙</span>
+      <div>
+        <div class="card-title">ATIVIDADES_PRÁTICAS</div>
+        <div class="card-subtitle">// use o simulador para verificar, não para substituir o raciocínio</div>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div class="quest-header">
+        <div class="quest-num">01</div>
+        <div class="quest-info">
+          <div class="quest-title">SIMULAÇÃO: Explorando Portas no CircuitVerse</div>
+          <div class="quest-tags">
+            <span class="qtag time">⏱ 30min</span>
+            <span class="qtag xp">★ 100 XP</span>
+            <span class="qtag">CircuitVerse · circuitverse.org</span>
+          </div>
+        </div>
+      </div>
+      <div class="quest-desc">Use o CircuitVerse (simulador online gratuito, sem instalação) para montar e testar circuitos com as 6 portas lógicas básicas. O CircuitVerse foi desenvolvido especificamente para circuitos digitais lógicos — é mais direto para este fim do que simuladores gerais.</div>
+      <div class="steps-label">// PASSO A PASSO:</div>
+      <ol class="steps-list">
+        <li><div class="step-n">01</div>Acesse <code style="font-family:'IBM Plex Mono';color:var(--green)">circuitverse.org/simulator</code>. Clique em "Launch Simulator" — não precisa de conta para simular, mas crie uma conta gratuita para salvar seu projeto. Nome do projeto: <code style="font-family:'IBM Plex Mono';color:var(--green)">portas_logicas_seu_nome</code></li>
+        <li><div class="step-n">02</div>No painel esquerdo, expanda a categoria <strong>Gates</strong>. Localize AND, OR, NOT, NAND, NOR e XOR. Arraste um de cada para o canvas. Organize-os em fileiras para ficar legível.</li>
+        <li><div class="step-n">03</div>Para cada porta: na categoria <strong>Input</strong>, arraste elementos <strong>Input</strong> (botão toggle) para conectar às entradas da porta. Na categoria <strong>Output</strong>, arraste um <strong>Output</strong> (LED) para a saída. Conecte clicando nos terminais — um fio verde aparece ao conectar corretamente.</li>
+        <li><div class="step-n">04</div>A simulação roda em tempo real no CircuitVerse — não há botão "iniciar". Clique nos inputs para alternar entre 0 e 1 e observe o LED de saída mudar imediatamente. Teste TODAS as combinações de entrada: 4 combinações para portas de 2 entradas, 2 para NOT.</li>
+        <li><div class="step-n">05</div>Para cada porta testada, preencha a tabela verdade manualmente no caderno ou num Google Docs. Use o atalho <strong>Ctrl+P</strong> no CircuitVerse para imprimir/exportar como imagem, ou tire screenshot. Compile em <code style="font-family:'IBM Plex Mono';color:var(--green)">simulacao_portas_seu_nome</code> com as tabelas e evidências visuais.</li>
+        <li><div class="step-n">06</div>Bônus: monte um circuito combinacional no mesmo projeto que implemente a expressão: <code style="font-family:'IBM Plex Mono';color:var(--green)">S = (A·B) + (NOT C)</code> — use 3 inputs, 1 AND, 1 NOT, 1 OR e 1 output. Verifique todas as 8 combinações com o gerador de tabela verdade desta aula.</li>
+      </ol>
+      <div class="tip-box">No CircuitVerse, se o fio aparecer vermelho ao conectar, há conflito de sinal — desfaça e tente novamente. Para excluir um componente: selecione e pressione Delete. Para salvar online: Menu > Save (requer login). Tutorial rápido: busque "circuitverse simulator tutorial" no YouTube — há vídeos em PT-BR.</div>
+      <button class="acc-toggle" onclick="toggleAcc(this)">▼ RUBRICA DE AVALIAÇÃO</button>
+      <div class="acc-content">
+        <table class="rubrica-table">
+          <tr><th>Critério</th><th>Completo <span class="sb sb10">10</span></th><th>Parcial <span class="sb sb7">7</span></th><th>Iniciante <span class="sb sb4">4</span></th></tr>
+          <tr><td><strong>Circuitos</strong></td><td>6 portas simuladas com LED funcional e todas as combinações testadas</td><td>4-5 portas</td><td>Menos de 4</td></tr>
+          <tr><td><strong>Tabelas</strong></td><td>Tabelas verdade preenchidas manualmente e corretas para todas as portas</td><td>Tabelas com alguns erros</td><td>Tabelas copiadas sem simulação</td></tr>
+          <tr><td><strong>Documentação</strong></td><td>Screenshots de cada circuito no documento, organizados por porta</td><td>Alguns screenshots faltando</td><td>Sem evidências visuais</td></tr>
+          <tr><td><strong>Bônus</strong></td><td>Circuito combinacional funcionando e verificado com gerador</td><td>Tentativa sem verificação</td><td>Não tentou</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div class="quest-header">
+        <div class="quest-num">02</div>
+        <div class="quest-info">
+          <div class="quest-title">ÁLGEBRA: Simplificação de Expressões Booleanas</div>
+          <div class="quest-tags">
+            <span class="qtag time">⏱ 35min</span>
+            <span class="qtag xp">★ 100 XP</span>
+            <span class="qtag">Papel + Google Docs</span>
+          </div>
+        </div>
+      </div>
+      <div class="quest-desc">Simplifique as expressões booleanas abaixo aplicando as leis da álgebra booleana passo a passo. Para cada passo, indique qual lei foi aplicada. Verifique usando o gerador de tabela verdade desta aula.</div>
+      <div class="steps-label">// EXPRESSÕES PARA SIMPLIFICAR:</div>
+      <ol class="steps-list">
+        <li><div class="step-n">A</div><code style="font-family:'IBM Plex Mono';color:var(--green)">S = A·B + A·B̄</code> — Dica: fatore A. O resultado é surpreendentemente simples.</li>
+        <li><div class="step-n">B</div><code style="font-family:'IBM Plex Mono';color:var(--green)">S = (A + B) · (A + B̄)</code> — Aplique distributividade e lei do complemento.</li>
+        <li><div class="step-n">C</div><code style="font-family:'IBM Plex Mono';color:var(--green)">S = A·B·C + A·B·C̄ + A·B̄·C</code> — Fatore em etapas. Resposta tem 2 termos.</li>
+        <li><div class="step-n">D</div><code style="font-family:'IBM Plex Mono';color:var(--green)">S = NOT(NOT A · NOT B)</code> — Aplique De Morgan. Que porta isso implementa?</li>
+        <li><div class="step-n">E</div><code style="font-family:'IBM Plex Mono';color:var(--green)">S = A + A·B + A·B·C</code> — Lei da absorção aplicada duas vezes.</li>
+        <li><div class="step-n">F</div>Para cada expressão simplificada: (1) mostre todos os passos com a lei aplicada entre parênteses, (2) verifique usando o gerador de tabela verdade, (3) indique quantas portas a expressão original precisaria vs a simplificada.</li>
+      </ol>
+      <div class="tip-box">Para a expressão D: NOT(NOT A · NOT B). De Morgan diz NOT(X·Y) = NOT(X) + NOT(Y). Aplique com X=NOT A e Y=NOT B. Simplifique a dupla negação. Reconhece o resultado?</div>
+      <button class="acc-toggle" onclick="toggleAcc(this)">▼ RUBRICA DE AVALIAÇÃO</button>
+      <div class="acc-content">
+        <table class="rubrica-table">
+          <tr><th>Critério</th><th>Completo <span class="sb sb10">10</span></th><th>Parcial <span class="sb sb7">7</span></th><th>Iniciante <span class="sb sb4">4</span></th></tr>
+          <tr><td><strong>Desenvolvimento</strong></td><td>Todos os passos mostrados com a lei aplicada identificada em cada etapa</td><td>Alguns passos omitidos</td><td>Só resultado final sem processo</td></tr>
+          <tr><td><strong>Correção</strong></td><td>5 de 5 expressões corretamente simplificadas</td><td>3-4 corretas</td><td>Menos de 3</td></tr>
+          <tr><td><strong>Verificação</strong></td><td>Evidência de verificação via gerador (tabelas idênticas) para cada uma</td><td>Verificação parcial</td><td>Sem verificação</td></tr>
+          <tr><td><strong>Análise</strong></td><td>Contagem de portas original vs simplificada para todos</td><td>Para alguns</td><td>Sem análise</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div class="quest-header">
+        <div class="quest-num">03</div>
+        <div class="quest-info">
+          <div class="quest-title">PROJETO: Sistema de Alarme com Lógica Combinacional</div>
+          <div class="quest-tags">
+            <span class="qtag time">⏱ 25min</span>
+            <span class="qtag xp">★ 100 XP</span>
+            <span class="qtag">draw.io + Google Docs</span>
+          </div>
+        </div>
+      </div>
+      <div class="quest-desc">A missão mais importante da semana: projetar um circuito lógico completo a partir de uma especificação funcional real, seguindo o processo profissional de design digital.</div>
+      <div class="steps-label">// ESPECIFICAÇÃO DO SISTEMA:</div>
+      <ol class="steps-list">
+        <li><div class="step-n">SPEC</div>Um servidor de data center deve disparar um alerta (S=1) nas seguintes condições: (1) Temperatura ALTA (T=1) E o sistema de resfriamento DESLIGADO (R=0), OU (2) Temperatura ALTA (T=1) E Umidade ALTA (U=1), OU (3) Tensão de alimentação FORA DO RANGE (V=1). Projetar o circuito mínimo.</li>
+        <li><div class="step-n">01</div><strong>Formular a expressão:</strong> A partir da especificação, escreva a expressão booleana literal. Identifique as variáveis (T, R, U, V) e as operações.</li>
+        <li><div class="step-n">02</div><strong>Construir a tabela verdade:</strong> Com 4 variáveis, há 2⁴ = 16 linhas. Preencha manualmente para todos os casos. Verifique com o gerador desta aula.</li>
+        <li><div class="step-n">03</div><strong>Simplificar a expressão:</strong> Aplique as leis da álgebra booleana para reduzir o número de portas. Dica: lembre-se do exemplo do alarme na seção 3.6 — a mesma técnica se aplica aqui.</li>
+        <li><div class="step-n">04</div><strong>Desenhar o circuito:</strong> No draw.io (app.diagrams.net), desenhe o circuito completo usando os símbolos corretos das portas lógicas. As entradas devem entrar pela esquerda, a saída sair pela direita.</li>
+        <li><div class="step-n">05</div><strong>Documentar:</strong> Compile num Google Docs: expressão original → simplificação passo a passo → tabela verdade → imagem do circuito → análise: quantas portas economizou?</li>
+      </ol>
+      <div class="tip-box">No draw.io: pesquise na barra de formas "AND gate" — existem formas padronizadas para portas lógicas (padrão IEEE/ANSI). Para 4 variáveis, use "Shapes > Electrical > Logic Gates".</div>
+      <button class="acc-toggle" onclick="toggleAcc(this)">▼ RUBRICA DE AVALIAÇÃO</button>
+      <div class="acc-content">
+        <table class="rubrica-table">
+          <tr><th>Critério</th><th>Completo <span class="sb sb10">10</span></th><th>Parcial <span class="sb sb7">7</span></th><th>Iniciante <span class="sb sb4">4</span></th></tr>
+          <tr><td><strong>Expressão</strong></td><td>Expressão inicial correta extraída da especificação, formalizada em notação booleana</td><td>Expressão com pequenos erros</td><td>Expressão incorreta ou informal</td></tr>
+          <tr><td><strong>Tabela Verdade</strong></td><td>16 linhas corretas com evidência de verificação pelo gerador</td><td>Tabela com 1-2 erros</td><td>Tabela incompleta ou com muitos erros</td></tr>
+          <tr><td><strong>Simplificação</strong></td><td>Expressão simplificada com todos os passos identificados, resultado equivalente</td><td>Simplificação parcial</td><td>Sem simplificação</td></tr>
+          <tr><td><strong>Circuito</strong></td><td>Diagrama correto no draw.io com símbolos padrão IEEE, entradas e saída identificadas</td><td>Diagrama funcional sem padrão</td><td>Diagrama incorreto ou ausente</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⊕</span>
+      <div><div class="card-title">REFERÊNCIAS</div><div class="card-subtitle">// ferramentas e fontes para aprofundamento</div></div>
+    </div>
+    <div class="res-grid">
+      <div class="res-card"><div class="res-icon">⚡</div><div class="res-title">CircuitVerse</div><div class="res-desc">circuitverse.org/simulator — simulador de circuitos digitais online, gratuito, sem instalação</div></div>
+      <div class="res-card"><div class="res-icon">🔧</div><div class="res-title">Logisim Evolution</div><div class="res-desc">github.com/logisim-evolution — alternativa desktop gratuita para projetos mais complexos</div></div>
+      <div class="res-card"><div class="res-icon">▶</div><div class="res-title">YouTube</div><div class="res-desc">"boolean algebra simplification" — Ben Eater, Neso Academy (ótimos conteúdos)</div></div>
+      <a href="docs/explorando-portas-logicas.pdf" target="_blank" class="res-link">
+  <div class="res-card">
+    <div class="res-icon">📖</div>
+    <div class="res-title">Slides Professor Isaque Katahira</div>
+    <div class="res-desc">
+      "Explorando Portas Lógicas"
+    </div>
+  </div>
+</a>
+
+<a href="docs/sistemas-digitais-experimental-introducao.pdf" target="_blank" class="res-link">
+  <div class="res-card">
+    <div class="res-icon">📖</div>
+    <div class="res-title">Slides Professor  Ricardo Kerschbaumer</div>
+    <div class="res-desc">
+      "Introdução aos Sistemas Digitais Experimentação"
+    </div>
+  </div>
+</a></div>
+  </div>
+
+  <nav class="nav-bar">
+    <a href="arquitetura_semana02_aula.html" class="nav-btn nav-btn-secondary">◀ ANTERIOR</a>
+    <a href="index_arquitetura.html" class="nav-btn nav-btn-secondary">⊞ ÍNDICE</a>
+    <a href="arquitetura_semana03_guia.html" class="nav-btn nav-btn-accent">✎ GUIA</a>
+    <span class="nav-spacer"></span>
+    <a href="arquitetura_semana04_aula.html" class="nav-btn nav-btn-primary">PRÓXIMA ▶</a>
+  </nav>
+
+</div>
+
+<script>
+/* ===== ACCORDION ===== */
+function toggleAcc(btn){
+  const c=btn.nextElementSibling;
+  c.classList.toggle('open');
+  btn.textContent=c.classList.contains('open')?btn.textContent.replace('▼','▲'):btn.textContent.replace('▲','▼');
+}
+
+/* ===== GATE SIMULATOR ===== */
+const gateLogic={
+  AND: {fn:(a,b)=>a&b, expr:(a,b,r)=>`S = A · B = ${a} · ${b} = ${r}`, inputs:2},
+  OR:  {fn:(a,b)=>a|b, expr:(a,b,r)=>`S = A + B = ${a} + ${b} = ${r}`, inputs:2},
+  NOT: {fn:(a)=>(a^1),  expr:(a,_,r)=>`S = Ā = NOT ${a} = ${r}`, inputs:1},
+  NAND:{fn:(a,b)=>(a&b)^1, expr:(a,b,r)=>`S = NOT(A·B) = NOT(${a}·${b}) = ${r}`, inputs:2},
+  NOR: {fn:(a,b)=>(a|b)^1, expr:(a,b,r)=>`S = NOT(A+B) = NOT(${a}+${b}) = ${r}`, inputs:2},
+  XOR: {fn:(a,b)=>a^b, expr:(a,b,r)=>`S = A ⊕ B = ${a} ⊕ ${b} = ${r}`, inputs:2},
+  XNOR:{fn:(a,b)=>(a^b)^1, expr:(a,b,r)=>`S = NOT(A⊕B) = NOT(${a}⊕${b}) = ${r}`, inputs:2}
+};
+let curGate='AND', inA=0, inB=0;
+
+function setGate(g){
+  curGate=g;
+  document.querySelectorAll('.gate-btn').forEach(b=>b.classList.toggle('active',b.textContent===g));
+  const def=gateLogic[g];
+  document.getElementById('rowB').style.display=def.inputs===1?'none':'flex';
+  inA=0; inB=0;
+  ['btnA','btnB'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent='0'; el.classList.remove('on');
+  });
+  renderSim();
+  buildSimTable();
+}
+
+function toggleInput(which){
+  if(which==='A'){inA^=1; const el=document.getElementById('btnA'); el.textContent=inA; el.classList.toggle('on',inA===1);}
+  else {inB^=1; const el=document.getElementById('btnB'); el.textContent=inB; el.classList.toggle('on',inB===1);}
+  renderSim();
+  highlightRow();
+}
+
+function renderSim(){
+  const def=gateLogic[curGate];
+  const out=def.fn(inA,inB);
+  const lamp=document.getElementById('outputLamp');
+  const lbl=document.getElementById('outputLabel');
+  lamp.textContent=out; lamp.classList.toggle('on',out===1);
+  lbl.textContent=`SAÍDA = ${out===1?'ON':'OFF'}`;
+  document.getElementById('simExpr').textContent=def.expr(inA,inB,out);
+}
+
+function buildSimTable(){
+  const def=gateLogic[curGate];
+  const table=document.getElementById('simTable');
+  const is1=def.inputs===1;
+  let html=`<tr><th>A</th>${is1?'':'<th>B</th>'}<th>S</th></tr>`;
+  const rows=is1?[[0],[1]]:[[0,0],[0,1],[1,0],[1,1]];
+  rows.forEach(r=>{
+    const [a,b]=r;
+    const out=def.fn(a,b??0);
+    const rowId=is1?`row-${a}`:`row-${a}-${b??0}`;
+    html+=`<tr id="${rowId}"><td class="${a?'out1':'out0'}">${a}</td>${is1?'':`<td class="${(b??0)?'out1':'out0'}">${b??0}</td>`}<td class="${out?'out1':'out0'}">${out}</td></tr>`;
+  });
+  table.innerHTML=html;
+  highlightRow();
+}
+
+function highlightRow(){
+  document.querySelectorAll('#simTable tr').forEach(r=>r.classList.remove('active-row'));
+  const def=gateLogic[curGate];
+  const is1=def.inputs===1;
+  const id=is1?`row-${inA}`:`row-${inA}-${inB}`;
+  const row=document.getElementById(id);
+  if(row) row.classList.add('active-row');
+}
+
+// Init
+buildSimTable();
+renderSim();
+
+/* ===== TRUTH TABLE GENERATOR ===== */
+function generateTT(){
+  const raw=document.getElementById('ttbExpr').value.trim().toUpperCase();
+  const errEl=document.getElementById('ttbError');
+  const outEl=document.getElementById('ttbOutput');
+  errEl.style.display='none'; outEl.innerHTML='';
+
+  // Detect variables
+  const vars=[...new Set(raw.match(/\b[A-C]\b/g)||[])].sort();
+  if(vars.length===0){errEl.textContent='// ERRO: nenhuma variável encontrada. Use A, B ou C.';errEl.style.display='block';return}
+  if(vars.length>3){errEl.textContent='// ERRO: máximo 3 variáveis (A, B, C).';errEl.style.display='block';return}
+
+  // Build JS expression
+  let expr=raw;
+  expr=expr.replace(/\bNOT\s*/g,'!');
+  expr=expr.replace(/\bAND\b/g,'&');
+  expr=expr.replace(/\bOR\b/g,'|');
+  expr=expr.replace(/\bXOR\b/g,'^');
+
+  // Validate
+  try{
+    const testScope={A:0,B:0,C:0};
+    const fn=new Function('A','B','C',`return !!(${expr})`);
+    fn(0,0,0);
+  }catch(e){
+    errEl.textContent=`// ERRO DE SINTAXE: ${e.message}. Verifique a expressão.`;errEl.style.display='block';return;
+  }
+
+  const fn=new Function('A','B','C',`return !!(${expr})`);
+  const n=vars.length;
+  const rows=Math.pow(2,n);
+
+  let html=`<table class="sim-table" style="margin-top:0">`;
+  html+=`<tr>${vars.map(v=>`<th>${v}</th>`).join('')}<th>S</th></tr>`;
+
+  for(let i=0;i<rows;i++){
+    const vals={};
+    vars.forEach((v,idx)=>{vals[v]=((i>>(n-1-idx))&1)});
+    const A=vals['A']??0, B=vals['B']??0, C=vals['C']??0;
+    let out=0;
+    try{out=fn(A,B,C)?1:0}catch(e){}
+    html+=`<tr>${vars.map(v=>`<td class="${vals[v]?'out1':'out0'}">${vals[v]}</td>`).join('')}<td class="${out?'out1':'out0'}">${out}</td></tr>`;
+  }
+  html+=`</table>`;
+
+  // Count 1s
+  let ones=0;
+  for(let i=0;i<rows;i++){
+    const vals={};
+    vars.forEach((v,idx)=>{vals[v]=((i>>(n-1-idx))&1)});
+    const A=vals['A']??0, B=vals['B']??0, C=vals['C']??0;
+    try{if(fn(A,B,C))ones++}catch(e){}
+  }
+  html+=`<div style="font-family:'IBM Plex Mono',monospace;font-size:.75em;color:var(--text2);margin-top:8px">// Saída=1 em ${ones}/${rows} combinações (${Math.round(ones/rows*100)}%) · Expressão: ${raw}</div>`;
+  outEl.innerHTML=html;
+}
+
+// Run once on load
+setTimeout(generateTT, 100);
+</script>
+</body>
+</html>

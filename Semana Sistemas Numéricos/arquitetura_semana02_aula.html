@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semana 02 – Sistemas Numéricos | ADS 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a0a;--bg2:#0a0f0f;--bg3:#0f1a14;--card:#0d1a12;
+  --border:#1a3320;--green:#00ff88;--green2:#00cc66;--green3:#00ff88;
+  --amber:#f59e0b;--red:#ef4444;--blue:#38bdf8;--purple:#a78bfa;--cyan:#22d3ee;
+  --text:#c8ffd4;--text2:#6b9e78;
+  --glow:0 0 20px rgba(0,255,136,.25);--glow2:0 0 35px rgba(0,255,136,.45);
+  --scanline:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:var(--scanline);pointer-events:none;z-index:0;opacity:.35}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+/* HEADER */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);box-shadow:0 0 40px rgba(0,255,136,.12);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1100px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.boot-badge{font-family:'IBM Plex Mono',monospace;background:var(--green3);color:var(--bg);border-radius:3px;padding:4px 12px;font-size:.78em;font-weight:700;letter-spacing:.08em;white-space:nowrap;box-shadow:var(--glow)}
+.header-text{flex:1}
+.header-text h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(.95em,2.5vw,1.45em);font-weight:700;color:var(--green3);text-shadow:0 0 20px rgba(0,255,136,.45)}
+.header-text p{color:var(--text2);font-size:.8em;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+.xp-chip{font-family:'IBM Plex Mono',monospace;background:rgba(0,255,136,.08);border:1px solid var(--green2);color:var(--green);border-radius:3px;padding:4px 12px;font-size:.8em;font-weight:700;white-space:nowrap}
+.progress-bar-wrap{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 32px}
+.progress-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.progress-label{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--text2);white-space:nowrap}
+.progress-track{flex:1;height:5px;background:var(--bg3);border:1px solid var(--border);overflow:hidden}
+.progress-fill{height:100%;width:10%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pfill .9s ease-out forwards}
+@keyframes pfill{from{width:0}to{width:10%}}
+.progress-steps{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--text2);white-space:nowrap}
+
+/* CONTAINER */
+.container{max-width:1100px;margin:0 auto;padding:32px;position:relative;z-index:1}
+
+/* NAV */
+.nav-bar{background:var(--card);border:1px solid var(--border);padding:12px 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
+.nav-btn{padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.78em;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px;border:1px solid;letter-spacing:.03em}
+.nav-btn-primary{background:var(--green);color:var(--bg);border-color:var(--green);box-shadow:var(--glow)}
+.nav-btn-primary:hover{box-shadow:var(--glow2);transform:translateY(-1px)}
+.nav-btn-secondary{background:transparent;color:var(--text2);border-color:var(--border)}
+.nav-btn-secondary:hover{border-color:var(--green2);color:var(--green2)}
+.nav-btn-accent{background:rgba(52,211,153,.12);color:#34d399;border-color:rgba(52,211,153,.35)}
+.nav-btn-accent:hover{background:rgba(52,211,153,.22)}
+.nav-spacer{flex:1}
+
+/* MISSION CARD */
+.mission-card{background:var(--card);border:1px solid var(--green2);padding:32px;margin-bottom:24px;box-shadow:var(--glow),inset 0 0 60px rgba(0,255,136,.025);position:relative;overflow:hidden}
+.mission-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.mission-card::after{content:'[MISSÃO 02]';position:absolute;right:28px;top:28px;font-family:'IBM Plex Mono',monospace;font-size:.68em;color:var(--text2);letter-spacing:.15em}
+.mission-tag{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--green2);letter-spacing:.12em;margin-bottom:10px}
+.mission-card h2{font-family:'IBM Plex Mono',monospace;font-size:1.55em;color:var(--green3);margin-bottom:10px;text-shadow:0 0 14px rgba(0,255,136,.3)}
+.mission-card p{color:var(--text2);font-size:.92em;max-width:680px;line-height:1.75}
+.mission-rewards{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.reward-chip{font-family:'IBM Plex Mono',monospace;font-size:.76em;font-weight:600;padding:3px 10px;border:1px solid}
+.reward-chip.xp{color:var(--amber);border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.07)}
+.reward-chip.badge{color:var(--purple);border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.07)}
+.reward-chip.time{color:var(--blue);border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.07)}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);padding:28px;margin-bottom:20px;transition:border-color .2s;animation:fadeIn .35s ease-out both;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--green2)}
+.card:hover{border-color:rgba(0,255,136,.2)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.14s}.card:nth-child(4){animation-delay:.21s}.card:nth-child(5){animation-delay:.28s}.card:nth-child(6){animation-delay:.35s}
+.card-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-icon{font-size:1.25em}
+.card-title{font-family:'IBM Plex Mono',monospace;font-size:1.08em;color:var(--green3);font-weight:700}
+.card-subtitle{font-size:.78em;color:var(--text2);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+
+/* SECTION TABS (bases) */
+.base-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:1px solid var(--border)}
+.base-tab{font-family:'IBM Plex Mono',monospace;font-size:.78em;font-weight:700;padding:9px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text2);cursor:pointer;letter-spacing:.05em;transition:all .2s;margin-bottom:-1px}
+.base-tab:hover{color:var(--green2)}
+.base-tab.active{color:var(--green3);border-bottom-color:var(--green3)}
+.base-panel{display:none;padding-top:20px}.base-panel.active{display:block}
+
+/* TOPIC BLOCK */
+.topic-block{background:var(--bg3);padding:20px 22px;margin-bottom:14px;border-left:3px solid var(--green2)}
+.topic-block h3{font-family:'IBM Plex Mono',monospace;color:var(--green);font-size:.9em;font-weight:700;margin-bottom:10px;letter-spacing:.02em}
+.topic-block p{color:var(--text2);font-size:.88em;line-height:1.85;margin-bottom:8px}
+.topic-block p:last-child{margin-bottom:0}
+
+/* INFO / WARN / TIP boxes */
+.info-box{background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.22);padding:11px 14px;margin-top:10px;font-size:.84em;color:#7dd3fc;line-height:1.7}
+.info-box strong,.info-box code{color:var(--blue);font-family:'IBM Plex Mono',monospace}
+.warn-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.22);padding:11px 14px;margin-top:10px;font-size:.84em;color:#fde68a;line-height:1.7}
+.warn-box strong,.warn-box code{color:var(--amber);font-family:'IBM Plex Mono',monospace}
+.ok-box{background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.2);padding:11px 14px;margin-top:10px;font-size:.84em;color:var(--text);line-height:1.7}
+.ok-box strong,.ok-box code{color:var(--green3);font-family:'IBM Plex Mono',monospace}
+code{font-family:'IBM Plex Mono',monospace;color:var(--green3);background:rgba(0,255,136,.07);padding:1px 5px;font-size:.92em}
+
+/* WEIGHT TABLE */
+.weight-table-wrap{overflow-x:auto;margin-top:12px}
+.weight-table{border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.82em;width:100%}
+.weight-table th{background:rgba(0,255,136,.1);color:var(--green);padding:8px 14px;border:1px solid var(--border);text-align:center;letter-spacing:.05em}
+.weight-table td{padding:7px 14px;border:1px solid var(--border);text-align:center;color:var(--text2);transition:background .15s}
+.weight-table tr:hover td{background:rgba(0,255,136,.04)}
+.weight-table .highlight{color:var(--amber);font-weight:700}
+.weight-table .result-row td{color:var(--green3);font-weight:700;border-top:2px solid var(--green2)}
+.weight-table .power-row td{color:var(--blue);font-size:.75em}
+
+/* CONVERSION STEPS VISUAL */
+.conv-visual{margin-top:16px}
+.conv-step-row{display:flex;align-items:stretch;gap:0;margin-bottom:3px;flex-wrap:nowrap;overflow-x:auto}
+.conv-step-num{font-family:'IBM Plex Mono',monospace;font-size:.75em;color:var(--text2);min-width:44px;padding:6px 8px;background:rgba(0,0,0,.3);border:1px solid var(--border);border-right:none;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.conv-step-op{font-family:'IBM Plex Mono',monospace;font-size:.78em;color:var(--text);padding:6px 12px;background:var(--bg3);border:1px solid var(--border);border-right:none;flex:1;min-width:180px;display:flex;align-items:center}
+.conv-step-res{font-family:'IBM Plex Mono',monospace;font-size:.82em;font-weight:700;color:var(--green3);padding:6px 12px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.2);min-width:80px;display:flex;align-items:center;justify-content:flex-end;white-space:nowrap}
+.conv-step-res.carry{color:var(--amber)}
+.conv-final{font-family:'IBM Plex Mono',monospace;font-size:.88em;padding:9px 14px;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.25);color:var(--green3);font-weight:700;margin-top:6px;display:flex;align-items:center;gap:10px}
+.conv-final span{color:var(--text2);font-weight:400;font-size:.88em}
+
+/* BIT DISPLAY */
+.bit-display{display:flex;gap:3px;flex-wrap:wrap;margin:10px 0}
+.bit-cell{font-family:'IBM Plex Mono',monospace;font-size:.88em;font-weight:700;width:34px;height:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid;transition:all .3s;cursor:default;position:relative}
+.bit-cell.b1{color:var(--green);background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.35);box-shadow:0 0 6px rgba(0,255,136,.15)}
+.bit-cell.b0{color:var(--text2);background:transparent;border-color:var(--border)}
+.bit-cell.nibble-sep{margin-left:8px}
+.bit-pos{font-size:.5em;color:var(--text2);margin-top:1px}
+.bit-group-label{font-family:'IBM Plex Mono',monospace;font-size:.68em;color:var(--amber);text-align:center;margin-bottom:2px}
+
+/* INTERACTIVE SIMULATOR */
+.simulator{background:rgba(0,0,0,.55);border:1px solid var(--green2);padding:22px;margin-top:14px;box-shadow:var(--glow)}
+.sim-title{font-family:'IBM Plex Mono',monospace;font-size:.75em;color:var(--green2);letter-spacing:.1em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sim-pulse{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:pulse 1.5s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+
+/* INPUTS */
+.field-label{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--text2);letter-spacing:.08em;display:block;margin-bottom:5px}
+.field-input{background:var(--bg3);border:1px solid var(--border);color:var(--green3);font-family:'IBM Plex Mono',monospace;font-size:.95em;padding:10px 12px;width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
+.field-input:focus{border-color:var(--green2);box-shadow:0 0 0 2px rgba(0,255,136,.07)}
+.field-select{background:var(--bg3);border:1px solid var(--border);color:var(--green3);font-family:'IBM Plex Mono',monospace;font-size:.88em;padding:10px 12px;width:100%;outline:none;cursor:pointer}
+.field-select:focus{border-color:var(--green2)}
+.field-select option{background:var(--bg)}
+.action-btn{background:var(--green);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:.82em;font-weight:700;padding:10px 22px;border:none;cursor:pointer;letter-spacing:.05em;transition:all .2s}
+.action-btn:hover{box-shadow:var(--glow2);transform:translateY(-1px)}
+.action-btn.secondary{background:transparent;color:var(--green2);border:1px solid var(--green2)}
+.action-btn.secondary:hover{background:rgba(0,255,136,.08)}
+
+/* RESULT BOXES */
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:14px}
+.result-item{padding:12px 14px;border:1px solid var(--border);background:rgba(0,0,0,.3);transition:border-color .2s,box-shadow .2s}
+.result-item:hover{border-color:rgba(0,255,136,.3);box-shadow:var(--glow)}
+.result-item.active-base{border-color:var(--green2);background:rgba(0,255,136,.05)}
+.result-base-label{font-family:'IBM Plex Mono',monospace;font-size:.67em;color:var(--text2);letter-spacing:.08em;margin-bottom:5px}
+.result-value{font-family:'IBM Plex Mono',monospace;font-size:1.05em;color:var(--green3);font-weight:700;word-break:break-all;line-height:1.4}
+.result-value.big{font-size:.88em}
+.error-msg{font-family:'IBM Plex Mono',monospace;font-size:.8em;color:var(--red);padding:8px 12px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.04);margin-top:8px}
+
+/* STEP-BY-STEP PANEL */
+.steps-panel{margin-top:14px;background:rgba(0,0,0,.4);border:1px solid rgba(0,255,136,.12);padding:16px}
+.steps-panel-title{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--green2);letter-spacing:.1em;margin-bottom:10px}
+.step-item{display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,255,136,.05)}
+.step-item:last-child{border-bottom:none;padding-top:8px;margin-top:3px}
+.step-idx{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--text2);text-align:right}
+.step-expr{font-family:'IBM Plex Mono',monospace;font-size:.82em;color:var(--text2)}
+.step-expr .hl{color:var(--amber)}
+.step-res{font-family:'IBM Plex Mono',monospace;font-size:.82em;font-weight:700;color:var(--green3);text-align:right}
+.step-res.carry{color:var(--amber)}
+.step-final{font-family:'IBM Plex Mono',monospace;font-size:.9em;font-weight:700;color:var(--green);grid-column:1/-1;padding:8px 12px;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);margin-top:4px;text-align:center}
+
+/* PRACTICE QUIZ */
+.quiz-wrap{margin-top:14px}
+.quiz-question{font-family:'IBM Plex Mono',monospace;font-size:.88em;color:var(--text);padding:14px 16px;background:var(--bg3);border:1px solid var(--border);margin-bottom:10px}
+.quiz-prompt{color:var(--green2);margin-bottom:8px;font-size:.78em;letter-spacing:.05em}
+.quiz-q{color:var(--text);font-size:.95em;line-height:1.6}
+.quiz-input-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.quiz-input{background:var(--bg);border:1px solid var(--border);color:var(--green3);font-family:'IBM Plex Mono',monospace;font-size:.9em;padding:8px 12px;outline:none;flex:1;min-width:120px;transition:border-color .2s}
+.quiz-input:focus{border-color:var(--green2)}
+.quiz-check-btn{background:var(--green);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:.78em;font-weight:700;padding:8px 16px;border:none;cursor:pointer;letter-spacing:.04em;white-space:nowrap}
+.quiz-feedback{font-family:'IBM Plex Mono',monospace;font-size:.8em;padding:8px 12px;margin-top:6px;display:none}
+.quiz-feedback.correct{color:var(--green);background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.25);display:block}
+.quiz-feedback.wrong{color:var(--red);background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.25);display:block}
+.quiz-hint{font-family:'IBM Plex Mono',monospace;font-size:.75em;color:var(--amber);margin-top:4px;padding:6px 10px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2);display:none}
+.quiz-hint.show{display:block}
+.quiz-score{font-family:'IBM Plex Mono',monospace;font-size:.82em;color:var(--text2);padding:10px 14px;background:var(--bg3);border:1px solid var(--border);margin-top:8px;display:flex;align-items:center;gap:10px}
+.quiz-score-val{color:var(--amber);font-weight:700;font-size:1.1em}
+.quiz-next-btn{background:transparent;border:1px solid var(--green2);color:var(--green2);font-family:'IBM Plex Mono',monospace;font-size:.78em;font-weight:700;padding:6px 14px;cursor:pointer;margin-top:8px;transition:all .2s}
+.quiz-next-btn:hover{background:rgba(0,255,136,.08)}
+
+/* DRAG EXERCISE */
+.drag-wrap{margin-top:12px}
+.drag-target{display:flex;gap:4px;flex-wrap:wrap;padding:12px;background:rgba(0,0,0,.3);border:1px dashed rgba(0,255,136,.25);min-height:50px;margin-bottom:10px}
+.drag-slot{width:36px;height:36px;border:1px dashed var(--border);background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:.9em;font-weight:700;color:var(--green3)}
+.drag-slot.filled{background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.4)}
+.drag-options{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0}
+.drag-chip{font-family:'IBM Plex Mono',monospace;font-size:.85em;font-weight:700;padding:6px 12px;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);color:var(--green3);cursor:pointer;user-select:none;transition:all .15s}
+.drag-chip:hover{background:rgba(0,255,136,.14);transform:translateY(-1px)}
+
+/* QUEST CARDS */
+.quest-card{background:var(--bg3);border:1px solid var(--border);padding:22px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .2s}
+.quest-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--green),var(--green2))}
+.quest-card:hover{border-color:rgba(0,255,136,.25)}
+.quest-header{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.quest-num{font-family:'IBM Plex Mono',monospace;background:var(--green);color:var(--bg);width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95em;flex-shrink:0}
+.quest-title{font-family:'IBM Plex Mono',monospace;font-size:.95em;font-weight:700;color:var(--green3);margin-bottom:4px}
+.quest-tags{display:flex;gap:6px;flex-wrap:wrap}
+.qtag{font-family:'IBM Plex Mono',monospace;font-size:.7em;font-weight:600;padding:2px 7px;border:1px solid var(--border);color:var(--text2)}
+.qtag.xp{color:var(--amber);border-color:rgba(245,158,11,.38)}.qtag.time{color:var(--blue);border-color:rgba(56,189,248,.28)}
+.quest-desc{color:var(--text2);font-size:.86em;line-height:1.75;margin-bottom:12px}
+.quest-items{list-style:none;display:flex;flex-direction:column;gap:5px}
+.quest-items li{display:flex;gap:10px;align-items:flex-start;font-size:.84em;color:var(--text2);background:rgba(0,0,0,.22);padding:7px 11px;border:1px solid rgba(0,255,136,.05)}
+.q-n{font-family:'IBM Plex Mono',monospace;color:var(--green2);font-size:.78em;font-weight:700;flex-shrink:0;margin-top:2px;min-width:22px}
+.tip-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.22);padding:8px 12px;font-size:.8em;color:#fde68a;margin-top:10px;display:flex;gap:8px;line-height:1.6}
+.tip-box::before{content:'//';font-family:'IBM Plex Mono',monospace;color:var(--amber);flex-shrink:0}
+.acc-toggle{width:100%;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.18);padding:8px 12px;color:var(--green2);font-family:'IBM Plex Mono',monospace;font-size:.76em;font-weight:700;cursor:pointer;text-align:left;letter-spacing:.04em;margin-top:10px;transition:background .2s}
+.acc-toggle:hover{background:rgba(0,255,136,.09)}
+.acc-content{display:none;margin-top:6px}.acc-content.open{display:block}
+.rubrica-table{width:100%;border-collapse:collapse;font-size:.81em;margin-top:8px}
+.rubrica-table th{background:rgba(0,255,136,.08);color:var(--green);font-family:'IBM Plex Mono',monospace;padding:7px 10px;text-align:left;font-weight:700;border-bottom:1px solid var(--green2);font-size:.8em}
+.rubrica-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;font-size:.88em}
+.rubrica-table tr:last-child td{border-bottom:none}
+.sb{display:inline;padding:1px 6px;font-family:'IBM Plex Mono',monospace;font-size:.83em;font-weight:700}
+.sb10{color:#34d399;background:rgba(52,211,153,.13)}.sb7{color:#fbbf24;background:rgba(251,191,36,.13)}.sb4{color:#f87171;background:rgba(248,113,113,.13)}
+
+/* OBJ GRID */
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.obj-item{background:rgba(0,255,136,.03);border:1px solid rgba(0,255,136,.13);padding:11px 13px;display:flex;gap:10px;align-items:flex-start;transition:background .2s}
+.obj-item:hover{background:rgba(0,255,136,.07)}
+.obj-bullet{font-family:'IBM Plex Mono',monospace;color:var(--green);font-size:.82em;margin-top:2px;flex-shrink:0}
+.obj-text{font-size:.86em;color:var(--text);font-weight:500}
+
+/* BASES OVERVIEW */
+.bases-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
+.base-ov-card{background:rgba(0,0,0,.4);border:1px solid var(--border);padding:16px;transition:border-color .2s,box-shadow .2s;cursor:default}
+.base-ov-card:hover{border-color:var(--green2);box-shadow:var(--glow)}
+.bov-name{font-family:'IBM Plex Mono',monospace;font-size:.95em;color:var(--green3);font-weight:700;margin-bottom:3px}
+.bov-radix{font-family:'IBM Plex Mono',monospace;font-size:1.2em;color:var(--amber);font-weight:700;margin-bottom:5px}
+.bov-digits{font-family:'IBM Plex Mono',monospace;font-size:.75em;color:var(--blue);margin-bottom:8px}
+.bov-examples{font-size:.78em;color:var(--text2);line-height:1.7}
+.bov-examples code{font-size:.9em}
+.bov-prefix{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.7em;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.2);color:var(--green2);padding:1px 6px;margin-bottom:4px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .container{padding:14px}
+  .card,.mission-card{padding:16px}
+  .header-inner{padding:10px 16px}
+  .progress-bar-wrap{padding:7px 16px}
+  .base-tabs{overflow-x:auto;padding-bottom:2px}
+  .base-tab{white-space:nowrap;padding:8px 12px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <span class="boot-badge">▶ SEMANA_02</span>
+    <div class="header-text">
+      <h1>BINARY: Sistemas Numéricos — Conversão de Bases</h1>
+      <p>// Arquitetura e Organização de Computadores · ADS 2026</p>
+    </div>
+    <span class="xp-chip">★ 250 XP</span>
+  </div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-inner">
+    <span class="progress-label">PROGRESS:</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="progress-steps">02 / 20</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <nav class="nav-bar">
+    <a href="arquitetura_semana01_aula.html" class="nav-btn nav-btn-secondary">◀ ANTERIOR</a>
+    <a href="index_arquitetura.html" class="nav-btn nav-btn-secondary">⊞ ÍNDICE</a>
+    <a href="arquitetura_semana02_guia.html" class="nav-btn nav-btn-accent">✎ GUIA</a>
+    <span class="nav-spacer"></span>
+    <a href="arquitetura_semana03_aula.html" class="nav-btn nav-btn-primary">PRÓXIMA ▶</a>
+  </nav>
+
+  <!-- MISSION -->
+  <div class="mission-card">
+    <div class="mission-tag">// MÓDULO 1 · FUNDAMENTOS DA ARQUITETURA</div>
+    <h2>BINARY: Sistemas Numéricos — Conversão de Bases</h2>
+    <p>Computadores existem em base 2 — transistores que ligam ou desligam. Humanos pensam em base 10. Programadores leem memória em base 16. Sistemas embarcados e protocolos de rede usam base 8. Saber transitar entre essas bases fluidamente é a habilidade que separa quem <em style="color:var(--green)">usa</em> computadores de quem <em style="color:var(--green)">entende</em> computadores. Nesta missão você vai dominar cada conversão com simuladores passo a passo e exercícios práticos.</p>
+    <div class="mission-rewards">
+      <span class="reward-chip xp">★ +250 XP</span>
+      <span class="reward-chip badge">◈ Badge: Bit Shifter</span>
+      <span class="reward-chip time">⏱ 3h-aula</span>
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⊛</span>
+      <div>
+        <div class="card-title">OBJETIVOS_DA_MISSÃO</div>
+        <div class="card-subtitle">// o que você vai dominar ao final desta aula</div>
+      </div>
+    </div>
+    <div class="obj-grid">
+      <div class="obj-item"><span class="obj-bullet">▸</span><span class="obj-text">Entender por que existem diferentes bases numéricas e onde cada uma é usada na prática</span></div>
+      <div class="obj-item"><span class="obj-bullet">▸</span><span class="obj-text">Converter Decimal → Binário, Octal e Hexadecimal pelo método das divisões sucessivas</span></div>
+      <div class="obj-item"><span class="obj-bullet">▸</span><span class="obj-text">Converter Binário → Decimal pelo método dos pesos posicionais</span></div>
+      <div class="obj-item"><span class="obj-bullet">▸</span><span class="obj-text">Converter Binário → Octal e Hexadecimal pelo agrupamento direto de bits</span></div>
+      <div class="obj-item"><span class="obj-bullet">▸</span><span class="obj-text">Ler e interpretar endereços de memória, cores CSS e dados reais em diferentes bases</span></div>
+      <div class="obj-item"><span class="obj-bullet">▸</span><span class="obj-text">Resolver exercícios de conversão sem calculadora, conferindo com o simulador</span></div>
+    </div>
+  </div>
+
+  <!-- FUNDAMENTOS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">◎</span>
+      <div>
+        <div class="card-title">1. POR QUE MÚLTIPLAS BASES?</div>
+        <div class="card-subtitle">// antes de converter, entenda o motivo de cada base existir</div>
+      </div>
+    </div>
+
+    <div class="topic-block">
+      <h3>// O que é uma base numérica?</h3>
+      <p>Uma base define <strong style="color:var(--green)">quantos símbolos diferentes</strong> um sistema usa e qual é o <strong style="color:var(--green)">peso de cada posição</strong>. No decimal (base 10), os símbolos são 0–9 e cada posição vale 10× mais que a anterior. No binário (base 2), só existem 0 e 1, e cada posição vale 2× mais. A posição mais à direita sempre vale base⁰ = 1.</p>
+      <p>O número <strong style="color:var(--amber)">347</strong> em decimal significa: <code>3×10² + 4×10¹ + 7×10⁰ = 300 + 40 + 7 = 347</code>. O mesmo princípio funciona para qualquer base — só mudam o símbolo e o peso.</p>
+    </div>
+
+    <div class="topic-block">
+      <h3>// Por que computadores usam binário?</h3>
+      <p>Transistores operam com dois estados elétricos: tensão alta (~5V ou 3.3V) = <strong style="color:var(--green)">1</strong>, tensão baixa (~0V) = <strong style="color:var(--red)">0</strong>. É impossível distinguir 10 níveis de tensão de forma confiável em bilhões de transistores. Dois níveis são robustos, rápidos e miniaturizáveis. Por isso tudo dentro de um processador é binário.</p>
+      <div class="info-box"><strong>Curiosidade real:</strong> Um chip M3 da Apple tem 19 bilhões de transistores. Cada um pode estar em 0 ou 1. O resultado é toda a computação moderna — vídeos, jogos, IA — construída sobre bilhões de chavezinhas ligadas/desligadas.</div>
+    </div>
+
+    <div class="topic-block">
+      <h3>// Por que octal (8) e hexadecimal (16)?</h3>
+      <p>Binário é verboso para humanos. <code>11001010</code> é um byte — 8 dígitos para representar apenas o número 202. Hexadecimal resolve isso: cada dígito hex representa exatamente <strong style="color:var(--green)">4 bits</strong>, então 1 byte vira 2 dígitos: <code>CA</code>. Octal usa 3 bits por dígito e era popular em sistemas mais antigos (Unix, endereçamento de memória).</p>
+      <div class="warn-box"><strong>Regra de ouro:</strong> Hex e octal são atalhos para binário — não são sistemas independentes. Aprender a ir de binário para hex em um segundo é o objetivo real desta aula.</div>
+    </div>
+
+    <div class="bases-overview">
+      <div class="base-ov-card">
+        <div class="bov-name">BINÁRIO</div>
+        <div class="bov-radix">Base 2</div>
+        <span class="bov-prefix">prefixo: 0b</span>
+        <div class="bov-digits">Dígitos: 0, 1</div>
+        <div class="bov-examples">
+          1 dígito = 1 bit<br>
+          4 bits = 1 nibble<br>
+          8 bits = 1 byte (0–255)<br>
+          <code>0b1010 = 10₁₀</code>
+        </div>
+      </div>
+      <div class="base-ov-card">
+        <div class="bov-name">OCTAL</div>
+        <div class="bov-radix">Base 8</div>
+        <span class="bov-prefix">prefixo: 0o</span>
+        <div class="bov-digits">Dígitos: 0, 1, 2, 3, 4, 5, 6, 7</div>
+        <div class="bov-examples">
+          1 dígito = 3 bits<br>
+          Usado em endereçamento antigo<br>
+          Notação em C: <code>0755</code><br>
+          <code>0o17 = 15₁₀</code>
+        </div>
+      </div>
+      <div class="base-ov-card">
+        <div class="bov-name">DECIMAL</div>
+        <div class="bov-radix">Base 10</div>
+        <span class="bov-prefix">sem prefixo</span>
+        <div class="bov-digits">Dígitos: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9</div>
+        <div class="bov-examples">
+          Base "natural" humana<br>
+          Referência de conversão<br>
+          Endereços IP (IPv4)<br>
+          <code>255₁₀ = 0xFF</code>
+        </div>
+      </div>
+      <div class="base-ov-card">
+        <div class="bov-name">HEXADECIMAL</div>
+        <div class="bov-radix">Base 16</div>
+        <span class="bov-prefix">prefixo: 0x</span>
+        <div class="bov-digits">Dígitos: 0–9, A, B, C, D, E, F</div>
+        <div class="bov-examples">
+          1 dígito = 4 bits (nibble)<br>
+          2 dígitos = 1 byte<br>
+          Cores CSS: <code>#FF5733</code><br>
+          <code>0xFF = 255₁₀</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONVERSÕES TEÓRICAS POR MÉTODO -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">▤</span>
+      <div>
+        <div class="card-title">2. MÉTODOS DE CONVERSÃO — TEORIA + EXEMPLOS</div>
+        <div class="card-subtitle">// cada método explicado com múltiplos exemplos resolvidos passo a passo</div>
+      </div>
+    </div>
+
+    <div class="base-tabs" role="tablist">
+      <button class="base-tab active" onclick="showTab('dec2bin')">DEC → BIN</button>
+      <button class="base-tab" onclick="showTab('bin2dec')">BIN → DEC</button>
+      <button class="base-tab" onclick="showTab('dec2hex')">DEC → HEX</button>
+      <button class="base-tab" onclick="showTab('hex2dec')">HEX → DEC</button>
+      <button class="base-tab" onclick="showTab('bin2hex')">BIN ↔ HEX</button>
+      <button class="base-tab" onclick="showTab('octal')">OCTAL</button>
+    </div>
+
+    <!-- DEC → BIN -->
+    <div class="base-panel active" id="panel-dec2bin">
+      <div class="topic-block">
+        <h3>// DECIMAL → BINÁRIO: Método das Divisões Sucessivas por 2</h3>
+        <p><strong style="color:var(--green)">Regra:</strong> Divida o número por 2 repetidamente. Anote o resto de cada divisão (sempre 0 ou 1). O resultado binário é lido de baixo para cima (do último resto ao primeiro).</p>
+        <p>O primeiro resto obtido é o bit menos significativo (LSB — Least Significant Bit), o último é o mais significativo (MSB — Most Significant Bit).</p>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: 42₁₀ → Binário</h3>
+        <div class="conv-visual">
+          <div class="conv-step-row"><div class="conv-step-num">1</div><div class="conv-step-op">42 ÷ 2 = <span style="color:var(--green3)">21</span></div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span> ← LSB (bit 0)</div></div>
+          <div class="conv-step-row"><div class="conv-step-num">2</div><div class="conv-step-op">21 ÷ 2 = <span style="color:var(--green3)">10</span></div><div class="conv-step-res">resto <span style="color:var(--amber)">1</span> ← bit 1</div></div>
+          <div class="conv-step-row"><div class="conv-step-num">3</div><div class="conv-step-op">10 ÷ 2 = <span style="color:var(--green3)">5</span></div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span> ← bit 2</div></div>
+          <div class="conv-step-row"><div class="conv-step-num">4</div><div class="conv-step-op">5 ÷ 2 = <span style="color:var(--green3)">2</span></div><div class="conv-step-res">resto <span style="color:var(--amber)">1</span> ← bit 3</div></div>
+          <div class="conv-step-row"><div class="conv-step-num">5</div><div class="conv-step-op">2 ÷ 2 = <span style="color:var(--green3)">1</span></div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span> ← bit 4</div></div>
+          <div class="conv-step-row"><div class="conv-step-num">6</div><div class="conv-step-op">1 ÷ 2 = <span style="color:var(--green3)">0</span></div><div class="conv-step-res">resto <span style="color:var(--amber)">1</span> ← MSB (bit 5)</div></div>
+          <div class="conv-final">42₁₀ = <strong>101010₂</strong> <span>(leia os restos de baixo para cima: 1→0→1→0→1→0)</span></div>
+        </div>
+        <div class="ok-box"><strong>Verificação:</strong> 1×2⁵ + 0×2⁴ + 1×2³ + 0×2² + 1×2¹ + 0×2⁰ = 32 + 0 + 8 + 0 + 2 + 0 = <strong>42 ✓</strong></div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: 200₁₀ → Binário</h3>
+        <div class="conv-visual">
+          <div class="conv-step-row"><div class="conv-step-num">1</div><div class="conv-step-op">200 ÷ 2 = 100</div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">2</div><div class="conv-step-op">100 ÷ 2 = 50</div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">3</div><div class="conv-step-op">50 ÷ 2 = 25</div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">4</div><div class="conv-step-op">25 ÷ 2 = 12</div><div class="conv-step-res">resto <span style="color:var(--amber)">1</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">5</div><div class="conv-step-op">12 ÷ 2 = 6</div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">6</div><div class="conv-step-op">6 ÷ 2 = 3</div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">7</div><div class="conv-step-op">3 ÷ 2 = 1</div><div class="conv-step-res">resto <span style="color:var(--amber)">1</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">8</div><div class="conv-step-op">1 ÷ 2 = 0</div><div class="conv-step-res">resto <span style="color:var(--amber)">1</span> ← MSB</div></div>
+          <div class="conv-final">200₁₀ = <strong>11001000₂</strong> <span>(8 bits = 1 byte)</span></div>
+        </div>
+      </div>
+      <div class="topic-block">
+        <h3>// Tabela de referência rápida: 0 a 15</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>DEC</th><th>BIN</th><th>DEC</th><th>BIN</th><th>DEC</th><th>BIN</th><th>DEC</th><th>BIN</th></tr>
+            <tr><td>0</td><td>0000</td><td>4</td><td>0100</td><td>8</td><td>1000</td><td>12</td><td>1100</td></tr>
+            <tr><td>1</td><td>0001</td><td>5</td><td>0101</td><td>9</td><td>1001</td><td>13</td><td>1101</td></tr>
+            <tr><td>2</td><td>0010</td><td>6</td><td>0110</td><td>10</td><td>1010</td><td>14</td><td>1110</td></tr>
+            <tr><td>3</td><td>0011</td><td>7</td><td>0111</td><td>11</td><td>1011</td><td>15</td><td>1111</td></tr>
+          </table>
+        </div>
+        <div class="info-box"><strong>Dica de memorização:</strong> Potências de 2 que valem a pena decorar: 2⁰=1, 2¹=2, 2²=4, 2³=8, 2⁴=16, 2⁵=32, 2⁶=64, 2⁷=128, 2⁸=256. Reconhecer essas potências acelera muito a conversão mental.</div>
+      </div>
+    </div><!-- /dec2bin -->
+
+    <!-- BIN → DEC -->
+    <div class="base-panel" id="panel-bin2dec">
+      <div class="topic-block">
+        <h3>// BINÁRIO → DECIMAL: Método dos Pesos Posicionais</h3>
+        <p><strong style="color:var(--green)">Regra:</strong> Multiplique cada bit pelo seu peso posicional (potência de 2), contando da direita para esquerda a partir de 2⁰. Some todos os produtos onde o bit é 1.</p>
+        <p>Bits com valor 0 não contribuem para a soma — você só precisa somar as potências onde aparecer o dígito 1.</p>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: 10110101₂ → Decimal</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>Posição</th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+            <tr class="power-row"><td>Peso (2ⁿ)</td><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+            <tr><td>Bit</td><td class="highlight">1</td><td>0</td><td class="highlight">1</td><td class="highlight">1</td><td>0</td><td class="highlight">1</td><td>0</td><td class="highlight">1</td></tr>
+            <tr><td>Contribuição</td><td class="highlight">128</td><td>0</td><td class="highlight">32</td><td class="highlight">16</td><td>0</td><td class="highlight">4</td><td>0</td><td class="highlight">1</td></tr>
+            <tr class="result-row"><td colspan="8">128 + 32 + 16 + 4 + 1 = <strong>181₁₀</strong></td></tr>
+          </table>
+        </div>
+        <div class="ok-box"><strong>10110101₂ = 181₁₀</strong> — Apenas some as potências onde o bit é 1: 128 + 32 + 16 + 4 + 1 = 181.</div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: 1111₂ → Decimal</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>Posição</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+            <tr class="power-row"><td>Peso (2ⁿ)</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+            <tr><td>Bit</td><td class="highlight">1</td><td class="highlight">1</td><td class="highlight">1</td><td class="highlight">1</td></tr>
+            <tr class="result-row"><td colspan="5">8 + 4 + 2 + 1 = <strong>15₁₀</strong></td></tr>
+          </table>
+        </div>
+        <div class="info-box"><strong>Padrão importante:</strong> N bits com todos iguais a 1 sempre vale 2ᴺ − 1. Com 4 bits: 2⁴−1 = 15. Com 8 bits: 2⁸−1 = 255. Com 16 bits: 2¹⁶−1 = 65535.</div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: 11001010₂ → Decimal (exemplo de byte)</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>Posição</th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+            <tr class="power-row"><td>Peso</td><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+            <tr><td>Bit</td><td class="highlight">1</td><td class="highlight">1</td><td>0</td><td>0</td><td>1</td><td>0</td><td class="highlight">1</td><td>0</td></tr>
+            <tr><td>Contribuição</td><td class="highlight">128</td><td class="highlight">64</td><td>0</td><td>0</td><td>8</td><td>0</td><td class="highlight">2</td><td>0</td></tr>
+            <tr class="result-row"><td colspan="8">128 + 64 + 8 + 2 = <strong>202₁₀</strong></td></tr>
+          </table>
+        </div>
+      </div>
+    </div><!-- /bin2dec -->
+
+    <!-- DEC → HEX -->
+    <div class="base-panel" id="panel-dec2hex">
+      <div class="topic-block">
+        <h3>// DECIMAL → HEXADECIMAL: Divisões Sucessivas por 16</h3>
+        <p><strong style="color:var(--green)">Regra:</strong> Divida por 16 repetidamente. Os restos maiores que 9 viram letras: 10=A, 11=B, 12=C, 13=D, 14=E, 15=F. Leia os restos de baixo para cima.</p>
+      </div>
+      <div class="topic-block">
+        <h3>// Tabela Decimal ↔ Hex (nibble completo)</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>DEC</th><th>HEX</th><th>BIN</th><th>DEC</th><th>HEX</th><th>BIN</th></tr>
+            <tr><td>0</td><td>0</td><td>0000</td><td>8</td><td>8</td><td>1000</td></tr>
+            <tr><td>1</td><td>1</td><td>0001</td><td>9</td><td>9</td><td>1001</td></tr>
+            <tr><td>2</td><td>2</td><td>0010</td><td>10</td><td class="highlight">A</td><td>1010</td></tr>
+            <tr><td>3</td><td>3</td><td>0011</td><td>11</td><td class="highlight">B</td><td>1011</td></tr>
+            <tr><td>4</td><td>4</td><td>0100</td><td>12</td><td class="highlight">C</td><td>1100</td></tr>
+            <tr><td>5</td><td>5</td><td>0101</td><td>13</td><td class="highlight">D</td><td>1101</td></tr>
+            <tr><td>6</td><td>6</td><td>0110</td><td>14</td><td class="highlight">E</td><td>1110</td></tr>
+            <tr><td>7</td><td>7</td><td>0111</td><td>15</td><td class="highlight">F</td><td>1111</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: 255₁₀ → Hexadecimal</h3>
+        <div class="conv-visual">
+          <div class="conv-step-row"><div class="conv-step-num">1</div><div class="conv-step-op">255 ÷ 16 = <span style="color:var(--green3)">15</span></div><div class="conv-step-res">resto <span style="color:var(--amber)">15 = F</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">2</div><div class="conv-step-op">15 ÷ 16 = <span style="color:var(--green3)">0</span></div><div class="conv-step-res">resto <span style="color:var(--amber)">15 = F</span> ← MSB</div></div>
+          <div class="conv-final">255₁₀ = <strong>FF₁₆</strong> = 0xFF <span>(o byte máximo — todos os 8 bits em 1)</span></div>
+        </div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: 1437₁₀ → Hexadecimal</h3>
+        <div class="conv-visual">
+          <div class="conv-step-row"><div class="conv-step-num">1</div><div class="conv-step-op">1437 ÷ 16 = 89</div><div class="conv-step-res">resto <span style="color:var(--amber)">13 = D</span> ← LSB</div></div>
+          <div class="conv-step-row"><div class="conv-step-num">2</div><div class="conv-step-op">89 ÷ 16 = 5</div><div class="conv-step-res">resto <span style="color:var(--amber)">9</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">3</div><div class="conv-step-op">5 ÷ 16 = 0</div><div class="conv-step-res">resto <span style="color:var(--amber)">5</span> ← MSB</div></div>
+          <div class="conv-final">1437₁₀ = <strong>59D₁₆</strong> = 0x59D <span>(leia: 5→9→D)</span></div>
+        </div>
+        <div class="ok-box"><strong>Verificação:</strong> 5×16² + 9×16¹ + 13×16⁰ = 5×256 + 9×16 + 13 = 1280 + 144 + 13 = <strong>1437 ✓</strong></div>
+      </div>
+      <div class="topic-block">
+        <h3>// Aplicação real: Cor CSS #1E3C72</h3>
+        <p>Cores em CSS usam 3 bytes hex: <code>#RRGGBB</code>. A cor <code>#1E3C72</code> tem:</p>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>Canal</th><th>Hex</th><th>Decimal</th><th>Binário</th><th>Significado</th></tr>
+            <tr><td>Vermelho (R)</td><td class="highlight">1E</td><td>30</td><td>00011110</td><td>Pouco vermelho</td></tr>
+            <tr><td>Verde (G)</td><td class="highlight">3C</td><td>60</td><td>00111100</td><td>Pouco verde</td></tr>
+            <tr><td>Azul (B)</td><td class="highlight">72</td><td>114</td><td>01110010</td><td>Azul dominante</td></tr>
+            <tr class="result-row"><td colspan="5">Resultado: azul escuro — a cor do header desta página!</td></tr>
+          </table>
+        </div>
+      </div>
+    </div><!-- /dec2hex -->
+
+    <!-- HEX → DEC -->
+    <div class="base-panel" id="panel-hex2dec">
+      <div class="topic-block">
+        <h3>// HEXADECIMAL → DECIMAL: Método dos Pesos Posicionais (base 16)</h3>
+        <p><strong style="color:var(--green)">Regra:</strong> Multiplique cada dígito hex pelo seu peso (potência de 16). Some tudo. Lembre: A=10, B=11, C=12, D=13, E=14, F=15.</p>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: 2F₁₆ → Decimal</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>Dígito</th><th>2</th><th>F (=15)</th></tr>
+            <tr class="power-row"><td>Peso (16ⁿ)</td><td>16¹ = 16</td><td>16⁰ = 1</td></tr>
+            <tr><td>Produto</td><td class="highlight">2 × 16 = 32</td><td class="highlight">15 × 1 = 15</td></tr>
+            <tr class="result-row"><td colspan="3">32 + 15 = <strong>47₁₀</strong></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: A3F₁₆ → Decimal</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>Dígito</th><th>A (=10)</th><th>3</th><th>F (=15)</th></tr>
+            <tr class="power-row"><td>Peso (16ⁿ)</td><td>16² = 256</td><td>16¹ = 16</td><td>16⁰ = 1</td></tr>
+            <tr><td>Produto</td><td class="highlight">10 × 256 = 2560</td><td class="highlight">3 × 16 = 48</td><td class="highlight">15 × 1 = 15</td></tr>
+            <tr class="result-row"><td colspan="4">2560 + 48 + 15 = <strong>2623₁₀</strong></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo resolvido: FF₁₆ → Decimal</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>Dígito</th><th>F (=15)</th><th>F (=15)</th></tr>
+            <tr class="power-row"><td>Peso</td><td>16¹ = 16</td><td>16⁰ = 1</td></tr>
+            <tr><td>Produto</td><td class="highlight">15 × 16 = 240</td><td class="highlight">15 × 1 = 15</td></tr>
+            <tr class="result-row"><td colspan="3">240 + 15 = <strong>255₁₀</strong></td></tr>
+          </table>
+        </div>
+        <div class="info-box"><strong>FF em contexto:</strong> 0xFF = 255 = o valor máximo de um byte. Cores RGB usam 3 bytes, então (255, 255, 255) = #FFFFFF = branco puro. (0, 0, 0) = #000000 = preto.</div>
+      </div>
+    </div><!-- /hex2dec -->
+
+    <!-- BIN ↔ HEX -->
+    <div class="base-panel" id="panel-bin2hex">
+      <div class="topic-block">
+        <h3>// BINÁRIO ↔ HEXADECIMAL: O atalho mais poderoso</h3>
+        <p>Como 16 = 2⁴, cada dígito hex corresponde <strong style="color:var(--green)">exatamente</strong> a 4 bits (1 nibble). Não há cálculo intermédio — basta agrupar ou expandir.</p>
+        <p><strong style="color:var(--amber)">BIN → HEX:</strong> Agrupe os bits em grupos de 4 da direita para a esquerda. Converta cada grupo usando a tabela. <br><strong style="color:var(--amber)">HEX → BIN:</strong> Expanda cada dígito hex em 4 bits usando a tabela.</p>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo: 10110111₂ → Hexadecimal</h3>
+        <p style="margin-bottom:8px">Agrupe em nibbles de 4 bits (da direita para a esquerda):</p>
+        <div style="font-family:'IBM Plex Mono';font-size:1em;margin:10px 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <div style="text-align:center">
+            <div class="bit-group-label">nibble alto</div>
+            <div style="display:flex;gap:2px">
+              <span class="bit-cell b1">1<span class="bit-pos">7</span></span>
+              <span class="bit-cell b0">0<span class="bit-pos">6</span></span>
+              <span class="bit-cell b1">1<span class="bit-pos">5</span></span>
+              <span class="bit-cell b1">1<span class="bit-pos">4</span></span>
+            </div>
+            <div style="text-align:center;margin-top:4px;font-family:'IBM Plex Mono';font-size:.75em;color:var(--amber)">1011 = B</div>
+          </div>
+          <div style="font-size:1.5em;color:var(--text2)">|</div>
+          <div style="text-align:center">
+            <div class="bit-group-label">nibble baixo</div>
+            <div style="display:flex;gap:2px">
+              <span class="bit-cell b0">0<span class="bit-pos">3</span></span>
+              <span class="bit-cell b1">1<span class="bit-pos">2</span></span>
+              <span class="bit-cell b1">1<span class="bit-pos">1</span></span>
+              <span class="bit-cell b1">1<span class="bit-pos">0</span></span>
+            </div>
+            <div style="text-align:center;margin-top:4px;font-family:'IBM Plex Mono';font-size:.75em;color:var(--amber)">0111 = 7</div>
+          </div>
+          <div style="font-size:1.2em;color:var(--text2)">→</div>
+          <div style="font-family:'IBM Plex Mono';color:var(--green3);font-size:1.3em;font-weight:700">0xB7</div>
+        </div>
+        <div class="conv-final">10110111₂ = <strong>B7₁₆</strong> = 0xB7 <span>(sem nenhum cálculo — apenas agrupamento!)</span></div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo: 0x4D → Binário</h3>
+        <p style="margin-bottom:8px">Expanda cada dígito hex em 4 bits:</p>
+        <div style="font-family:'IBM Plex Mono';font-size:1em;margin:10px 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <div style="text-align:center">
+            <div style="font-family:'IBM Plex Mono';font-size:.9em;color:var(--amber);margin-bottom:6px">4 → 0100</div>
+            <div style="display:flex;gap:2px">
+              <span class="bit-cell b0">0</span><span class="bit-cell b1">1</span><span class="bit-cell b0">0</span><span class="bit-cell b0">0</span>
+            </div>
+          </div>
+          <div style="font-size:1.5em;color:var(--text2)">|</div>
+          <div style="text-align:center">
+            <div style="font-family:'IBM Plex Mono';font-size:.9em;color:var(--amber);margin-bottom:6px">D(13) → 1101</div>
+            <div style="display:flex;gap:2px">
+              <span class="bit-cell b1">1</span><span class="bit-cell b1">1</span><span class="bit-cell b0">0</span><span class="bit-cell b1">1</span>
+            </div>
+          </div>
+          <div style="font-size:1.2em;color:var(--text2)">→</div>
+          <div style="font-family:'IBM Plex Mono';color:var(--green3);font-size:1.1em;font-weight:700">01001101₂</div>
+        </div>
+        <div class="conv-final">0x4D = <strong>01001101₂</strong> = 77₁₀ <span>(ASCII da letra 'M'!)</span></div>
+        <div class="info-box"><strong>ASCII em hex:</strong> Letras maiúsculas começam em 0x41 ('A'=65) e vão até 0x5A ('Z'=90). Minúsculas: 0x61 ('a'=97) até 0x7A ('z'=122). Cada caractere que você digita é armazenado como um número!</div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo com 3 bytes: endereço de memória 0x1A2B3C</h3>
+        <div class="weight-table-wrap">
+          <table class="weight-table">
+            <tr><th>Nibble</th><th>1</th><th>A</th><th>2</th><th>B</th><th>3</th><th>C</th></tr>
+            <tr><td>Valor dec</td><td>1</td><td>10</td><td>2</td><td>11</td><td>3</td><td>12</td></tr>
+            <tr><td>4 bits</td><td class="highlight">0001</td><td class="highlight">1010</td><td class="highlight">0010</td><td class="highlight">1011</td><td class="highlight">0011</td><td class="highlight">1100</td></tr>
+            <tr class="result-row"><td colspan="7">0x1A2B3C = 000110100010101100111100₂ = 1.713.980₁₀</td></tr>
+          </table>
+        </div>
+      </div>
+    </div><!-- /bin2hex -->
+
+    <!-- OCTAL -->
+    <div class="base-panel" id="panel-octal">
+      <div class="topic-block">
+        <h3>// OCTAL: Base 8 e sua relação com binário</h3>
+        <p>Como 8 = 2³, cada dígito octal corresponde a <strong style="color:var(--green)">exatamente 3 bits</strong>. A lógica é idêntica ao hexadecimal, mas com grupos de 3 em vez de 4.</p>
+        <p><strong style="color:var(--amber)">BIN → OCT:</strong> Agrupe bits em grupos de 3 da direita para a esquerda. Converta cada grupo (0–7).<br><strong style="color:var(--amber)">OCT → BIN:</strong> Expanda cada dígito em 3 bits.</p>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo: 45₁₀ → Octal (e de volta a binário)</h3>
+        <p>O octal é um ótimo intermediário para verificar conversões binárias, pois cada dígito representa exatamente 3 bits sem ambiguidade.</p>
+        <div class="conv-visual">
+          <div class="conv-step-row"><div class="conv-step-num">1</div><div class="conv-step-op">45 ÷ 8 = 5</div><div class="conv-step-res">resto <span style="color:var(--amber)">5</span> ← LSB</div></div>
+          <div class="conv-step-row"><div class="conv-step-num">2</div><div class="conv-step-op">5 ÷ 8 = 0</div><div class="conv-step-res">resto <span style="color:var(--amber)">5</span> ← MSB</div></div>
+          <div class="conv-final">45₁₀ = <strong>55₈</strong> <span>(0o55)</span></div>
+        </div>
+        <p style="margin-top:10px">Agora expandindo cada dígito octal em 3 bits: <strong style="color:var(--amber)">5</strong> = 101, <strong style="color:var(--amber)">5</strong> = 101</p>
+        <div class="conv-final">55₈ = <strong>101101₂</strong> <span>= 45₁₀ ✓ (verificação cruzada funcionou!)</span></div>
+      </div>
+      <div class="topic-block">
+        <h3>// Exemplo: 10101110₂ → Octal</h3>
+        <p style="margin-bottom:8px">Agrupe em trios de 3 bits (da direita para a esquerda), completando com zero à esquerda se necessário:</p>
+        <div style="font-family:'IBM Plex Mono';font-size:1em;margin:10px 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <div style="text-align:center">
+            <div class="bit-group-label">trio 2 (pad)</div>
+            <div style="display:flex;gap:2px"><span class="bit-cell b0">0<span class="bit-pos"></span></span><span class="bit-cell b1">1<span class="bit-pos"></span></span><span class="bit-cell b0">0<span class="bit-pos"></span></span></div>
+            <div style="text-align:center;margin-top:4px;font-family:'IBM Plex Mono';font-size:.75em;color:var(--amber)">010 = 2</div>
+          </div>
+          <div style="font-size:1.5em;color:var(--text2)">|</div>
+          <div style="text-align:center">
+            <div class="bit-group-label">trio 1</div>
+            <div style="display:flex;gap:2px"><span class="bit-cell b1">1<span class="bit-pos"></span></span><span class="bit-cell b0">0<span class="bit-pos"></span></span><span class="bit-cell b1">1<span class="bit-pos"></span></span></div>
+            <div style="text-align:center;margin-top:4px;font-family:'IBM Plex Mono';font-size:.75em;color:var(--amber)">101 = 5</div>
+          </div>
+          <div style="font-size:1.5em;color:var(--text2)">|</div>
+          <div style="text-align:center">
+            <div class="bit-group-label">trio 0</div>
+            <div style="display:flex;gap:2px"><span class="bit-cell b1">1<span class="bit-pos"></span></span><span class="bit-cell b1">1<span class="bit-pos"></span></span><span class="bit-cell b0">0<span class="bit-pos"></span></span></div>
+            <div style="text-align:center;margin-top:4px;font-family:'IBM Plex Mono';font-size:.75em;color:var(--amber)">110 = 6</div>
+          </div>
+          <div style="font-size:1.2em;color:var(--text2)">→</div>
+          <div style="font-family:'IBM Plex Mono';color:var(--green3);font-size:1.3em;font-weight:700">256₈</div>
+        </div>
+        <div class="conv-final">10101110₂ = <strong>256₈</strong> = 174₁₀</div>
+      </div>
+      <div class="topic-block">
+        <h3>// Decimal → Octal: Divisões por 8</h3>
+        <p>Exemplo: 200₁₀ → Octal</p>
+        <div class="conv-visual">
+          <div class="conv-step-row"><div class="conv-step-num">1</div><div class="conv-step-op">200 ÷ 8 = 25</div><div class="conv-step-res">resto <span style="color:var(--amber)">0</span> ← LSB</div></div>
+          <div class="conv-step-row"><div class="conv-step-num">2</div><div class="conv-step-op">25 ÷ 8 = 3</div><div class="conv-step-res">resto <span style="color:var(--amber)">1</span></div></div>
+          <div class="conv-step-row"><div class="conv-step-num">3</div><div class="conv-step-op">3 ÷ 8 = 0</div><div class="conv-step-res">resto <span style="color:var(--amber)">3</span> ← MSB</div></div>
+          <div class="conv-final">200₁₀ = <strong>310₈</strong> <span>(ou 0o310)</span></div>
+        </div>
+        <div class="ok-box"><strong>Verificação:</strong> 3×8² + 1×8¹ + 0×8⁰ = 192 + 8 + 0 = 200 ✓</div>
+      </div>
+    </div><!-- /octal -->
+
+  </div><!-- /card métodos -->
+
+  <!-- SIMULADOR INTERATIVO -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⚡</span>
+      <div>
+        <div class="card-title">3. SIMULADOR INTERATIVO — CONVERSOR COM PASSO A PASSO</div>
+        <div class="card-subtitle">// digite qualquer número, veja a conversão e o raciocínio completo</div>
+      </div>
+    </div>
+
+    <div class="simulator">
+      <div class="sim-title"><div class="sim-pulse"></div>CONVERSOR_UNIVERSAL · todas as bases · passo a passo detalhado</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div>
+          <label class="field-label">NÚMERO DE ENTRADA</label>
+          <input class="field-input" id="uniInput" type="text" value="42" placeholder="ex: 42 ou 0b101010 ou 0xFF ou 0o52" oninput="uniConvert()">
+        </div>
+        <div>
+          <label class="field-label">BASE DE ORIGEM</label>
+          <select class="field-select" id="uniBase" onchange="uniConvert()">
+            <option value="10" selected>Decimal (base 10)</option>
+            <option value="2">Binário (base 2)</option>
+            <option value="8">Octal (base 8)</option>
+            <option value="16">Hexadecimal (base 16)</option>
+          </select>
+        </div>
+      </div>
+      <div id="uniError" style="display:none" class="error-msg"></div>
+      <div class="result-grid" id="uniResults"></div>
+      <div id="uniSteps"></div>
+      <div id="uniBits" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- EXERCÍCIOS PRÁTICOS COM VERIFICAÇÃO -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">◈</span>
+      <div>
+        <div class="card-title">4. PRATIQUE SOZINHO — EXERCÍCIOS COM VERIFICAÇÃO AUTOMÁTICA</div>
+        <div class="card-subtitle">// resolva sem olhar o simulador, depois confira aqui</div>
+      </div>
+    </div>
+
+    <div class="topic-block" style="margin-bottom:20px">
+      <h3>// Como usar estes exercícios</h3>
+      <p>Resolva cada conversão no papel antes de digitar a resposta. Use os métodos ensinados nas seções anteriores. O sistema vai indicar se está correto e mostrar a solução detalhada se errar. O placar fica no topo.</p>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap">
+        <div class="quiz-score" style="flex:1;min-width:200px">PLACAR: <span class="quiz-score-val" id="scoreVal">0 / 0</span> acertos</div>
+        <button class="action-btn secondary" onclick="resetQuiz()">↺ REINICIAR EXERCÍCIOS</button>
+      </div>
+    </div>
+
+    <div id="quizContainer"></div>
+  </div>
+
+  <!-- ATIVIDADES PARA ENTREGA -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">◉</span>
+      <div>
+        <div class="card-title">5. ATIVIDADES PARA ENTREGA</div>
+        <div class="card-subtitle">// exercícios avaliados — resolva no papel, documente o raciocínio</div>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div class="quest-header">
+        <div class="quest-num">01</div>
+        <div style="flex:1">
+          <div class="quest-title">CONVERSÕES FUNDAMENTAIS — sem calculadora</div>
+          <div class="quest-tags"><span class="qtag xp">+80 XP</span><span class="qtag time">⏱ 30min</span></div>
+        </div>
+      </div>
+      <div class="quest-desc">Execute cada conversão manualmente usando os métodos desta aula. Documente o passo a passo completo (cada divisão, cada resto, cada grupo de bits). Use o simulador somente para conferir a resposta final.</div>
+      <ul class="quest-items">
+        <li><span class="q-n">A)</span>Decimal <strong style="color:var(--amber)">156</strong> → Binário (método das divisões por 2)</li>
+        <li><span class="q-n">B)</span>Decimal <strong style="color:var(--amber)">233</strong> → Hexadecimal (divisões por 16). Qual byte hex corresponde a este valor?</li>
+        <li><span class="q-n">C)</span>Binário <strong style="color:var(--amber)">10110110</strong> → Decimal (pesos posicionais). Mostre cada multiplicação.</li>
+        <li><span class="q-n">D)</span>Binário <strong style="color:var(--amber)">11101001</strong> → Hexadecimal (agrupamento de nibbles). Faça sem calcular decimais intermediários.</li>
+        <li><span class="q-n">E)</span>Hexadecimal <strong style="color:var(--amber)">0xAB</strong> → Decimal e depois → Binário.</li>
+        <li><span class="q-n">F)</span>Decimal <strong style="color:var(--amber)">200</strong> → Octal. Converta o resultado de volta para binário e verifique que é igual a 200₁₀.</li>
+      </ul>
+      <div class="tip-box">Para cada conversão: (1) escreva o método que vai usar, (2) execute passo a passo, (3) escreva o resultado, (4) faça a verificação inversa para confirmar. Isso é o que diferencia 10 de 7 na rubrica.</div>
+      <button class="acc-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.textContent=this.nextElementSibling.classList.contains('open')?'▲ FECHAR RUBRICA':'▼ VER RUBRICA DE AVALIAÇÃO'">▼ VER RUBRICA DE AVALIAÇÃO</button>
+      <div class="acc-content">
+        <table class="rubrica-table">
+          <tr><th>Critério</th><th>Completo <span class="sb sb10">10</span></th><th>Parcial <span class="sb sb7">7</span></th><th>Incompleto <span class="sb sb4">4</span></th></tr>
+          <tr><td>Itens A–D</td><td>Passo a passo completo documentado, resultado correto e verificação inversa feita</td><td>Resultado correto mas passo a passo incompleto ou sem verificação</td><td>Apenas o resultado final, sem processo</td></tr>
+          <tr><td>Itens E–F</td><td>Correto com verificação inversa feita para ambos</td><td>Conversão correta sem verificação</td><td>Resultado errado ou ausente</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div class="quest-header">
+        <div class="quest-num">02</div>
+        <div style="flex:1">
+          <div class="quest-title">LEITURA DE DADOS REAIS — interprete, não apenas converta</div>
+          <div class="quest-tags"><span class="qtag xp">+90 XP</span><span class="qtag time">⏱ 35min</span></div>
+        </div>
+      </div>
+      <div class="quest-desc">Interprete dados hexadecimais de contextos reais. A ideia é conectar a teoria com situações que você vai encontrar como desenvolvedor ou administrador de sistemas.</div>
+      <ul class="quest-items">
+        <li><span class="q-n">1.</span>A cor CSS <code style="color:var(--green)">#FF6B35</code> — converta cada canal (R, G, B) para decimal. Qual cor predomina? Qual canal está no máximo?</li>
+        <li><span class="q-n">2.</span>Um dump de memória mostra os bytes: <code style="color:var(--green)">48 65 6C 6C 6F</code> (em hex). Converta cada byte para decimal. Consulte a tabela ASCII e descubra a palavra armazenada.</li>
+        <li><span class="q-n">3.</span>Um protocolo de rede transmite o valor octal <code style="color:var(--green)">0o377</code>. Converta para decimal e binário. Qual é a relação desse valor com o byte máximo?</li>
+        <li><span class="q-n">4.</span>Um endereço IPv4 tem a máscara de sub-rede <code style="color:var(--green)">255.255.255.0</code>. Escreva cada octeto em binário. Por que esta máscara define 256 endereços possíveis?</li>
+      </ul>
+      <div class="tip-box">ASCII: A=65=0x41, B=66=0x42 ... Z=90=0x5A. Letras minúsculas: a=97=0x61 ... z=122=0x7A. Espaço=32=0x20. Números: 0=48=0x30 ... 9=57=0x39.</div>
+      <button class="acc-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.textContent=this.nextElementSibling.classList.contains('open')?'▲ FECHAR RUBRICA':'▼ VER RUBRICA DE AVALIAÇÃO'">▼ VER RUBRICA DE AVALIAÇÃO</button>
+      <div class="acc-content">
+        <table class="rubrica-table">
+          <tr><th>Critério</th><th>Completo <span class="sb sb10">10</span></th><th>Parcial <span class="sb sb7">7</span></th><th>Incompleto <span class="sb sb4">4</span></th></tr>
+          <tr><td>Itens 1 e 2</td><td>Conversões corretas, cor identificada com justificativa, palavra ASCII correta</td><td>Conversões corretas mas sem análise do resultado</td><td>Resultado errado ou ausente</td></tr>
+          <tr><td>Itens 3 e 4</td><td>Octal convertido corretamente com relação ao byte máximo explicada; máscara em binário com justificativa dos 256 endereços</td><td>Conversões corretas mas sem análise do resultado</td><td>Não conectou com o contexto</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div class="quest-header">
+        <div class="quest-num">03</div>
+        <div style="flex:1">
+          <div class="quest-title">DESAFIO — conversões encadeadas e raciocínio inverso</div>
+          <div class="quest-tags"><span class="qtag xp">+80 XP</span><span class="qtag time">⏱ 25min</span></div>
+        </div>
+      </div>
+      <div class="quest-desc">Questões que testam se você realmente entendeu os métodos, não apenas memorizou. Cada uma requer pensar antes de calcular.</div>
+      <ul class="quest-items">
+        <li><span class="q-n">1.</span>Qual é o menor número de bits necessários para representar o decimal <strong style="color:var(--amber)">1000</strong>? Justifique usando potências de 2.</li>
+        <li><span class="q-n">2.</span>Um número binário de 8 bits tem os 4 bits mais significativos iguais a <code style="color:var(--green)">1010</code> e os 4 menos significativos iguais a <code style="color:var(--green)">0011</code>. Qual é seu valor em decimal e hexadecimal?</li>
+        <li><span class="q-n">3.</span>Em binário, <code style="color:var(--green)">10000000</code> representa 128. Quanto representa <code style="color:var(--green)">01111111</code>? E <code style="color:var(--green)">11111111</code>? Existe um padrão? Explique.</li>
+        <li><span class="q-n">4.</span>Converta os 3 bytes do endereço MAC parcial <code style="color:var(--green)">A4:C3:F0</code> para binário. Quantos bits tem um endereço MAC completo de 6 bytes?</li>
+      </ul>
+      <div class="tip-box">Para o item 1: log₂(1000) ≈ 9.96, portanto são necessários 10 bits (2¹⁰ = 1024 ≥ 1000). Para o item 3: pense nos pesos e no que acontece quando você some 1 ao máximo e ao mínimo.</div>
+      <button class="acc-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.textContent=this.nextElementSibling.classList.contains('open')?'▲ FECHAR RUBRICA':'▼ VER RUBRICA DE AVALIAÇÃO'">▼ VER RUBRICA DE AVALIAÇÃO</button>
+      <div class="acc-content">
+        <table class="rubrica-table">
+          <tr><th>Critério</th><th>Completo <span class="sb sb10">10</span></th><th>Parcial <span class="sb sb7">7</span></th><th>Incompleto <span class="sb sb4">4</span></th></tr>
+          <tr><td>Itens 1 e 4</td><td>Resposta correta com justificativa matemática explícita</td><td>Resposta correta sem justificativa ou justificativa incompleta</td><td>Resposta errada ou ausente</td></tr>
+          <tr><td>Itens 2 e 3</td><td>Correto, com padrão identificado e explicado para o item 3</td><td>Conversões corretas mas padrão não identificado</td><td>Resultado errado</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /card atividades -->
+
+  <!-- RECURSOS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">◎</span>
+      <div>
+        <div class="card-title">RECURSOS_E_REFERÊNCIAS</div>
+        <div class="card-subtitle">// materiais de apoio para aprofundamento</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px">
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:16px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--green2)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:1.3em;margin-bottom:6px">📗</div>
+        <div style="font-family:'IBM Plex Mono';font-size:.8em;font-weight:700;color:var(--green3);margin-bottom:3px">Tanenbaum — Cap. 2</div>
+        <div style="font-size:.78em;color:var(--text2)">Organização Estruturada de Computadores — sistemas numéricos e representação de dados</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:16px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--green2)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:1.3em;margin-bottom:6px">🎮</div>
+        <div style="font-family:'IBM Plex Mono';font-size:.8em;font-weight:700;color:var(--green3);margin-bottom:3px">Binary Game (Cisco)</div>
+        <div style="font-size:.78em;color:var(--text2)">Treinamento de leitura binária contra o relógio — essencial para redes</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:16px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--green2)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:1.3em;margin-bottom:6px">🎓</div>
+        <div style="font-family:'IBM Plex Mono';font-size:.8em;font-weight:700;color:var(--green3);margin-bottom:3px">CS50 — Week 0</div>
+        <div style="font-size:.78em;color:var(--text2)">Harvard — representação binária por David Malan, gratuito no YouTube</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:16px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--green2)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:1.3em;margin-bottom:6px">🔬</div>
+        <div style="font-family:'IBM Plex Mono';font-size:.8em;font-weight:700;color:var(--green3);margin-bottom:3px">ASCII Table</div>
+        <div style="font-size:.78em;color:var(--text2)">asciitable.com — tabela completa decimal, hex, octal e binário</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav-bar" style="margin-top:0;margin-bottom:32px">
+    <a href="arquitetura_semana01_aula.html" class="nav-btn nav-btn-secondary">◀ ANTERIOR</a>
+    <a href="index_arquitetura.html" class="nav-btn nav-btn-secondary">⊞ ÍNDICE</a>
+    <span class="nav-spacer"></span>
+    <a href="arquitetura_semana03_aula.html" class="nav-btn nav-btn-primary">PRÓXIMA ▶</a>
+  </nav>
+
+</div><!-- /container -->
+
+<script>
+/* ============================
+   TABS
+   ============================ */
+function showTab(id){
+  document.querySelectorAll('.base-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.base-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* ============================
+   UNIVERSAL CONVERTER
+   ============================ */
+function uniConvert(){
+  const raw = document.getElementById('uniInput').value.trim();
+  const baseEl = document.getElementById('uniBase');
+  const errEl = document.getElementById('uniError');
+  const resEl = document.getElementById('uniResults');
+  const stepsEl = document.getElementById('uniSteps');
+  const bitsEl = document.getElementById('uniBits');
+  errEl.style.display='none'; resEl.innerHTML=''; stepsEl.innerHTML=''; bitsEl.innerHTML='';
+  if(!raw) return;
+
+  let decimal, detectedBase = parseInt(baseEl.value);
+  let cleanInput = raw.toUpperCase();
+  try{
+    if(cleanInput.startsWith('0B')){cleanInput=cleanInput.slice(2);detectedBase=2;}
+    else if(cleanInput.startsWith('0X')){cleanInput=cleanInput.slice(2);detectedBase=16;}
+    else if(cleanInput.startsWith('0O')){cleanInput=cleanInput.slice(2);detectedBase=8;}
+
+    const valid = {2:/^[01]+$/,8:/^[0-7]+$/,10:/^[0-9]+$/,16:/^[0-9A-F]+$/};
+    if(!valid[detectedBase].test(cleanInput)) throw new Error(`Dígito inválido para base ${detectedBase}. Verifique se selecionou a base correta.`);
+    decimal = parseInt(cleanInput, detectedBase);
+    if(isNaN(decimal)||decimal<0) throw new Error('Número inválido');
+    if(decimal > 65535) throw new Error('Máximo suportado: 65535 (16 bits)');
+
+    // Results
+    const bases = [
+      {key:'2',  label:'BINÁRIO (2)',  val: decimal.toString(2),  suffix:'₂', active: detectedBase===2},
+      {key:'8',  label:'OCTAL (8)',    val: decimal.toString(8),  suffix:'₈', active: detectedBase===8},
+      {key:'10', label:'DECIMAL (10)', val: decimal.toString(10), suffix:'₁₀',active: detectedBase===10},
+      {key:'16', label:'HEXA (16)',    val: decimal.toString(16).toUpperCase(), suffix:'₁₆',active: detectedBase===16},
+    ];
+    resEl.innerHTML = bases.map(b=>`
+      <div class="result-item${b.active?' active-base':''}">
+        <div class="result-base-label">${b.label}</div>
+        <div class="result-value${b.val.length>10?' big':''}">${b.val}${b.suffix}</div>
+      </div>`).join('');
+
+    // Step by step: decimal → binary
+    let html = '';
+    if(decimal===0){
+      html = `<div class="steps-panel"><div class="steps-panel-title">// PASSO A PASSO: 0 em qualquer base = 0</div>
+        <div class="step-final">0₁₀ = 0₂ = 0₈ = 0₁₆</div></div>`;
+    } else {
+      // Dec → Bin
+      html += `<div class="steps-panel"><div class="steps-panel-title">// PASSO A PASSO: ${decimal}₁₀ → BINÁRIO (divisões sucessivas por 2)</div>`;
+      let n=decimal, steps=[], bits=[];
+      while(n>0){steps.push({n,q:Math.floor(n/2),r:n%2});bits.unshift(n%2);n=Math.floor(n/2);}
+      steps.forEach((s,i)=>{
+        const isMSB = i===steps.length-1;
+        html+=`<div class="step-item">
+          <span class="step-idx">${i+1}</span>
+          <span class="step-expr">${s.n} ÷ 2 = <span class="hl">${s.q}</span></span>
+          <span class="step-res${isMSB?' carry':''}">${isMSB?'MSB → ':''} resto ${s.r}</span>
+        </div>`;
+      });
+      html+=`<div class="step-item"><span></span><div class="step-final">${decimal}₁₀ = ${decimal.toString(2)}₂ (leia os restos de baixo para cima)</div></div>`;
+
+      // Dec → Hex
+      html += `</div><div class="steps-panel" style="margin-top:8px"><div class="steps-panel-title">// PASSO A PASSO: ${decimal}₁₀ → HEXADECIMAL (divisões por 16)</div>`;
+      let m=decimal, hsteps=[];
+      const hd = v=>v<10?v.toString():String.fromCharCode(55+v);
+      while(m>0){hsteps.push({n:m,q:Math.floor(m/16),r:m%16});m=Math.floor(m/16);}
+      hsteps.forEach((s,i)=>{
+        const isMSB=i===hsteps.length-1;
+        html+=`<div class="step-item">
+          <span class="step-idx">${i+1}</span>
+          <span class="step-expr">${s.n} ÷ 16 = <span class="hl">${s.q}</span></span>
+          <span class="step-res${isMSB?' carry':''}">${isMSB?'MSB → ':''} resto ${s.r} = ${hd(s.r)}</span>
+        </div>`;
+      });
+      const hexVal=decimal.toString(16).toUpperCase();
+      html+=`<div class="step-item"><span></span><div class="step-final">${decimal}₁₀ = ${hexVal}₁₆ = 0x${hexVal}</div></div>`;
+
+      // Hex → nibbles explanation
+      if(decimal <= 255){
+        const binPad = decimal.toString(2).padStart(8,'0');
+        const hi=binPad.slice(0,4), lo=binPad.slice(4,8);
+        const hiVal=parseInt(hi,2), loVal=parseInt(lo,2);
+        const hdn=v=>v<10?v.toString():String.fromCharCode(55+v);
+        html+=`</div><div class="steps-panel" style="margin-top:8px"><div class="steps-panel-title">// AGRUPAMENTO DE NIBBLES: ${decimal}₁₀ = ${binPad}₂ → HEX</div>`;
+        html+=`<div class="step-item"><span class="step-idx">1</span><span class="step-expr">Nibble alto: <span class="hl">${hi}</span> = ${hiVal}₁₀</span><span class="step-res">${hdn(hiVal)}₁₆</span></div>`;
+        html+=`<div class="step-item"><span class="step-idx">2</span><span class="step-expr">Nibble baixo: <span class="hl">${lo}</span> = ${loVal}₁₀</span><span class="step-res">${hdn(loVal)}₁₆</span></div>`;
+        html+=`<div class="step-item"><span></span><div class="step-final">Juntos: ${hdn(hiVal)}${hdn(loVal)}₁₆ = 0x${hdn(hiVal)}${hdn(loVal)}</div></div>`;
+      }
+      html+=`</div>`;
+    }
+    stepsEl.innerHTML=html;
+
+    // Bit visual
+    if(decimal <= 65535){
+      const needed = decimal>255?16:8;
+      const binStr = decimal.toString(2).padStart(needed,'0');
+      let bhtml=`<div style="font-family:'IBM Plex Mono';font-size:.7em;color:var(--text2);margin-bottom:8px;letter-spacing:.08em">// REPRESENTAÇÃO VISUAL DOS BITS (${needed} bits)</div><div class="bit-display">`;
+      binStr.split('').forEach((b,i)=>{
+        const pos=binStr.length-1-i;
+        const sep=(needed===16&&i===8)||(needed===8&&i===4)?'nibble-sep':'';
+        bhtml+=`<span class="bit-cell ${b==='1'?'b1':'b0'} ${sep}">${b}<span class="bit-pos">${pos}</span></span>`;
+      });
+      bhtml+=`</div><div style="font-family:'IBM Plex Mono';font-size:.72em;color:var(--text2);margin-top:6px">Posição 0 = bit menos significativo (LSB) · Posição ${binStr.length-1} = bit mais significativo (MSB)</div>`;
+      bitsEl.innerHTML=bhtml;
+    }
+  }catch(e){
+    errEl.textContent='// ERRO: '+e.message;
+    errEl.style.display='block';
+  }
+}
+
+/* ============================
+   QUIZ ENGINE
+   ============================ */
+const allQuestions=[
+  // DEC → BIN
+  {q:'Converta <strong>13</strong>₁₀ para Binário',hint:'Divida 13 por 2: 13÷2=6 resto 1, 6÷2=3 resto 0, 3÷2=1 resto 1, 1÷2=0 resto 1. Leia de baixo: 1101',ans:['1101','00001101'],cat:'DEC→BIN',explain:'13÷2=6r1, 6÷2=3r0, 3÷2=1r1, 1÷2=0r1 → lendo os restos de baixo: <strong>1101</strong>'},
+  {q:'Converta <strong>25</strong>₁₀ para Binário',hint:'25÷2=12r1, 12÷2=6r0, 6÷2=3r0, 3÷2=1r1, 1÷2=0r1 → leia de baixo',ans:['11001','00011001'],cat:'DEC→BIN',explain:'Restos obtidos (lidos de baixo para cima): 1,1,0,0,1 → <strong>11001</strong>'},
+  {q:'Converta <strong>128</strong>₁₀ para Binário',hint:'128 é potência de 2. 2⁷ = 128. Em binário: 1 seguido de 7 zeros',ans:['10000000'],cat:'DEC→BIN',explain:'128 = 2⁷, portanto é representado como <strong>10000000</strong> (1 no bit 7, zeros nos demais)'},
+  {q:'Converta <strong>100</strong>₁₀ para Binário',hint:'100÷2=50r0, 50÷2=25r0, 25÷2=12r1, 12÷2=6r0, 6÷2=3r0, 3÷2=1r1, 1÷2=0r1',ans:['1100100','01100100'],cat:'DEC→BIN',explain:'Divisões: 100÷2=50r0, 50÷2=25r0, 25÷2=12r1, 12÷2=6r0, 6÷2=3r0, 3÷2=1r1, 1÷2=0r1 → <strong>1100100</strong>'},
+  // BIN → DEC
+  {q:'Converta <strong>1010</strong>₂ para Decimal',hint:'1×2³ + 0×2² + 1×2¹ + 0×2⁰ = 8+0+2+0',ans:['10'],cat:'BIN→DEC',explain:'1×8 + 0×4 + 1×2 + 0×1 = 8 + 2 = <strong>10</strong>'},
+  {q:'Converta <strong>11111111</strong>₂ para Decimal',hint:'Todos os 8 bits em 1. Use a fórmula: 2⁸ - 1',ans:['255'],cat:'BIN→DEC',explain:'128+64+32+16+8+4+2+1 = <strong>255</strong> (valor máximo de 1 byte)'},
+  {q:'Converta <strong>10001000</strong>₂ para Decimal',hint:'Apenas as posições 7 e 3 têm bit 1: 2⁷ + 2³',ans:['136'],cat:'BIN→DEC',explain:'1×128 + 0+0+0+1×8+0+0+0 = 128 + 8 = <strong>136</strong>'},
+  {q:'Converta <strong>110101</strong>₂ para Decimal',hint:'Bits 1 nas posições 5,4,2,0: 32+16+4+1',ans:['53'],cat:'BIN→DEC',explain:'1×32 + 1×16 + 0×8 + 1×4 + 0×2 + 1×1 = 32+16+4+1 = <strong>53</strong>'},
+  // DEC → HEX
+  {q:'Converta <strong>255</strong>₁₀ para Hexadecimal',hint:'255÷16=15 resto 15. 15 em hex = F. Resultado: FF',ans:['FF','ff','0xFF','0xff'],cat:'DEC→HEX',explain:'255÷16=15r15. Ambos restos são 15=F. Resultado: <strong>FF</strong> = 0xFF'},
+  {q:'Converta <strong>16</strong>₁₀ para Hexadecimal',hint:'16÷16=1 resto 0. Resultado: 10',ans:['10','0x10'],cat:'DEC→HEX',explain:'16÷16=1r0 → <strong>10</strong>₁₆. Assim como 10₁₀ em decimal é dez, 10₁₆ em hex é dezasseis.'},
+  {q:'Converta <strong>172</strong>₁₀ para Hexadecimal',hint:'172÷16=10 resto 12. 10→A, 12→C. Resultado: AC',ans:['AC','ac','0xAC','0xac'],cat:'DEC→HEX',explain:'172÷16=10r12. 10=A, 12=C → <strong>AC</strong>₁₆ = 0xAC'},
+  // HEX → DEC
+  {q:'Converta <strong>0x1F</strong> para Decimal',hint:'1×16 + 15×1 = 16+15',ans:['31'],cat:'HEX→DEC',explain:'1×16¹ + 15×16⁰ = 16 + 15 = <strong>31</strong>'},
+  {q:'Converta <strong>0xC0</strong> para Decimal',hint:'C=12. 12×16 + 0×1',ans:['192'],cat:'HEX→DEC',explain:'C=12. 12×16 + 0×1 = 192 + 0 = <strong>192</strong>'},
+  {q:'Converta <strong>0xFF</strong> para Decimal',hint:'F=15. 15×16 + 15×1',ans:['255'],cat:'HEX→DEC',explain:'15×16 + 15×1 = 240+15 = <strong>255</strong>'},
+  // BIN → HEX
+  {q:'Converta <strong>10101010</strong>₂ para Hexadecimal',hint:'Agrupe em nibbles: 1010|1010. 1010=A. Resultado: AA',ans:['AA','aa','0xAA'],cat:'BIN→HEX',explain:'1010|1010 → A|A → <strong>AA</strong>₁₆ = 0xAA (= 170₁₀)'},
+  {q:'Converta <strong>11110000</strong>₂ para Hexadecimal',hint:'1111=F, 0000=0. Resultado: F0',ans:['F0','f0','0xF0'],cat:'BIN→HEX',explain:'1111=15=F, 0000=0 → <strong>F0</strong>₁₆'},
+  {q:'Converta <strong>0101 1100</strong>₂ para Hexadecimal',hint:'0101=5, 1100=12=C. Resultado: 5C',ans:['5C','5c','0x5C'],cat:'BIN→HEX',explain:'0101=5, 1100=C → <strong>5C</strong>₁₆ = 92₁₀'},
+  // OCTAL
+  {q:'Converta o octal <strong>0o755</strong> para decimal',hint:'7×64 + 5×8 + 5×1 = 448+40+5',ans:['493'],cat:'OCTAL',explain:'7×8² + 5×8¹ + 5×8⁰ = 7×64 + 5×8 + 5×1 = 448 + 40 + 5 = <strong>493</strong>'},
+  {q:'Converta o octal <strong>0o17</strong> para decimal',hint:'1×8¹ + 7×8⁰ = 8+7',ans:['15'],cat:'OCTAL',explain:'1×8 + 7×1 = 8+7 = <strong>15</strong>'},
+];
+
+let quizState={questions:[],current:0,score:0,answered:0};
+
+function shuffle(arr){let a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function initQuiz(){
+  quizState.questions=shuffle(allQuestions).slice(0,10);
+  quizState.current=0;quizState.score=0;quizState.answered=0;
+  renderQuiz();
+  updateScore();
+}
+
+function renderQuiz(){
+  const c=document.getElementById('quizContainer');
+  c.innerHTML='';
+  quizState.questions.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.className='quiz-wrap';
+    div.id='quiz-'+i;
+    div.innerHTML=`
+      <div class="quiz-question">
+        <div class="quiz-prompt">// QUESTÃO ${i+1} DE ${quizState.questions.length} · <span style="color:var(--blue)">${q.cat}</span></div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-input-row">
+          <input class="quiz-input" id="qi-${i}" placeholder="Digite sua resposta..." onkeydown="if(event.key==='Enter')checkAnswer(${i})">
+          <button class="quiz-check-btn" onclick="checkAnswer(${i})">▶ VERIFICAR</button>
+          <button class="quiz-check-btn" style="background:transparent;color:var(--amber);border:1px solid var(--amber)" onclick="toggleHint(${i})">? DICA</button>
+        </div>
+        <div class="quiz-hint" id="qh-${i}">💡 ${q.hint}</div>
+        <div class="quiz-feedback" id="qf-${i}"></div>
+      </div>`;
+    c.appendChild(div);
+  });
+}
+
+function toggleHint(i){
+  const h=document.getElementById('qh-'+i);
+  h.classList.toggle('show');
+}
+
+function checkAnswer(i){
+  const q=quizState.questions[i];
+  const input=document.getElementById('qi-'+i);
+  const fb=document.getElementById('qf-'+i);
+  if(fb.className.includes('correct')||fb.className.includes('wrong')) return; // already answered
+  
+  const val=input.value.trim().toUpperCase().replace(/\s+/g,'');
+  const correct=q.ans.map(a=>a.toUpperCase().replace(/\s+/g,''));
+  const isOk=correct.includes(val);
+  
+  if(isOk){
+    fb.className='quiz-feedback correct';
+    fb.innerHTML='✓ CORRETO! '+q.explain;
+    quizState.score++;
+  } else {
+    fb.className='quiz-feedback wrong';
+    fb.innerHTML=`✗ INCORRETO. Sua resposta: <strong>${val||'(vazio)'}</strong><br><br>${q.explain}`;
+  }
+  quizState.answered++;
+  input.disabled=true;
+  updateScore();
+}
+
+function updateScore(){
+  document.getElementById('scoreVal').textContent=`${quizState.score} / ${quizState.answered}`;
+}
+
+function resetQuiz(){
+  initQuiz();
+}
+
+// Init on load
+uniConvert();
+initQuiz();
+</script>
+</body>
+</html>
