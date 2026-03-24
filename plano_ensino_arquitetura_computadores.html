@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano de Ensino - Arquitetura e Organização de Computadores - Conselheiro Mairinque- PR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2a5298;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .info-item {
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .info-item strong {
+            color: #1e3c72;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .competencias-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .competencias-list li {
+            padding: 12px;
+            margin: 8px 0;
+            background-color: #f8f9fa;
+            border-left: 4px solid #28a745;
+            border-radius: 4px;
+        }
+
+        .competencias-list li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .week-number {
+            background-color: #2a5298;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .avaliacao-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .avaliacao-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .observacao {
+            background-color: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+            margin-top: 30px;
+            color: #666;
+        }
+
+        .pratica-highlight {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+
+        .arduino-box {
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .arduino-box h4 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Plano de Ensino</h1>
+            <p>Arquitetura e Organização de Computadores</p>
+        </div>
+
+        <div class="info-box">
+            <h3 style="color: #1e3c72; margin-bottom: 15px;">Informações Gerais</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Curso:</strong>
+                    Tecnologia em Análise e Desenvolvimento de Sistemas
+                </div>
+                <div class="info-item">
+                    <strong>Componente Curricular:</strong>
+                    Arquitetura e Organização de Computadores
+                </div>
+                <div class="info-item">
+                    <strong>Semestre:</strong>
+                    1º Semestre
+                </div>
+                <div class="info-item">
+                    <strong>Carga Horária:</strong>
+                    80 aulas (60 horas)
+                </div>
+                <div class="info-item">
+                    <strong>Distribuição:</strong>
+                    40 aulas teóricas + 40 aulas práticas
+                </div>
+                <div class="info-item">
+                    <strong>Modalidade:</strong>
+                    Presencial
+                </div>
+                <div class="info-item">
+                    <strong>Professor:</strong>
+                    Isaque Katahira
+                </div>
+                <div class="info-item">
+                    <strong>Período Letivo:</strong>
+                    1º Semestre de 2026
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background-color: white; border-radius: 5px;">
+                <strong style="color: #1e3c72;">Horário das Aulas:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li><strong>Terças-feiras:</strong> 2 aulas de 45 minutos (Teoria)</li>
+                    <li><strong>Quintas-feiras:</strong> 2 aulas de 45 minutos (Prática com Arduino/ESP32)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">1. Ementa</h2>
+            <p style="text-align: justify;">
+                Bases numéricas e codificação de dados. Introdução à lógica digital. Conceitos básicos de arquitetura computacional incluindo as gerações de computadores, níveis de computação, processadores, canais, periféricos, modo de endereçamento, tipo de dados, conjunto de instruções, interrupções. Sistemas paralelos. Estudo da microarquitetura, interrupções e sistemas de entrada/saída (I/O). Exploração de sistemas de memória, incluindo hierarquias de memória e gerenciamento de memória. Análise de sistemas paralelos e distribuídos, além da interconexão de componentes de hardware (buses e interfaces de comunicação). Sistemas operacionais: conceitos e funções. Linguagens e ferramentas. Organização de arquivos. Arquiteturas RISC e CISC.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">2. Objetivos de Aprendizagem</h2>
+            <p style="margin-bottom: 15px; text-align: justify;">
+                Fornecer uma visão geral de organização de computadores nos seus diversos níveis: lógica digital, microarquitetura, conjunto de instruções, sistema operacional, linguagem de programação e tecnologias. Compreender a estrutura, operação e organização de computadores, incluindo a interação entre hardware e software, e como diferentes componentes e sistemas se integram para formar um sistema computacional eficiente.
+            </p>
+
+            <div class="arduino-box">
+                <h4>🔧 Aprendizagem Prática com Arduino e ESP32</h4>
+                <p>
+                    Os alunos desenvolverão habilidades práticas através da programação e manipulação de microcontroladores Arduino e ESP32, aplicando conceitos de arquitetura de computadores em projetos reais, incluindo:
+                </p>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Implementação física de portas lógicas e circuitos digitais</li>
+                    <li>Programação em baixo nível (linguagem C/C++ para embarcados)</li>
+                    <li>Manipulação de registradores e memória</li>
+                    <li>Interfaces de comunicação (I2C, SPI, UART)</li>
+                    <li>Interrupções e tratamento de eventos</li>
+                    <li>Sistemas embarcados e IoT básico</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">3. Competências a Serem Desenvolvidas</h2>
+            
+            <h3 style="color: #2a5298; margin-top: 20px; margin-bottom: 10px;">3.1 Competências Profissionais</h3>
+            <ul class="competencias-list">
+                <li>Integrar os sistemas de informação da empresa otimizando o uso das bases de dados e dos recursos em rede e nuvem, aplicando os protocolos de segurança, integridade e performance do sistema operacional, das bases de dados e das redes utilizadas</li>
+            </ul>
+
+            <h3 style="color: #2a5298; margin-top: 20px; margin-bottom: 10px;">3.2 Competências Socioemocionais</h3>
+            <ul class="competencias-list">
+                <li>Desenvolver pensamento crítico em situações adversas</li>
+                <li>Demonstrar capacidade de resolver problemas complexos e propor soluções criativas e inovadoras</li>
+                <li>Evidenciar autonomia na tomada de decisões técnicas</li>
+                <li>Trabalhar em equipe de forma colaborativa nos projetos práticos</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">4. Metodologias de Ensino</h2>
+            <p style="margin-bottom: 15px;">De acordo com o PPC, serão utilizadas as seguintes metodologias:</p>
+            <ul class="competencias-list">
+                <li>Aulas Expositivas: Apresentação teórica dos conceitos fundamentais</li>
+                <li>Aprendizagem Baseada em Projetos/Problemas: Desenvolvimento de projetos práticos com Arduino e ESP32</li>
+                <li>Gamificação: Uso de simuladores e desafios de programação</li>
+                <li>Atividades em pares/grupos: Trabalhos colaborativos em laboratório</li>
+                <li>Sala de Aula Invertida: Leitura prévia e discussão em aula</li>
+                <li>Estudo de Caso Real: Análise de arquiteturas de computadores e microcontroladores reais</li>
+                <li>Rotação por Estações: Diferentes atividades práticas no laboratório com kits Arduino/ESP32</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">5. Recursos Didáticos</h2>
+            
+            <h3 style="color: #2a5298; margin-bottom: 10px;">5.1 Materiais Teóricos</h3>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Slides e apresentações multimídia</li>
+                <li>Apostilas e materiais de apoio</li>
+                <li>Vídeos educacionais</li>
+                <li>Artigos técnicos e datasheets</li>
+            </ul>
+
+            <div class="arduino-box">
+                <h4>5.2 Kits de Hardware (Arduino e ESP32)</h4>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Placas:</strong> Arduino Uno, Arduino Mega, ESP32 DevKit</li>
+                    <li><strong>Componentes Básicos:</strong> LEDs, resistores, capacitores, botões, potenciômetros</li>
+                    <li><strong>Sensores:</strong> Temperatura (DHT11/DHT22), Ultrassônico (HC-SR04), LDR, PIR</li>
+                    <li><strong>Displays:</strong> LCD 16x2, Display 7 segmentos, OLED</li>
+                    <li><strong>Módulos de Comunicação:</strong> Bluetooth HC-05, WiFi ESP8266, NRF24L01</li>
+                    <li><strong>Atuadores:</strong> Motores DC, Servo motores, Buzzer, Relés</li>
+                    <li><strong>Outros:</strong> Protoboard, jumpers, fonte de alimentação, multímetro</li>
+                </ul>
+            </div>
+
+            <h3 style="color: #2a5298; margin-top: 20px; margin-bottom: 10px;">5.3 Softwares e Ferramentas</h3>
+            <ul style="margin-left: 20px;">
+                <li><strong>Arduino IDE:</strong> Programação de Arduino</li>
+                <li><strong>PlatformIO:</strong> IDE avançada para ESP32</li>
+                <li><strong>Logisim / Digital:</strong> Simulação de circuitos digitais</li>
+                <li><strong>Tinkercad Circuits:</strong> Simulação online de circuitos Arduino</li>
+                <li><strong>Wokwi:</strong> Simulador de ESP32 online</li>
+                <li><strong>Fritzing:</strong> Documentação de circuitos</li>
+                <li><strong>Serial Monitor/Plotter:</strong> Debugging e visualização de dados</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">6. Conteúdo Programático e Cronograma</h2>
+
+            <h3 style="color: #2a5298; margin-bottom: 15px;">UNIDADE 1 - Fundamentos e Sistemas de Numeração (Semanas 1-4)</h3>
+            
+            <table>
+                <tr>
+                    <th style="width: 15%;">Semana</th>
+                    <th style="width: 42.5%;">Terça-feira (Teoria)</th>
+                    <th style="width: 42.5%;">Quinta-feira (Prática com Arduino/ESP32)</th>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 1</span></td>
+                    <td>
+                        <strong>Introdução à Arquitetura de Computadores</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>História e evolução dos computadores</li>
+                            <li>Gerações de computadores</li>
+                            <li>Modelo de Von Neumann</li>
+                            <li>Níveis de abstração computacional</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Introdução ao Arduino</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Apresentação da placa Arduino Uno</li>
+                                <li>Instalação e configuração do Arduino IDE</li>
+                                <li>Estrutura de um programa Arduino (setup/loop)</li>
+                                <li>Primeiro projeto: Blink LED</li>
+                                <li>Conceitos de entrada digital e saída digital</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 2</span></td>
+                    <td>
+                        <strong>Sistemas de Numeração</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Sistema decimal, binário, octal e hexadecimal</li>
+                            <li>Conversão entre bases numéricas</li>
+                            <li>Operações aritméticas em diferentes bases</li>
+                            <li>Números com sinal (complemento de 2)</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Representação de Números com LEDs</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Contador binário com 8 LEDs</li>
+                                <li>Manipulação de bits em linguagem C</li>
+                                <li>Operadores bit a bit (&, |, ^, ~, <<, >>)</li>
+                                <li>Display de números em diferentes bases</li>
+                                <li>Uso da comunicação serial para debug</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 3</span></td>
+                    <td>
+                        <strong>Representação de Dados</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Codificação de caracteres (ASCII, Unicode)</li>
+                            <li>Representação de números inteiros</li>
+                            <li>Representação de ponto flutuante (IEEE 754)</li>
+                            <li>BCD (Binary Coded Decimal)</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Comunicação Serial e Codificação</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Decodificador ASCII com display LCD</li>
+                                <li>Leitura de entrada serial</li>
+                                <li>Conversão de caracteres para códigos</li>
+                                <li>Display de mensagens em LCD 16x2</li>
+                                <li>Manipulação de strings em Arduino</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 4</span></td>
+                    <td>
+                        <strong>Álgebra Booleana e Portas Lógicas</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Operações lógicas básicas (AND, OR, NOT)</li>
+                            <li>Teoremas e propriedades da álgebra booleana</li>
+                            <li>Tabelas-verdade</li>
+                            <li>Portas lógicas e circuitos combinacionais</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Implementação de Portas Lógicas</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Simulador de portas lógicas com botões e LEDs</li>
+                                <li>Implementação em software de AND, OR, NOT, XOR</li>
+                                <li>Criação de tabelas-verdade interativas</li>
+                                <li>Circuito somador de 1 bit</li>
+                                <li>Validação com entradas físicas</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <h3 style="color: #2a5298; margin-top: 30px; margin-bottom: 15px;">UNIDADE 2 - Organização Interna do Computador (Semanas 5-8)</h3>
+            
+            <table>
+                <tr>
+                    <th style="width: 15%;">Semana</th>
+                    <th style="width: 42.5%;">Terça-feira (Teoria)</th>
+                    <th style="width: 42.5%;">Quinta-feira (Prática com Arduino/ESP32)</th>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 5</span></td>
+                    <td>
+                        <strong>Circuitos Sequenciais e Memórias</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Flip-flops (SR, JK, D, T)</li>
+                            <li>Registradores</li>
+                            <li>Contadores</li>
+                            <li>Memórias básicas (RAM, ROM)</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Contadores e Registradores</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Contador digital com display 7 segmentos</li>
+                                <li>Implementação de contador crescente/decrescente</li>
+                                <li>Uso de botões para controle (reset, pause, direção)</li>
+                                <li>Simulação de registrador de deslocamento</li>
+                                <li>Armazenamento de valores na EEPROM do Arduino</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 6</span></td>
+                    <td>
+                        <strong>Arquitetura da CPU</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Componentes da CPU (ULA, UC, Registradores)</li>
+                            <li>Ciclo de instrução (Fetch-Decode-Execute)</li>
+                            <li>Clock e sincronização</li>
+                            <li>Barramentos internos</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Análise do Microcontrolador ATmega328P</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Estudo da arquitetura do microcontrolador Arduino</li>
+                                <li>Análise de registradores especiais</li>
+                                <li>Manipulação direta de portas (PORTB, PORTC, PORTD)</li>
+                                <li>Medição de frequência de clock</li>
+                                <li>Comparação: código Arduino vs manipulação direta de registros</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 7</span></td>
+                    <td>
+                        <strong>Conjunto de Instruções</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Tipos de instruções</li>
+                            <li>Modos de endereçamento</li>
+                            <li>Formato de instruções</li>
+                            <li>Linguagem de máquina vs Assembly</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Programação em Assembly para AVR</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Introdução ao Assembly AVR</li>
+                                <li>Projeto simples: Blink LED em Assembly</li>
+                                <li>Comparação de código Assembly vs C</li>
+                                <li>Análise do código de máquina gerado</li>
+                                <li>Otimização de código</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 8</span></td>
+                    <td>
+                        <strong>Microarquitetura</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Pipeline de instruções</li>
+                            <li>Datapath e control path</li>
+                            <li>Hazards e suas soluções</li>
+                            <li>Paralelismo em nível de instrução</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Medição de Performance e Timing</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Benchmark de operações no Arduino</li>
+                                <li>Medição de tempo de execução (micros(), millis())</li>
+                                <li>Comparação de performance entre funções</li>
+                                <li>Análise de ciclos de clock</li>
+                                <li>Otimização de código para performance</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <h3 style="color: #2a5298; margin-top: 30px; margin-bottom: 15px;">UNIDADE 3 - Hierarquia de Memória e Entrada/Saída (Semanas 9-12)</h3>
+            
+            <table>
+                <tr>
+                    <th style="width: 15%;">Semana</th>
+                    <th style="width: 42.5%;">Terça-feira (Teoria)</th>
+                    <th style="width: 42.5%;">Quinta-feira (Prática com Arduino/ESP32)</th>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 9</span></td>
+                    <td>
+                        <strong>Hierarquia de Memória</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Princípio da localidade</li>
+                            <li>Tipos de memória (registradores, cache, RAM, disco)</li>
+                            <li>Memória cache (mapeamento)</li>
+                            <li>Políticas de substituição</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Gerenciamento de Memória no Arduino</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Monitor de uso de memória RAM/Flash/EEPROM</li>
+                                <li>Análise de ocupação de memória</li>
+                                <li>Técnicas de otimização de memória</li>
+                                <li>Uso de PROGMEM para dados estáticos</li>
+                                <li>Escrita e leitura na EEPROM</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 10</span></td>
+                    <td>
+                        <strong>Memória Principal e Secundária</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Tecnologias de memória RAM (SRAM, DRAM)</li>
+                            <li>Memória virtual e paginação</li>
+                            <li>Dispositivos de armazenamento (HDD, SSD)</li>
+                            <li>Gerenciamento de memória</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Armazenamento Externo com Cartão SD</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Sistema de log de dados em cartão SD</li>
+                                <li>Interface SPI com módulo SD Card</li>
+                                <li>Criação, leitura e escrita de arquivos</li>
+                                <li>Sistema de arquivos FAT</li>
+                                <li>Data logger com sensor de temperatura</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 11</span></td>
+                    <td>
+                        <strong>Sistema de Entrada/Saída</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Barramentos externos (PCI, USB, SATA)</li>
+                            <li>Interfaces de comunicação</li>
+                            <li>DMA (Direct Memory Access)</li>
+                            <li>Interrupções e tratamento</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Protocolos de Comunicação: I2C e SPI</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Display OLED via I2C</li>
+                                <li>Comunicação I2C com múltiplos dispositivos</li>
+                                <li>Comunicação SPI com módulos</li>
+                                <li>Análise de sinais com Logic Analyzer</li>
+                                <li>Comparação de protocolos (I2C, SPI, UART)</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 12</span></td>
+                    <td>
+                        <strong>Periféricos e Interfaces</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Tipos de periféricos</li>
+                            <li>Canais de I/O</li>
+                            <li>Controladores de dispositivos</li>
+                            <li>Comunicação serial e paralela</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Interrupções e Eventos</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Sistema de alarme com interrupções</li>
+                                <li>Configuração de interrupções externas</li>
+                                <li>Interrupções por timer</li>
+                                <li>Debouncing de botões por interrupção</li>
+                                <li>Priorização de interrupções</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <h3 style="color: #2a5298; margin-top: 30px; margin-bottom: 15px;">UNIDADE 4 - ESP32 e Arquiteturas Avançadas (Semanas 13-16)</h3>
+            
+            <table>
+                <tr>
+                    <th style="width: 15%;">Semana</th>
+                    <th style="width: 42.5%;">Terça-feira (Teoria)</th>
+                    <th style="width: 42.5%;">Quinta-feira (Prática com ESP32)</th>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 13</span></td>
+                    <td>
+                        <strong>Arquiteturas RISC vs CISC</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Características RISC</li>
+                            <li>Características CISC</li>
+                            <li>Comparação e análise</li>
+                            <li>Exemplos de processadores</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Introdução ao ESP32</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Apresentação da arquitetura ESP32 (Xtensa LX6)</li>
+                                <li>Comparação Arduino (AVR) vs ESP32 (Xtensa)</li>
+                                <li>Configuração do ambiente ESP-IDF/PlatformIO</li>
+                                <li>Primeiro projeto: Blink LED no ESP32</li>
+                                <li>Análise de recursos (dual-core, WiFi, Bluetooth)</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 14</span></td>
+                    <td>
+                        <strong>Paralelismo e Multiprocessamento</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Processamento paralelo</li>
+                            <li>Multicore e manycore</li>
+                            <li>Arquiteturas SMP e NUMA</li>
+                            <li>Programação paralela básica</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Programação Dual-Core no ESP32</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Tarefas paralelas em dois núcleos</li>
+                                <li>Criação de tasks com FreeRTOS</li>
+                                <li>Afinidade de núcleo (core pinning)</li>
+                                <li>Sincronização entre cores (mutex, semaphore)</li>
+                                <li>Medição de ganho de performance</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 15</span></td>
+                    <td>
+                        <strong>Sistemas Distribuídos</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Conceitos de sistemas distribuídos</li>
+                            <li>Clusters e grid computing</li>
+                            <li>Cloud computing (fundamentos de hardware)</li>
+                            <li>Interconexão de sistemas</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Comunicação Wireless - WiFi e Bluetooth</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Projeto: Sistema distribuído com ESP32</li>
+                                <li>Comunicação WiFi entre ESP32s</li>
+                                <li>Protocolo MQTT para IoT</li>
+                                <li>Comunicação Bluetooth Classic e BLE</li>
+                                <li>Servidor web embarcado no ESP32</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 16</span></td>
+                    <td>
+                        <strong>Arquiteturas Modernas e Tendências</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Processadores ARM</li>
+                            <li>GPUs e computação heterogênea</li>
+                            <li>Computação quântica (introdução)</li>
+                            <li>IoT e sistemas embarcados</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Projeto IoT Completo com ESP32</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Integração de sensores e atuadores</li>
+                                <li>Conectividade com cloud (ThingSpeak, Firebase)</li>
+                                <li>Dashboard web para monitoramento</li>
+                                <li>Controle remoto via aplicativo</li>
+                                <li>Deep Sleep e economia de energia</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <h3 style="color: #2a5298; margin-top: 30px; margin-bottom: 15px;">UNIDADE 5 - Integração e Projeto Final (Semanas 17-20)</h3>
+            
+            <table>
+                <tr>
+                    <th style="width: 15%;">Semana</th>
+                    <th style="width: 42.5%;">Terça-feira (Teoria)</th>
+                    <th style="width: 42.5%;">Quinta-feira (Prática - Projeto Final)</th>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 17</span></td>
+                    <td>
+                        <strong>Interface Hardware/Software</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Papel do sistema operacional</li>
+                            <li>Drivers de dispositivos</li>
+                            <li>API de hardware</li>
+                            <li>Camadas de abstração</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Desenvolvimento do Projeto Final - Parte 1</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Definição do projeto integrador em equipes</li>
+                                <li>Especificação de requisitos</li>
+                                <li>Seleção de componentes e sensores</li>
+                                <li>Arquitetura do sistema</li>
+                                <li>Início da implementação</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 18</span></td>
+                    <td>
+                        <strong>Otimização e Desempenho</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Métricas de desempenho</li>
+                            <li>Benchmarking</li>
+                            <li>Gargalos de sistema</li>
+                            <li>Técnicas de otimização</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Desenvolvimento do Projeto Final - Parte 2</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Continuação da implementação</li>
+                                <li>Integração de módulos</li>
+                                <li>Testes de funcionalidade</li>
+                                <li>Otimização de código</li>
+                                <li>Documentação técnica</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 19</span></td>
+                    <td>
+                        <strong>Revisão Geral I</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Revisão de fundamentos</li>
+                            <li>Resolução de exercícios complexos</li>
+                            <li>Discussão de tópicos importantes</li>
+                            <li>Esclarecimento de dúvidas</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Finalização do Projeto Final</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Conclusão da implementação</li>
+                                <li>Testes finais e validação</li>
+                                <li>Preparação da apresentação</li>
+                                <li>Montagem da demonstração</li>
+                                <li>Revisão da documentação</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="week-number">Semana 20</span></td>
+                    <td>
+                        <strong>Revisão Geral II</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Revisão final</li>
+                            <li>Simulado</li>
+                            <li>Preparação para avaliação final</li>
+                            <li>Feedback e consolidação</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="pratica-highlight">
+                            <strong>🔧 Apresentação dos Projetos Finais</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Apresentações das equipes</li>
+                                <li>Demonstração prática dos projetos</li>
+                                <li>Questionamentos e discussão técnica</li>
+                                <li>Avaliação por pares</li>
+                                <li>Feedback e encerramento</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">7. Avaliação da Aprendizagem</h2>
+            
+            <h3 style="color: #2a5298; margin-bottom: 15px;">7.1 Instrumentos de Avaliação</h3>
+            
+            <div class="avaliacao-box">
+                <h4>Avaliação Teórica 1 - Fundamentos e Sistemas Numéricos (20%)</h4>
+                <p><strong>Período:</strong> Semana 5</p>
+                <p><strong>Formato:</strong> Prova individual escrita</p>
+                <p><strong>Conteúdo:</strong> Sistemas de numeração, representação de dados, álgebra booleana, portas lógicas e circuitos combinacionais.</p>
+            </div>
+
+            <div class="avaliacao-box">
+                <h4>Avaliação Prática 1 - Projetos com Arduino (15%)</h4>
+                <p><strong>Período:</strong> Semana 8</p>
+                <p><strong>Formato:</strong> Avaliação prática em laboratório</p>
+                <p><strong>Descrição:</strong> Desenvolvimento de circuito e código Arduino que demonstre domínio de conceitos de portas lógicas, manipulação de bits, registradores e comunicação serial. Projeto individual ou em dupla.</p>
+            </div>
+
+            <div class="avaliacao-box">
+                <h4>Avaliação Teórica 2 - Arquitetura e Memória (20%)</h4>
+                <p><strong>Período:</strong> Semana 12</p>
+                <p><strong>Formato:</strong> Prova individual escrita</p>
+                <p><strong>Conteúdo:</strong> Arquitetura da CPU, conjunto de instruções, hierarquia de memória, sistemas de I/O, interrupções e interfaces de comunicação.</p>
+            </div>
+
+            <div class="avaliacao-box">
+                <h4>Avaliação Prática 2 - Projetos com ESP32 (15%)</h4>
+                <p><strong>Período:</strong> Semana 16</p>
+                <p><strong>Formato:</strong> Avaliação prática em laboratório</p>
+                <p><strong>Descrição:</strong> Desenvolvimento de aplicação com ESP32 utilizando dual-core, comunicação wireless (WiFi ou Bluetooth) e integração com sensores. Demonstração de conhecimento em arquiteturas modernas e programação paralela.</p>
+            </div>
+
+            <div class="avaliacao-box" style="background-color: #e8f5e9; border: 2px solid #4caf50;">
+                <h4>Projeto Integrador Final (30%)</h4>
+                <p><strong>Período:</strong> Desenvolvimento nas Semanas 17-19, apresentação na Semana 20</p>
+                <p><strong>Formato:</strong> Projeto prático em equipe (2-4 alunos)</p>
+                <p><strong>Descrição:</strong> Desenvolvimento de um sistema embarcado completo que integre os conceitos estudados durante o semestre. O projeto deve incluir:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Utilização de Arduino ou ESP32 (ou ambos em comunicação)</li>
+                    <li>Múltiplos sensores e atuadores</li>
+                    <li>Interface de comunicação (I2C, SPI, UART, WiFi ou Bluetooth)</li>
+                    <li>Tratamento de interrupções</li>
+                    <li>Gerenciamento de memória eficiente</li>
+                    <li>Interface de usuário (display, LEDs, buzzer, etc.)</li>
+                    <li>Código bem documentado e organizado</li>
+                    <li>Apresentação oral com demonstração funcional</li>
+                    <li>Relatório técnico detalhado</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>Exemplos de projetos:</strong> Estação meteorológica IoT, sistema de automação residencial, robô autônomo, sistema de monitoramento ambiental, controle de acesso inteligente, etc.</p>
+            </div>
+
+            <h3 style="color: #2a5298; margin-top: 25px; margin-bottom: 15px;">7.2 Critérios de Avaliação</h3>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Domínio dos conceitos teóricos de arquitetura de computadores</li>
+                <li>Capacidade de aplicar conceitos teóricos em projetos práticos</li>
+                <li>Habilidade em programação de microcontroladores (Arduino/ESP32)</li>
+                <li>Competência na integração de componentes eletrônicos</li>
+                <li>Qualidade do código: organização, documentação e otimização</li>
+                <li>Criatividade e inovação nas soluções propostas</li>
+                <li>Capacidade de trabalho em equipe</li>
+                <li>Clareza na comunicação oral e escrita</li>
+                <li>Pontualidade na entrega de trabalhos</li>
+                <li>Participação ativa nas aulas práticas</li>
+            </ul>
+
+            <h3 style="color: #2a5298; margin-bottom: 15px;">7.3 Composição da Nota Final</h3>
+            <table style="width: 70%; margin: 20px auto;">
+                <tr>
+                    <th>Instrumento de Avaliação</th>
+                    <th style="text-align: center;">Peso</th>
+                </tr>
+                <tr>
+                    <td>Avaliação Teórica 1 - Fundamentos</td>
+                    <td style="text-align: center;">20%</td>
+                </tr>
+                <tr>
+                    <td>Avaliação Prática 1 - Arduino</td>
+                    <td style="text-align: center;">15%</td>
+                </tr>
+                <tr>
+                    <td>Avaliação Teórica 2 - Arquitetura e Memória</td>
+                    <td style="text-align: center;">20%</td>
+                </tr>
+                <tr>
+                    <td>Avaliação Prática 2 - ESP32</td>
+                    <td style="text-align: center;">15%</td>
+                </tr>
+                <tr>
+                    <td>Projeto Integrador Final</td>
+                    <td style="text-align: center;">30%</td>
+                </tr>
+                <tr style="background-color: #f0f0f0; font-weight: bold;">
+                    <td>TOTAL</td>
+                    <td style="text-align: center;">100%</td>
+                </tr>
+            </table>
+
+            <div class="observacao">
+                <strong>Critérios de Aprovação:</strong><br>
+                • Frequência mínima: 75% das aulas (teóricas e práticas)<br>
+                • Média Final ≥ 6,0 (escala de 0 a 10)<br>
+                • Participação obrigatória em todas as avaliações práticas<br>
+                • Entrega do Projeto Integrador Final é obrigatória para aprovação<br>
+                <br>
+                <strong>Recuperação:</strong><br>
+                • Prova substitutiva teórica ao final do semestre para alunos com média entre 4,0 e 5,9<br>
+                • Projeto de recuperação para alunos que não atingirem nota mínima nas avaliações práticas
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">8. Bibliografia</h2>
+            
+            <h3 style="color: #2a5298; margin-bottom: 10px;">8.1 Bibliografia Básica</h3>
+            <ul style="margin-left: 20px; margin-bottom: 20px; line-height: 1.8;">
+                <li><strong>STALLINGS, W.</strong> Arquitetura e Organização de Computadores. 10. ed. Pearson, 2017.</li>
+                <li><strong>TANENBAUM, A. S.</strong> Organização Estruturada de Computadores. 6. ed. Pearson, 2013.</li>
+                <li><strong>TOCCI, R. J.; WIDMER, N.; MOSS, G.</strong> Sistemas Digitais: Princípios e aplicações. 12. ed. Pearson Brasil, 2019.</li>
+            </ul>
+
+            <h3 style="color: #2a5298; margin-bottom: 10px;">8.2 Bibliografia Complementar</h3>
+            <ul style="margin-left: 20px; margin-bottom: 20px; line-height: 1.8;">
+                <li><strong>PATTERSON, D.A.; HENNESSY, J. L.</strong> Arquitetura e Organização de Computadores - A interface hardware/software. Tradução da 5. ed. LTC, 2017.</li>
+                <li><strong>SILVA, L.R.M.</strong> Organização e Arquitetura de Computadores. 1. ed. Editora Amazon, 2019.</li>
+            </ul>
+
+            <h3 style="color: #2a5298; margin-bottom: 10px;">8.3 Bibliografia para Arduino e ESP32</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li><strong>MCROBERTS, M.</strong> Arduino Básico. 2ª ed. Novatec, 2018.</li>
+                <li><strong>MONK, S.</strong> Programação com Arduino: Começando com Sketches. 2ª ed. Bookman, 2017.</li>
+                <li><strong>KURNIAWAN, A.</strong> IoT Projects with ESP32. Packt Publishing, 2019.</li>
+                <li><strong>ARDUINO.</strong> Documentação Oficial. Disponível em: https://www.arduino.cc/reference/</li>
+                <li><strong>ESPRESSIF.</strong> ESP32 Technical Reference Manual. Disponível em: https://docs.espressif.com/</li>
+                <li><strong>ATMEL.</strong> ATmega328P Datasheet. Disponível em: https://www.microchip.com/</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">9. Atribuições e Responsabilidades</h2>
+            
+            <h3 style="color: #2a5298; margin-bottom: 10px;">9.1 Do Professor</h3>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Ministrar as aulas teóricas e práticas conforme o cronograma</li>
+                <li>Disponibilizar materiais didáticos e códigos exemplo</li>
+                <li>Orientar os alunos no desenvolvimento dos projetos práticos</li>
+                <li>Realizar atendimento extraclasse mediante agendamento</li>
+                <li>Avaliar o desempenho dos alunos de forma contínua e formativa</li>
+                <li>Manter os kits Arduino/ESP32 organizados e funcionais</li>
+                <li>Proporcionar feedback construtivo sobre projetos e avaliações</li>
+                <li>Garantir a segurança no laboratório de eletrônica</li>
+            </ul>
+
+            <h3 style="color: #2a5298; margin-bottom: 10px;">9.2 Do Aluno</h3>
+            <ul style="margin-left: 20px;">
+                <li>Comparecer pontualmente às aulas teóricas e práticas</li>
+                <li>Participar ativamente das atividades em laboratório</li>
+                <li>Zelar pelos equipamentos, componentes e kits fornecidos</li>
+                <li>Realizar as leituras prévias e exercícios indicados</li>
+                <li>Desenvolver os projetos práticos com dedicação e criatividade</li>
+                <li>Trabalhar em equipe de forma colaborativa e respeitosa</li>
+                <li>Entregar trabalhos e projetos nos prazos estabelecidos</li>
+                <li>Documentar adequadamente os projetos desenvolvidos</li>
+                <li>Buscar auxílio do professor quando necessário</li>
+                <li>Manter postura ética no uso de códigos e materiais de terceiros</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">10. Valores e Atitudes</h2>
+            <ul class="competencias-list">
+                <li>Estimular o interesse na resolução de problemas práticos através de sistemas embarcados</li>
+                <li>Promover o pensamento crítico e analítico na escolha de soluções técnicas</li>
+                <li>Desenvolver capacidade de trabalho em equipe e compartilhamento de conhecimento</li>
+                <li>Incentivar a criatividade e inovação no desenvolvimento de projetos</li>
+                <li>Valorizar a documentação técnica e boas práticas de programação</li>
+                <li>Fomentar o aprendizado contínuo e autodidatismo em novas tecnologias</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">11. Competências Socioemocionais</h2>
+            <ul class="competencias-list">
+                <li>Evidenciar autonomia na tomada de decisões técnicas</li>
+                <li>Demonstrar resiliência na resolução de problemas complexos (debugging)</li>
+                <li>Revelar habilidade para trabalhar colaborativamente em projetos</li>
+                <li>Demonstrar capacidade de adaptação a novas tecnologias e plataformas</li>
+                <li>Evidenciar iniciativa na busca por soluções criativas</li>
+                <li>Desenvolver autoconfiança através da construção de projetos funcionais</li>
+                <li>Demonstrar organização no gerenciamento de tempo e recursos</li>
+            </ul>
+        </div>
+
+        <div class="arduino-box" style="margin-top: 30px;">
+            <h3 style="color: #1565c0; margin-bottom: 15px;">📦 Material Necessário por Aluno/Equipe</h3>
+            <p style="margin-bottom: 10px;"><strong>A unidade fornecerá os seguintes kits para uso em laboratório:</strong></p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>1x Placa Arduino Uno R3</li>
+                <li>1x Placa ESP32 DevKit V1</li>
+                <li>1x Protoboard 830 pontos</li>
+                <li>1x Kit jumpers macho-macho, macho-fêmea, fêmea-fêmea</li>
+                <li>Resistores diversos (220Ω, 1kΩ, 10kΩ)</li>
+                <li>LEDs coloridos (vermelho, verde, amarelo, azul)</li>
+                <li>Push buttons e chaves</li>
+                <li>Potenciômetros 10kΩ</li>
+                <li>Display LCD 16x2 com interface I2C</li>
+                <li>Display 7 segmentos</li>
+                <li>Sensor de temperatura DHT11 ou DHT22</li>
+                <li>Sensor ultrassônico HC-SR04</li>
+                <li>Módulo Bluetooth HC-05 ou HC-06</li>
+                <li>Módulo relé</li>
+                <li>Servo motor SG90</li>
+                <li>Motor DC com driver L298N</li>
+                <li>Buzzer ativo e passivo</li>
+                <li>Módulo SD Card</li>
+                <li>Cabos USB (tipo A para B e micro USB)</li>
+            </ul>
+            <p style="margin-top: 15px; padding: 10px; background-color: #fff3cd; border-radius: 4px;">
+                <strong>⚠️ Importante:</strong> Os alunos são responsáveis pelo uso adequado dos kits. Danos causados por mau uso ou negligência deverão ser ressarcidos. Recomenda-se que os alunos adquiram seus próprios kits para prática em casa.
+            </p>
+        </div>
+
+        <div class="observacao" style="margin-top: 30px;">
+            <strong>Observações Importantes:</strong><br>
+            • Este plano de ensino poderá sofrer ajustes ao longo do semestre conforme necessidades pedagógicas<br>
+            • As datas das avaliações serão confirmadas com 2 semanas de antecedência<br>
+            • O laboratório de eletrônica deverá ser reservado para todas as aulas práticas de quinta-feira<br>
+            • Recomenda-se fortemente que os alunos pratiquem com Arduino/ESP32 em casa<br>
+            • Material complementar, códigos exemplo e tutoriais serão disponibilizados via plataforma EAD<br>
+            • Projeto Integrador Final pode ser continuado como TG (Trabalho de Graduação) se houver interesse<br>
+            • Certificados de participação em competições de robótica/IoT podem somar pontos extras
+        </div>
+
+        <div class="footer">
+            <p><strong>Plano de Ensino - Arquitetura e Organização de Computadores</strong></p>
+            <p>Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas</p>
+            <p>Centro Estadual de Educação Tecnológica Paula Souza</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">1º Semestre de 2026</p>
+            <p style="margin-top: 15px; font-size: 0.85em; color: #888;">
+                Elaborado com base no PPC do CST em Análise e Desenvolvimento de Sistemas
+            </p>
+        </div>
+    </div>
+</body>
+</html>

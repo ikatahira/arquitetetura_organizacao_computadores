@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Completo - Conversor Decimal → Binário | ISW044 Aula 02</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progresso {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progresso h3 {
+            color: #f7971e;
+            margin-bottom: 15px;
+        }
+
+        .progresso-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .progresso-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .passo {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .passo-numero {
+            display: inline-block;
+            background: #f7971e;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 15px;
+            float: left;
+        }
+
+        .passo h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-left: 65px;
+        }
+
+        .passo-conteudo {
+            clear: both;
+            padding-top: 10px;
+        }
+
+        .codigo {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 15px 0;
+            position: relative;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre;
+            line-height: 1.7;
+        }
+
+        .codigo-titulo {
+            background: #21252b;
+            color: #abb2bf;
+            padding: 10px 15px;
+            border-radius: 10px 10px 0 0;
+            font-weight: bold;
+            margin-bottom: -20px;
+            position: relative;
+            top: 20px;
+        }
+
+        .btn-copiar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f7971e;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-copiar:hover {
+            background: #ffd200;
+            color: #333;
+        }
+
+        .alerta {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .dica {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .erro {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .sucesso {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .info {
+            background: #cce5ff;
+            border-left: 5px solid #004085;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checklist li:hover {
+            background: #e9ecef;
+        }
+
+        .checklist li:before {
+            content: "☐ ";
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .checklist li.completo:before {
+            content: "✅ ";
+        }
+
+        .checklist li.completo {
+            background: #d4edda;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .screenshot {
+            border: 3px solid #f7971e;
+            border-radius: 10px;
+            padding: 10px;
+            background: white;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .screenshot-texto {
+            font-family: monospace;
+            white-space: pre;
+            text-align: left;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .btn-proximo {
+            background: #f7971e;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-proximo:hover {
+            background: #ffd200;
+            color: #333;
+        }
+
+        .oculto {
+            display: none;
+        }
+
+        .final-card {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .final-card h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .linha-codigo {
+            color: #e5c07b;
+        }
+
+        .linha-comentario {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        .linha-keyword {
+            color: #c678dd;
+        }
+
+        .linha-funcao {
+            color: #61afef;
+        }
+
+        .linha-numero {
+            color: #d19a66;
+        }
+
+        .linha-string {
+            color: #98c379;
+        }
+
+        .nav-passos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: #e0e0e0;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .nav-btn.ativo {
+            background: #f7971e;
+            color: white;
+        }
+
+        .nav-btn.feito {
+            background: #28a745;
+            color: white;
+        }
+
+        /* Tabela binária interativa */
+        .tabela-binaria {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 1em;
+        }
+
+        .tabela-binaria th {
+            background: #f7971e;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .tabela-binaria td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        .tabela-binaria tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* Simulador visual de LEDs */
+        .simulador {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .simulador-titulo {
+            color: #ffd200;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .leds-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .led-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .led-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4a0000;
+            border: 2px solid #800000;
+            transition: all 0.3s;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .led-circle.aceso {
+            background: #ff2200;
+            border-color: #ff6666;
+            box-shadow: 0 0 15px #ff2200, 0 0 30px #ff440055;
+        }
+
+        .led-label {
+            color: #aaa;
+            font-size: 0.75em;
+            font-family: monospace;
+        }
+
+        .led-bit {
+            color: #ffd200;
+            font-size: 0.9em;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .simulador input[type=number] {
+            width: 120px;
+            padding: 10px;
+            font-size: 1.3em;
+            border-radius: 8px;
+            border: 2px solid #f7971e;
+            text-align: center;
+            outline: none;
+            margin-right: 10px;
+        }
+
+        .simulador button {
+            padding: 10px 20px;
+            background: #f7971e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .simulador button:hover {
+            background: #ffd200;
+            color: #333;
+        }
+
+        .simulador-resultado {
+            color: white;
+            font-family: monospace;
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+
+        .pino-tag {
+            display: inline-block;
+            background: #f7971e;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Projeto Conversor Decimal → Binário - Passo-a-Passo</h1>
+            <h2>Aula 02: Conversor Decimal → Binário</h2>
+            <p>8 LEDs que mostram números em binário via Monitor Serial 💡</p>
+        </div>
+
+        <div class="progresso">
+            <h3>📊 Seu Progresso</h3>
+            <div class="progresso-bar">
+                <div class="progresso-fill" id="progresso">0%</div>
+            </div>
+            <p style="margin-top: 10px; text-align: center;" id="progresso-texto">Você completou 0 de 12 etapas</p>
+            <div class="nav-passos" id="nav-passos" style="margin-top:15px;">
+                <!-- gerado pelo JS -->
+            </div>
+        </div>
+
+        <!-- PASSO 1 -->
+        <div class="passo" id="passo1">
+            <div class="passo-numero">1</div>
+            <h2>📦 Reunir Materiais</h2>
+            <div class="passo-conteudo">
+                <p>Antes de começar, separe TODOS os componentes necessários:</p>
+                <h3 style="margin-top: 20px;">Lista de Componentes:</h3>
+                <ul class="checklist">
+                    <li onclick="marcarCompleto(this)">1× Arduino Uno R3 (U1)</li>
+                    <li onclick="marcarCompleto(this)">8× LED Vermelho (DLED1 a DLED8)</li>
+                    <li onclick="marcarCompleto(this)">8× Resistor 330 Ω (RR1 a RR8) — faixas laranja-laranja-marrom</li>
+                    <li onclick="marcarCompleto(this)">Protoboard (830 pontos recomendado)</li>
+                    <li onclick="marcarCompleto(this)">Jumpers macho-macho (pelo menos 10)</li>
+                    <li onclick="marcarCompleto(this)">Cabo USB A-B</li>
+                    <li onclick="marcarCompleto(this)">Computador com Arduino IDE instalado</li>
+                </ul>
+                <div class="dica">
+                    <strong>💡 Dica:</strong> Não tem os materiais físicos? Use o simulador online Tinkercad!<br>
+                    Acesse: <a href="https://www.tinkercad.com/circuits" target="_blank">tinkercad.com/circuits</a>
+                </div>
+                <div class="alerta">
+                    <strong>⚠️ Atenção:</strong> Neste projeto usamos os pinos digitais <strong>2 a 9</strong> do Arduino.
+                    Certifique-se de que nenhum pino está dobrado ou danificado.
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(2)">✅ Tenho Todos os Materiais → Próximo Passo</button>
+            </div>
+        </div>
+
+        <!-- PASSO 2 -->
+        <div class="passo oculto" id="passo2">
+            <div class="passo-numero">2</div>
+            <h2>🔢 Entendendo Números Binários</h2>
+            <div class="passo-conteudo">
+                <p>Antes de montar, vamos entender <strong>o que o circuito vai fazer</strong>!</p>
+
+                <h3 style="margin-top: 20px;">🧠 O que é binário?</h3>
+                <p style="margin-top: 10px;">
+                    No sistema decimal usamos 10 dígitos (0 a 9). No <strong>sistema binário</strong> usamos apenas
+                    <strong>2 dígitos: 0 e 1</strong>.
+                    Um LED apagado representa o bit <strong>0</strong>, e um LED aceso representa o bit <strong>1</strong>.
+                </p>
+
+                <h3 style="margin-top: 20px;">🔦 Como funciona com 8 LEDs?</h3>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  Pino:    D9   D8   D7   D6   D5   D4   D3   D2
+  Bit:      7    6    5    4    3    2    1    0
+  Peso:   128   64   32   16    8    4    2    1
+  
+  Exemplo: número 13 = 8+4+1 = 00001101
+  
+  D9  D8  D7  D6  D5  D4  D3  D2
+  [0] [0] [0] [0] [1] [1] [0] [1]
+  OFF OFF OFF OFF  ON  ON OFF  ON   ← LEDs</div>
+                </div>
+
+                <h3 style="margin-top: 20px;">📊 Tabela: Decimal → Binário</h3>
+                <table class="tabela-binaria">
+                    <thead>
+                        <tr>
+                            <th>Decimal</th>
+                            <th>Binário (8 bits)</th>
+                            <th>LEDs acesos (pinos)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td>00000000</td><td>nenhum</td></tr>
+                        <tr><td>1</td><td>00000001</td><td>D2</td></tr>
+                        <tr><td>2</td><td>00000010</td><td>D3</td></tr>
+                        <tr><td>5</td><td>00000101</td><td>D2, D4</td></tr>
+                        <tr><td>13</td><td>00001101</td><td>D2, D4, D5</td></tr>
+                        <tr><td>42</td><td>00101010</td><td>D3, D5, D7</td></tr>
+                        <tr><td>100</td><td>01100100</td><td>D4, D7, D8</td></tr>
+                        <tr><td>255</td><td>11111111</td><td>todos (D2 a D9)</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="info">
+                    <strong>ℹ️ Intervalo válido:</strong> Como temos 8 LEDs (8 bits), o sistema suporta valores de
+                    <strong>0 a 255</strong> (2⁸ = 256 combinações).
+                </div>
+
+                <h3 style="margin-top: 20px;">🎮 Simulador Interativo</h3>
+                <div class="simulador">
+                    <div class="simulador-titulo">Digite um número de 0 a 255 e veja os LEDs!</div>
+                    <div class="leds-container" id="leds">
+                        <!-- gerado por JS -->
+                    </div>
+                    <div>
+                        <input type="number" id="inputNum" min="0" max="255" value="0" oninput="simularLeds()">
+                        <button onclick="simularLeds()">💡 Simular</button>
+                    </div>
+                    <div class="simulador-resultado" id="simResultado"></div>
+                </div>
+
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">Entendi a diferença entre decimal e binário</li>
+                    <li onclick="marcarCompleto(this)">Cada LED representa um bit (0 = apagado, 1 = aceso)</li>
+                    <li onclick="marcarCompleto(this)">Testei o simulador acima com pelo menos 3 números</li>
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(3)">✅ Entendi Binário → Montar Circuito</button>
+            </div>
+        </div>
+
+        <!-- PASSO 3 -->
+        <div class="passo oculto" id="passo3">
+            <div class="passo-numero">3</div>
+            <h2>🔧 Montagem — Parte 1: Posicionando LEDs</h2>
+            <div class="passo-conteudo">
+                <p>Vamos montar os 8 LEDs na protoboard de forma organizada, um ao lado do outro.</p>
+
+              <h3 style="margin-top: 20px;">Disposição dos LEDs na Protoboard</h3>
+<div class="screenshot">
+    <div class="screenshot-texto">
+Protoboard (visão simplificada)
+
+        A  B  C  D  E   ||   F  G  H  I  J
+        -------------------------------------
+Coluna 3   ● (+)          ||        ● (-)
+Coluna 5   ● (+)          ||        ● (-)
+Coluna 7   ● (+)          ||        ● (-)
+Coluna 9   ● (+)          ||        ● (-)
+Coluna 11  ● (+)          ||        ● (-)
+Coluna 13  ● (+)          ||        ● (-)
+Coluna 15  ● (+)          ||        ● (-)
+Coluna 17  ● (+)          ||        ● (-)
+
+ANODO (+)  → lado esquerdo (A–E)
+CATODO (-) → lado direito (F–J)
+(O LED deve atravessar o sulco central)
+
+LED8 LED7 LED6 LED5 LED4 LED3 LED2 LED1
+ D9   D8   D7   D6   D5   D4   D3   D2   ← Pinos do Arduino
+    </div>
+</div>
+               <ol style="margin-left: 20px; margin-top: 15px;">
+    <li>Pegue os 8 LEDs vermelhos</li>
+    <li>Identifique a perna <strong>longa</strong> (+) (ânodo) e a perna <strong>curta</strong> (−) (cátodo) de cada um</li>
+    <li>Insira o primeiro LED na coluna 3, atravessando o sulco central da protoboard:
+        <br>→ Perna longa (+) no lado esquerdo (A–E)
+        <br>→ Perna curta (−) no lado direito (F–J)
+    </li>
+    <li>Repita para os outros 7 LEDs, utilizando as colunas 5, 7, 9, 11, 13, 15 e 17 (espaçamento de 2 colunas)</li>
+    <li>Todos os LEDs devem estar atravessando o meio da protoboard, na vertical, sem encostar uns nos outros</li>
+    <li><strong>Importante:</strong> nunca coloque as duas pernas do LED no mesmo lado (A–E ou F–J), pois isso causa curto-circuito</li>
+</ol>
+                <div class="alerta">
+                    <strong>⚠️ Atenção à polaridade!</strong><br>
+                    LED TEM POLARIDADE — não funciona invertido.<br>
+                    Perna <strong>LONGA</strong> = Positivo (+) = Anodo<br>
+                    Perna <strong>CURTA</strong> = Negativo (−) = Catodo
+                </div>
+                <div class="dica">
+                    <strong>💡 Dica:</strong> Olhe pela lateral: a perna longa geralmente fica do lado achatado do bulbo.
+                </div>
+
+
+
+
+                <h3 style="margin-top: 20px;">📸 Checkpoint</h3>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">8 LEDs inseridos na protoboard</li>
+                    <li onclick="marcarCompleto(this)">Todos com perna longa na linha A</li>
+                    <li onclick="marcarCompleto(this)">Todos com perna curta na linha B</li>
+                    <li onclick="marcarCompleto(this)">Nenhum LED torto ou tocando outro</li>
+                </div>
+      
+                <button class="btn-proximo" onclick="proximoPasso(4)">✅ LEDs Posicionados → Adicionar Resistores</button>
+            </div>
+        </div>
+
+        <!-- PASSO 4 -->
+        <div class="passo oculto" id="passo4">
+            <div class="passo-numero">4</div>
+            <h2>🔧 Montagem — Parte 2: Resistores 330Ω</h2>
+            <div class="passo-conteudo">
+                <p>Cada LED precisa de um resistor para limitar a corrente e não queimar.</p>
+
+                <h3 style="margin-top: 20px;">Identificando o Resistor 330Ω</h3>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  Código de cores: 🟠 laranja — 🟠 laranja — 🟤 marrom — (tolerância)
+  
+  Laranja = 3
+  Laranja = 3
+  Marrom  = ×10
+  Resultado: 33 × 10 = 330 Ω ✅</div>
+                </div>
+<h3 style="margin-top: 20px;">Onde colocar cada resistor</h3>
+
+<p style="margin-top: 10px;">
+Cada resistor fica <strong>abaixo do LED</strong>, na mesma coluna,
+ligando o cátodo (−) até a parte inferior da protoboard,
+que depois vai para o <strong>GND do Arduino</strong>.
+</p>
+
+<div class="screenshot">
+    <div class="screenshot-texto">
+
+Coluna:   3        5        7        9       11       13       15       17
+          │        │        │        │        │        │        │        │
+
+LED       ●        ●        ●        ●        ●        ●        ●        ●
+(ânodo +) ↑
+          │
+(cátodo −)●
+          │
+Resistor  [330Ω]   [330Ω]   [330Ω]   [330Ω]   [330Ω]   [330Ω]   [330Ω]   [330Ω]
+          │        │        │        │        │        │        │        │
+          │        │        │        │        │        │        │        │
+Inferior  ●        ●        ●        ●        ●        ●        ●        ●
+(−) trilha negativa → Conectar ao GND do Arduino
+
+Fios digitais:
+D9  D8  D7  D6  D5  D4  D3  D2
+ │   │   │   │   │   │   │   │
+(anodo de cada LED)
+
+    </div>
+</div>
+
+<ol style="margin-left: 20px; margin-top: 15px;">
+    <li>Insira o LED na coluna desejada, atravessando o sulco central da protoboard (uma perna de cada lado).</li>
+    <li>Conecte a perna longa (ânodo +) ao pino digital correspondente do Arduino (D9 até D2).</li>
+    <li>Deixe a perna curta (cátodo −) posicionada na parte inferior da protoboard, no mesmo lado do resistor.</li>
+    <li>Coloque o resistor de 330Ω na mesma coluna do cátodo, logo abaixo dele.</li>
+    <li>Conecte a outra perna do resistor à trilha negativa (−) da protoboard.</li>
+    <li>Ligue a trilha negativa (−) ao pino GND do Arduino.</li>
+</ol>
+                <div class="dica">
+                    <strong>💡 Resistor não tem polaridade!</strong><br>
+                    Pode inserir em qualquer sentido — os dois lados são iguais.
+                </div>
+                <h3 style="margin-top: 20px;">📸 Checkpoint</h3>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">8 resistores inseridos, um por LED</li>
+                    <li onclick="marcarCompleto(this)">Uma perna de cada resistor no catodo do LED</li>
+                    <li onclick="marcarCompleto(this)">Outra perna na trilha GND (−) da protoboard</li>
+                    <li onclick="marcarCompleto(this)">Nenhum resistor solto ou caindo</li>
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(5)">✅ Resistores Conectados → Conectar ao Arduino</button>
+            </div>
+        </div>
+
+        <!-- PASSO 5 -->
+        <div class="passo oculto" id="passo5">
+            <div class="passo-numero">5</div>
+            <h2>🔧 Montagem — Parte 3: Jumpers para o Arduino</h2>
+            <div class="passo-conteudo">
+                <p>Agora conectamos cada LED ao pino digital correspondente do Arduino com jumpers.</p>
+
+                <h3 style="margin-top: 20px;">Mapeamento: LED → Pino Arduino</h3>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  LED (na protoboard)   Pino Arduino   Posição (bit)
+  ─────────────────────────────────────────────────
+  DLED1 (direita)   →    D2           bit 0  (LSB)
+  DLED2             →    D3           bit 1
+  DLED3             →    D4           bit 2
+  DLED4             →    D5           bit 3
+  DLED5             →    D6           bit 4
+  DLED6             →    D7           bit 5
+  DLED7             →    D8           bit 6
+  DLED8 (esquerda)  →    D9           bit 7  (MSB)</div>
+                </div>
+                <ol style="margin-left: 20px; margin-top: 15px;">
+                    <li>Pegue 8 jumpers</li>
+                    <li>Conecte a linha A (anodo) do DLED1 ao pino <strong>D2</strong> do Arduino</li>
+                    <li>Conecte a linha A do DLED2 ao pino <strong>D3</strong></li>
+                    <li>Continue até DLED8 → pino <strong>D9</strong></li>
+                </ol>
+
+                <h3 style="margin-top: 20px;">Jumper GND</h3>
+                <ol style="margin-left: 20px;">
+                    <li>Conecte um jumper da trilha <strong>GND (−)</strong> da protoboard</li>
+                    <li>Ao pino <strong>GND</strong> do Arduino</li>
+                </ol>
+                <div class="erro">
+                    <strong>🛑 ANTES DE CONTINUAR — Verifique tudo:</strong><br>
+                    • Cada anodo (+) está conectado ao pino correto?<br>
+                    • O GND da protoboard está ligado ao GND do Arduino?<br>
+                    • Nenhum fio está tocando outro por acidente?<br>
+                    Um erro de fiação pode queimar um LED ou danificar o Arduino!
+                </div>
+                <div class="dica">
+                    <strong>💡 Dica de organização:</strong><br>
+                    Use jumpers de cores diferentes para cada conexão. Facilita muito a identificação de erros!
+                </div>
+                <h3 style="margin-top: 20px;">📸 Checkpoint Final do Circuito</h3>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">DLED1 → pino D2 do Arduino</li>
+                    <li onclick="marcarCompleto(this)">DLED2 → pino D3 do Arduino</li>
+                    <li onclick="marcarCompleto(this)">DLED3 → pino D4 do Arduino</li>
+                    <li onclick="marcarCompleto(this)">DLED4 → pino D5 do Arduino</li>
+                    <li onclick="marcarCompleto(this)">DLED5 → pino D6 do Arduino</li>
+                    <li onclick="marcarCompleto(this)">DLED6 → pino D7 do Arduino</li>
+                    <li onclick="marcarCompleto(this)">DLED7 → pino D8 do Arduino</li>
+                    <li onclick="marcarCompleto(this)">DLED8 → pino D9 do Arduino</li>
+                    <li onclick="marcarCompleto(this)">GND da protoboard → GND do Arduino</li>
+                </div>
+                          <h3 style="margin-top: 25px;">🖼️ Resultado Esperado</h3>
+<div class="imagem-projeto" style="text-align:center; margin-top:15px;">
+    <img src="img/projeto-leds.png" 
+         alt="Projeto com 8 LEDs montados na protoboard"
+         style="max-width:100%; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+    <p style="font-size:14px; color:#555; margin-top:8px;">
+        Montagem final dos LEDs posicionados corretamente na protoboard.
+    </p>
+</div>
+<h3 style="margin-top: 25px;">📄 Material em PDF - Esquema Elétirco</h3>
+
+<div style="text-align:center; margin-top:15px;">
+    <a href="docs/projeto-leds.pdf" 
+       target="_blank"
+       style="display:inline-block;
+              padding:12px 20px;
+              background-color:#d32f2f;
+              color:white;
+              text-decoration:none;
+              border-radius:8px;
+              font-weight:bold;
+              box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+        📥 Baixar PDF do Projeto - Esquema Elétrico
+    </a>
+</div>
+                <button class="btn-proximo" onclick="proximoPasso(6)">✅ Circuito Montado → Conectar ao PC</button>
+            </div>
+        </div>
+
+        <!-- PASSO 6 -->
+        <div class="passo oculto" id="passo6">
+            <div class="passo-numero">6</div>
+            <h2>🔌 Conectar Arduino ao Computador</h2>
+            <div class="passo-conteudo">
+                <h3>Primeira Conexão:</h3>
+                <ol style="margin-left: 20px; margin-top: 15px;">
+                    <li>Pegue o cabo USB A-B</li>
+                    <li>Conecte o lado <strong>quadrado (USB-B)</strong> no Arduino</li>
+                    <li>Conecte o lado <strong>retangular (USB-A)</strong> no computador</li>
+                    <li>Aguarde alguns segundos...</li>
+                </ol>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  Computador        Cabo USB             Arduino
+  ┌────────┐   ┌─────────────────┐   ┌──────┐
+  │  USB   │◄──┤  USB-A | USB-B  ├──►│  USB │
+  └────────┘   └─────────────────┘   └──────┘</div>
+                </div>
+                <h3 style="margin-top: 20px;">✅ Sinais de Sucesso:</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>LED <strong>"ON"</strong> do Arduino acende (LED laranja pequeno na placa)</li>
+                    <li>Windows faz som de "dispositivo conectado"</li>
+                    <li>Luzes RX/TX piscam brevemente</li>
+                </ul>
+                <div class="alerta">
+                    <strong>⚠️ Não aconteceu nada?</strong><br>
+                    • Tente outra porta USB do computador<br>
+                    • Verifique se o cabo USB é de <strong>DADOS</strong> (não só carga)<br>
+                    • Cabos de celular podem ser só de carregamento!
+                </div>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">Arduino conectado ao computador via USB</li>
+                    <li onclick="marcarCompleto(this)">LED "ON" do Arduino está aceso</li>
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(7)">✅ Arduino Conectado → Configurar IDE</button>
+            </div>
+        </div>
+
+        <!-- PASSO 7 -->
+        <div class="passo oculto" id="passo7">
+            <div class="passo-numero">7</div>
+            <h2>⚙️ Configurar Arduino IDE</h2>
+            <div class="passo-conteudo">
+                <h3>7.1 — Selecionar a Placa</h3>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>Abra o Arduino IDE</li>
+                    <li>Menu <strong>Ferramentas → Placa → Arduino AVR Boards → Arduino Uno</strong></li>
+                </ol>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  Ferramentas
+  ├── Placa: "Arduino Uno"  ✅
+  ├── Processador: ATmega328P
+  └── Porta: COM3 (ou similar)</div>
+                </div>
+                <h3 style="margin-top: 20px;">7.2 — Selecionar a Porta</h3>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>Menu <strong>Ferramentas → Porta</strong></li>
+                    <li>Selecione a porta COM que corresponde ao Arduino (ex: COM3, COM4...)</li>
+                    <li>No Linux/Mac pode aparecer como <code>/dev/ttyUSB0</code> ou <code>/dev/cu.usbmodem...</code></li>
+                </ol>
+                <div class="alerta">
+                    <strong>⚠️ Não aparece nenhuma porta COM?</strong><br>
+                    Instale o driver CH340 ou CP2102 para o Arduino.<br>
+                    Ou desconecte e reconecte o cabo USB.
+                </div>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">Placa configurada como "Arduino Uno"</li>
+                    <li onclick="marcarCompleto(this)">Porta COM selecionada corretamente</li>
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(8)">✅ IDE Configurada → Ver o Código</button>
+            </div>
+        </div>
+
+        <!-- PASSO 8 -->
+        <div class="passo oculto" id="passo8">
+            <div class="passo-numero">8</div>
+            <h2>📋 Entendendo o Código</h2>
+            <div class="passo-conteudo">
+                <p>Vamos analisar o código <strong>antes</strong> de carregar. Entender o código é tão importante quanto montar o circuito!</p>
+
+                <h3 style="margin-top: 20px;">📦 Variável Global</h3>
+                <div class="codigo">
+<button class="btn-copiar" onclick="copiarCodigo(this)">📋 Copiar</button><span class="linha-codigo">int</span> num = <span class="linha-numero">0</span>; <span class="linha-comentario">// Armazena o número digitado no Monitor Serial</span></div>
+                <div class="info">
+                    <strong>ℹ️ Por que global?</strong> Porque ela precisa ser acessível tanto no <code>setup()</code> quanto no <code>loop()</code>.
+                    Sempre inicializada em 0.
+                </div>
+
+                <h3 style="margin-top: 20px;">⚡ Função setup()</h3>
+                <div class="codigo">
+<button class="btn-copiar" onclick="copiarCodigo(this)">📋 Copiar</button><span class="linha-funcao">void</span> <span class="linha-funcao">setup</span>() {
+  <span class="linha-comentario">// Define pinos 2 a 9 como SAÍDAS digitais</span>
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">2</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">3</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">4</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">5</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">6</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">7</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">8</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">9</span>, OUTPUT);
+
+  <span class="linha-comentario">// Inicia comunicação Serial a 9600 bps</span>
+  <span class="linha-funcao">Serial.begin</span>(<span class="linha-numero">9600</span>);
+}</div>
+                <div class="info">
+                    <strong>ℹ️</strong> <code>pinMode(pino, OUTPUT)</code> configura o pino como saída —
+                    o Arduino vai <em>enviar</em> tensão (5V ou 0V) para ligar/apagar os LEDs.
+                </div>
+
+                <h3 style="margin-top: 20px;">🔁 Função loop() — Leitura Serial</h3>
+                <div class="codigo">
+<button class="btn-copiar" onclick="copiarCodigo(this)">📋 Copiar</button><span class="linha-funcao">void</span> <span class="linha-funcao">loop</span>() {
+  <span class="linha-keyword">if</span>(<span class="linha-funcao">Serial.available</span>() &gt; <span class="linha-numero">0</span>) {
+    <span class="linha-comentario">// Lê a string digitada e converte para inteiro</span>
+    num = <span class="linha-funcao">Serial.readString</span>().<span class="linha-funcao">toInt</span>();
+    ...
+  }
+}</div>
+                <div class="info">
+                    <strong>ℹ️ Como funciona?</strong><br>
+                    • <code>Serial.available() &gt; 0</code> → verifica se chegou algo pelo Monitor Serial<br>
+                    • <code>Serial.readString()</code> → lê o texto digitado (ex: "42")<br>
+                    • <code>.toInt()</code> → converte "42" (texto) para 42 (número inteiro)
+                </div>
+
+                <h3 style="margin-top: 20px;">🔁 Algoritmo de Conversão Decimal → Binário</h3>
+                <div class="codigo">
+<button class="btn-copiar" onclick="copiarCodigo(this)">📋 Copiar</button><span class="linha-codigo">int</span> cont = <span class="linha-numero">9</span>; <span class="linha-comentario">// começa no pino 9 (bit mais significativo)</span>
+
+<span class="linha-keyword">while</span>(num &gt; <span class="linha-numero">0</span>) {
+  <span class="linha-keyword">if</span>(num % <span class="linha-numero">2</span> == <span class="linha-numero">0</span>) {
+    <span class="linha-funcao">digitalWrite</span>(cont, LOW);  <span class="linha-comentario">// bit 0 → LED apagado</span>
+  } <span class="linha-keyword">else</span> {
+    <span class="linha-funcao">digitalWrite</span>(cont, HIGH); <span class="linha-comentario">// bit 1 → LED aceso</span>
+  }
+  <span class="linha-funcao">delay</span>(<span class="linha-numero">20</span>);
+  cont--;       <span class="linha-comentario">// próximo pino (bit menos significativo)</span>
+  num = num / <span class="linha-numero">2</span>; <span class="linha-comentario">// divide por 2 (extrai próximo bit)</span>
+}
+
+<span class="linha-comentario">// Apaga os LEDs restantes (bits zero à esquerda)</span>
+<span class="linha-keyword">while</span>(cont &gt;= <span class="linha-numero">2</span>) {
+  <span class="linha-funcao">digitalWrite</span>(cont, LOW);
+  <span class="linha-funcao">delay</span>(<span class="linha-numero">20</span>);
+  cont--;
+}</div>
+                <div class="dica">
+                    <strong>💡 O truque matemático:</strong><br>
+                    Para extrair os bits de um número, basta dividir por 2 repetidamente e olhar o resto:<br>
+                    • Resto 0 → bit vale 0 (LED apagado)<br>
+                    • Resto 1 → bit vale 1 (LED aceso)<br><br>
+                    Exemplo: 13 ÷ 2 = 6 resto <strong>1</strong> → 6 ÷ 2 = 3 resto <strong>0</strong> → 3 ÷ 2 = 1 resto <strong>1</strong> → 1 ÷ 2 = 0 resto <strong>1</strong><br>
+                    Lendo os restos de baixo para cima: <strong>1101</strong> = 13 ✅
+                </div>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">Entendi o papel da variável global "num"</li>
+                    <li onclick="marcarCompleto(this)">Entendi que setup() configura os pinos como saída</li>
+                    <li onclick="marcarCompleto(this)">Entendi que o loop aguarda dados do Serial Monitor</li>
+                    <li onclick="marcarCompleto(this)">Entendi o algoritmo de divisões por 2</li>
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(9)">✅ Código Entendido → Carregar no Arduino</button>
+            </div>
+        </div>
+
+        <!-- PASSO 9 -->
+        <div class="passo oculto" id="passo9">
+            <div class="passo-numero">9</div>
+            <h2>⬆️ Carregar o Código no Arduino</h2>
+            <div class="passo-conteudo">
+                <h3>Código Completo — CodigoArduinoIde.ino</h3>
+                <div class="codigo">
+<button class="btn-copiar" onclick="copiarCodigo(this)">📋 Copiar</button><span class="linha-codigo">int</span> num = <span class="linha-numero">0</span>; <span class="linha-comentario">// Variável global para o número recebido</span>
+
+<span class="linha-funcao">void</span> <span class="linha-funcao">setup</span>() {
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">2</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">3</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">4</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">5</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">6</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">7</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">8</span>, OUTPUT);
+  <span class="linha-funcao">pinMode</span>(<span class="linha-numero">9</span>, OUTPUT);
+  <span class="linha-funcao">Serial.begin</span>(<span class="linha-numero">9600</span>);
+}
+
+<span class="linha-funcao">void</span> <span class="linha-funcao">loop</span>() {
+  <span class="linha-keyword">if</span>(<span class="linha-funcao">Serial.available</span>() &gt; <span class="linha-numero">0</span>) {
+    num = <span class="linha-funcao">Serial.readString</span>().<span class="linha-funcao">toInt</span>();
+    <span class="linha-codigo">int</span> cont = <span class="linha-numero">9</span>;
+    <span class="linha-keyword">while</span>(num &gt; <span class="linha-numero">0</span>) {
+      <span class="linha-keyword">if</span>(num % <span class="linha-numero">2</span> == <span class="linha-numero">0</span>) {
+        <span class="linha-funcao">digitalWrite</span>(cont, LOW);
+        <span class="linha-funcao">delay</span>(<span class="linha-numero">20</span>);
+        cont--;
+      } <span class="linha-keyword">else</span> <span class="linha-keyword">if</span>(num % <span class="linha-numero">2</span> == <span class="linha-numero">1</span>) {
+        <span class="linha-funcao">digitalWrite</span>(cont, HIGH);
+        <span class="linha-funcao">delay</span>(<span class="linha-numero">20</span>);
+        cont--;
+      }
+      num = num / <span class="linha-numero">2</span>;
+    }
+    <span class="linha-keyword">while</span>(cont &gt;= <span class="linha-numero">2</span>) {
+      <span class="linha-funcao">digitalWrite</span>(cont, LOW);
+      <span class="linha-funcao">delay</span>(<span class="linha-numero">20</span>);
+      cont--;
+    }
+  }
+}</div>
+
+                <h3 style="margin-top: 20px;">Como Carregar:</h3>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>Cole o código acima no Arduino IDE (ou abra o arquivo <code>CodigoArduinoIde.ino</code>)</li>
+                    <li>Clique em <strong>✓ Verificar</strong> (ou <kbd>Ctrl+R</kbd>) e aguarde "Compilação concluída"</li>
+                    <li>Clique em <strong>→ Carregar</strong> (ou <kbd>Ctrl+U</kbd>)</li>
+                    <li>Aguarde "Upload concluído" na barra de status</li>
+                </ol>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  ┌─────────────────────────────────────────────────────┐
+  │  ✓ Verificar   →  Carregar   🔍 Monitor Serial      │
+  │─────────────────────────────────────────────────────│
+  │  int num = 0;                                       │
+  │  void setup() {                                     │
+  │    ...                                              │
+  │─────────────────────────────────────────────────────│
+  │  ✅ Compilação concluída.                            │
+  │  ✅ Upload concluído.                                │
+  └─────────────────────────────────────────────────────┘</div>
+                </div>
+                <div class="alerta">
+                    <strong>⚠️ Erro ao carregar?</strong><br>
+                    • Verifique se a porta COM correta está selecionada<br>
+                    • Certifique-se de que a placa é "Arduino Uno"<br>
+                    • Tente pressionar o botão RESET do Arduino antes de carregar
+                </div>
+
+                <h3 style="margin-top: 25px;">💻 Código Arduino</h3>
+
+<div style="text-align:center; margin-top:15px;">
+    <a href="codigo/projeto-leds.ino" 
+       download
+       style="display:inline-block;
+              padding:12px 20px;
+              background-color:#1976d2;
+              color:white;
+              text-decoration:none;
+              border-radius:8px;
+              font-weight:bold;
+              box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+        ⬇️ Baixar Código (.ino)
+    </a>
+</div>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">Código colado no Arduino IDE</li>
+                    <li onclick="marcarCompleto(this)">Verificação (Ctrl+R) sem erros</li>
+                    <li onclick="marcarCompleto(this)">Upload concluído com sucesso</li>
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(10)">✅ Código Carregado → Testar com Serial Monitor</button>
+            </div>
+        </div>
+
+        <!-- PASSO 10 -->
+        <div class="passo oculto" id="passo10">
+            <div class="passo-numero">10</div>
+            <h2>🖥️ Testar com o Monitor Serial</h2>
+            <div class="passo-conteudo">
+                <h3>Abrindo o Monitor Serial:</h3>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>No Arduino IDE, clique em <strong>🔍 Monitor Serial</strong> (canto superior direito)</li>
+                    <li>Ou pressione <kbd>Ctrl+Shift+M</kbd></li>
+                    <li>Certifique-se de que a velocidade está em <strong>9600 baud</strong> (canto inferior direito)</li>
+                </ol>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  ┌────────────────────────────────────────────────────────┐
+  │  Monitor Serial                              ✕        │
+  │────────────────────────────────────────────────────────│
+  │                                                        │
+  │  > 13                                                  │
+  │                                                        │
+  │────────────────────────────────────────────────────────│
+  │  Digite um número aqui...        [Enviar]  9600 baud   │
+  └────────────────────────────────────────────────────────┘</div>
+                </div>
+
+                <h3 style="margin-top: 20px;">Testando o Conversor:</h3>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>No campo de texto, digite <strong>13</strong> e pressione <kbd>Enter</kbd> ou clique em "Enviar"</li>
+                    <li>Observe os LEDs na protoboard — eles devem acender no padrão <strong>00001101</strong></li>
+                    <li>LEDs D2, D4 e D5 devem estar acesos (bits 0, 2 e 3)</li>
+                    <li>Tente outros números!</li>
+                </ol>
+                <div class="dica">
+                    <strong>💡 Números para testar:</strong><br>
+                    • <strong>1</strong> → apenas D2 aceso (00000001)<br>
+                    • <strong>255</strong> → todos os 8 LEDs acesos (11111111)<br>
+                    • <strong>170</strong> → LEDs alternados (10101010)<br>
+                    • <strong>85</strong> → LEDs alternados invertidos (01010101)<br>
+                    • <strong>0</strong> → todos apagados (00000000)
+                </div>
+                <div class="alerta">
+                    <strong>⚠️ LEDs não acendem?</strong><br>
+                    • Verifique se a velocidade do Monitor Serial está em 9600 baud<br>
+                    • Confira as conexões dos jumpers (pino correto por LED)<br>
+                    • Verifique a polaridade dos LEDs (perna longa no anodo)
+                </div>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">Monitor Serial aberto a 9600 baud</li>
+                    <li onclick="marcarCompleto(this)">Digitei "13" e os LEDs corretos acenderam</li>
+                    <li onclick="marcarCompleto(this)">Testei com "255" — todos os LEDs acenderam</li>
+                    <li onclick="marcarCompleto(this)">Testei com "0" — todos os LEDs apagaram</li>
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(11)">✅ Funcionando! → Desafios</button>
+            </div>
+        </div>
+
+        <!-- PASSO 11 -->
+        <div class="passo oculto" id="passo11">
+            <div class="passo-numero">11</div>
+            <h2>🏆 Desafios</h2>
+            <div class="passo-conteudo">
+                <p>Agora que tudo funciona, vamos ir além! Tente os desafios abaixo:</p>
+
+                <h4 style="margin-top: 20px;">🔴 Desafio 1 — Contador automático:</h4>
+                <p>Modifique o código para que o Arduino conte de 0 a 255 automaticamente, sem precisar do Monitor Serial:</p>
+                <div class="codigo">
+<button class="btn-copiar" onclick="copiarCodigo(this)">📋 Copiar</button><span class="linha-funcao">void</span> <span class="linha-funcao">loop</span>() {
+  <span class="linha-keyword">for</span>(<span class="linha-codigo">int</span> i = <span class="linha-numero">0</span>; i &lt;= <span class="linha-numero">255</span>; i++) {
+    <span class="linha-comentario">// mostre o número 'i' nos LEDs</span>
+    <span class="linha-comentario">// (adapte o algoritmo de conversão aqui!)</span>
+    <span class="linha-funcao">delay</span>(<span class="linha-numero">500</span>); <span class="linha-comentario">// 0,5 segundo por número</span>
+  }
+}</div>
+
+                <h4 style="margin-top: 20px;">🟡 Desafio 2 — Contagem regressiva:</h4>
+                <p>Faça o contador ir de 255 até 0 e depois reiniciar:</p>
+                <div class="codigo">
+<button class="btn-copiar" onclick="copiarCodigo(this)">📋 Copiar</button><span class="linha-keyword">for</span>(<span class="linha-codigo">int</span> i = <span class="linha-numero">255</span>; i &gt;= <span class="linha-numero">0</span>; i--) {
+  <span class="linha-comentario">// mostre 'i' nos LEDs</span>
+  <span class="linha-funcao">delay</span>(<span class="linha-numero">200</span>);
+}</div>
+
+                <h4 style="margin-top: 20px;">🟢 Desafio 3 — Potência de 2:</h4>
+                <p>Faça um único LED "andar" da direita para a esquerda (1, 2, 4, 8, 16, 32, 64, 128):</p>
+                <div class="codigo">
+<button class="btn-copiar" onclick="copiarCodigo(this)">📋 Copiar</button><span class="linha-keyword">for</span>(<span class="linha-codigo">int</span> i = <span class="linha-numero">0</span>; i &lt; <span class="linha-numero">8</span>; i++) {
+  <span class="linha-codigo">int</span> valor = <span class="linha-numero">1</span> &lt;&lt; i; <span class="linha-comentario">// 2^i usando deslocamento de bits</span>
+  <span class="linha-comentario">// mostre 'valor' nos LEDs</span>
+  <span class="linha-funcao">delay</span>(<span class="linha-numero">300</span>);
+}</div>
+                <div class="dica">
+                    <strong>💡 Lembre-se:</strong> Após modificar o código, sempre:<br>
+                    1. Verificar (Ctrl+R)<br>
+                    2. Carregar (Ctrl+U)<br>
+                    3. Observar o resultado nos LEDs!
+                </div>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">Tentei pelo menos um desafio</li>
+                    <li onclick="marcarCompleto(this)">Modifiquei o delay e observei a diferença</li>
+                    <li onclick="marcarCompleto(this)">Entendi como o algoritmo de bits funciona</li>
+                </div>
+                <button class="btn-proximo" onclick="proximoPasso(12)">✅ Desafios Concluídos → Finalizar Aula</button>
+            </div>
+        </div>
+
+        <!-- PASSO 12 -->
+        <div class="passo oculto" id="passo12">
+            <div class="passo-numero">12</div>
+            <h2>🎓 Conclusão da Aula 02</h2>
+            <div class="passo-conteudo">
+                <div class="final-card">
+                    <h2>🏆 Parabéns! Você Concluiu a Aula 02!</h2>
+                    <p style="font-size: 1.2em; margin-top: 15px;">Você construiu um conversor Decimal → Binário com Arduino!</p>
+                </div>
+
+                <h3 style="margin-top: 30px;">📚 O que você aprendeu hoje:</h3>
+                <div class="checklist">
+                    <li onclick="marcarCompleto(this)">Sistema de numeração binário (base 2)</li>
+                    <li onclick="marcarCompleto(this)">Controlar 8 pinos digitais simultaneamente</li>
+                    <li onclick="marcarCompleto(this)">Usar o Monitor Serial para enviar dados ao Arduino</li>
+                    <li onclick="marcarCompleto(this)">Serial.available(), Serial.readString(), .toInt()</li>
+                    <li onclick="marcarCompleto(this)">Algoritmo de conversão decimal → binário por divisões</li>
+                    <li onclick="marcarCompleto(this)">Uso de while() para laços condicionais</li>
+                    <li onclick="marcarCompleto(this)">Operador módulo (%) para extrair bits</li>
+                </div>
+
+                <h3 style="margin-top: 30px;">🔑 Conceitos-chave para lembrar:</h3>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  Serial.available() > 0   → chegou dado pelo Monitor Serial?
+  Serial.readString()       → lê o texto digitado
+  .toInt()                  → converte texto para inteiro
+
+  num % 2 == 0  → bit vale 0 → LED apagado (LOW)
+  num % 2 == 1  → bit vale 1 → LED aceso  (HIGH)
+  num = num / 2 → extrai o próximo bit
+
+  Pino D9 = bit 7 (MSB)   Pino D2 = bit 0 (LSB)
+  Range: 0 a 255 com 8 LEDs (2⁸ = 256 combinações)</div>
+                </div>
+
+                <h3 style="margin-top: 30px;">📁 Estrutura do Projeto:</h3>
+                <div class="screenshot">
+                    <div class="screenshot-texto">
+  aula_02_conversor_binario/
+  ├── CodigoArduinoIde.ino        ← Código principal
+  ├── EsquemaEletrico.pdf         ← Diagrama do circuito
+  ├── EsquemaVisual.png           ← Imagem da montagem
+  ├── componentesNecessarios.csv  ← Lista de componentes
+  └── aula_02_tutorial.html       ← Este tutorial</div>
+                </div>
+
+                <h3 style="margin-top: 30px;">🚀 Próxima Aula:</h3>
+                <div class="dica">
+                    <strong>Aula 03: Display de 7 Segmentos</strong><br>
+                    Vamos exibir números em um display de 7 segmentos!<br>
+                    Novos conceitos: arrays, mapeamento de segmentos, multiplexação.
+                </div>
+
+                <div class="sucesso" style="margin-top: 20px;">
+                    <strong>💾 Salve seu projeto!</strong><br>
+                    Arquivo → Salvar Como → "aula_02_conversor_binario"<br>
+                    Mantenha uma pasta organizada para cada aula!
+                </div>
+
+                <div style="background:#f0f0f0; border-radius: 10px; padding: 20px; margin-top: 20px; text-align: center;">
+                    <p style="font-size: 1.1em;"><strong>ISW044 – Sistemas Embarcados</strong></p>
+                    <p>Aula 02 concluída ✅ | Aula 03 aguardando você!</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let totalPassos = 12;
+        let passoAtual = 1;
+        let completados = 0;
+        let passosCompletos = [];
+
+        function init() {
+            const nav = document.getElementById('nav-passos');
+            for (let i = 1; i <= totalPassos; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn' + (i === 1 ? ' ativo' : '');
+                btn.id = 'nav' + i;
+                btn.textContent = i;
+                btn.title = 'Ir para passo ' + i;
+                btn.onclick = () => irParaPasso(i);
+                nav.appendChild(btn);
+            }
+            // Init LED simulator
+            initLeds();
+        }
+
+        function initLeds() {
+            const container = document.getElementById('leds');
+            if (!container) return;
+            const pinos = ['D9','D8','D7','D6','D5','D4','D3','D2'];
+            const bits  = [7,6,5,4,3,2,1,0];
+            container.innerHTML = '';
+            pinos.forEach((p, i) => {
+                const item = document.createElement('div');
+                item.className = 'led-item';
+                item.innerHTML = `
+                    <div class="led-bit" id="bit${i}">0</div>
+                    <div class="led-circle" id="led${i}"></div>
+                    <div class="led-label">${p}</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function simularLeds() {
+            let val = parseInt(document.getElementById('inputNum').value) || 0;
+            if (val < 0) val = 0;
+            if (val > 255) val = 255;
+            document.getElementById('inputNum').value = val;
+            const binStr = val.toString(2).padStart(8, '0');
+            for (let i = 0; i < 8; i++) {
+                const bit = parseInt(binStr[i]);
+                document.getElementById('led' + i).className = 'led-circle' + (bit ? ' aceso' : '');
+                document.getElementById('bit' + i).textContent = bit;
+            }
+            document.getElementById('simResultado').textContent =
+                `Decimal: ${val}  →  Binário: ${binStr}`;
+        }
+
+        function marcarCompleto(elemento) {
+            elemento.classList.toggle('completo');
+            atualizarProgresso();
+        }
+
+        function proximoPasso(numero) {
+            document.getElementById('passo' + passoAtual).classList.add('oculto');
+            document.getElementById('nav' + passoAtual).classList.remove('ativo');
+            document.getElementById('nav' + passoAtual).classList.add('feito');
+
+            document.getElementById('passo' + numero).classList.remove('oculto');
+            document.getElementById('nav' + numero).classList.add('ativo');
+
+            passoAtual = numero;
+            if (!passosCompletos.includes(numero - 1)) {
+                passosCompletos.push(numero - 1);
+                completados = passosCompletos.length;
+            }
+            atualizarProgresso();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function irParaPasso(numero) {
+            document.getElementById('passo' + passoAtual).classList.add('oculto');
+            document.getElementById('nav' + passoAtual).classList.remove('ativo');
+
+            document.getElementById('passo' + numero).classList.remove('oculto');
+            document.getElementById('nav' + numero).classList.add('ativo');
+
+            passoAtual = numero;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function atualizarProgresso() {
+            let percentual = Math.round((completados / totalPassos) * 100);
+            document.getElementById('progresso').style.width = percentual + '%';
+            document.getElementById('progresso').textContent = percentual + '%';
+            document.getElementById('progresso-texto').textContent =
+                `Você completou ${completados} de ${totalPassos} etapas`;
+        }
+
+        function copiarCodigo(btn) {
+            const bloco = btn.parentElement;
+            const texto = bloco.innerText.replace('📋 Copiar', '').trim();
+            navigator.clipboard.writeText(texto).then(() => {
+                btn.textContent = '✅ Copiado!';
+                setTimeout(() => { btn.textContent = '📋 Copiar'; }, 2000);
+            });
+        }
+
+        init();
+        simularLeds();
+    </script>
+</body>
+</html>

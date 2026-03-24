@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitetura e Organização de Computadores - 20 Semanas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .header h1 { color: #1e3c72; font-size: 2.5em; margin-bottom: 15px; }
+        .header .subtitle { color: #666; font-size: 1.3em; margin-bottom: 20px; }
+        .info-badge {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 10px;
+            font-size: 1.1em;
+        }
+        .module-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        .module-section h2 {
+            color: #1e3c72;
+            font-size: 2em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2a5298;
+        }
+        .weeks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .week-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #1e3c72;
+            cursor: pointer;
+        }
+        .week-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(30, 60, 114, 0.3);
+        }
+        .week-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .week-number {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .week-title {
+            flex: 1;
+            color: #1e3c72;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .week-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .week-link {
+            flex: 1;
+            padding: 8px 12px;
+            background: #e6f2ff;
+            color: #2a5298;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .week-link:hover {
+            background: #2a5298;
+            color: white;
+        }
+        .footer {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        .footer h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        .footer p {
+            color: #666;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Arquitetura e Organização de Computadores</h1>
+            <p class="subtitle">Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas</p>
+            <div>
+                <span class="info-badge">📚 20 Semanas</span>
+                <span class="info-badge">⏱️ 80 horas-aula</span>
+                <span class="info-badge">🔧 Arduino + ESP32</span>
+                <span class="info-badge">💻 Teoria + Prática</span>
+            </div>
+        </div>
+
+        <!-- MÓDULO 1 -->
+        <div class="module-section">
+            <h2>🎯 Módulo 1: Fundamentos da Arquitetura de Computadores</h2>
+            <div class="weeks-grid">
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">01</div>
+                        <div class="week-title">Apresentação e Fundamentos</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana01_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana01_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">02</div>
+                        <div class="week-title">Sistemas Numéricos</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana02_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana02_guia.html" class="week-link">✏️ Guia</a>
+                        <a href="projetosemana_02_conversor_decimal_binario.html" class="week-link">💻 Projeto</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">03</div>
+                        <div class="week-title">Portas Lógicas e Álgebra Booleana</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana03_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana03_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">04</div>
+                        <div class="week-title">Circuitos Combinacionais</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana04_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana04_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">05</div>
+                        <div class="week-title">Circuitos Sequenciais</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana05_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana05_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO 2 -->
+        <div class="module-section">
+            <h2>🔧 Módulo 2: Arquitetura Básica e Arduino</h2>
+            <div class="weeks-grid">
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">06</div>
+                        <div class="week-title">Arquitetura de von Neumann</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana06_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana06_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">07</div>
+                        <div class="week-title">Introdução ao Arduino - Hardware</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana07_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana07_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">08</div>
+                        <div class="week-title">Programação Arduino - Básico</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana08_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana08_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">09</div>
+                        <div class="week-title">Sensores e Atuadores</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana09_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana09_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">10</div>
+                        <div class="week-title">Projeto Prático Arduino 1</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana10_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana10_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO 3 -->
+        <div class="module-section">
+            <h2>💾 Módulo 3: Arquitetura Interna do Computador</h2>
+            <div class="weeks-grid">
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">11</div>
+                        <div class="week-title">CPU e Ciclo de Instrução</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana11_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana11_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">12</div>
+                        <div class="week-title">Conjunto de Instruções (ISA)</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana12_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana12_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">13</div>
+                        <div class="week-title">Hierarquia de Memória</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana13_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana13_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">14</div>
+                        <div class="week-title">Memória Cache</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana14_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana14_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">15</div>
+                        <div class="week-title">Entrada e Saída (I/O)</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana15_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana15_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO 4 -->
+        <div class="module-section">
+            <h2>📡 Módulo 4: Arquitetura Avançada e ESP32</h2>
+            <div class="weeks-grid">
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">16</div>
+                        <div class="week-title">Introdução ao ESP32</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana16_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana16_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">17</div>
+                        <div class="week-title">WiFi e IoT com ESP32</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana17_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana17_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">18</div>
+                        <div class="week-title">Bluetooth e Comunicação</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana18_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana18_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">19</div>
+                        <div class="week-title">Projeto Integrador</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana19_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana19_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+                
+                <div class="week-card">
+                    <div class="week-header">
+                        <div class="week-number">20</div>
+                        <div class="week-title">Apresentação dos Projetos</div>
+                    </div>
+                    <div class="week-links">
+                        <a href="arquitetura_semana20_aula.html" class="week-link">📖 Aula</a>
+                        <a href="arquitetura_semana20_guia.html" class="week-link">✏️ Guia</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h3>📋 Sobre o Curso</h3>
+            <p>
+                Esta disciplina oferece uma visão completa da arquitetura de computadores, desde os fundamentos 
+                de circuitos digitais até a implementação prática com Arduino e ESP32. Os alunos desenvolverão 
+                projetos hands-on que integram teoria e prática, culminando em um projeto final de IoT.
+            </p>
+            <p style="margin-top: 15px; color: #1e3c72; font-weight: bold;">
+                Centro Estadual de Educação Tecnológica Paula Souza | 1º Semestre de 2026
+            </p>
+        </div>
+    </div>
+</body>
+</html>

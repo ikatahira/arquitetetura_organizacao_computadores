@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROVA — Semanas 02 &amp; 03 | ADS 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a0a;--bg2:#0a0f0f;--bg3:#0f1a14;--card:#0d1a12;
+  --border:#1a3320;--green:#00ff88;--green2:#00cc66;--green3:#00ff88;
+  --amber:#f59e0b;--red:#ef4444;--blue:#38bdf8;--purple:#a78bfa;--cyan:#22d3ee;
+  --text:#c8ffd4;--text2:#6b9e78;
+  --glow:0 0 20px rgba(0,255,136,.25);--glow2:0 0 35px rgba(0,255,136,.45);
+  --scanline:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;position:relative}
+body::before{content:'';position:fixed;inset:0;background:var(--scanline);pointer-events:none;z-index:0;opacity:.3}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+/* ── HEADER ── */
+.header{background:var(--bg2);border-bottom:2px solid var(--green2);box-shadow:0 0 40px rgba(0,255,136,.15);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1000px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.exam-badge{font-family:'IBM Plex Mono',monospace;background:var(--red);color:#fff;border-radius:3px;padding:4px 12px;font-size:.72em;font-weight:700;letter-spacing:.1em;white-space:nowrap;animation:badgePulse 2s ease-in-out infinite}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 8px rgba(239,68,68,.4)}50%{box-shadow:0 0 20px rgba(239,68,68,.8)}}
+.header-text{flex:1}
+.header-text h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(.9em,2vw,1.2em);font-weight:700;color:var(--green3);text-shadow:0 0 14px rgba(0,255,136,.4)}
+.header-text p{color:var(--text2);font-size:.75em;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+.hud{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hud-pill{font-family:'IBM Plex Mono',monospace;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);border-radius:3px;padding:5px 12px;text-align:center;min-width:72px}
+.hud-pill .v{font-size:1.1em;font-weight:700;color:var(--green);display:block;line-height:1}
+.hud-pill .l{font-size:.52em;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-top:2px}
+.hud-pill.timer-danger .v{color:var(--red);animation:timerBlink .5s ease-in-out infinite}
+@keyframes timerBlink{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* PROGRESS */
+.prog-wrap{background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 28px}
+.prog-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.prog-label{font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);white-space:nowrap}
+.prog-track{flex:1;height:4px;background:var(--bg3);border:1px solid var(--border);overflow:hidden;border-radius:100px}
+.prog-fill{height:100%;background:var(--green);box-shadow:0 0 8px var(--green);border-radius:100px;transition:width .4s ease;width:0%}
+.prog-steps{font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);white-space:nowrap}
+
+/* CONTAINER */
+.container{max-width:1000px;margin:0 auto;padding:28px 28px 80px;position:relative;z-index:1}
+
+/* HERO */
+.hero{background:var(--card);border:1px solid var(--green2);padding:32px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--glow)}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.hero::after{content:'[AVALIAÇÃO FORMAL]';position:absolute;right:24px;top:18px;font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);letter-spacing:.15em}
+.hero-tag{font-family:'IBM Plex Mono',monospace;font-size:.68em;color:var(--red);letter-spacing:.15em;margin-bottom:8px}
+.hero h2{font-family:'IBM Plex Mono',monospace;font-size:clamp(1.3em,3vw,2em);color:var(--green3);margin-bottom:6px;text-shadow:0 0 16px rgba(0,255,136,.35)}
+.hero p{color:var(--text2);font-size:.88em;max-width:620px;line-height:1.7}
+.hero-meta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.meta-chip{font-family:'IBM Plex Mono',monospace;font-size:.72em;font-weight:600;padding:4px 12px;border:1px solid;border-radius:3px}
+.mc-r{color:var(--red);border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.07)}
+.mc-g{color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.06)}
+.mc-b{color:var(--blue);border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}
+.mc-a{color:var(--amber);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.06)}
+.mc-p{color:var(--purple);border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+
+.start-btn{margin-top:20px;padding:12px 32px;background:var(--green);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:.88em;font-weight:700;border:none;cursor:pointer;letter-spacing:.06em;transition:all .2s}
+.start-btn:hover{box-shadow:var(--glow2);transform:translateY(-2px)}
+
+/* RULES */
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+.rule-item{background:var(--bg3);border:1px solid var(--border);padding:14px;font-size:.82em;color:var(--text2);font-family:'IBM Plex Mono',monospace;border-left:3px solid var(--green2)}
+.rule-item strong{color:var(--green);display:block;margin-bottom:4px;font-size:.85em}
+
+/* SECTION DIVIDER */
+.section-divider{display:flex;align-items:center;gap:14px;margin:28px 0 16px;position:relative}
+.section-divider::before{content:'';flex:0 0 3px;height:32px;background:var(--amber)}
+.sec-info{flex:1}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:.62em;color:var(--amber);letter-spacing:.2em;text-transform:uppercase}
+.sec-title{font-family:'IBM Plex Mono',monospace;font-size:1.05em;color:var(--text);font-weight:700;margin-top:2px}
+.sec-pts{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2);background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);padding:3px 10px;border-radius:2px;color:var(--amber)}
+
+/* QUESTION CARD */
+.q-card{background:var(--card);border:1px solid var(--border);padding:24px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .2s}
+.q-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green2)}
+.q-card.answered{border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.03)}
+.q-card.answered::before{background:var(--green)}
+.q-card.answered-wrong::before{background:var(--red)}
+.q-num{font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.q-tag{font-size:.75em;padding:2px 8px;border-radius:2px;font-family:'IBM Plex Mono',monospace}
+.qt-num{color:var(--blue);border:1px solid rgba(56,189,248,.25);background:rgba(56,189,248,.07)}
+.qt-log{color:var(--purple);border:1px solid rgba(167,139,250,.25);background:rgba(167,139,250,.07)}
+.qt-calc{color:var(--amber);border:1px solid rgba(245,158,11,.25);background:rgba(245,158,11,.07)}
+.qt-bool{color:var(--cyan);border:1px solid rgba(34,211,238,.25);background:rgba(34,211,238,.07)}
+.q-pts{margin-left:auto;font-size:.72em;color:var(--amber);font-family:'IBM Plex Mono',monospace}
+.q-text{font-size:.93em;color:var(--text);line-height:1.65;margin-bottom:16px;font-weight:500}
+.q-text code{font-family:'IBM Plex Mono',monospace;color:var(--green3);background:rgba(0,255,136,.07);padding:1px 6px;font-size:.92em}
+.q-text strong{color:var(--amber)}
+
+/* MULTIPLE CHOICE */
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{font-family:'IBM Plex Mono',monospace;padding:10px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);color:var(--text);cursor:pointer;font-size:.82em;text-align:left;transition:all .2s;display:flex;align-items:center;gap:12px}
+.opt:hover:not(:disabled){border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.06);color:var(--green)}
+.opt.selected{border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.07);color:var(--blue)}
+.opt.correct{border-color:rgba(0,255,136,.5);background:rgba(0,255,136,.1);color:var(--green3)}
+.opt.wrong{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.07);color:var(--red)}
+.opt:disabled{cursor:default}
+.opt-letter{width:22px;height:22px;border:1px solid currentColor;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:.75em;font-weight:700;flex-shrink:0;opacity:.6}
+.opt.selected .opt-letter,.opt.correct .opt-letter,.opt.wrong .opt-letter{opacity:1}
+
+/* OPEN ANSWER */
+.open-wrap{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.open-input{background:var(--bg3);border:1px solid var(--border);color:var(--green3);font-family:'IBM Plex Mono',monospace;font-size:.9em;padding:10px 12px;flex:1;min-width:140px;outline:none;transition:border-color .2s}
+.open-input:focus{border-color:var(--green2);box-shadow:0 0 0 2px rgba(0,255,136,.07)}
+.open-input:disabled{opacity:.6}
+.check-btn{background:var(--green);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:.78em;font-weight:700;padding:10px 20px;border:none;cursor:pointer;letter-spacing:.04em;white-space:nowrap;transition:all .2s}
+.check-btn:hover{box-shadow:var(--glow)}
+.check-btn:disabled{opacity:.35;cursor:default}
+
+/* FEEDBACK */
+.q-feedback{font-family:'IBM Plex Mono',monospace;font-size:.78em;padding:10px 14px;margin-top:10px;line-height:1.55;display:none;border-radius:2px}
+.q-feedback.show{display:block}
+.q-feedback.ok{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.22);color:var(--green)}
+.q-feedback.fail{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.22);color:var(--red)}
+
+/* HINT */
+.hint-btn{font-family:'IBM Plex Mono',monospace;font-size:.72em;padding:6px 12px;border:1px solid rgba(245,158,11,.25);background:rgba(245,158,11,.05);color:var(--amber);cursor:pointer;transition:all .2s;margin-top:8px}
+.hint-btn:hover{background:rgba(245,158,11,.12)}
+.hint-box{font-family:'IBM Plex Mono',monospace;font-size:.76em;padding:9px 12px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2);color:#fde68a;margin-top:6px;line-height:1.6;display:none}
+.hint-box.show{display:block}
+
+/* TRUTH TABLE QUESTION */
+.tt-q-table{border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.82em;margin:12px 0}
+.tt-q-table th{background:rgba(0,255,136,.1);color:var(--green);padding:6px 14px;border:1px solid var(--border);text-align:center}
+.tt-q-table td{padding:6px 14px;border:1px solid var(--border);text-align:center;color:var(--text2)}
+.tt-q-table td.v1{color:var(--green3);font-weight:700}
+.tt-q-table td.v0{color:var(--red)}
+.tt-q-table td.blank{background:rgba(0,0,0,.3);min-width:60px}
+.tt-q-table select{background:var(--bg3);border:1px solid var(--border);color:var(--green3);font-family:'IBM Plex Mono',monospace;font-size:.88em;padding:3px 8px;outline:none;cursor:pointer;width:60px}
+.tt-q-table select.correct-sel{border-color:var(--green);color:var(--green)}
+.tt-q-table select.wrong-sel{border-color:var(--red);color:var(--red)}
+
+/* SCORE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;backdrop-filter:blur(4px)}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--card);border:2px solid var(--green2);padding:40px;max-width:560px;width:90%;position:relative;box-shadow:0 0 60px rgba(0,255,136,.3);animation:modalIn .4s ease}
+@keyframes modalIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.modal-title{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+.modal-grade{font-family:'IBM Plex Mono',monospace;font-size:4em;font-weight:700;color:var(--green);text-shadow:0 0 30px rgba(0,255,136,.6);line-height:1;margin-bottom:4px}
+.modal-sub{font-family:'IBM Plex Mono',monospace;font-size:.82em;color:var(--text2);margin-bottom:20px}
+.modal-breakdown{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:18px 0}
+.mb-item{background:var(--bg3);border:1px solid var(--border);padding:12px;text-align:center}
+.mb-val{font-family:'IBM Plex Mono',monospace;font-size:1.5em;font-weight:700;display:block}
+.mb-lbl{font-size:.65em;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;font-family:'IBM Plex Mono',monospace;margin-top:3px}
+.modal-msg{font-size:.88em;color:var(--text2);margin-bottom:22px;line-height:1.6;font-family:'IBM Plex Mono',monospace}
+.modal-btns{display:flex;gap:10px;flex-wrap:wrap}
+.modal-btn{font-family:'IBM Plex Mono',monospace;padding:10px 22px;font-size:.8em;font-weight:700;cursor:pointer;letter-spacing:.05em;border:none;transition:all .2s}
+.modal-btn.primary{background:var(--green);color:var(--bg)}
+.modal-btn.primary:hover{box-shadow:var(--glow2)}
+.modal-btn.secondary{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.modal-btn.secondary:hover{border-color:var(--green2);color:var(--green2)}
+
+/* SUBMIT BAR */
+.submit-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:14px 28px;z-index:90;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.sub-info{font-family:'IBM Plex Mono',monospace;font-size:.78em;color:var(--text2);flex:1}
+.sub-info span{color:var(--green);font-weight:700}
+.submit-btn{background:var(--green);color:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:.85em;font-weight:700;padding:12px 30px;border:none;cursor:pointer;letter-spacing:.06em;transition:all .2s}
+.submit-btn:hover{box-shadow:var(--glow2);transform:translateY(-1px)}
+.submit-btn:disabled{opacity:.3;cursor:default;transform:none;box-shadow:none}
+
+/* GABARITO */
+.gabarito-section{margin-top:32px;display:none}
+.gabarito-section.show{display:block}
+.gab-header{background:var(--bg3);border:1px solid var(--green2);padding:18px 22px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.gab-icon{font-size:1.5em}
+.gab-title{font-family:'IBM Plex Mono',monospace;font-size:.9em;color:var(--green3);font-weight:700}
+.gab-sub{font-size:.75em;color:var(--text2);margin-top:2px;font-family:'IBM Plex Mono',monospace}
+
+code{font-family:'IBM Plex Mono',monospace;color:var(--green3);background:rgba(0,255,136,.07);padding:1px 5px;font-size:.92em}
+
+@media(max-width:640px){
+  .container{padding:18px 14px 80px}
+  .header-inner{padding:12px 14px}
+  .modal{padding:24px 18px}
+  .modal-grade{font-size:3em}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="exam-badge">PROVA</div>
+    <div class="header-text">
+      <h1>Sistemas Numéricos &amp; Portas Lógicas</h1>
+      <p>ADS 2026 · Arquitetura de Computadores · Semanas 02–03</p>
+    </div>
+    <div class="hud">
+      <div class="hud-pill" id="pill-timer">
+        <span class="v" id="timer-display">50:00</span>
+        <span class="l">Tempo</span>
+      </div>
+      <div class="hud-pill">
+        <span class="v" id="pill-answered">0/20</span>
+        <span class="l">Respondidas</span>
+      </div>
+      <div class="hud-pill">
+        <span class="v" id="pill-score">0</span>
+        <span class="l">Pontos</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-inner">
+    <span class="prog-label">PROGRESSO</span>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+    <span class="prog-steps" id="prog-steps">0 / 20 questões</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+<!-- HERO / INSTRUÇÕES -->
+<div class="hero" id="hero-section">
+  <div class="hero-tag">▶ AVALIAÇÃO — MÓDULO 1 · SEMANAS 02 E 03</div>
+  <h2>Prova: Sistemas Numéricos<br>&amp; Portas Lógicas</h2>
+  <p>Esta avaliação cobre os conteúdos das Semanas 02 (Sistemas Numéricos) e 03 (Portas Lógicas e Álgebra Booleana). Leia cada questão com atenção antes de responder.</p>
+  <div class="hero-meta">
+    <span class="meta-chip mc-r">20 Questões</span>
+    <span class="meta-chip mc-a">100 Pontos</span>
+    <span class="meta-chip mc-b">50 minutos</span>
+    <span class="meta-chip mc-g">Gabarito automático</span>
+    <span class="meta-chip mc-p">Nota ao finalizar</span>
+  </div>
+  <div class="rules-grid" style="margin-top:20px">
+    <div class="rule-item"><strong>Questões 1–10</strong>Sistemas Numéricos: conversões e operações em binário, hexadecimal e octal.</div>
+    <div class="rule-item"><strong>Questões 11–17</strong>Portas Lógicas: AND, OR, NOT, NAND, NOR, XOR, XNOR e tabelas verdade.</div>
+    <div class="rule-item"><strong>Questões 18–20</strong>Álgebra Booleana: expressões, De Morgan e circuitos combinacionais.</div>
+    <div class="rule-item"><strong>Pontuação</strong>Cada questão vale 5 pontos. Questões de múltipla escolha aceitam 1 resposta. Gabarito revelado ao submeter.</div>
+  </div>
+  <button class="start-btn" onclick="startExam()">▶ INICIAR PROVA</button>
+</div>
+
+<!-- QUESTÕES (ocultas até iniciar) -->
+<div id="exam-body" style="display:none">
+
+<!-- ══════════════════════════════════════
+     SEÇÃO A — SISTEMAS NUMÉRICOS
+     ══════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="sec-info">
+    <div class="sec-num">SEÇÃO A</div>
+    <div class="sec-title">Sistemas Numéricos</div>
+  </div>
+  <span class="sec-pts">50 pontos</span>
+</div>
+
+<!-- Q1 -->
+<div class="q-card" id="qc-0">
+  <div class="q-num">
+    <span>Questão 01</span>
+    <span class="q-tag qt-num">DEC → BIN</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Qual é a representação binária correta do número decimal <strong>45</strong>?</div>
+  <div class="opts" id="opts-0">
+    <button class="opt" onclick="answerMC(0,0,2)"><span class="opt-letter">A</span>101011</button>
+    <button class="opt" onclick="answerMC(0,1,2)"><span class="opt-letter">B</span>101100</button>
+    <button class="opt" onclick="answerMC(0,2,2)"><span class="opt-letter">C</span>101101</button>
+    <button class="opt" onclick="answerMC(0,3,2)"><span class="opt-letter">D</span>110101</button>
+  </div>
+  <div class="q-feedback" id="fb-0"></div>
+  <button class="hint-btn" onclick="toggleHint(0)">💡 Dica</button>
+  <div class="hint-box" id="hint-0">Divida 45 por 2 repetidamente: 45÷2=22r1, 22÷2=11r0, 11÷2=5r1, 5÷2=2r1, 2÷2=1r0, 1÷2=0r1. Leia os restos de baixo para cima.</div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card" id="qc-1">
+  <div class="q-num">
+    <span>Questão 02</span>
+    <span class="q-tag qt-num">BIN → DEC</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Qual é o valor decimal de <strong>11001010</strong>₂?</div>
+  <div class="opts" id="opts-1">
+    <button class="opt" onclick="answerMC(1,0,2)"><span class="opt-letter">A</span>192</button>
+    <button class="opt" onclick="answerMC(1,1,2)"><span class="opt-letter">B</span>200</button>
+    <button class="opt" onclick="answerMC(1,2,2)"><span class="opt-letter">C</span>202</button>
+    <button class="opt" onclick="answerMC(1,3,2)"><span class="opt-letter">D</span>210</button>
+  </div>
+  <div class="q-feedback" id="fb-1"></div>
+  <button class="hint-btn" onclick="toggleHint(1)">💡 Dica</button>
+  <div class="hint-box" id="hint-1">Aplique pesos posicionais: 1×128 + 1×64 + 0×32 + 0×16 + 1×8 + 0×4 + 1×2 + 0×1</div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card" id="qc-2">
+  <div class="q-num">
+    <span>Questão 03</span>
+    <span class="q-tag qt-num">DEC → HEX</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Converta <strong>219</strong>₁₀ para hexadecimal.</div>
+  <div class="opts" id="opts-2">
+    <button class="opt" onclick="answerMC(2,0,1)"><span class="opt-letter">A</span>0xCB</button>
+    <button class="opt" onclick="answerMC(2,1,1)"><span class="opt-letter">B</span>0xDB</button>
+    <button class="opt" onclick="answerMC(2,2,1)"><span class="opt-letter">C</span>0xDC</button>
+    <button class="opt" onclick="answerMC(2,3,1)"><span class="opt-letter">D</span>0xEB</button>
+  </div>
+  <div class="q-feedback" id="fb-2"></div>
+  <button class="hint-btn" onclick="toggleHint(2)">💡 Dica</button>
+  <div class="hint-box" id="hint-2">219 ÷ 16 = 13 resto 11. 13 em hex = D. 11 em hex = B. Resultado: DB₁₆</div>
+</div>
+
+<!-- Q4 -->
+<div class="q-card" id="qc-3">
+  <div class="q-num">
+    <span>Questão 04</span>
+    <span class="q-tag qt-num">HEX → DEC</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Qual é o valor decimal de <strong>0x2B</strong>?</div>
+  <div class="opts" id="opts-3">
+    <button class="opt" onclick="answerMC(3,0,1)"><span class="opt-letter">A</span>41</button>
+    <button class="opt" onclick="answerMC(3,1,1)"><span class="opt-letter">B</span>43</button>
+    <button class="opt" onclick="answerMC(3,2,1)"><span class="opt-letter">C</span>45</button>
+    <button class="opt" onclick="answerMC(3,3,1)"><span class="opt-letter">D</span>47</button>
+  </div>
+  <div class="q-feedback" id="fb-3"></div>
+  <button class="hint-btn" onclick="toggleHint(3)">💡 Dica</button>
+  <div class="hint-box" id="hint-3">2 × 16¹ + B(=11) × 16⁰ = 32 + 11 = ?</div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card" id="qc-4">
+  <div class="q-num">
+    <span>Questão 05</span>
+    <span class="q-tag qt-num">BIN → HEX</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Converta <strong>10110111</strong>₂ para hexadecimal agrupando em nibbles.</div>
+  <div class="opts" id="opts-4">
+    <button class="opt" onclick="answerMC(4,0,3)"><span class="opt-letter">A</span>0xA7</button>
+    <button class="opt" onclick="answerMC(4,1,3)"><span class="opt-letter">B</span>0xB6</button>
+    <button class="opt" onclick="answerMC(4,2,3)"><span class="opt-letter">C</span>0xB7</button>
+    <button class="opt" onclick="answerMC(4,3,3)"><span class="opt-letter">D</span>0xBF</button>
+  </div>
+  <div class="q-feedback" id="fb-4"></div>
+  <button class="hint-btn" onclick="toggleHint(4)">💡 Dica</button>
+  <div class="hint-box" id="hint-4">Divida em dois nibbles: 1011 | 0111. Converta cada: 1011 = 11 = B, 0111 = 7.</div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card" id="qc-5">
+  <div class="q-num">
+    <span>Questão 06</span>
+    <span class="q-tag qt-calc">Conceito</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Um byte tem 8 bits. Qual é o maior valor decimal que pode ser representado com <strong>1 byte sem sinal</strong>?</div>
+  <div class="opts" id="opts-5">
+    <button class="opt" onclick="answerMC(5,0,3)"><span class="opt-letter">A</span>128</button>
+    <button class="opt" onclick="answerMC(5,1,3)"><span class="opt-letter">B</span>200</button>
+    <button class="opt" onclick="answerMC(5,2,3)"><span class="opt-letter">C</span>254</button>
+    <button class="opt" onclick="answerMC(5,3,3)"><span class="opt-letter">D</span>255</button>
+  </div>
+  <div class="q-feedback" id="fb-5"></div>
+  <button class="hint-btn" onclick="toggleHint(5)">💡 Dica</button>
+  <div class="hint-box" id="hint-5">Com n bits, os valores vão de 0 a 2ⁿ−1. Com 8 bits: 2⁸ − 1 = ?</div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card" id="qc-6">
+  <div class="q-num">
+    <span>Questão 07</span>
+    <span class="q-tag qt-num">OCTAL</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Qual é o valor decimal do número octal <strong>0o347</strong>?</div>
+  <div class="opts" id="opts-6">
+    <button class="opt" onclick="answerMC(6,0,1)"><span class="opt-letter">A</span>219</button>
+    <button class="opt" onclick="answerMC(6,1,1)"><span class="opt-letter">B</span>231</button>
+    <button class="opt" onclick="answerMC(6,2,1)"><span class="opt-letter">C</span>239</button>
+    <button class="opt" onclick="answerMC(6,3,1)"><span class="opt-letter">D</span>247</button>
+  </div>
+  <div class="q-feedback" id="fb-6"></div>
+  <button class="hint-btn" onclick="toggleHint(6)">💡 Dica</button>
+  <div class="hint-box" id="hint-6">3×8² + 4×8¹ + 7×8⁰ = 3×64 + 4×8 + 7×1 = 192 + 32 + 7 = ?</div>
+</div>
+
+<!-- Q8 -->
+<div class="q-card" id="qc-7">
+  <div class="q-num">
+    <span>Questão 08</span>
+    <span class="q-tag qt-calc">Aplicação</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Em uma cor CSS <code>#FF8C00</code>, qual é o valor decimal do canal <strong>verde (G)</strong>?</div>
+  <div class="opts" id="opts-7">
+    <button class="opt" onclick="answerMC(7,0,2)"><span class="opt-letter">A</span>100</button>
+    <button class="opt" onclick="answerMC(7,1,2)"><span class="opt-letter">B</span>120</button>
+    <button class="opt" onclick="answerMC(7,2,2)"><span class="opt-letter">C</span>140</button>
+    <button class="opt" onclick="answerMC(7,3,2)"><span class="opt-letter">D</span>160</button>
+  </div>
+  <div class="q-feedback" id="fb-7"></div>
+  <button class="hint-btn" onclick="toggleHint(7)">💡 Dica</button>
+  <div class="hint-box" id="hint-7">O formato é #RRGGBB. Verde = 8C₁₆. Converta 8C para decimal: 8×16 + 12×1 = ?</div>
+</div>
+
+<!-- Q9 -->
+<div class="q-card" id="qc-8">
+  <div class="q-num">
+    <span>Questão 09</span>
+    <span class="q-tag qt-num">BIN → DEC</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">O número binário <strong>10000000</strong>₂ corresponde a qual potência de 2?</div>
+  <div class="opts" id="opts-8">
+    <button class="opt" onclick="answerMC(8,0,2)"><span class="opt-letter">A</span>2⁶ = 64</button>
+    <button class="opt" onclick="answerMC(8,1,2)"><span class="opt-letter">B</span>2⁷ = 128</button>
+    <button class="opt" onclick="answerMC(8,2,2)"><span class="opt-letter">C</span>2⁸ = 256</button>
+    <button class="opt" onclick="answerMC(8,3,2)"><span class="opt-letter">D</span>2⁹ = 512</button>
+  </div>
+  <div class="q-feedback" id="fb-8"></div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card" id="qc-9">
+  <div class="q-num">
+    <span>Questão 10</span>
+    <span class="q-tag qt-calc">Conceito</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Por que o sistema hexadecimal é tão utilizado em computação, especialmente para representar endereços de memória e cores?</div>
+  <div class="opts" id="opts-9">
+    <button class="opt" onclick="answerMC(9,0,1)"><span class="opt-letter">A</span>Porque é mais fácil que o decimal para humanos</button>
+    <button class="opt" onclick="answerMC(9,1,1)"><span class="opt-letter">B</span>Cada dígito hex representa exatamente 4 bits (1 nibble), compactando a notação binária sem conversão complexa</button>
+    <button class="opt" onclick="answerMC(9,2,1)"><span class="opt-letter">C</span>Porque os processadores operam internamente em base 16</button>
+    <button class="opt" onclick="answerMC(9,3,1)"><span class="opt-letter">D</span>Porque tem 16 símbolos, assim como o número de registradores de um processador</button>
+  </div>
+  <div class="q-feedback" id="fb-9"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SEÇÃO B — PORTAS LÓGICAS
+     ══════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="sec-info">
+    <div class="sec-num">SEÇÃO B</div>
+    <div class="sec-title">Portas Lógicas &amp; Tabelas Verdade</div>
+  </div>
+  <span class="sec-pts">35 pontos</span>
+</div>
+
+<!-- Q11 -->
+<div class="q-card" id="qc-10">
+  <div class="q-num">
+    <span>Questão 11</span>
+    <span class="q-tag qt-log">AND</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Qual é a saída da porta <strong>AND</strong> para a combinação A=1, B=1, C=0?</div>
+  <div class="opts" id="opts-10">
+    <button class="opt" onclick="answerMC(10,0,0)"><span class="opt-letter">A</span>Saída = 0</button>
+    <button class="opt" onclick="answerMC(10,1,0)"><span class="opt-letter">B</span>Saída = 1</button>
+    <button class="opt" onclick="answerMC(10,2,0)"><span class="opt-letter">C</span>Saída = 0 apenas se A=0</button>
+    <button class="opt" onclick="answerMC(10,3,0)"><span class="opt-letter">D</span>Indeterminado</button>
+  </div>
+  <div class="q-feedback" id="fb-10"></div>
+  <button class="hint-btn" onclick="toggleHint(10)">💡 Dica</button>
+  <div class="hint-box" id="hint-10">AND: a saída é 1 somente quando TODAS as entradas são 1. Se qualquer entrada for 0, a saída é 0.</div>
+</div>
+
+<!-- Q12 -->
+<div class="q-card" id="qc-11">
+  <div class="q-num">
+    <span>Questão 12</span>
+    <span class="q-tag qt-log">NOR</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">A porta <strong>NOR</strong> com entradas A=0 e B=0 produz saída:</div>
+  <div class="opts" id="opts-11">
+    <button class="opt" onclick="answerMC(11,0,0)"><span class="opt-letter">A</span>Saída = 1 (a única combinação que produz 1 na NOR)</button>
+    <button class="opt" onclick="answerMC(11,1,0)"><span class="opt-letter">B</span>Saída = 0 (mesma que OR)</button>
+    <button class="opt" onclick="answerMC(11,2,0)"><span class="opt-letter">C</span>Saída = 1 (mesma que AND)</button>
+    <button class="opt" onclick="answerMC(11,3,0)"><span class="opt-letter">D</span>Saída = 0 (NOR sempre produz 0)</button>
+  </div>
+  <div class="q-feedback" id="fb-11"></div>
+  <button class="hint-btn" onclick="toggleHint(11)">💡 Dica</button>
+  <div class="hint-box" id="hint-11">NOR = NOT(OR). OR(0,0) = 0, então NOT(0) = ?</div>
+</div>
+
+<!-- Q13 -->
+<div class="q-card" id="qc-12">
+  <div class="q-num">
+    <span>Questão 13</span>
+    <span class="q-tag qt-log">XOR</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">A porta <strong>XOR</strong> produz saída 1 quando:</div>
+  <div class="opts" id="opts-12">
+    <button class="opt" onclick="answerMC(12,0,2)"><span class="opt-letter">A</span>Todas as entradas são 1</button>
+    <button class="opt" onclick="answerMC(12,1,2)"><span class="opt-letter">B</span>Pelo menos uma entrada é 1</button>
+    <button class="opt" onclick="answerMC(12,2,2)"><span class="opt-letter">C</span>As entradas são diferentes entre si</button>
+    <button class="opt" onclick="answerMC(12,3,2)"><span class="opt-letter">D</span>Todas as entradas são 0</button>
+  </div>
+  <div class="q-feedback" id="fb-12"></div>
+</div>
+
+<!-- Q14 — Truth Table fill-in -->
+<div class="q-card" id="qc-13">
+  <div class="q-num">
+    <span>Questão 14</span>
+    <span class="q-tag qt-log">Tabela Verdade</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Complete a tabela verdade da porta <strong>NAND</strong> (A·B̄) selecionando os valores corretos para a saída S:</div>
+  <table class="tt-q-table" style="margin-bottom:14px">
+    <thead><tr><th>A</th><th>B</th><th>S = NAND(A,B)</th></tr></thead>
+    <tbody>
+      <tr><td class="v0">0</td><td class="v0">0</td><td class="blank"><select id="tt13-0"><option value="">—</option><option value="0">0</option><option value="1">1</option></select></td></tr>
+      <tr><td class="v0">0</td><td class="v1">1</td><td class="blank"><select id="tt13-1"><option value="">—</option><option value="0">0</option><option value="1">1</option></select></td></tr>
+      <tr><td class="v1">1</td><td class="v0">0</td><td class="blank"><select id="tt13-2"><option value="">—</option><option value="0">0</option><option value="1">1</option></select></td></tr>
+      <tr><td class="v1">1</td><td class="v1">1</td><td class="blank"><select id="tt13-3"><option value="">—</option><option value="0">0</option><option value="1">1</option></select></td></tr>
+    </tbody>
+  </table>
+  <div class="open-wrap">
+    <button class="check-btn" id="chk-13" onclick="checkTruthTable(13)">▶ VERIFICAR</button>
+  </div>
+  <div class="q-feedback" id="fb-13"></div>
+  <button class="hint-btn" onclick="toggleHint(13)">💡 Dica</button>
+  <div class="hint-box" id="hint-13">NAND = NOT AND. AND só dá 1 quando A=1 e B=1. Portanto NAND só dá 0 nessa combinação.</div>
+</div>
+
+<!-- Q15 -->
+<div class="q-card" id="qc-14">
+  <div class="q-num">
+    <span>Questão 15</span>
+    <span class="q-tag qt-log">Universal</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Uma porta lógica é chamada de <strong>"universal"</strong> quando:</div>
+  <div class="opts" id="opts-14">
+    <button class="opt" onclick="answerMC(14,0,1)"><span class="opt-letter">A</span>Tem o maior número de entradas possível</button>
+    <button class="opt" onclick="answerMC(14,1,1)"><span class="opt-letter">B</span>É possível implementar qualquer função lógica usando apenas esse tipo de porta</button>
+    <button class="opt" onclick="answerMC(14,2,1)"><span class="opt-letter">C</span>Funciona com qualquer tensão de alimentação</button>
+    <button class="opt" onclick="answerMC(14,3,1)"><span class="opt-letter">D</span>Produz o mesmo resultado independentemente das entradas</button>
+  </div>
+  <div class="q-feedback" id="fb-14"></div>
+</div>
+
+<!-- Q16 -->
+<div class="q-card" id="qc-15">
+  <div class="q-num">
+    <span>Questão 16</span>
+    <span class="q-tag qt-log">XNOR</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">A porta <strong>XNOR</strong> com A=1 e B=1 produz qual saída? O que isso revela sobre sua função?</div>
+  <div class="opts" id="opts-15">
+    <button class="opt" onclick="answerMC(15,0,1)"><span class="opt-letter">A</span>Saída = 0 — XNOR detecta diferença entre entradas</button>
+    <button class="opt" onclick="answerMC(15,1,1)"><span class="opt-letter">B</span>Saída = 1 — XNOR detecta igualdade entre entradas</button>
+    <button class="opt" onclick="answerMC(15,2,1)"><span class="opt-letter">C</span>Saída = 0 — XNOR é sempre o inverso do AND</button>
+    <button class="opt" onclick="answerMC(15,3,1)"><span class="opt-letter">D</span>Saída = 1 — XNOR é equivalente ao AND</button>
+  </div>
+  <div class="q-feedback" id="fb-15"></div>
+  <button class="hint-btn" onclick="toggleHint(15)">💡 Dica</button>
+  <div class="hint-box" id="hint-15">XNOR = NOT XOR. XOR(1,1) = 0 (entradas iguais). Então XNOR(1,1) = NOT(0) = ?</div>
+</div>
+
+<!-- Q17 -->
+<div class="q-card" id="qc-16">
+  <div class="q-num">
+    <span>Questão 17</span>
+    <span class="q-tag qt-log">Aplicação</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Um sistema de segurança abre a porta apenas quando <strong>AMBOS</strong> os sensores A e B detectam presença simultaneamente. Qual porta lógica modela esse comportamento?</div>
+  <div class="opts" id="opts-16">
+    <button class="opt" onclick="answerMC(16,0,1)"><span class="opt-letter">A</span>OR — pois basta um dos sensores</button>
+    <button class="opt" onclick="answerMC(16,1,1)"><span class="opt-letter">B</span>AND — pois requer ambos os sensores ativos</button>
+    <button class="opt" onclick="answerMC(16,2,1)"><span class="opt-letter">C</span>XOR — pois os sensores devem ser diferentes</button>
+    <button class="opt" onclick="answerMC(16,3,1)"><span class="opt-letter">D</span>NOT — pois a porta abre quando não há presença</button>
+  </div>
+  <div class="q-feedback" id="fb-16"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SEÇÃO C — ÁLGEBRA BOOLEANA
+     ══════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="sec-info">
+    <div class="sec-num">SEÇÃO C</div>
+    <div class="sec-title">Álgebra Booleana &amp; Expressões</div>
+  </div>
+  <span class="sec-pts">15 pontos</span>
+</div>
+
+<!-- Q18 -->
+<div class="q-card" id="qc-17">
+  <div class="q-num">
+    <span>Questão 18</span>
+    <span class="q-tag qt-bool">De Morgan</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Pelo <strong>Teorema de De Morgan</strong>, a expressão <code>¬(A + B)</code> é equivalente a:</div>
+  <div class="opts" id="opts-17">
+    <button class="opt" onclick="answerMC(17,0,2)"><span class="opt-letter">A</span>Ā + B̄</button>
+    <button class="opt" onclick="answerMC(17,1,2)"><span class="opt-letter">B</span>A · B</button>
+    <button class="opt" onclick="answerMC(17,2,2)"><span class="opt-letter">C</span>Ā · B̄</button>
+    <button class="opt" onclick="answerMC(17,3,2)"><span class="opt-letter">D</span>¬A + ¬B</button>
+  </div>
+  <div class="q-feedback" id="fb-17"></div>
+  <button class="hint-btn" onclick="toggleHint(17)">💡 Dica</button>
+  <div class="hint-box" id="hint-17">2ª Lei de De Morgan: ¬(A + B) = Ā · B̄. A negação de um OR vira AND com entradas negadas.</div>
+</div>
+
+<!-- Q19 -->
+<div class="q-card" id="qc-18">
+  <div class="q-num">
+    <span>Questão 19</span>
+    <span class="q-tag qt-bool">Expressão</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Para a expressão <code>S = A·B + Ā·B</code>, qual é o valor de S quando A=0 e B=1?</div>
+  <div class="opts" id="opts-18">
+    <button class="opt" onclick="answerMC(18,0,1)"><span class="opt-letter">A</span>S = 0</button>
+    <button class="opt" onclick="answerMC(18,1,1)"><span class="opt-letter">B</span>S = 1</button>
+    <button class="opt" onclick="answerMC(18,2,1)"><span class="opt-letter">C</span>S = Indefinido</button>
+    <button class="opt" onclick="answerMC(18,3,1)"><span class="opt-letter">D</span>S = A</button>
+  </div>
+  <div class="q-feedback" id="fb-18"></div>
+  <button class="hint-btn" onclick="toggleHint(18)">💡 Dica</button>
+  <div class="hint-box" id="hint-18">Com A=0 e B=1: Primeiro termo A·B = 0·1 = 0. Segundo termo Ā·B = 1·1 = 1. OR dos dois = ?</div>
+</div>
+
+<!-- Q20 -->
+<div class="q-card" id="qc-19">
+  <div class="q-num">
+    <span>Questão 20</span>
+    <span class="q-tag qt-bool">Lei Booleana</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-text">Qual das seguintes identidades booleanas está <strong>correta</strong>?</div>
+  <div class="opts" id="opts-19">
+    <button class="opt" onclick="answerMC(19,0,3)"><span class="opt-letter">A</span>A · Ā = 1 &nbsp;&nbsp;(AND com complemento)</button>
+    <button class="opt" onclick="answerMC(19,1,3)"><span class="opt-letter">B</span>A + A = 2A &nbsp;(idempotência aditiva)</button>
+    <button class="opt" onclick="answerMC(19,2,3)"><span class="opt-letter">C</span>A + 0 = 0 &nbsp;&nbsp;(elemento neutro)</button>
+    <button class="opt" onclick="answerMC(19,3,3)"><span class="opt-letter">D</span>A + Ā = 1 &nbsp;&nbsp;(complemento OR)</button>
+  </div>
+  <div class="q-feedback" id="fb-19"></div>
+  <button class="hint-btn" onclick="toggleHint(19)">💡 Dica</button>
+  <div class="hint-box" id="hint-19">Revise as identidades: A·Ā=0, A+A=A, A+0=A. Qual delas está escrita corretamente acima?</div>
+</div>
+
+</div><!-- /exam-body -->
+
+<!-- GABARITO -->
+<div class="gabarito-section" id="gabarito">
+  <div class="gab-header">
+    <div class="gab-icon">📋</div>
+    <div>
+      <div class="gab-title">GABARITO COMPLETO</div>
+      <div class="gab-sub">Explicações detalhadas de todas as questões</div>
+    </div>
+  </div>
+  <div id="gabarito-content"></div>
+</div>
+
+</div><!-- /container -->
+
+<!-- SUBMIT BAR -->
+<div class="submit-bar" id="submit-bar" style="display:none">
+  <div class="sub-info">Respondidas: <span id="sub-answered">0</span> / 20 questões</div>
+  <button class="submit-btn" id="submit-btn" onclick="submitExam()">FINALIZAR PROVA →</button>
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">▶ RESULTADO FINAL</div>
+    <div class="modal-grade" id="modal-grade">0.0</div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div class="modal-breakdown">
+      <div class="mb-item">
+        <span class="mb-val" id="mb-correct" style="color:var(--green)">0</span>
+        <span class="mb-lbl">Acertos</span>
+      </div>
+      <div class="mb-item">
+        <span class="mb-val" id="mb-wrong" style="color:var(--red)">0</span>
+        <span class="mb-lbl">Erros</span>
+      </div>
+      <div class="mb-item">
+        <span class="mb-val" id="mb-pts" style="color:var(--amber)">0</span>
+        <span class="mb-lbl">Pontos</span>
+      </div>
+    </div>
+    <div class="modal-msg" id="modal-msg"></div>
+    <div class="modal-btns">
+      <button class="modal-btn primary" onclick="closeModal()">Ver Gabarito →</button>
+      <button class="modal-btn secondary" onclick="restartExam()">↺ Refazer Prova</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+const TOTAL_Q = 20;
+const PTS_EACH = 5;
+let answers = new Array(TOTAL_Q).fill(null); // null = unanswered
+let score = 0;
+let examStarted = false;
+let timerInterval = null;
+let secondsLeft = 50 * 60;
+let examSubmitted = false;
+
+// ─── CORRECT ANSWERS ───────────────────────
+// Q0–Q9: Semana 02 — Sistemas Numéricos
+// Q10–Q16: Semana 03 — Portas Lógicas
+// Q17–Q19: Álgebra Booleana
+const CORRECT = [
+  2,  // Q1: C) 101101 (45 = 32+8+4+1 = 101101)
+  2,  // Q2: C) 202 (128+64+0+0+8+0+2+0)
+  1,  // Q3: B) 0xDB (219 = 13×16 + 11 = DB)
+  1,  // Q4: B) 43 (2×16+11)
+  3,  // Q5: D) 0xB7 (1011=B, 0111=7)
+  3,  // Q6: D) 255 (2⁸−1)
+  1,  // Q7: B) 231 (3×64+4×8+7=192+32+7)
+  2,  // Q8: C) 140 (8C hex = 8×16+12=140)
+  1,  // Q9: B) 2⁷=128
+  1,  // Q10: B) cada dígito hex = 4 bits
+  0,  // Q11: A) AND(1,1,0)=0
+  0,  // Q12: A) NOR(0,0)=1
+  2,  // Q13: C) entradas diferentes
+  -1, // Q14: truth table (special)
+  1,  // Q15: B) implementar qualquer função
+  1,  // Q16: B) XNOR(1,1)=1
+  1,  // Q17: B) AND com ambos os sensores
+  2,  // Q18: C) Ā·B̄ (De Morgan 2ª lei)
+  1,  // Q19: B) S=1
+  3,  // Q20: D) A+Ā=1
+];
+
+const FEEDBACK = [
+  '✅ Correto! 45÷2: restos 1,0,1,1,0,1 (lidos de baixo) → <strong>101101</strong>.',
+  '✅ Correto! 1×128 + 1×64 + 0×32 + 0×16 + 1×8 + 0×4 + 1×2 + 0×1 = 128+64+8+2 = <strong>202</strong>.',
+  '✅ Correto! 219÷16=13 r11. 13=D, 11=B → <strong>DB₁₆</strong>.',
+  '✅ Correto! 0x2B = 2×16 + 11 = 32+11 = <strong>43</strong>.',
+  '✅ Correto! 1011₂=B, 0111₂=7 → <strong>0xB7</strong> = 183₁₀.',
+  '✅ Correto! Com 8 bits: 2⁸−1 = 256−1 = <strong>255</strong>. Valor máximo de 1 byte sem sinal.',
+  '✅ Correto! 0o347 = 3×64 + 4×8 + 7 = 192+32+7 = <strong>231</strong>.',
+  '✅ Correto! #FF<u>8C</u>00 → verde = 8C₁₆ = 8×16+12 = <strong>140</strong>.',
+  '✅ Correto! 10000000₂ tem bit 1 na posição 7 → <strong>2⁷ = 128</strong>.',
+  '✅ Correto! Cada dígito hex representa exatamente <strong>4 bits (1 nibble)</strong>, tornando a conversão bin↔hex trivial — basta agrupar em grupos de 4.',
+  '✅ Correto! AND com qualquer entrada 0 resulta em 0. C=0 força S=0, independentemente de A e B.',
+  '✅ Correto! NOR(0,0) = NOT(OR(0,0)) = NOT(0) = <strong>1</strong>. É a única combinação que dá 1 na NOR com 2 entradas.',
+  '✅ Correto! XOR e XNOR operam sobre a <strong>diferença</strong>: XOR=1 quando diferentes; XNOR=1 quando iguais.',
+  '✅ Correto! Tabela NAND: qualquer linha com 0 na entrada dá saída 1. Só NAND(1,1)=0.',
+  '✅ Correto! Uma porta <strong>universal</strong> permite construir qualquer circuito lógico. NAND e NOR são as duas portas universais.',
+  '✅ Correto! XNOR(1,1): XOR(1,1)=0 → NOT(0)=<strong>1</strong>. XNOR age como comparador de igualdade.',
+  '✅ Correto! Ambos os sensores obrigatórios = operação <strong>AND</strong>. A porta abre somente quando A=1 E B=1.',
+  '✅ Correto! De Morgan 2ª Lei: <strong>¬(A+B) = Ā·B̄</strong>. A negação do OR vira AND com entradas negadas.',
+  '✅ Correto! A=0: A·B=0·1=0. Ā=1: Ā·B=1·1=1. OR: 0+1=<strong>1</strong>. Esta expressão simplifica para S=B.',
+  '✅ Correto! <strong>A+Ā=1</strong> é a lei do complemento (OR). Uma variável OR com seu complemento sempre resulta em 1.',
+];
+
+const WRONG_FB = [
+  '❌ Incorreto. 45÷2: 45→22r1, 22→11r0, 11→5r1, 5→2r1, 2→1r0, 1→0r1. Lendo de baixo: <strong>101101</strong>.',
+  '❌ Incorreto. 1×128+1×64+1×8+1×2 = 128+64+8+2 = <strong>202</strong>. Verifique os pesos das posições com bit 1.',
+  '❌ Incorreto. 219÷16=13 (resto 11). 13=D, 11=B. Portanto <strong>0xDB</strong>.',
+  '❌ Incorreto. 2×16=32; B=11; 32+11=<strong>43</strong>.',
+  '❌ Incorreto. Agrupe: 1011|0111. 1011₂=11=B, 0111₂=7 → <strong>0xB7</strong>.',
+  '❌ Incorreto. 2⁸ = 256 valores (0 a 255). O máximo é <strong>255</strong>.',
+  '❌ Incorreto. 3×64 = 192, 4×8 = 32, 7×1 = 7. Total: <strong>231</strong>.',
+  '❌ Incorreto. O canal verde em #FF<u>8C</u>00 é 8C₁₆ = 8×16+12 = <strong>140</strong>.',
+  '❌ Incorreto. Bit 1 na posição 7 (contando da direita a partir de 0) = <strong>2⁷ = 128</strong>.',
+  '❌ Incorreto. A razão prática é que 1 dígito hex = 4 bits exatos, permitindo leitura direta do binário.',
+  '❌ Incorreto. AND exige TODAS as entradas em 1. Com C=0, a saída é <strong>0</strong>.',
+  '❌ Incorreto. NOR = NOT(OR). OR(0,0)=0 → NOT(0) = <strong>1</strong>. NOR(0,0)=1 é a única linha "1".',
+  '❌ Incorreto. XOR = Exclusive OR: saída 1 quando as entradas são <strong>diferentes</strong> (0≠1 ou 1≠0).',
+  '❌ Incorreto. NAND(A,B): saída 0 apenas quando A=1 e B=1. Nas demais combinações, saída=1.',
+  '❌ Incorreto. Universal significa que é possível <strong>construir qualquer função lógica</strong> usando apenas esse tipo de porta. NAND e NOR têm essa propriedade.',
+  '❌ Incorreto. XNOR(1,1): XOR(1,1)=0 (iguais geram 0 no XOR), NOT(0)=<strong>1</strong>.',
+  '❌ Incorreto. A condição "ambos" é exatamente a operação <strong>AND</strong>: S = A · B.',
+  '❌ Incorreto. De Morgan 2ª Lei: ¬(A+B) = <strong>Ā · B̄</strong>. Negação do OR → AND das negações.',
+  '❌ Incorreto. A=0, B=1: Ā=1. Primeiro termo 0·1=0. Segundo 1·1=1. OR: <strong>S=1</strong>.',
+  '❌ Incorreto. A·Ā=0 (não 1). A+A=A (idempotência). A+0=A (elemento neutro). Apenas <strong>A+Ā=1</strong> está correto.',
+];
+
+// ═══════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════
+function startTimer(){
+  timerInterval = setInterval(()=>{
+    secondsLeft--;
+    const m = Math.floor(secondsLeft/60);
+    const s = secondsLeft%60;
+    const disp = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    document.getElementById('timer-display').textContent = disp;
+    const pill = document.getElementById('pill-timer');
+    if(secondsLeft <= 120) pill.classList.add('timer-danger');
+    else pill.classList.remove('timer-danger');
+    if(secondsLeft <= 0){
+      clearInterval(timerInterval);
+      submitExam(true);
+    }
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════
+//  EXAM CONTROL
+// ═══════════════════════════════════════════
+function startExam(){
+  examStarted = true;
+  document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('exam-body').style.display = 'block';
+  document.getElementById('submit-bar').style.display = 'flex';
+  startTimer();
+  updateProgress();
+}
+
+function updateProgress(){
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('prog-fill').style.width = (answered/TOTAL_Q*100)+'%';
+  document.getElementById('prog-steps').textContent = answered+' / '+TOTAL_Q+' questões';
+  document.getElementById('pill-answered').textContent = answered+'/'+TOTAL_Q;
+  document.getElementById('sub-answered').textContent = answered;
+}
+
+function updateScore(){
+  let pts = 0;
+  answers.forEach((a,i) => {
+    if(i === 13) return; // truth table scored separately
+    if(a === CORRECT[i]) pts += PTS_EACH;
+  });
+  if(answers[13] === 'correct') pts += PTS_EACH;
+  score = pts;
+  document.getElementById('pill-score').textContent = pts;
+}
+
+// ═══════════════════════════════════════════
+//  MULTIPLE CHOICE
+// ═══════════════════════════════════════════
+function answerMC(qIdx, chosen, correct){
+  if(answers[qIdx] !== null || examSubmitted) return;
+  answers[qIdx] = chosen;
+
+  const opts = document.querySelectorAll(`#opts-${qIdx} .opt`);
+  opts.forEach(b => b.disabled = true);
+  opts[chosen].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if(chosen !== correct) opts[correct].classList.add('correct');
+
+  const fb = document.getElementById(`fb-${qIdx}`);
+  const ok = chosen === correct;
+  fb.innerHTML = ok ? FEEDBACK[qIdx] : WRONG_FB[qIdx];
+  fb.className = 'q-feedback show ' + (ok ? 'ok' : 'fail');
+
+  const card = document.getElementById(`qc-${qIdx}`);
+  card.classList.add(ok ? 'answered' : 'answered-wrong');
+
+  updateScore();
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════
+//  TRUTH TABLE Q14
+// ═══════════════════════════════════════════
+const TT_CORRECT = ['1','1','1','0']; // NAND(0,0)=1 NAND(0,1)=1 NAND(1,0)=1 NAND(1,1)=0
+
+function checkTruthTable(qIdx){
+  if(answers[13] !== null || examSubmitted) return;
+  let allCorrect = true;
+  for(let i=0;i<4;i++){
+    const sel = document.getElementById(`tt13-${i}`);
+    const val = sel.value;
+    if(val === '') { alert('Preencha todos os campos da tabela antes de verificar.'); return; }
+    if(val === TT_CORRECT[i]){
+      sel.classList.add('correct-sel');
+    } else {
+      sel.classList.add('wrong-sel');
+      allCorrect = false;
+    }
+    sel.disabled = true;
+  }
+
+  answers[13] = allCorrect ? 'correct' : 'wrong';
+  document.getElementById('chk-13').disabled = true;
+
+  const fb = document.getElementById('fb-13');
+  fb.innerHTML = allCorrect
+    ? '✅ Perfeito! NAND(A,B): somente A=1,B=1 dá saída 0. Todas as demais combinações resultam em 1.'
+    : '❌ Incorreto. NAND = NOT AND. AND(A,B)=1 somente quando A=B=1. Portanto NAND(1,1)=0 e todas as outras combinações dão 1.';
+  fb.className = 'q-feedback show ' + (allCorrect ? 'ok' : 'fail');
+
+  const card = document.getElementById('qc-13');
+  card.classList.add(allCorrect ? 'answered' : 'answered-wrong');
+
+  updateScore();
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════
+//  HINT
+// ═══════════════════════════════════════════
+function toggleHint(idx){
+  const h = document.getElementById(`hint-${idx}`);
+  if(h) h.classList.toggle('show');
+}
+
+// ═══════════════════════════════════════════
+//  SUBMIT
+// ═══════════════════════════════════════════
+function submitExam(timeout=false){
+  if(examSubmitted) return;
+  examSubmitted = true;
+  clearInterval(timerInterval);
+
+  // Force-score any unanswered as wrong (mark remaining)
+  const finalScore = score;
+  const correct = answers.filter((a,i)=>{
+    if(i===13) return a==='correct';
+    return a===CORRECT[i];
+  }).length;
+  const wrong = answers.filter(a=>a!==null).length - correct;
+
+  const grade = (finalScore / 100 * 10).toFixed(1);
+
+  document.getElementById('modal-grade').textContent = grade;
+  document.getElementById('mb-correct').textContent = correct;
+  document.getElementById('mb-wrong').textContent = wrong;
+  document.getElementById('mb-pts').textContent = finalScore;
+
+  const gradeN = parseFloat(grade);
+  let msg = '';
+  if(gradeN >= 9) msg = '🏆 Excelente! Domínio total do conteúdo. Você está pronto para avançar.';
+  else if(gradeN >= 7) msg = '✅ Bom resultado! Revise os erros no gabarito abaixo para consolidar.';
+  else if(gradeN >= 5) msg = '⚡ Resultado regular. Revise os gabaritos e retome os pontos fracos antes da próxima semana.';
+  else msg = '📚 Abaixo da média. Revise cuidadosamente as aulas das Semanas 02 e 03.';
+
+  if(timeout) msg = '⏱ Tempo esgotado! ' + msg;
+
+  document.getElementById('modal-sub').textContent = `${finalScore}/100 pontos`;
+  document.getElementById('modal-msg').textContent = msg;
+
+  document.getElementById('modal').classList.add('show');
+  document.getElementById('submit-bar').style.display = 'none';
+
+  buildGabarito();
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+  document.getElementById('gabarito').classList.add('show');
+  document.getElementById('gabarito').scrollIntoView({behavior:'smooth'});
+}
+
+function restartExam(){
+  window.location.reload();
+}
+
+// ═══════════════════════════════════════════
+//  GABARITO
+// ═══════════════════════════════════════════
+const GAB_LABELS = [
+  'C) 101101','C) 202','B) 0xDB','B) 43','D) 0xB7',
+  'D) 255','B) 231','C) 140','B) 2⁷=128','B) Dígito hex = 4 bits',
+  'A) Saída = 0','A) Saída = 1 (única combinação)','C) Entradas diferentes',
+  'NAND: 1,1,1,0','B) Implementar qualquer função','B) Saída=1, detecta igualdade',
+  'B) AND','C) Ā·B̄','B) S=1','D) A+Ā=1'
+];
+
+function buildGabarito(){
+  const container = document.getElementById('gabarito-content');
+  let html = '';
+  for(let i=0;i<TOTAL_Q;i++){
+    const userAns = answers[i];
+    let isCorrect = false;
+    if(i===13) isCorrect = userAns==='correct';
+    else isCorrect = (userAns !== null && userAns === CORRECT[i]);
+
+    const status = userAns === null ? '⬜ Não respondida' : (isCorrect ? '✅ Correta' : '❌ Incorreta');
+    const statusColor = userAns === null ? 'var(--text2)' : (isCorrect ? 'var(--green)' : 'var(--red)');
+    const fb = isCorrect ? FEEDBACK[i] : WRONG_FB[i];
+
+    html += `<div class="q-card" style="margin-bottom:12px;${isCorrect?'border-color:rgba(0,255,136,.25)':'border-color:rgba(239,68,68,.2)'}">
+      <div class="q-num">
+        <span>Questão ${String(i+1).padStart(2,'0')}</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:.75em;color:${statusColor}">${status}</span>
+        <span class="q-pts" style="color:${isCorrect?'var(--green)':'var(--text2)'}">${isCorrect?5:0} / 5 pts</span>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:.78em;color:var(--text2);margin-bottom:6px">
+        Gabarito: <strong style="color:var(--green3)">${GAB_LABELS[i]}</strong>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:.8em;padding:10px 14px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);color:var(--text2);line-height:1.6">${fb}</div>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+</script>
+</body>
+</html>
