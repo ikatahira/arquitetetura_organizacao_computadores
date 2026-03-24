@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROVA IMPRESSA — Semanas 02 &amp; 03 | ADS 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ══════════════════════════════════════
+   SCREEN — botão de impressão
+   ══════════════════════════════════════ */
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: #f0f0f0;
+  margin: 0;
+  padding: 20px;
+}
+.print-btn-bar {
+  max-width: 840px;
+  margin: 0 auto 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.print-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  background: #111;
+  color: #00ff88;
+  border: 2px solid #00ff88;
+  padding: 10px 26px;
+  font-size: .82em;
+  font-weight: 700;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: all .2s;
+}
+.print-btn:hover { background: #00ff88; color: #111; }
+.print-btn.gab { background: transparent; color: #111; border-color: #999; }
+.print-btn.gab:hover { background: #111; color: #fff; }
+.screen-note {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .72em;
+  color: #666;
+}
+
+/* ══════════════════════════════════════
+   PAGE — layout A4
+   ══════════════════════════════════════ */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  max-width: 210mm;
+  margin: 0 auto 20px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,.18);
+  padding: 14mm 14mm 12mm;
+  box-sizing: border-box;
+  position: relative;
+  font-size: 9.5pt;
+  color: #111;
+  line-height: 1.45;
+}
+
+/* ── CABEÇALHO ── */
+.page-header {
+  border-bottom: 2px solid #111;
+  padding-bottom: 7px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ph-left {}
+.ph-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13pt;
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1.15;
+  margin-bottom: 2px;
+}
+.ph-sub {
+  font-size: 8pt;
+  color: #444;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.ph-right {
+  text-align: right;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7.5pt;
+  color: #555;
+  white-space: nowrap;
+  line-height: 1.6;
+}
+
+/* ── IDENTIFICAÇÃO ── */
+.id-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #bbb;
+  padding: 6px 10px;
+}
+.id-field {
+  font-size: 8pt;
+  color: #333;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.id-field span {
+  display: inline-block;
+  border-bottom: 1px solid #888;
+  min-width: 200px;
+  margin-left: 4px;
+  vertical-align: bottom;
+}
+.id-nota {
+  text-align: center;
+  border-left: 1px solid #ccc;
+  padding-left: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.id-nota .nota-label { font-size: 7pt; color: #666; }
+.id-nota .nota-box {
+  width: 48px; height: 28px;
+  border: 2px solid #111;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14pt; font-weight: 700; margin-top: 2px;
+}
+
+/* ── INSTRUÇÕES (linha única) ── */
+.instrucoes {
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-left: 3px solid #111;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  font-size: 7.8pt;
+  color: #333;
+  line-height: 1.5;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.instrucoes strong { color: #111; }
+
+/* ── SEÇÃO ── */
+.secao-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 7px;
+  border-bottom: 1px solid #999;
+  padding-bottom: 4px;
+}
+.secao-letra {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7pt;
+  font-weight: 700;
+  background: #111;
+  color: #fff;
+  padding: 2px 7px;
+  letter-spacing: .08em;
+}
+.secao-titulo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5pt;
+  font-weight: 700;
+  flex: 1;
+}
+.secao-pts {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7.5pt;
+  color: #555;
+  border: 1px solid #999;
+  padding: 1px 7px;
+}
+
+/* ── LAYOUT 2 COLUNAS ── */
+.colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+.col-full {
+  grid-column: 1 / -1;
+}
+
+/* ── QUESTÃO ── */
+.questao {
+  margin-bottom: 9px;
+  break-inside: avoid;
+}
+.q-head {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 3px;
+}
+.q-n {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7.5pt;
+  font-weight: 700;
+  background: #111;
+  color: #fff;
+  padding: 1px 5px;
+  flex-shrink: 0;
+}
+.q-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 6.5pt;
+  border: 1px solid #bbb;
+  padding: 0 5px;
+  color: #555;
+  flex-shrink: 0;
+}
+.q-pts {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 6.5pt;
+  color: #888;
+  margin-left: auto;
+}
+.q-texto {
+  font-size: 8.8pt;
+  line-height: 1.5;
+  margin-bottom: 4px;
+  color: #111;
+}
+.q-texto strong { font-weight: 700; }
+.q-texto code {
+  font-family: 'IBM Plex Mono', monospace;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 0 3px;
+  font-size: .92em;
+}
+
+/* ── ALTERNATIVAS ── */
+.alternativas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.alternativas li {
+  font-size: 8.2pt;
+  padding: 1px 0 1px 18px;
+  position: relative;
+  line-height: 1.45;
+  color: #222;
+}
+.alternativas li::before {
+  content: attr(data-l) ')';
+  position: absolute;
+  left: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  font-size: 7.5pt;
+}
+
+/* ── GABARITO BOLHAS ── */
+.bolhas {
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.bolha {
+  width: 16px; height: 16px;
+  border: 1.5px solid #555;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 6.5pt;
+  font-weight: 700;
+  color: #555;
+  flex-shrink: 0;
+}
+
+/* ── TABELA VERDADE QUESTÃO ── */
+.tt-print {
+  border-collapse: collapse;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7.8pt;
+  margin: 4px 0;
+}
+.tt-print th {
+  background: #f0f0f0;
+  border: 1px solid #999;
+  padding: 3px 10px;
+  text-align: center;
+  font-weight: 700;
+}
+.tt-print td {
+  border: 1px solid #ccc;
+  padding: 3px 10px;
+  text-align: center;
+  min-width: 30px;
+}
+.tt-print td.blank-cell {
+  background: #f9f9f9;
+  min-width: 50px;
+}
+
+/* ── RODAPÉ ── */
+.page-footer {
+  position: absolute;
+  bottom: 10mm;
+  left: 14mm;
+  right: 14mm;
+  border-top: 1px solid #ccc;
+  padding-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7pt;
+  color: #888;
+}
+
+/* ── GABARITO (página 2 / folha separada) ── */
+.gab-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #111;
+  padding-bottom: 6px;
+}
+.gab-title-bar h2 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12pt;
+  font-weight: 700;
+}
+.gab-title-bar .gab-stamp {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7.5pt;
+  border: 2px solid #111;
+  padding: 2px 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  margin-left: auto;
+}
+
+.gab-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.gab-item {
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.gab-q {
+  font-size: 6.5pt;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 2px;
+}
+.gab-resp {
+  font-size: 9pt;
+  font-weight: 700;
+  color: #111;
+}
+.gab-exp {
+  font-size: 6.8pt;
+  color: #555;
+  margin-top: 3px;
+  line-height: 1.45;
+  border-top: 1px solid #eee;
+  padding-top: 3px;
+}
+
+.gab-secao {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8pt;
+  font-weight: 700;
+  background: #111;
+  color: #fff;
+  padding: 3px 10px;
+  margin: 10px 0 6px;
+  display: inline-block;
+}
+
+.gab-nota-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8pt;
+  margin-top: 12px;
+}
+.gab-nota-table th {
+  background: #111;
+  color: #fff;
+  padding: 5px 10px;
+  border: 1px solid #111;
+  text-align: center;
+}
+.gab-nota-table td {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  text-align: center;
+  color: #333;
+}
+.gab-nota-table td.formula {
+  text-align: left;
+  font-size: 7.5pt;
+  color: #555;
+}
+.gab-nota-table tr.total td {
+  font-weight: 700;
+  background: #f5f5f5;
+}
+
+/* ══════════════════════════════════════
+   PRINT MEDIA
+   ══════════════════════════════════════ */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #fff; padding: 0; margin: 0; }
+  .print-btn-bar { display: none !important; }
+  .page {
+    box-shadow: none;
+    margin: 0;
+    page-break-after: always;
+    width: 100%;
+    max-width: 100%;
+    padding: 12mm 14mm 15mm;
+    min-height: auto;
+  }
+  .page:last-child { page-break-after: auto; }
+  .questao { break-inside: avoid; page-break-inside: avoid; }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- BARRA DE IMPRESSÃO (só na tela) -->
+<div class="print-btn-bar">
+  <button class="print-btn" onclick="window.print()">🖨 Imprimir / Salvar PDF</button>
+  <button class="print-btn gab" onclick="document.getElementById('page3').scrollIntoView({behavior:'smooth'})">📖 Ver Resoluções Detalhadas</button>
+  <span class="screen-note">Configure: A4 · Sem margens · Incluir gráficos de fundo · Escala 100%</span>
+</div>
+
+<!-- ══════════════════════════════════
+     PÁGINA 1 — PROVA
+     ══════════════════════════════════ -->
+<div class="page" id="page1">
+
+  <!-- Cabeçalho -->
+  <div class="page-header">
+    <div class="ph-left">
+      <div class="ph-title">PROVA — Sistemas Numéricos &amp; Portas Lógicas</div>
+      <div class="ph-sub">ADS 2026 · Arquitetura de Computadores · Semanas 02 e 03</div>
+    </div>
+    <div class="ph-right">
+      Data: _____ / _____ / _______<br>
+      Turma: _______________<br>
+      Duração: 50 minutos
+    </div>
+  </div>
+
+  <!-- Identificação -->
+  <div class="id-bar">
+    <div>
+      <div class="id-field">Nome: <span style="min-width:280px">&nbsp;</span></div>
+      <div class="id-field" style="margin-top:4px">RA: <span style="min-width:120px">&nbsp;</span></div>
+    </div>
+    <div class="id-nota">
+      <div class="nota-label">NOTA</div>
+      <div class="nota-box">&nbsp;</div>
+    </div>
+  </div>
+
+  <!-- Instruções -->
+  <div class="instrucoes">
+    <strong>Instruções:</strong> Leia cada questão com atenção. Marque apenas <strong>uma alternativa</strong> por questão, circulando a letra escolhida.
+    Não há desconto para erros. Questão 14: preencha os valores (0 ou 1) nos campos em branco.
+    <strong>Cada questão vale 5 pontos — total: 100 pontos.</strong>
+  </div>
+
+  <!-- ── SEÇÃO A ── -->
+  <div class="secao-header">
+    <span class="secao-letra">SEÇÃO A</span>
+    <span class="secao-titulo">Sistemas Numéricos</span>
+    <span class="secao-pts">Questões 01–10 · 50 pontos</span>
+  </div>
+
+  <div class="colunas">
+
+    <!-- Q1 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">01</span>
+        <span class="q-tag">DEC→BIN</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Qual é a representação binária de <strong>45</strong>₁₀?</div>
+      <ul class="alternativas">
+        <li data-l="A">101011</li>
+        <li data-l="B">101100</li>
+        <li data-l="C">101101</li>
+        <li data-l="D">110101</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">02</span>
+        <span class="q-tag">BIN→DEC</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Qual é o valor decimal de <strong>11001010</strong>₂?</div>
+      <ul class="alternativas">
+        <li data-l="A">192</li>
+        <li data-l="B">200</li>
+        <li data-l="C">202</li>
+        <li data-l="D">210</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">03</span>
+        <span class="q-tag">DEC→HEX</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Converta <strong>219</strong>₁₀ para hexadecimal.</div>
+      <ul class="alternativas">
+        <li data-l="A">0xCB</li>
+        <li data-l="B">0xDB</li>
+        <li data-l="C">0xDC</li>
+        <li data-l="D">0xEB</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">04</span>
+        <span class="q-tag">HEX→DEC</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Qual é o valor decimal de <strong>0x2B</strong>?</div>
+      <ul class="alternativas">
+        <li data-l="A">41</li>
+        <li data-l="B">43</li>
+        <li data-l="C">45</li>
+        <li data-l="D">47</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">05</span>
+        <span class="q-tag">BIN→HEX</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Converta <strong>10110111</strong>₂ para hexadecimal (agrupe em nibbles).</div>
+      <ul class="alternativas">
+        <li data-l="A">0xA7</li>
+        <li data-l="B">0xB6</li>
+        <li data-l="C">0xB7</li>
+        <li data-l="D">0xBF</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">06</span>
+        <span class="q-tag">Conceito</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Qual é o maior valor decimal em <strong>1 byte sem sinal</strong> (8 bits)?</div>
+      <ul class="alternativas">
+        <li data-l="A">128</li>
+        <li data-l="B">200</li>
+        <li data-l="C">254</li>
+        <li data-l="D">255</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">07</span>
+        <span class="q-tag">OCTAL</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Qual é o valor decimal do número octal <strong>0o347</strong>?</div>
+      <ul class="alternativas">
+        <li data-l="A">219</li>
+        <li data-l="B">231</li>
+        <li data-l="C">239</li>
+        <li data-l="D">247</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">08</span>
+        <span class="q-tag">Aplicação</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Em <code>#FF8C00</code>, qual é o valor decimal do canal <strong>verde</strong> (G)?</div>
+      <ul class="alternativas">
+        <li data-l="A">100</li>
+        <li data-l="B">120</li>
+        <li data-l="C">140</li>
+        <li data-l="D">160</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">09</span>
+        <span class="q-tag">BIN→DEC</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto"><strong>10000000</strong>₂ corresponde a qual potência de 2?</div>
+      <ul class="alternativas">
+        <li data-l="A">2⁶ = 64</li>
+        <li data-l="B">2⁷ = 128</li>
+        <li data-l="C">2⁸ = 256</li>
+        <li data-l="D">2⁹ = 512</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">10</span>
+        <span class="q-tag">Conceito</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Por que o hexadecimal é amplamente usado em computação?</div>
+      <ul class="alternativas">
+        <li data-l="A">É mais fácil que o decimal</li>
+        <li data-l="B">Cada dígito hex representa exatamente 4 bits (1 nibble)</li>
+        <li data-l="C">Processadores operam internamente em base 16</li>
+        <li data-l="D">Tem 16 símbolos como os registradores</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+  </div><!-- /colunas seção A -->
+
+  <!-- ── SEÇÃO B ── -->
+  <div class="secao-header">
+    <span class="secao-letra">SEÇÃO B</span>
+    <span class="secao-titulo">Portas Lógicas &amp; Tabelas Verdade</span>
+    <span class="secao-pts">Questões 11–17 · 35 pontos</span>
+  </div>
+
+  <div class="colunas">
+
+    <!-- Q11 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">11</span>
+        <span class="q-tag">AND</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Saída da porta <strong>AND</strong> com A=1, B=1, C=0?</div>
+      <ul class="alternativas">
+        <li data-l="A">Saída = 0</li>
+        <li data-l="B">Saída = 1</li>
+        <li data-l="C">Depende de A</li>
+        <li data-l="D">Indeterminado</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">12</span>
+        <span class="q-tag">NOR</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Porta <strong>NOR</strong> com A=0 e B=0. Saída:</div>
+      <ul class="alternativas">
+        <li data-l="A">Saída = 1 (única combinação que produz 1)</li>
+        <li data-l="B">Saída = 0 (mesma que OR)</li>
+        <li data-l="C">Saída = 1 (mesma que AND)</li>
+        <li data-l="D">Saída = 0 (NOR sempre produz 0)</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">13</span>
+        <span class="q-tag">XOR</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">A porta <strong>XOR</strong> produz saída 1 quando:</div>
+      <ul class="alternativas">
+        <li data-l="A">Todas as entradas são 1</li>
+        <li data-l="B">Pelo menos uma entrada é 1</li>
+        <li data-l="C">As entradas são diferentes entre si</li>
+        <li data-l="D">Todas as entradas são 0</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">15</span>
+        <span class="q-tag">Universal</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Uma porta "universal" é aquela que:</div>
+      <ul class="alternativas">
+        <li data-l="A">Tem o maior número de entradas</li>
+        <li data-l="B">Permite implementar qualquer função lógica</li>
+        <li data-l="C">Funciona com qualquer tensão</li>
+        <li data-l="D">Produz o mesmo resultado sempre</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">16</span>
+        <span class="q-tag">XNOR</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto"><strong>XNOR</strong> com A=1 e B=1. Saída e função?</div>
+      <ul class="alternativas">
+        <li data-l="A">Saída = 0 — detecta diferença</li>
+        <li data-l="B">Saída = 1 — detecta igualdade</li>
+        <li data-l="C">Saída = 0 — inverso do AND</li>
+        <li data-l="D">Saída = 1 — equivalente ao AND</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">17</span>
+        <span class="q-tag">Aplicação</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Um sistema abre a porta apenas quando <strong>ambos</strong> os sensores A e B detectam presença. Qual porta modela isso?</div>
+      <ul class="alternativas">
+        <li data-l="A">OR — basta um sensor</li>
+        <li data-l="B">AND — requer ambos ativos</li>
+        <li data-l="C">XOR — sensores diferentes</li>
+        <li data-l="D">NOT — abre sem presença</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+  </div><!-- /colunas seção B parcial -->
+
+  <!-- Q14 — tabela verdade (largura total) -->
+  <div class="questao col-full" style="margin-top:2px">
+    <div class="q-head">
+      <span class="q-n">14</span>
+      <span class="q-tag">Tabela Verdade</span>
+      <span class="q-pts">5 pts</span>
+    </div>
+    <div class="q-texto">Complete a tabela verdade da porta <strong>NAND(A, B)</strong>. Preencha os espaços em branco com 0 ou 1:</div>
+    <table class="tt-print">
+      <thead>
+        <tr><th>A</th><th>B</th><th>S = NAND(A,B)</th><th style="width:30px">&nbsp;</th><th>A</th><th>B</th><th>S = NAND(A,B)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>0</td><td class="blank-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td></td><td>1</td><td>0</td><td class="blank-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+        <tr><td>0</td><td>1</td><td class="blank-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td></td><td>1</td><td>1</td><td class="blank-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── SEÇÃO C ── -->
+  <div class="secao-header" style="margin-top:8px">
+    <span class="secao-letra">SEÇÃO C</span>
+    <span class="secao-titulo">Álgebra Booleana &amp; Expressões</span>
+    <span class="secao-pts">Questões 18–20 · 15 pontos</span>
+  </div>
+
+  <div class="colunas">
+
+    <!-- Q18 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">18</span>
+        <span class="q-tag">De Morgan</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Pelo Teorema de De Morgan, <code>¬(A + B)</code> é equivalente a:</div>
+      <ul class="alternativas">
+        <li data-l="A">Ā + B̄</li>
+        <li data-l="B">A · B</li>
+        <li data-l="C">Ā · B̄</li>
+        <li data-l="D">¬A + ¬B</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="questao">
+      <div class="q-head">
+        <span class="q-n">19</span>
+        <span class="q-tag">Expressão</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Para <code>S = A·B + Ā·B</code>, com A=0 e B=1, S vale:</div>
+      <ul class="alternativas">
+        <li data-l="A">S = 0</li>
+        <li data-l="B">S = 1</li>
+        <li data-l="C">S = Indefinido</li>
+        <li data-l="D">S = A</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="questao col-full">
+      <div class="q-head">
+        <span class="q-n">20</span>
+        <span class="q-tag">Lei Booleana</span>
+        <span class="q-pts">5 pts</span>
+      </div>
+      <div class="q-texto">Qual das identidades booleanas está <strong>correta</strong>?</div>
+      <ul class="alternativas" style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <li data-l="A">A · Ā = 1</li>
+        <li data-l="B">A + A = 2A</li>
+        <li data-l="C">A + 0 = 0</li>
+        <li data-l="D">A + Ā = 1</li>
+      </ul>
+      <div class="bolhas"><div class="bolha">A</div><div class="bolha">B</div><div class="bolha">C</div><div class="bolha">D</div></div>
+    </div>
+
+  </div><!-- /colunas seção C -->
+
+  <!-- Rodapé página 1 -->
+  <div class="page-footer">
+    <span>ADS 2026 · Arquitetura de Computadores</span>
+    <span>Semanas 02–03 · Prova 01</span>
+    <span>Página 1 de 2</span>
+  </div>
+</div><!-- /page1 -->
+
+
+<!-- ══════════════════════════════════
+     PÁGINA 2 — GABARITO (uso do professor)
+     ══════════════════════════════════ -->
+<div class="page" id="page2">
+
+  <!-- Cabeçalho gabarito -->
+  <div class="page-header">
+    <div class="ph-left">
+      <div class="ph-title">GABARITO — Prova 01</div>
+      <div class="ph-sub">ADS 2026 · Arquitetura de Computadores · Semanas 02 e 03</div>
+    </div>
+    <div class="ph-right" style="border:2px solid #111;padding:4px 10px;font-weight:700;font-size:9pt;text-align:center">
+      USO DO<br>PROFESSOR
+    </div>
+  </div>
+
+  <div class="gab-secao">SEÇÃO A — Sistemas Numéricos (Q01–Q10)</div>
+  <div class="gab-grid">
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 01 · DEC→BIN</div>
+      <div class="gab-resp">C) 101101</div>
+      <div class="gab-exp">45÷2: restos 1,0,1,1,0,1 → lidos de baixo: 101101</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 02 · BIN→DEC</div>
+      <div class="gab-resp">C) 202</div>
+      <div class="gab-exp">128+64+0+0+8+0+2+0 = 202</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 03 · DEC→HEX</div>
+      <div class="gab-resp">B) 0xDB</div>
+      <div class="gab-exp">219÷16=13r11 → D=13, B=11</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 04 · HEX→DEC</div>
+      <div class="gab-resp">B) 43</div>
+      <div class="gab-exp">2×16 + 11(=B) = 32+11 = 43</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 05 · BIN→HEX</div>
+      <div class="gab-resp">D) 0xB7</div>
+      <div class="gab-exp">1011|0111 → B=11, 7 → B7</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 06 · Conceito</div>
+      <div class="gab-resp">D) 255</div>
+      <div class="gab-exp">2⁸ − 1 = 256 − 1 = 255</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 07 · Octal</div>
+      <div class="gab-resp">B) 231</div>
+      <div class="gab-exp">3×64 + 4×8 + 7 = 192+32+7 = 231</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 08 · Aplicação CSS</div>
+      <div class="gab-resp">C) 140</div>
+      <div class="gab-exp">#FF<u>8C</u>00: verde=8C₁₆=8×16+12=140</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 09 · Potência de 2</div>
+      <div class="gab-resp">B) 2⁷ = 128</div>
+      <div class="gab-exp">Bit 1 na posição 7 (da direita) = 2⁷</div>
+    </div>
+
+    <div class="gab-item" style="grid-column:span 3">
+      <div class="gab-q">Questão 10 · Conceito HEX</div>
+      <div class="gab-resp">B) Cada dígito hex representa exatamente 4 bits (1 nibble)</div>
+      <div class="gab-exp">1 nibble = 4 bits → bin↔hex sem divisões: basta agrupar. Ex: 1111₂ = F₁₆ diretamente.</div>
+    </div>
+
+  </div>
+
+  <div class="gab-secao">SEÇÃO B — Portas Lógicas (Q11–Q17)</div>
+  <div class="gab-grid">
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 11 · AND</div>
+      <div class="gab-resp">A) Saída = 0</div>
+      <div class="gab-exp">AND exige todas em 1. C=0 → S=0</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 12 · NOR</div>
+      <div class="gab-resp">A) Saída = 1</div>
+      <div class="gab-exp">NOR(0,0)=NOT(OR(0,0))=NOT(0)=1</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 13 · XOR</div>
+      <div class="gab-resp">C) Entradas diferentes</div>
+      <div class="gab-exp">XOR=1 quando A≠B (0,1) ou (1,0)</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 14 · NAND (tabela)</div>
+      <div class="gab-resp">1, 1, 1, 0</div>
+      <div class="gab-exp">NAND=NOT(AND): só dá 0 quando A=B=1</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 15 · Universal</div>
+      <div class="gab-resp">B) Implementar qualquer função</div>
+      <div class="gab-exp">NAND e NOR: qualquer circuito lógico</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 16 · XNOR</div>
+      <div class="gab-resp">B) Saída=1, igualdade</div>
+      <div class="gab-exp">XNOR(1,1)=NOT(XOR(1,1))=NOT(0)=1</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 17 · Aplicação</div>
+      <div class="gab-resp">B) AND</div>
+      <div class="gab-exp">Ambos obrigatórios: S = A · B</div>
+    </div>
+
+    <div class="gab-item" style="background:#f9f9f9;border:1px dashed #ccc">
+      <div class="gab-q" style="color:#aaa">Tabela Q14</div>
+      <table class="tt-print" style="margin-top:4px">
+        <tr><th>A</th><th>B</th><th>S</th></tr>
+        <tr><td>0</td><td>0</td><td style="font-weight:700">1</td></tr>
+        <tr><td>0</td><td>1</td><td style="font-weight:700">1</td></tr>
+        <tr><td>1</td><td>0</td><td style="font-weight:700">1</td></tr>
+        <tr><td>1</td><td>1</td><td style="font-weight:700">0</td></tr>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="gab-secao">SEÇÃO C — Álgebra Booleana (Q18–Q20)</div>
+  <div class="gab-grid">
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 18 · De Morgan</div>
+      <div class="gab-resp">C) Ā · B̄</div>
+      <div class="gab-exp">2ª Lei: ¬(A+B) = Ā·B̄. Negação do OR → AND das negações.</div>
+    </div>
+
+    <div class="gab-item">
+      <div class="gab-q">Questão 19 · Expressão</div>
+      <div class="gab-resp">B) S = 1</div>
+      <div class="gab-exp">A=0,B=1: 0·1=0; Ā·B=1·1=1; 0+1=1</div>
+    </div>
+
+    <div class="gab-item" style="grid-column:span 2">
+      <div class="gab-q">Questão 20 · Identidades Booleanas</div>
+      <div class="gab-resp">D) A + Ā = 1</div>
+      <div class="gab-exp">
+        A·Ā=0 (não 1) &nbsp;|&nbsp; A+A=A (não 2A) &nbsp;|&nbsp; A+0=A (não 0) &nbsp;|&nbsp; <strong>A+Ā=1 ✓</strong> (lei do complemento OR)
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tabela de correção / critérios -->
+  <table class="gab-nota-table" style="margin-top:14px">
+    <thead>
+      <tr>
+        <th>Seção</th>
+        <th>Questões</th>
+        <th>Pts/Q</th>
+        <th>Total</th>
+        <th style="text-align:left;padding-left:12px">Acertos necessários</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A — Sistemas Numéricos</td>
+        <td>01–10</td>
+        <td>5</td>
+        <td>50</td>
+        <td class="formula">≥6 acertos → ≥30 pts (aprovação parcial)</td>
+      </tr>
+      <tr>
+        <td>B — Portas Lógicas</td>
+        <td>11–17</td>
+        <td>5</td>
+        <td>35</td>
+        <td class="formula">≥5 acertos → ≥25 pts</td>
+      </tr>
+      <tr>
+        <td>C — Álgebra Booleana</td>
+        <td>18–20</td>
+        <td>5</td>
+        <td>15</td>
+        <td class="formula">3 acertos → 15 pts (seção curta)</td>
+      </tr>
+      <tr class="total">
+        <td>TOTAL</td>
+        <td>20 questões</td>
+        <td>5</td>
+        <td>100</td>
+        <td class="formula">Nota = Total ÷ 10 &nbsp;|&nbsp; Aprovação: ≥ 60 pts (nota ≥ 6,0)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Rodapé página 2 -->
+  <div class="page-footer">
+    <span>ADS 2026 · Arquitetura de Computadores</span>
+    <span>Semanas 02–03 · Prova 01</span>
+    <span>Página 2 de 2 — USO EXCLUSIVO DO PROFESSOR</span>
+  </div>
+
+</div><!-- /page2 -->
+
+
+<!-- ══════════════════════════════════
+     PÁGINA 3 — RESOLUÇÕES DETALHADAS
+     ══════════════════════════════════ -->
+<style>
+/* ── PÁGINA DE RESOLUÇÕES ── */
+.res-page { font-size: 9pt; }
+
+.res-secao-header {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9pt;
+  font-weight: 700;
+  background: #111;
+  color: #fff;
+  padding: 4px 12px;
+  margin: 12px 0 8px;
+  letter-spacing: .06em;
+}
+
+.res-questao {
+  border: 1px solid #ccc;
+  border-left: 4px solid #111;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.res-q-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+.res-q-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  font-size: 8.5pt;
+  background: #111;
+  color: #fff;
+  padding: 2px 7px;
+}
+.res-q-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7pt;
+  border: 1px solid #bbb;
+  padding: 1px 6px;
+  color: #555;
+}
+.res-resposta-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7.5pt;
+  font-weight: 700;
+  background: #111;
+  color: #00ff88;
+  padding: 2px 8px;
+  margin-left: auto;
+  letter-spacing: .04em;
+}
+
+.res-enunciado {
+  font-size: 8.5pt;
+  color: #333;
+  margin-bottom: 6px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.res-corpo {
+  font-size: 8.5pt;
+  line-height: 1.6;
+  color: #111;
+}
+.res-corpo p { margin: 3px 0; }
+.res-corpo strong { font-weight: 700; color: #111; }
+.res-corpo code {
+  font-family: 'IBM Plex Mono', monospace;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 0 3px;
+  font-size: .91em;
+}
+
+.res-passo {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  padding: 5px 9px;
+  margin: 5px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8pt;
+  line-height: 1.7;
+}
+.res-passo .passo-titulo {
+  font-size: 7pt;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: #888;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.res-tabela {
+  border-collapse: collapse;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8pt;
+  margin: 5px 0;
+}
+.res-tabela th {
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 3px 10px;
+  text-align: center;
+}
+.res-tabela td {
+  border: 1px solid #bbb;
+  padding: 3px 10px;
+  text-align: center;
+}
+.res-tabela td.correto { background: #e8f5e9; font-weight: 700; color: #1b5e20; }
+.res-tabela td.errado  { background: #fce4ec; color: #880e4f; text-decoration: line-through; }
+
+.res-conclusao {
+  margin-top: 6px;
+  background: #f0f0f0;
+  border-left: 3px solid #111;
+  padding: 4px 9px;
+  font-size: 8pt;
+  font-family: 'IBM Plex Mono', monospace;
+  color: #111;
+}
+.res-conclusao .check { color: #1b5e20; font-weight: 700; }
+
+.res-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 14px;
+}
+.res-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0 10px;
+}
+
+.res-alt-lista {
+  list-style: none;
+  padding: 0; margin: 4px 0;
+  font-size: 8pt;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.res-alt-lista li { padding: 1px 0 1px 18px; position: relative; }
+.res-alt-lista li::before { content: attr(data-l) ')'; position: absolute; left: 0; font-weight: 700; }
+.res-alt-lista li.correta { color: #1b5e20; font-weight: 700; }
+.res-alt-lista li.errada  { color: #aaa; text-decoration: line-through; }
+
+</style>
+
+<div class="page res-page" id="page3">
+
+  <!-- Cabeçalho -->
+  <div class="page-header">
+    <div class="ph-left">
+      <div class="ph-title">RESOLUÇÕES DETALHADAS — Prova 01</div>
+      <div class="ph-sub">ADS 2026 · Arquitetura de Computadores · Semanas 02 e 03</div>
+    </div>
+    <div class="ph-right" style="border:2px solid #111;padding:4px 10px;font-weight:700;font-size:8pt;text-align:center;font-family:'IBM Plex Mono',monospace">
+      CORREÇÃO<br>COMPLETA
+    </div>
+  </div>
+
+  <!-- ══════════ SEÇÃO A ══════════ -->
+  <div class="res-secao-header">SEÇÃO A — Sistemas Numéricos · Questões 01 a 10</div>
+
+  <div class="res-grid-2">
+
+    <!-- Q01 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">01</span>
+        <span class="res-q-tag">DEC → BIN</span>
+        <span class="res-resposta-badge">✓ GABARITO: C) 101101</span>
+      </div>
+      <div class="res-enunciado">Qual é a representação binária de 45₁₀?</div>
+      <div class="res-corpo">
+        <p>Para converter decimal → binário, divide-se sucessivamente por 2 e lemos os restos <strong>de baixo para cima</strong>:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Divisões por 2</div>
+          45 ÷ 2 = 22   resto <strong>1</strong>  ← bit menos significativo (posição 0)<br>
+          22 ÷ 2 = 11   resto <strong>0</strong>  ← posição 1<br>
+          11 ÷ 2 =  5   resto <strong>1</strong>  ← posição 2<br>
+           5 ÷ 2 =  2   resto <strong>1</strong>  ← posição 3<br>
+           2 ÷ 2 =  1   resto <strong>0</strong>  ← posição 4<br>
+           1 ÷ 2 =  0   resto <strong>1</strong>  ← bit mais significativo (posição 5)
+        </div>
+        <p>Lendo os restos <strong>de baixo para cima</strong>: <code>1 0 1 1 0 1</code></p>
+        <div class="res-passo">
+          <div class="passo-titulo">Verificação (BIN → DEC)</div>
+          1×2⁵ + 0×2⁴ + 1×2³ + 1×2² + 0×2¹ + 1×2⁰<br>
+          =  32  +   0  +   8  +   4  +   0  +   1<br>
+          = <strong>45 ✓</strong>
+        </div>
+        <div class="res-conclusao"><span class="check">✓</span> 45₁₀ = <strong>101101</strong>₂ — Resposta C</div>
+      </div>
+    </div>
+
+    <!-- Q02 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">02</span>
+        <span class="res-q-tag">BIN → DEC</span>
+        <span class="res-resposta-badge">✓ GABARITO: C) 202</span>
+      </div>
+      <div class="res-enunciado">Qual é o valor decimal de 11001010₂?</div>
+      <div class="res-corpo">
+        <p>Para converter binário → decimal, multiplica-se cada bit pela sua potência de 2 (da direita para a esquerda, começando em 2⁰):</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Tabela posição × potência</div>
+          Bit:   <strong>1</strong>   <strong>1</strong>   <strong>0</strong>   <strong>0</strong>   <strong>1</strong>   <strong>0</strong>   <strong>1</strong>   <strong>0</strong><br>
+          Pos:   7    6    5    4    3    2    1    0<br>
+          Pot: 128   64   32   16    8    4    2    1
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Soma apenas dos bits = 1</div>
+          1×128 + 1×64 + 0×32 + 0×16 + 1×8 + 0×4 + 1×2 + 0×1<br>
+          =  128  +  64  +   0  +   0  +  8  +  0  +  2  +  0<br>
+          = <strong>202</strong>
+        </div>
+        <p><small>Alternativa B (200) erra pois ignora o bit na posição 1 (+2). Alternativa A (192) = apenas 128+64.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> 11001010₂ = <strong>202</strong>₁₀ — Resposta C</div>
+      </div>
+    </div>
+
+    <!-- Q03 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">03</span>
+        <span class="res-q-tag">DEC → HEX</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) 0xDB</span>
+      </div>
+      <div class="res-enunciado">Converta 219₁₀ para hexadecimal.</div>
+      <div class="res-corpo">
+        <p>Para converter decimal → hexadecimal, divide-se por 16 e lemos os restos <strong>de baixo para cima</strong>:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Divisões por 16</div>
+          219 ÷ 16 = 13   resto <strong>11</strong>  → 11 em hex = <strong>B</strong>  (dígito menos significativo)<br>
+           13 ÷ 16 =  0   resto <strong>13</strong>  → 13 em hex = <strong>D</strong>  (dígito mais significativo)
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Tabela de símbolos hex</div>
+          10=A · 11=B · 12=C · 13=D · 14=E · 15=F
+        </div>
+        <p>Lendo de baixo para cima: <strong>D B</strong> → <code>0xDB</code></p>
+        <div class="res-passo">
+          <div class="passo-titulo">Verificação (HEX → DEC)</div>
+          D×16¹ + B×16⁰ = 13×16 + 11×1 = 208 + 11 = <strong>219 ✓</strong>
+        </div>
+        <div class="res-conclusao"><span class="check">✓</span> 219₁₀ = <strong>0xDB</strong> — Resposta B</div>
+      </div>
+    </div>
+
+    <!-- Q04 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">04</span>
+        <span class="res-q-tag">HEX → DEC</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) 43</span>
+      </div>
+      <div class="res-enunciado">Qual é o valor decimal de 0x2B?</div>
+      <div class="res-corpo">
+        <p>Para converter hexadecimal → decimal, multiplica-se cada dígito pela sua potência de 16:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Expandindo 0x2B</div>
+          <code>0x2B</code> tem dois dígitos: <strong>2</strong> (posição 1) e <strong>B</strong> (posição 0)<br><br>
+          B em decimal = <strong>11</strong>  (B é o 11º símbolo: 0,1,2,3,4,5,6,7,8,9,A,B)<br><br>
+          2 × 16¹  =  2 × 16  =  <strong>32</strong><br>
+          B × 16⁰  = 11 ×  1  =  <strong>11</strong><br>
+          ──────────────────────────<br>
+          Total =  32 + 11  =  <strong>43</strong>
+        </div>
+        <p><small>Alternativa A (41) erra ao usar B=9 em vez de B=11. Alternativa C (45) erra ao usar B=13.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> 0x2B = <strong>43</strong>₁₀ — Resposta B</div>
+      </div>
+    </div>
+
+    <!-- Q05 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">05</span>
+        <span class="res-q-tag">BIN → HEX</span>
+        <span class="res-resposta-badge">✓ GABARITO: C) 0xB7</span>
+      </div>
+      <div class="res-enunciado">Converta 10110111₂ para hexadecimal (agrupe em nibbles).</div>
+      <div class="res-corpo">
+        <p>O método mais rápido é agrupar os bits em <strong>grupos de 4</strong> (nibbles), da direita para a esquerda, e converter cada grupo diretamente:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Agrupando em nibbles</div>
+          10110111  →  <strong>1011</strong> | <strong>0111</strong>
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Convertendo cada nibble</div>
+          <strong>1011</strong>:  1×8 + 0×4 + 1×2 + 1×1 = 8+0+2+1 = <strong>11 = B</strong><br>
+          <strong>0111</strong>:  0×8 + 1×4 + 1×2 + 1×1 = 0+4+2+1 =  <strong>7 = 7</strong>
+        </div>
+        <p>Resultado: <code>B7</code> → <strong>0xB7</strong></p>
+        <p><small>Alternativa A (0xA7): erro em 1011 → A(=10) em vez de B(=11). Alternativa B (0xB6): erro em 0111 → 6 em vez de 7.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> 10110111₂ = <strong>0xB7</strong> — Resposta C</div>
+      </div>
+    </div>
+
+    <!-- Q06 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">06</span>
+        <span class="res-q-tag">Conceito</span>
+        <span class="res-resposta-badge">✓ GABARITO: D) 255</span>
+      </div>
+      <div class="res-enunciado">Qual é o maior valor decimal em 1 byte sem sinal (8 bits)?</div>
+      <div class="res-corpo">
+        <p>Com <strong>n bits</strong> sem sinal, conseguimos representar <strong>2ⁿ valores</strong>, de 0 até 2ⁿ − 1.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Para n = 8 bits</div>
+          Quantidade de combinações:  2⁸ = <strong>256</strong>  valores (de 0 a 255)<br>
+          Maior valor possível:  256 − 1 = <strong>255</strong><br><br>
+          Em binário, o maior valor de 8 bits é:<br>
+          <strong>11111111</strong>₂ = 128+64+32+16+8+4+2+1 = <strong>255</strong>
+        </div>
+        <p><small>Alternativa A (128) = 2⁷, que é apenas o bit mais significativo de 8 bits, não o máximo. Alternativa C (254) = 11111110₂ — falta o último bit.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> 1 byte sem sinal → máximo = <strong>255</strong> (= 2⁸ − 1) — Resposta D</div>
+      </div>
+    </div>
+
+    <!-- Q07 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">07</span>
+        <span class="res-q-tag">OCTAL → DEC</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) 231</span>
+      </div>
+      <div class="res-enunciado">Qual é o valor decimal do número octal 0o347?</div>
+      <div class="res-corpo">
+        <p>Para converter octal → decimal, multiplica-se cada dígito pela potência de <strong>8</strong> correspondente à sua posição:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Expandindo 0o347</div>
+          Dígitos: <strong>3</strong> (posição 2), <strong>4</strong> (posição 1), <strong>7</strong> (posição 0)<br><br>
+          3 × 8²  =  3 × 64  =  <strong>192</strong><br>
+          4 × 8¹  =  4 ×  8  =  <strong> 32</strong><br>
+          7 × 8⁰  =  7 ×  1  =  <strong>  7</strong><br>
+          ───────────────────────────<br>
+          Total  =  192 + 32 + 7  =  <strong>231</strong>
+        </div>
+        <p><small>Alternativa A (219): erro ao usar 8² = 27 (confunde base). Alternativa C (239): erro no dígito do meio (5×8 em vez de 4×8).</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> 0o347 = <strong>231</strong>₁₀ — Resposta B</div>
+      </div>
+    </div>
+
+    <!-- Q08 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">08</span>
+        <span class="res-q-tag">Aplicação CSS</span>
+        <span class="res-resposta-badge">✓ GABARITO: C) 140</span>
+      </div>
+      <div class="res-enunciado">Em #FF8C00, qual é o valor decimal do canal verde (G)?</div>
+      <div class="res-corpo">
+        <p>Cores CSS em formato <code>#RRGGBB</code> têm 3 canais de 2 dígitos hex cada:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Decompondo #FF8C00</div>
+          <strong>FF</strong> → canal Vermelho (R)<br>
+          <strong>8C</strong> → canal Verde (G)  ← estamos aqui<br>
+          <strong>00</strong> → canal Azul (B)
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Convertendo 8C₁₆ → decimal</div>
+          8 × 16¹  =  8 × 16  =  <strong>128</strong><br>
+          C × 16⁰  = 12 ×  1  =  <strong> 12</strong>  (C = 12 em decimal)<br>
+          ──────────────────────────<br>
+          128 + 12  =  <strong>140</strong>
+        </div>
+        <p><small>Alternativa B (120) = 0x78. Alternativa D (160) = 0xA0. Ambas diferem de 0x8C.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> Canal verde de #FF8C00 = 0x8C = <strong>140</strong>₁₀ — Resposta C</div>
+      </div>
+    </div>
+
+    <!-- Q09 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">09</span>
+        <span class="res-q-tag">BIN → Potência</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) 2⁷ = 128</span>
+      </div>
+      <div class="res-enunciado">10000000₂ corresponde a qual potência de 2?</div>
+      <div class="res-corpo">
+        <p>Quando um número binário tem apenas <strong>um bit 1</strong>, ele representa exatamente uma potência de 2.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Identificando a posição do bit 1</div>
+          <strong>1</strong> 0 0 0 0 0 0 0<br>
+          Pos: 7 6 5 4 3 2 1 0<br><br>
+          O único bit 1 está na posição <strong>7</strong> (contando da direita, a partir de 0)
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Calculando</div>
+          2⁷ = 2 × 2 × 2 × 2 × 2 × 2 × 2 = <strong>128</strong>
+        </div>
+        <p><small>Posição 6 = 2⁶ = 64 (alt. A). Posição 8 = 2⁸ = 256 (alt. C). O número tem apenas 8 dígitos, portanto posição máxima = 7.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> 10000000₂ = <strong>2⁷ = 128</strong> — Resposta B</div>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="res-questao" style="grid-column: span 2">
+      <div class="res-q-head">
+        <span class="res-q-num">10</span>
+        <span class="res-q-tag">Conceito HEX</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) Cada dígito hex representa exatamente 4 bits (1 nibble)</span>
+      </div>
+      <div class="res-enunciado">Por que o hexadecimal é amplamente usado em computação?</div>
+      <div class="res-corpo">
+        <p>A alternativa correta explica a razão <strong>técnica real</strong> do uso do hexadecimal em computação:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Por que 1 dígito hex = 4 bits é tão útil?</div>
+          Sistema binário tem 2 símbolos (0,1) → 1 bit por símbolo<br>
+          Sistema hex tem 16 símbolos (0–9, A–F) → 16 = 2⁴ → exatamente <strong>4 bits por símbolo</strong><br><br>
+          Isso significa que podemos converter BIN ↔ HEX <strong>sem fazer nenhuma conta</strong>:<br>
+          Basta agrupar bits de 4 em 4 e substituir cada grupo pelo símbolo hex.<br><br>
+          Exemplo:  11111111₂  →  1111 | 1111  →  F | F  =  <strong>0xFF</strong>  (1 byte = 2 dígitos hex)
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Analisando as alternativas erradas</div>
+          A) "É mais fácil que o decimal" — <strong>FALSO</strong>: decimal é mais intuitivo para humanos; hex requer aprender símbolos A–F.<br>
+          C) "Processadores operam internamente em base 16" — <strong>FALSO</strong>: CPUs operam em binário; hex é apenas uma notação de representação.<br>
+          D) "Tem 16 símbolos como os registradores" — <strong>FALSO</strong>: não há relação direta entre número de símbolos e número de registradores.
+        </div>
+        <div class="res-conclusao"><span class="check">✓</span> Hexadecimal é usado porque <strong>1 dígito hex = 4 bits</strong>, tornando a conversão binário↔hex imediata — Resposta B</div>
+      </div>
+    </div>
+
+  </div><!-- /res-grid-2 seção A -->
+
+  <!-- Rodapé parcial seção A -->
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:7pt;color:#888;text-align:right;border-top:1px solid #ccc;padding-top:3px;margin-top:4px">
+    continua na próxima página →
+  </div>
+
+  <div class="page-footer">
+    <span>ADS 2026 · Arquitetura de Computadores</span>
+    <span>Semanas 02–03 · Prova 01</span>
+    <span>Página 3 de 4 — Resoluções</span>
+  </div>
+</div><!-- /page3 -->
+
+
+<!-- ══════════════════════════════════
+     PÁGINA 4 — RESOLUÇÕES (cont.)
+     ══════════════════════════════════ -->
+<div class="page res-page" id="page4">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <div class="ph-title">RESOLUÇÕES DETALHADAS — Prova 01 (continuação)</div>
+      <div class="ph-sub">ADS 2026 · Arquitetura de Computadores · Semanas 02 e 03</div>
+    </div>
+    <div class="ph-right" style="border:2px solid #111;padding:4px 10px;font-weight:700;font-size:8pt;text-align:center;font-family:'IBM Plex Mono',monospace">
+      CORREÇÃO<br>COMPLETA
+    </div>
+  </div>
+
+  <!-- ══════════ SEÇÃO B ══════════ -->
+  <div class="res-secao-header">SEÇÃO B — Portas Lógicas &amp; Tabelas Verdade · Questões 11 a 17</div>
+
+  <div class="res-grid-2">
+
+    <!-- Q11 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">11</span>
+        <span class="res-q-tag">AND</span>
+        <span class="res-resposta-badge">✓ GABARITO: A) Saída = 0</span>
+      </div>
+      <div class="res-enunciado">Saída da porta AND com A=1, B=1, C=0?</div>
+      <div class="res-corpo">
+        <p>A porta <strong>AND</strong> (E lógico) exige que <strong>todas</strong> as entradas sejam 1 para produzir saída 1. Basta uma entrada 0 para que a saída seja 0.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Regra da porta AND</div>
+          S = A · B · C<br>
+          S = 1 · 1 · 0<br>
+          S = <strong>0</strong>
+        </div>
+        <p>Como C = 0, toda a expressão é 0, independentemente dos valores de A e B.</p>
+        <p><small>Analogia: uma corrente só flui se TODOS os interruptores em série estiverem fechados.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> AND(1,1,0) = <strong>0</strong> — Resposta A</div>
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">12</span>
+        <span class="res-q-tag">NOR</span>
+        <span class="res-resposta-badge">✓ GABARITO: A) Saída = 1</span>
+      </div>
+      <div class="res-enunciado">Porta NOR com A=0 e B=0. Saída:</div>
+      <div class="res-corpo">
+        <p>A porta <strong>NOR</strong> é o inverso da OR: <code>S = NOT(A OR B)</code>. Produz saída 1 <strong>somente</strong> quando todas as entradas são 0.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Cálculo passo a passo</div>
+          Passo 1 — Calcula OR:   A OR B = 0 OR 0 = <strong>0</strong><br>
+          Passo 2 — Aplica NOT:   NOT(0) = <strong>1</strong><br><br>
+          S = NOR(0, 0) = NOT(0 OR 0) = NOT(0) = <strong>1</strong>
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Tabela verdade completa da NOR</div>
+          A=0, B=0 → S=<strong>1</strong>  ← único caso onde S=1<br>
+          A=0, B=1 → S=0<br>
+          A=1, B=0 → S=0<br>
+          A=1, B=1 → S=0
+        </div>
+        <div class="res-conclusao"><span class="check">✓</span> NOR(0,0) = <strong>1</strong> — Resposta A (única combinação que produz 1)</div>
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">13</span>
+        <span class="res-q-tag">XOR</span>
+        <span class="res-resposta-badge">✓ GABARITO: C) Entradas diferentes</span>
+      </div>
+      <div class="res-enunciado">A porta XOR produz saída 1 quando:</div>
+      <div class="res-corpo">
+        <p>A porta <strong>XOR</strong> (OU exclusivo) produz 1 quando as entradas são <strong>diferentes entre si</strong>. Quando são iguais, a saída é 0.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Tabela verdade da XOR</div>
+          A=0, B=0 → S=<strong>0</strong>  (iguais → 0)<br>
+          A=0, B=1 → S=<strong>1</strong>  (diferentes → 1)<br>
+          A=1, B=0 → S=<strong>1</strong>  (diferentes → 1)<br>
+          A=1, B=1 → S=<strong>0</strong>  (iguais → 0)
+        </div>
+        <p><small>Alt. A (todas=1): seria a porta AND. Alt. B (pelo menos uma=1): seria a porta OR. Alt. D (todas=0): seria a porta NOR.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> XOR = 1 quando as entradas são <strong>diferentes</strong> — Resposta C</div>
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">14</span>
+        <span class="res-q-tag">Tabela Verdade NAND</span>
+        <span class="res-resposta-badge">✓ GABARITO: 1, 1, 1, 0</span>
+      </div>
+      <div class="res-enunciado">Complete a tabela verdade da porta NAND(A, B).</div>
+      <div class="res-corpo">
+        <p>A porta <strong>NAND</strong> é o inverso da AND: <code>S = NOT(A AND B)</code>. Produz 0 <strong>somente</strong> quando todas as entradas são 1.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Calculando linha a linha</div>
+          A=0, B=0: AND(0,0)=0 → NOT(0)=<strong>1</strong><br>
+          A=0, B=1: AND(0,1)=0 → NOT(0)=<strong>1</strong><br>
+          A=1, B=0: AND(1,0)=0 → NOT(0)=<strong>1</strong><br>
+          A=1, B=1: AND(1,1)=1 → NOT(1)=<strong>0</strong>  ← único caso S=0
+        </div>
+        <table class="res-tabela" style="margin:5px auto">
+          <tr><th>A</th><th>B</th><th>AND(A,B)</th><th>S = NAND</th></tr>
+          <tr><td>0</td><td>0</td><td>0</td><td class="correto">1</td></tr>
+          <tr><td>0</td><td>1</td><td>0</td><td class="correto">1</td></tr>
+          <tr><td>1</td><td>0</td><td>0</td><td class="correto">1</td></tr>
+          <tr><td>1</td><td>1</td><td>1</td><td class="correto">0</td></tr>
+        </table>
+        <div class="res-conclusao"><span class="check">✓</span> NAND inverte a AND: saída é <strong>0 apenas quando A=B=1</strong></div>
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">15</span>
+        <span class="res-q-tag">Porta Universal</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) Implementar qualquer função</span>
+      </div>
+      <div class="res-enunciado">Uma porta "universal" é aquela que:</div>
+      <div class="res-corpo">
+        <p>Uma porta lógica <strong>universal</strong> é aquela com a qual é possível implementar <strong>qualquer outra</strong> função lógica, usando apenas combinações dela mesma.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">As portas universais são: NAND e NOR</div>
+          Com NAND, podemos construir:<br>
+          • NOT A  =  NAND(A, A)<br>
+          • A AND B  =  NAND(NAND(A,B), NAND(A,B))<br>
+          • A OR B  =  NAND(NAND(A,A), NAND(B,B))<br><br>
+          Isso significa: qualquer circuito digital pode ser construído <strong>apenas com portas NAND</strong> (ou apenas NOR).
+        </div>
+        <p><small>Alt. A (mais entradas): não tem relação com universalidade. Alt. C (qualquer tensão): isso é característica elétrica, não lógica. Alt. D (mesmo resultado sempre): descreveria uma constante, não uma porta lógica útil.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> Porta universal = capaz de <strong>implementar qualquer função lógica</strong> — Resposta B</div>
+      </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">16</span>
+        <span class="res-q-tag">XNOR</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) Saída=1, igualdade</span>
+      </div>
+      <div class="res-enunciado">XNOR com A=1 e B=1. Saída e função?</div>
+      <div class="res-corpo">
+        <p>A porta <strong>XNOR</strong> é o inverso da XOR: <code>S = NOT(A XOR B)</code>. Produz 1 quando as entradas são <strong>iguais</strong>.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Cálculo com A=1, B=1</div>
+          Passo 1 — XOR(1,1): entradas iguais → XOR = <strong>0</strong><br>
+          Passo 2 — NOT(0) = <strong>1</strong><br><br>
+          S = XNOR(1,1) = NOT(XOR(1,1)) = NOT(0) = <strong>1</strong>
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Tabela verdade da XNOR</div>
+          A=0, B=0 → S=<strong>1</strong>  (iguais)<br>
+          A=0, B=1 → S=<strong>0</strong>  (diferentes)<br>
+          A=1, B=0 → S=<strong>0</strong>  (diferentes)<br>
+          A=1, B=1 → S=<strong>1</strong>  (iguais) ← nosso caso
+        </div>
+        <p><small>XNOR é chamada de "detector de igualdade" — usada em comparadores digitais.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> XNOR(1,1) = <strong>1</strong> — funciona como detector de igualdade — Resposta B</div>
+      </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="res-questao" style="grid-column: span 2">
+      <div class="res-q-head">
+        <span class="res-q-num">17</span>
+        <span class="res-q-tag">Aplicação</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) AND — requer ambos ativos</span>
+      </div>
+      <div class="res-enunciado">Um sistema abre a porta apenas quando ambos os sensores A e B detectam presença. Qual porta modela isso?</div>
+      <div class="res-corpo">
+        <p>A chave do enunciado é a palavra <strong>"ambos"</strong> — os dois sensores precisam estar ativos ao mesmo tempo para que a ação ocorra.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Mapeando o problema em lógica</div>
+          Sensor A detecta presença → A = 1<br>
+          Sensor B detecta presença → B = 1<br>
+          Porta abre (S = 1) <strong>somente se</strong> A = 1 <strong>E</strong> B = 1<br><br>
+          Essa é exatamente a definição da porta <strong>AND</strong>: S = A · B
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Descartando as outras alternativas</div>
+          A) OR (A+B): abre se <em>pelo menos um</em> sensor detectar — mais permissivo, não é o requisito.<br>
+          C) XOR (A⊕B): abre se os sensores forem <em>diferentes</em> — abre com (0,1) ou (1,0), mas não com (1,1).<br>
+          D) NOT: inverte o sinal de uma única entrada — não combina dois sensores.
+        </div>
+        <div class="res-conclusao"><span class="check">✓</span> Condição "ambos obrigatórios" = porta <strong>AND</strong> — Resposta B</div>
+      </div>
+    </div>
+
+  </div><!-- /res-grid-2 seção B -->
+
+  <!-- ══════════ SEÇÃO C ══════════ -->
+  <div class="res-secao-header" style="margin-top:10px">SEÇÃO C — Álgebra Booleana &amp; Expressões · Questões 18 a 20</div>
+
+  <div class="res-grid-2">
+
+    <!-- Q18 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">18</span>
+        <span class="res-q-tag">De Morgan</span>
+        <span class="res-resposta-badge">✓ GABARITO: C) Ā · B̄</span>
+      </div>
+      <div class="res-enunciado">Pelo Teorema de De Morgan, ¬(A + B) é equivalente a:</div>
+      <div class="res-corpo">
+        <p>O <strong>Teorema de De Morgan</strong> possui duas leis fundamentais:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">As duas leis de De Morgan</div>
+          <strong>1ª Lei:</strong>  ¬(A · B)  =  Ā + B̄   (negação do AND → OR das negações)<br>
+          <strong>2ª Lei:</strong>  ¬(A + B)  =  Ā · B̄   (negação do OR → AND das negações)
+        </div>
+        <p>A questão traz <code>¬(A + B)</code> → aplica-se a <strong>2ª Lei</strong>:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Verificação por tabela verdade</div>
+          A=0,B=0: ¬(0+0)=¬0=<strong>1</strong> · Ā·B̄=1·1=<strong>1</strong> ✓<br>
+          A=0,B=1: ¬(0+1)=¬1=<strong>0</strong> · Ā·B̄=1·0=<strong>0</strong> ✓<br>
+          A=1,B=0: ¬(1+0)=¬1=<strong>0</strong> · Ā·B̄=0·1=<strong>0</strong> ✓<br>
+          A=1,B=1: ¬(1+1)=¬1=<strong>0</strong> · Ā·B̄=0·0=<strong>0</strong> ✓
+        </div>
+        <p><small>Alt. A (Ā+B̄) seria a 1ª lei aplicada ao AND, não ao OR. Alt. D (¬A+¬B) é o mesmo que Ā+B̄ — também errada pela mesma razão.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> ¬(A + B) = <strong>Ā · B̄</strong> pela 2ª Lei de De Morgan — Resposta C</div>
+      </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="res-questao">
+      <div class="res-q-head">
+        <span class="res-q-num">19</span>
+        <span class="res-q-tag">Expressão Booleana</span>
+        <span class="res-resposta-badge">✓ GABARITO: B) S = 1</span>
+      </div>
+      <div class="res-enunciado">Para S = A·B + Ā·B, com A=0 e B=1, S vale:</div>
+      <div class="res-corpo">
+        <p>Substituímos os valores A=0 e B=1 diretamente na expressão, seguindo a prioridade: <strong>NOT → AND → OR</strong>.</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Passo 1 — Calcular NOT</div>
+          A = 0  →  Ā = NOT(0) = <strong>1</strong><br>
+          (B = 1 não tem negação na expressão)
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Passo 2 — Calcular os termos AND</div>
+          Termo 1:  A · B  =  0 · 1  =  <strong>0</strong><br>
+          Termo 2:  Ā · B  =  1 · 1  =  <strong>1</strong>
+        </div>
+        <div class="res-passo">
+          <div class="passo-titulo">Passo 3 — Calcular OR final</div>
+          S = Termo1 + Termo2 = 0 + 1 = <strong>1</strong>
+        </div>
+        <p><small>Nota: esta expressão S = A·B + Ā·B pode ser simplificada algebricamente: S = B·(A+Ā) = B·1 = B. Como B=1, S=1 independentemente de A.</small></p>
+        <div class="res-conclusao"><span class="check">✓</span> S = A·B + Ā·B = 0 + 1 = <strong>1</strong> — Resposta B</div>
+      </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="res-questao" style="grid-column: span 2">
+      <div class="res-q-head">
+        <span class="res-q-num">20</span>
+        <span class="res-q-tag">Identidades Booleanas</span>
+        <span class="res-resposta-badge">✓ GABARITO: D) A + Ā = 1</span>
+      </div>
+      <div class="res-enunciado">Qual das identidades booleanas está correta?</div>
+      <div class="res-corpo">
+        <p>Vamos analisar cada alternativa com base nas leis fundamentais da Álgebra de Boole:</p>
+        <div class="res-passo">
+          <div class="passo-titulo">Analisando cada alternativa</div>
+          <strong>A) A · Ā = 1</strong> → <span style="color:#c62828">ERRADA</span><br>
+          Um valor e seu complemento são sempre opostos: um é 0 e o outro é 1.<br>
+          AND de dois opostos sempre dá 0:  0·1 = 0  ou  1·0 = 0.  <strong>A · Ā = 0</strong> (Lei da Contradição / Complemento AND)<br><br>
+
+          <strong>B) A + A = 2A</strong> → <span style="color:#c62828">ERRADA</span><br>
+          Álgebra de Boole não tem aritmética de multiplicação por 2. Na lógica booleana, A+A = A (Lei da Idempotência). Não existe "2A" em lógica binária; os valores são apenas 0 ou 1.<br><br>
+
+          <strong>C) A + 0 = 0</strong> → <span style="color:#c62828">ERRADA</span><br>
+          OR com 0 não altera o outro operando:  <strong>A + 0 = A</strong> (elemento neutro do OR). Se A=1, A+0=1≠0.<br><br>
+
+          <strong>D) A + Ā = 1</strong> → <span style="color:#1b5e20">CORRETA ✓</span><br>
+          Um valor ou seu complemento sempre cobre todos os casos possíveis (0 ou 1).<br>
+          Se A=0: 0 + NOT(0) = 0 + 1 = <strong>1</strong> ✓<br>
+          Se A=1: 1 + NOT(1) = 1 + 0 = <strong>1</strong> ✓<br>
+          Esta é a <strong>Lei do Complemento OR</strong> (ou Lei da Tautologia).
+        </div>
+        <div class="res-conclusao"><span class="check">✓</span> A única identidade correta é <strong>A + Ā = 1</strong> (Lei do Complemento OR) — Resposta D</div>
+      </div>
+    </div>
+
+  </div><!-- /res-grid-2 seção C -->
+
+  <!-- Resumo gabarito -->
+  <div style="margin-top:12px;border:1px solid #ccc;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:7.5pt">
+    <div style="font-weight:700;font-size:8pt;margin-bottom:5px;border-bottom:1px solid #ddd;padding-bottom:3px">RESUMO DO GABARITO</div>
+    <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px;text-align:center">
+      <div style="background:#111;color:#fff;padding:3px">Q01<br><span style="color:#00ff88">C</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q02<br><span style="color:#00ff88">C</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q03<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q04<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q05<br><span style="color:#00ff88">C</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q06<br><span style="color:#00ff88">D</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q07<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q08<br><span style="color:#00ff88">C</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q09<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#111;color:#fff;padding:3px">Q10<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#333;color:#fff;padding:3px">Q11<br><span style="color:#00ff88">A</span></div>
+      <div style="background:#333;color:#fff;padding:3px">Q12<br><span style="color:#00ff88">A</span></div>
+      <div style="background:#333;color:#fff;padding:3px">Q13<br><span style="color:#00ff88">C</span></div>
+      <div style="background:#333;color:#fff;padding:3px">Q14<br><span style="color:#00ff88">1,1,1,0</span></div>
+      <div style="background:#333;color:#fff;padding:3px">Q15<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#333;color:#fff;padding:3px">Q16<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#333;color:#fff;padding:3px">Q17<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#555;color:#fff;padding:3px">Q18<br><span style="color:#00ff88">C</span></div>
+      <div style="background:#555;color:#fff;padding:3px">Q19<br><span style="color:#00ff88">B</span></div>
+      <div style="background:#555;color:#fff;padding:3px">Q20<br><span style="color:#00ff88">D</span></div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>ADS 2026 · Arquitetura de Computadores</span>
+    <span>Semanas 02–03 · Prova 01</span>
+    <span>Página 4 de 4 — Resoluções (fim)</span>
+  </div>
+
+</div><!-- /page4 -->
+
+</body>
+</html>
