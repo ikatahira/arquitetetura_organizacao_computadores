@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC Builder Pro — Simulador de Montagem</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07080f;
+  --bg2: #0d1020;
+  --bg3: #121628;
+  --bg4: #181e35;
+  --panel: #0f1322;
+  --cyan: #00ffe7;
+  --blue: #0088ff;
+  --purple: #a855f7;
+  --orange: #ff8c00;
+  --red: #ff3344;
+  --green: #00e676;
+  --yellow: #ffd600;
+  --text: #e2e8f8;
+  --text2: #7887aa;
+  --text3: #3a4566;
+  --border: #1e2844;
+  --border2: #2a3a60;
+  --mono: 'Share Tech Mono', monospace;
+  --display: 'Orbitron', sans-serif;
+  --body: 'Exo 2', sans-serif;
+  --glow-cyan: 0 0 20px rgba(0,255,231,.35);
+  --glow-blue: 0 0 20px rgba(0,136,255,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;}
+body{
+  font-family:var(--body);
+  background:var(--bg);
+  color:var(--text);
+  cursor:default;
+}
+
+/* scanline overlay */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+  pointer-events:none;z-index:9999;
+}
+
+/* ── SCREENS ── */
+.screen{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:var(--bg);}
+.screen.hidden{display:none;}
+
+/* INTRO */
+#screen-intro{text-align:center;padding:24px;}
+.game-title{
+  font-family:var(--display);font-size:clamp(28px,5vw,56px);font-weight:900;
+  color:var(--cyan);letter-spacing:.1em;
+  text-shadow:0 0 40px rgba(0,255,231,.5),0 0 80px rgba(0,255,231,.2);
+  line-height:1.1;
+}
+.game-subtitle{font-size:14px;font-family:var(--mono);color:var(--text2);letter-spacing:.2em;margin-top:6px;}
+.intro-card{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:12px;
+  padding:20px 28px;max-width:500px;width:100%;text-align:left;
+}
+.intro-card h3{font-family:var(--display);font-size:11px;color:var(--cyan);letter-spacing:.2em;margin-bottom:12px;}
+.diff-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.diff-btn{
+  background:var(--bg4);border:1px solid var(--border2);border-radius:8px;
+  padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;
+}
+.diff-btn:hover,.diff-btn.sel{border-color:var(--cyan);background:rgba(0,255,231,.08);}
+.diff-btn.sel{box-shadow:var(--glow-cyan);}
+.diff-btn .d-name{font-family:var(--display);font-size:11px;color:var(--cyan);letter-spacing:.1em;}
+.diff-btn .d-desc{font-size:10px;color:var(--text2);margin-top:4px;font-family:var(--mono);}
+.start-btn{
+  font-family:var(--display);font-size:13px;letter-spacing:.2em;
+  background:transparent;border:2px solid var(--cyan);color:var(--cyan);
+  padding:14px 48px;border-radius:8px;cursor:pointer;
+  transition:all .2s;
+  box-shadow:var(--glow-cyan);
+}
+.start-btn:hover{background:var(--cyan);color:var(--bg);box-shadow:0 0 40px rgba(0,255,231,.6);}
+.medal-row{display:flex;gap:12px;align-items:center;justify-content:center;}
+.medal{font-size:11px;font-family:var(--mono);color:var(--text2);display:flex;align-items:center;gap:5px;}
+
+/* GAME OVER */
+#screen-gameover{text-align:center;padding:24px;}
+.go-title{font-family:var(--display);font-size:32px;font-weight:900;color:var(--red);text-shadow:0 0 30px rgba(255,51,68,.5);letter-spacing:.1em;}
+.go-sub{font-size:13px;font-family:var(--mono);color:var(--text2);margin-top:4px;}
+.go-stats{display:flex;gap:16px;margin:12px 0;flex-wrap:wrap;justify-content:center;}
+.go-stat{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 20px;text-align:center;}
+.go-stat-val{font-family:var(--display);font-size:20px;color:var(--cyan);}
+.go-stat-lbl{font-size:10px;font-family:var(--mono);color:var(--text2);margin-top:3px;}
+
+/* COMPLETE */
+#screen-complete{text-align:center;padding:24px;}
+.win-title{font-family:var(--display);font-size:32px;font-weight:900;letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--cyan),var(--blue),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ── GAME UI ── */
+#game{
+  display:grid;
+  grid-template-rows:56px 1fr;
+  grid-template-columns:240px 1fr 220px;
+  grid-template-areas:
+    "hud hud hud"
+    "left center right";
+  width:100vw;height:100vh;gap:0;overflow:hidden;
+}
+
+/* HUD */
+#hud{
+  grid-area:hud;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:0;padding:0 12px;
+}
+.hud-block{
+  display:flex;align-items:center;gap:8px;padding:0 14px;
+  border-right:1px solid var(--border);height:100%;
+}
+.hud-block:last-child{border-right:none;margin-left:auto;}
+.hud-label{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.15em;}
+.hud-val{font-family:var(--display);font-size:14px;font-weight:700;}
+.hud-val.cyan{color:var(--cyan);}
+.hud-val.orange{color:var(--orange);}
+.hud-val.green{color:var(--green);}
+.hud-val.red{color:var(--red);}
+
+/* lives */
+.lives-wrap{display:flex;gap:4px;}
+.life{width:14px;height:14px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);}
+.life.lost{background:var(--bg4);box-shadow:none;}
+
+/* timer ring */
+.timer-ring-wrap{position:relative;width:36px;height:36px;}
+.timer-ring-wrap svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.timer-ring-bg{fill:none;stroke:var(--border);stroke-width:3;}
+.timer-ring-fg{fill:none;stroke:var(--cyan);stroke-width:3;stroke-linecap:round;
+  stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset .5s,stroke .5s;}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:10px;color:var(--cyan);font-weight:700;}
+
+/* xp bar */
+.xp-bar-wrap{flex:1;max-width:220px;}
+.xp-bar-top{display:flex;justify-content:space-between;margin-bottom:3px;}
+.xp-bar-top span{font-family:var(--mono);font-size:9px;color:var(--text2);}
+.xp-track{background:var(--border);border-radius:2px;height:4px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:2px;transition:width .4s;}
+
+/* combo badge */
+.combo-badge{
+  background:var(--orange);color:var(--bg);
+  font-family:var(--display);font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:4px;letter-spacing:.1em;
+  display:none;
+}
+.combo-badge.show{display:block;animation:pop .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+/* ── LEFT PANEL ── */
+#left{
+  grid-area:left;background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.panel-header{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  font-family:var(--display);font-size:9px;color:var(--cyan);letter-spacing:.2em;
+}
+#parts-scroll{flex:1;overflow-y:auto;padding:8px;}
+#parts-scroll::-webkit-scrollbar{width:3px;}
+#parts-scroll::-webkit-scrollbar-track{background:var(--bg);}
+#parts-scroll::-webkit-scrollbar-thumb{background:var(--border2);}
+
+.part-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:9px 10px;margin-bottom:6px;cursor:grab;
+  display:flex;align-items:center;gap:10px;
+  transition:all .15s;user-select:none;position:relative;overflow:hidden;
+}
+.part-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent-color,var(--cyan));border-radius:3px 0 0 3px;
+}
+.part-card:hover:not(.installed):not(.locked){
+  border-color:var(--accent-color,var(--cyan));
+  background:var(--bg4);transform:translateX(3px);
+  box-shadow:0 0 12px rgba(0,255,231,.1);
+}
+.part-card.active-next{
+  border-color:var(--accent-color,var(--cyan));
+  box-shadow:0 0 16px rgba(0,255,231,.2);
+  animation:card-glow 1.5s ease-in-out infinite alternate;
+}
+@keyframes card-glow{
+  from{box-shadow:0 0 8px rgba(0,255,231,.15);}
+  to{box-shadow:0 0 22px rgba(0,255,231,.4);}
+}
+.part-card.installed{opacity:.35;pointer-events:none;}
+.part-card.locked{opacity:.25;pointer-events:none;filter:grayscale(.8);}
+.part-card.dragging{opacity:.2;}
+.part-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.part-info{flex:1;min-width:0;}
+.part-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.2;}
+.part-specs{font-family:var(--mono);font-size:9px;color:var(--text2);margin-top:2px;}
+.part-status{font-size:10px;flex-shrink:0;}
+.part-pts{
+  position:absolute;right:8px;top:4px;
+  font-family:var(--display);font-size:8px;color:var(--yellow);
+  background:rgba(255,214,0,.1);border:1px solid rgba(255,214,0,.3);
+  padding:1px 5px;border-radius:3px;
+}
+
+/* ── CENTER ── */
+#center{
+  grid-area:center;position:relative;overflow:hidden;
+  background:var(--bg);
+}
+#cabinet-canvas{display:block;width:100%;height:100%;}
+
+/* floating particles */
+.particle{
+  position:absolute;pointer-events:none;
+  font-family:var(--display);font-weight:700;
+  animation:float-up 1.2s ease-out forwards;
+  z-index:50;
+}
+@keyframes float-up{
+  0%{transform:translateY(0) scale(1);opacity:1;}
+  100%{transform:translateY(-80px) scale(1.3);opacity:0;}
+}
+.particle.pts{color:var(--yellow);font-size:16px;}
+.particle.combo{color:var(--orange);font-size:20px;}
+.particle.error{color:var(--red);font-size:14px;}
+.particle.correct{color:var(--green);font-size:14px;}
+
+/* toast */
+#toast{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+  padding:9px 22px;border-radius:20px;
+  font-family:var(--mono);font-size:12px;font-weight:500;
+  white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;z-index:60;
+}
+#toast.show{opacity:1;}
+#toast.ok{background:rgba(0,230,118,.12);border:1px solid var(--green);color:var(--green);}
+#toast.bad{background:rgba(255,51,68,.12);border:1px solid var(--red);color:var(--red);}
+#toast.info{background:rgba(0,255,231,.08);border:1px solid var(--cyan);color:var(--cyan);}
+#toast.warn{background:rgba(255,140,0,.12);border:1px solid var(--orange);color:var(--orange);}
+
+/* ── RIGHT PANEL ── */
+#right{
+  grid-area:right;background:var(--bg2);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.inst-header{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.inst-step-badge{
+  background:var(--cyan);color:var(--bg);
+  font-family:var(--display);font-size:9px;font-weight:700;
+  padding:3px 8px;border-radius:4px;letter-spacing:.1em;white-space:nowrap;
+}
+.inst-title{font-family:var(--display);font-size:9px;color:var(--text2);letter-spacing:.1em;flex:1;}
+.inst-body{padding:12px 14px;flex:1;overflow-y:auto;}
+.inst-body::-webkit-scrollbar{width:2px;}
+.inst-body::-webkit-scrollbar-thumb{background:var(--border2);}
+.inst-component-name{font-size:14px;font-weight:600;color:var(--cyan);margin-bottom:6px;line-height:1.2;}
+.inst-desc{font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:10px;}
+.inst-steps-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.inst-steps-list li{
+  display:flex;align-items:flex-start;gap:7px;
+  font-size:11px;color:var(--text2);line-height:1.5;
+}
+.inst-steps-list li .num{
+  width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:var(--bg4);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:7px;color:var(--cyan);
+}
+.warn-box{
+  background:rgba(255,140,0,.08);border:1px solid rgba(255,140,0,.3);
+  border-radius:6px;padding:8px 10px;margin-top:10px;
+  font-size:11px;color:var(--orange);line-height:1.5;
+}
+.warn-box::before{content:'⚠ ';font-size:12px;}
+.tip-box{
+  background:rgba(0,255,231,.06);border:1px solid rgba(0,255,231,.2);
+  border-radius:6px;padding:8px 10px;margin-top:8px;
+  font-size:11px;color:var(--cyan);line-height:1.5;
+}
+.tip-box::before{content:'💡 ';}
+
+.sub-stage-indicator{
+  margin:8px 14px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:6px;
+  padding:6px 10px;
+}
+.sub-stage-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.sub-stage-row span{font-family:var(--mono);font-size:9px;color:var(--text2);}
+.sub-stage-row .current{color:var(--cyan);}
+.sub-stage-bar{background:var(--border);border-radius:2px;height:3px;overflow:hidden;}
+.sub-stage-fill{height:100%;background:var(--cyan);border-radius:2px;transition:width .3s;}
+
+/* checklist */
+.checklist-section{border-top:1px solid var(--border);padding:8px 14px;overflow-y:auto;max-height:200px;}
+.checklist-section::-webkit-scrollbar{width:2px;}
+.cl-item{
+  display:flex;align-items:center;gap:7px;padding:4px 0;
+  font-size:11px;color:var(--text3);border-bottom:1px solid var(--border);
+}
+.cl-item:last-child{border-bottom:none;}
+.cl-item.done{color:var(--green);}
+.cl-item.active{color:var(--text);}
+.cl-dot{
+  width:14px;height:14px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid var(--text3);
+  display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .2s;
+}
+.cl-item.done .cl-dot{background:var(--green);border-color:var(--green);color:var(--bg);}
+.cl-item.active .cl-dot{border-color:var(--cyan);animation:dot-pulse 1s infinite;}
+@keyframes dot-pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,231,.4);}50%{box-shadow:0 0 0 4px rgba(0,255,231,0);}}
+
+.hint-btn{
+  margin:0 10px 10px;padding:7px;border-radius:6px;
+  background:transparent;border:1px solid var(--border2);
+  color:var(--text2);font-family:var(--mono);font-size:10px;cursor:pointer;
+  transition:all .15s;width:calc(100% - 20px);
+}
+.hint-btn:hover{border-color:var(--orange);color:var(--orange);}
+.hint-btn span{font-size:9px;color:var(--text3);}
+
+/* mini-game overlay */
+#minigame-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(7,8,15,.92);
+  display:flex;align-items:center;justify-content:center;
+  display:none;
+}
+#minigame-overlay.show{display:flex;}
+.mg-box{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  padding:28px;width:min(540px,90vw);text-align:center;
+  position:relative;overflow:hidden;
+}
+.mg-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple));
+}
+.mg-title{font-family:var(--display);font-size:13px;color:var(--cyan);letter-spacing:.2em;margin-bottom:4px;}
+.mg-desc{font-size:12px;color:var(--text2);margin-bottom:18px;font-family:var(--mono);}
+.mg-close{
+  position:absolute;top:12px;right:14px;
+  background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;
+  transition:color .15s;
+}
+.mg-close:hover{color:var(--red);}
+
+/* CPU orientation mini-game */
+#cpu-game{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.cpu-socket{
+  width:140px;height:140px;background:var(--bg3);border:2px solid var(--border2);
+  border-radius:8px;position:relative;display:flex;align-items:center;justify-content:center;
+}
+.cpu-socket-pin{
+  position:absolute;width:8px;height:8px;border-radius:2px;background:var(--yellow);
+  box-shadow:0 0 6px var(--yellow);
+}
+.cpu-socket-pin.tl{top:8px;left:8px;}
+.cpu-socket-arrow{
+  position:absolute;bottom:4px;right:4px;
+  font-size:10px;color:var(--cyan);font-family:var(--mono);
+}
+.cpu-chip{
+  width:100px;height:100px;background:var(--bg4);border:2px solid var(--border2);
+  border-radius:6px;cursor:grab;position:relative;user-select:none;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .2s;
+}
+.cpu-chip.can-drop{border-color:var(--cyan);}
+.cpu-chip-pin{
+  position:absolute;width:8px;height:8px;border-radius:2px;
+  background:transparent;border:2px solid var(--yellow);
+}
+.cpu-chip-pin.tl{top:6px;left:6px;}
+.cpu-chip-label{font-family:var(--mono);font-size:8px;color:var(--text2);text-align:center;}
+.cpu-chip-label span{display:block;font-family:var(--display);font-size:11px;color:var(--cyan);margin-bottom:3px;}
+.rotate-controls{display:flex;gap:10px;}
+.rot-btn{
+  width:44px;height:44px;border-radius:8px;
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text);font-size:18px;cursor:pointer;transition:all .15s;
+}
+.rot-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.orientation-hint{font-family:var(--mono);font-size:11px;color:var(--text2);margin-top:4px;}
+.cpu-drop-zone{
+  width:140px;height:140px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.cpu-dz-inner{
+  width:140px;height:140px;background:var(--bg3);border:2px dashed var(--border2);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  transition:all .3s;position:relative;
+}
+.cpu-dz-inner.hover{border-color:var(--cyan);background:rgba(0,255,231,.05);}
+.cpu-dz-inner.correct{border-color:var(--green);background:rgba(0,230,118,.1);}
+.cpu-dz-inner.wrong{border-color:var(--red);background:rgba(255,51,68,.1);}
+.socket-pin-indicator{
+  position:absolute;top:8px;left:8px;width:8px;height:8px;
+  border-radius:2px;background:var(--yellow);box-shadow:0 0 8px var(--yellow);
+}
+.mg-btn{
+  padding:10px 28px;border-radius:8px;
+  background:transparent;border:1px solid var(--cyan);
+  color:var(--cyan);font-family:var(--display);font-size:10px;
+  cursor:pointer;transition:all .2s;letter-spacing:.1em;
+}
+.mg-btn:hover{background:var(--cyan);color:var(--bg);}
+.mg-btn.red{border-color:var(--red);color:var(--red);}
+.mg-btn.red:hover{background:var(--red);color:var(--bg);}
+.pin1-label{
+  font-family:var(--mono);font-size:9px;color:var(--yellow);
+  position:absolute;top:16px;left:16px;
+}
+
+/* RAM orientation */
+#ram-game{display:flex;flex-direction:column;align-items:center;gap:14px;}
+.ram-slots-row{display:flex;gap:14px;align-items:flex-end;}
+.ram-slot{
+  width:18px;height:100px;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:3px;position:relative;cursor:pointer;transition:all .2s;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;
+}
+.ram-slot:hover{border-color:var(--cyan);}
+.ram-slot.target{border-color:var(--cyan);box-shadow:0 0 8px rgba(0,255,231,.3);animation:slot-pulse 1s infinite;}
+@keyframes slot-pulse{0%,100%{box-shadow:0 0 4px rgba(0,255,231,.2);}50%{box-shadow:0 0 12px rgba(0,255,231,.5);}}
+.ram-slot.filled{border-color:var(--blue);}
+.ram-slot-label{font-family:var(--mono);font-size:8px;color:var(--text3);}
+.ram-module{
+  width:18px;height:80px;background:var(--bg4);border:1px solid var(--border2);
+  border-radius:3px;cursor:grab;position:relative;user-select:none;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:0 4px;
+}
+.ram-module:hover{border-color:var(--blue);}
+.ram-module-notch{
+  position:absolute;bottom:4px;width:4px;height:4px;background:var(--bg);
+  border-radius:1px;
+}
+.ram-module-label{font-family:var(--mono);font-size:6px;color:var(--text2);writing-mode:vertical-rl;text-orientation:mixed;}
+.channel-label{font-family:var(--mono);font-size:9px;color:var(--text2);text-align:center;margin-top:4px;}
+.dual-channel-badge{
+  background:rgba(0,255,231,.1);border:1px solid var(--cyan);
+  border-radius:4px;padding:4px 12px;font-family:var(--mono);font-size:10px;color:var(--cyan);
+}
+
+/* SATA/Cable quiz */
+#cable-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;}
+.cable-q{font-size:13px;color:var(--text);font-weight:600;text-align:center;line-height:1.5;}
+.cable-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:380px;}
+.cable-opt{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:10px 14px;cursor:pointer;transition:all .2s;text-align:left;
+  font-size:12px;color:var(--text2);
+}
+.cable-opt:hover{border-color:var(--cyan);color:var(--text);background:var(--bg4);}
+.cable-opt.correct{border-color:var(--green);background:rgba(0,230,118,.1);color:var(--green);}
+.cable-opt.wrong{border-color:var(--red);background:rgba(255,51,68,.1);color:var(--red);}
+.cable-opt .opt-key{
+  font-family:var(--display);font-size:8px;color:var(--cyan);
+  display:block;margin-bottom:4px;letter-spacing:.1em;
+}
+
+/* stage transition */
+#stage-transition{
+  position:fixed;inset:0;z-index:150;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.st-text{
+  font-family:var(--display);font-size:clamp(20px,4vw,48px);font-weight:900;
+  color:var(--cyan);letter-spacing:.15em;opacity:0;
+  text-shadow:0 0 40px rgba(0,255,231,.7);
+  animation:stage-in 1.5s ease-out forwards;
+}
+@keyframes stage-in{
+  0%{opacity:0;transform:scale(.5);}
+  30%{opacity:1;transform:scale(1.1);}
+  60%{opacity:1;transform:scale(1);}
+  85%{opacity:1;}
+  100%{opacity:0;transform:scale(1.2);}
+}
+
+/* flash effect */
+.flash-green{animation:flash-g .4s ease-out;}
+.flash-red{animation:flash-r .4s ease-out;}
+@keyframes flash-g{0%{box-shadow:inset 0 0 60px rgba(0,230,118,.4);}100%{box-shadow:none;}}
+@keyframes flash-r{0%{box-shadow:inset 0 0 60px rgba(255,51,68,.4);}100%{box-shadow:none;}}
+
+/* shake */
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-6px);}
+  40%{transform:translateX(6px);}
+  60%{transform:translateX(-4px);}
+  80%{transform:translateX(4px);}
+}
+.shake{animation:shake .4s ease-out;}
+
+/* score popup at center */
+#center-score{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;z-index:55;opacity:0;
+  font-family:var(--display);font-size:36px;font-weight:900;
+  transition:none;
+}
+#center-score.burst{animation:score-burst .8s ease-out forwards;}
+@keyframes score-burst{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.5);}
+  40%{opacity:1;transform:translate(-50%,-70%) scale(1.3);}
+  100%{opacity:0;transform:translate(-50%,-120%) scale(1);}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ INTRO SCREEN ═══════════════════════ -->
+<div class="screen" id="screen-intro">
+  <div class="game-title">PC BUILDER PRO</div>
+  <div class="game-subtitle">simulador de montagem · versão educacional</div>
+
+  <div class="intro-card">
+    <h3>DIFICULDADE</h3>
+    <div class="diff-grid">
+      <div class="diff-btn sel" data-diff="easy" onclick="selectDiff(this,'easy')">
+        <div class="d-name">FÁCIL</div>
+        <div class="d-desc">60s/etapa<br>3 vidas<br>dicas ativas</div>
+      </div>
+      <div class="diff-btn" data-diff="normal" onclick="selectDiff(this,'normal')">
+        <div class="d-name">NORMAL</div>
+        <div class="d-desc">40s/etapa<br>3 vidas<br>sem dicas</div>
+      </div>
+      <div class="diff-btn" data-diff="hard" onclick="selectDiff(this,'hard')">
+        <div class="d-name">DIFÍCIL</div>
+        <div class="d-desc">25s/etapa<br>2 vidas<br>ordem aleatória</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="medal-row">
+    <div class="medal">🏆 <span id="best-score-disp">melhor pontuação: —</span></div>
+  </div>
+
+  <button class="start-btn" onclick="startGame()">INICIAR MISSÃO →</button>
+
+  <div style="margin-top:8px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.7;max-width:480px;">
+    Desenvolvido por <span style="color:var(--cyan)">Prof. Isaque Katahira</span> · Fatec Ourinhos<br>
+    Arquitetura e Organização de Computadores<br>
+    <span style="color:var(--text3)">Bugs? Envie e-mail para <a href="mailto:isaque.katahira@fatecourinhos.edu.br" style="color:var(--blue);text-decoration:none;">isaque.katahira@fatecourinhos.edu.br</a></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════ GAME OVER ═══════════════════════ -->
+<div class="screen hidden" id="screen-gameover">
+  <div class="go-title">MISSÃO FALHOU</div>
+  <div class="go-sub">Você ficou sem vidas ou o tempo esgotou.</div>
+  <div class="go-stats">
+    <div class="go-stat"><div class="go-stat-val" id="go-etapas">0</div><div class="go-stat-lbl">etapas completas</div></div>
+    <div class="go-stat"><div class="go-stat-val" id="go-score">0</div><div class="go-stat-lbl">pontuação</div></div>
+    <div class="go-stat"><div class="go-stat-val" id="go-erros">0</div><div class="go-stat-lbl">erros</div></div>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="start-btn" onclick="restartGame()">↺ TENTAR NOVAMENTE</button>
+    <button class="start-btn" style="border-color:var(--text2);color:var(--text2);box-shadow:none;" onclick="goIntro()">← MENU</button>
+  </div>
+  <div style="margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--text3);text-align:center;line-height:1.7;">
+    Desenvolvido por <span style="color:var(--cyan)">Prof. Isaque Katahira</span> · Fatec Ourinhos · Arquitetura e Organização de Computadores<br>
+    <a href="mailto:isaque.katahira@fatecourinhos.edu.br" style="color:var(--blue);text-decoration:none;">isaque.katahira@fatecourinhos.edu.br</a>
+  </div>
+</div>
+<div class="screen hidden" id="screen-complete">
+  <div class="win-title">MISSÃO COMPLETA!</div>
+  <div style="font-size:13px;font-family:var(--mono);color:var(--text2);margin-top:2px;letter-spacing:.15em;">PC MONTADO COM SUCESSO</div>
+  <div style="font-size:48px;margin:8px 0;">🏆</div>
+  <div class="go-stats">
+    <div class="go-stat"><div class="go-stat-val" id="win-score">0</div><div class="go-stat-lbl">pontuação final</div></div>
+    <div class="go-stat"><div class="go-stat-val" id="win-tempo">0s</div><div class="go-stat-lbl">tempo total</div></div>
+    <div class="go-stat"><div class="go-stat-val" id="win-erros">0</div><div class="go-stat-lbl">erros</div></div>
+    <div class="go-stat"><div class="go-stat-val" id="win-combo">0x</div><div class="go-stat-lbl">combo máx</div></div>
+  </div>
+  <div id="win-rank" style="font-family:var(--display);font-size:22px;letter-spacing:.1em;color:var(--yellow);margin:4px 0;"></div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="start-btn" onclick="restartGame()">↺ JOGAR NOVAMENTE</button>
+    <button class="start-btn" style="border-color:var(--text2);color:var(--text2);box-shadow:none;" onclick="goIntro()">← MENU</button>
+  </div>
+  <div style="margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--text3);text-align:center;line-height:1.7;">
+    Desenvolvido por <span style="color:var(--cyan)">Prof. Isaque Katahira</span> · Fatec Ourinhos · Arquitetura e Organização de Computadores<br>
+    <a href="mailto:isaque.katahira@fatecourinhos.edu.br" style="color:var(--blue);text-decoration:none;">isaque.katahira@fatecourinhos.edu.br</a>
+  </div>
+</div>
+<div id="game" style="display:none;">
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-block">
+      <div>
+        <div class="hud-label">pontuação</div>
+        <div class="hud-val cyan" id="hud-score">0</div>
+      </div>
+    </div>
+    <div class="hud-block">
+      <div>
+        <div class="hud-label">nível</div>
+        <div class="hud-val cyan" id="hud-level">1</div>
+      </div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar-top"><span>XP</span><span id="hud-xp">0/100</span></div>
+        <div class="xp-track"><div class="xp-fill" id="hud-xpbar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="hud-block">
+      <div class="timer-ring-wrap" id="timer-wrap">
+        <svg viewBox="0 0 36 36" width="36" height="36">
+          <circle class="timer-ring-bg" cx="18" cy="18" r="15.9"/>
+          <circle class="timer-ring-fg" id="timer-ring" cx="18" cy="18" r="15.9"/>
+        </svg>
+        <div class="timer-num" id="timer-num">--</div>
+      </div>
+    </div>
+    <div class="hud-block">
+      <div>
+        <div class="hud-label">vidas</div>
+        <div class="lives-wrap" id="lives-wrap"></div>
+      </div>
+    </div>
+    <div class="hud-block">
+      <div>
+        <div class="hud-label">combo</div>
+        <div class="hud-val orange" id="hud-combo">0x</div>
+      </div>
+    </div>
+    <div class="hud-block">
+      <div>
+        <div class="hud-label">erros</div>
+        <div class="hud-val red" id="hud-erros">0</div>
+      </div>
+    </div>
+    <div class="hud-block" style="margin-left:auto;border-right:none;border-left:1px solid var(--border);">
+      <button class="hint-btn" id="hint-btn-hud" onclick="useHint()" style="margin:0;width:auto;padding:4px 12px;">💡 dica <span id="hint-count">(3)</span></button>
+    </div>
+  </div>
+
+  <!-- LEFT -->
+  <div id="left">
+    <div class="panel-header">COMPONENTES DISPONÍVEIS</div>
+    <div id="parts-scroll"></div>
+  </div>
+
+  <!-- CENTER -->
+  <div id="center">
+    <canvas id="cabinet-canvas"></canvas>
+    <div id="toast"></div>
+    <div id="center-score"></div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right">
+    <div class="inst-header">
+      <div class="inst-step-badge" id="inst-badge">ETAPA 1</div>
+      <div class="inst-title" id="inst-title-hdr">missão atual</div>
+    </div>
+    <div class="sub-stage-indicator" id="sub-stage-ind" style="display:none;">
+      <div class="sub-stage-row">
+        <span>sub-etapa</span>
+        <span class="current" id="sub-stage-txt">1/1</span>
+      </div>
+      <div class="sub-stage-bar"><div class="sub-stage-fill" id="sub-stage-fill" style="width:0%"></div></div>
+    </div>
+    <div class="inst-body" id="inst-body"></div>
+    <button class="hint-btn" onclick="useHint()">💡 usar dica <span id="hint-count2">(3)</span></button>
+    <div class="checklist-section" id="checklist"></div>
+  </div>
+
+</div>
+
+<!-- MINI-GAME OVERLAY -->
+<div id="minigame-overlay">
+  <div class="mg-box">
+    <button class="mg-close" onclick="closeMiniGame()">✕</button>
+    <div class="mg-title" id="mg-title">MINI-JOGO</div>
+    <div class="mg-desc" id="mg-desc">complete o desafio para continuar</div>
+    <div id="mg-content"></div>
+  </div>
+</div>
+
+<!-- STAGE TRANSITION -->
+<div id="stage-transition"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════════════
+const STAGES = [
+  {
+    id:'fonte',
+    name:'Fonte de Alimentação',
+    specs:'ATX 500W · 80 Plus Bronze',
+    emoji:'⚡',
+    accent:'#00ffe7',
+    bg:'#001a14',
+    pts:120,
+    xp:25,
+    slot:{x:.52,y:.04,w:.44,h:.18},
+    title:'Instalar a Fonte de Alimentação',
+    desc:'A fonte de alimentação (PSU) converte a corrente alternada (AC) da tomada em corrente contínua (DC) para alimentar todos os componentes do PC.',
+    steps:[
+      'Posicione a fonte no compartimento traseiro superior do gabinete',
+      'A ventoinha da fonte deve ficar voltada para baixo (ou para cima se o gabinete tiver ventilação no fundo)',
+      'Alinhe os 4 furos de parafuso da fonte com os furos do gabinete',
+      'Fixe com os 4 parafusos de polegada (#6-32)',
+    ],
+    warn:'Não conecte o cabo de força ainda — aguarde a montagem completa.',
+    tip:'A fonte ATX possui travas físicas que impedem a instalação invertida.',
+    miniGame:null,
+  },
+  {
+    id:'mobo',
+    name:'Placa-Mãe',
+    specs:'ATX · Socket AM5 · DDR5',
+    emoji:'🟩',
+    accent:'#0088ff',
+    bg:'#001433',
+    pts:150,
+    xp:30,
+    slot:{x:.08,y:.17,w:.40,h:.55},
+    title:'Instalar a Placa-Mãe',
+    desc:'A placa-mãe (motherboard) é o circuito central que interliga todos os componentes. Antes de instalá-la, verifique se os espaçadores (standoffs) estão corretamente posicionados no gabinete.',
+    steps:[
+      'Verifique e instale os espaçadores metálicos no gabinete (evitam curto-circuito)',
+      'Encaixe a placa de I/O (shield) no painel traseiro do gabinete',
+      'Alinhe a placa-mãe com os espaçadores e os furos da shield',
+      'Fixe com os parafusos de placa-mãe (#6-32) — não aperte demais!',
+    ],
+    warn:'Manuseie a placa sempre pelas bordas. Nunca toque nos componentes SMD.',
+    tip:'Use pulseira antiestática ou toque no gabinete metálico antes de manusear.',
+    miniGame:null,
+  },
+  {
+    id:'cpu',
+    name:'Processador (CPU)',
+    specs:'AMD Ryzen 9 7950X · AM5',
+    emoji:'🔲',
+    accent:'#a855f7',
+    bg:'#14003d',
+    pts:200,
+    xp:40,
+    slot:{x:.11,y:.23,w:.17,h:.22},
+    title:'Instalar o Processador',
+    desc:'O processador é o cérebro do computador. O socket AM5 usa o padrão LGA (Land Grid Array) — os pinos ficam no soquete, não no processador. A orientação correta é crítica.',
+    steps:[
+      'Levante a alavanca do soquete AM5 (ZIF socket)',
+      'Alinhe o triângulo dourado da CPU com o triângulo no soquete',
+      'Baixe a CPU gentilmente — ela deve assentar sem força',
+      'Feche a alavanca para travar a CPU no lugar',
+    ],
+    warn:'NUNCA force a CPU! Se não encaixar suavemente, verifique a orientação.',
+    tip:'Os pinos do socket AM5 são frágeis — uma CPU mal posicionada pode dobrar todos.',
+    miniGame:'cpu_orientation',
+  },
+  {
+    id:'cooler',
+    name:'Cooler da CPU',
+    specs:'Noctua NH-D15 · 140mm',
+    emoji:'🌀',
+    accent:'#888888',
+    bg:'#1a1a1a',
+    pts:130,
+    xp:25,
+    slot:{x:.09,y:.21,w:.22,h:.26},
+    title:'Instalar o Cooler da CPU',
+    desc:'O cooler dissipa o calor gerado pelo processador. Deve ser instalado logo após a pasta térmica para evitar contaminação da superfície.',
+    steps:[
+      'Instale os suportes de fixação (backplate) na parte traseira da placa-mãe',
+      'Alinhe o cooler sobre o processador com a pasta térmica',
+      'Aperte os parafusos em padrão cruzado (X) — igual a rodas de carro',
+      'Conecte o cabo do ventilador ao header CPU_FAN na placa-mãe',
+    ],
+    warn:'Aperte os parafusos em cruz para distribuir a pressão uniformemente.',
+    tip:'O cabeçalho CPU_FAN controla a velocidade automaticamente via PWM.',
+    miniGame:null,
+  },
+  {
+    id:'ram',
+    name:'Memória RAM',
+    specs:'Kingston Fury DDR5-6000 · 32GB',
+    emoji:'📏',
+    accent:'#00c4ff',
+    bg:'#002233',
+    pts:140,
+    xp:28,
+    slot:{x:.33,y:.20,w:.06,h:.44},
+    title:'Instalar a Memória RAM',
+    desc:'A RAM opera em Dual Channel quando instalada em slots específicos — isso dobra a largura de banda da memória. Verifique o manual da placa-mãe para os slots corretos.',
+    steps:[
+      'Consulte o manual: slots A2 e B2 para dual channel (geralmente 2º e 4º)',
+      'Abra as travas laterais do slot de memória',
+      'Alinhe o entalhe (notch) do módulo com a protuberância do slot',
+      'Pressione com firmeza até as travas laterais fecharem com "clique"',
+    ],
+    warn:'Instalar nos slots errados reduz performance pela metade. Verifique o manual.',
+    tip:'DDR5 tem voltagem padrão de 1.1V. Ative XMP/EXPO na BIOS para velocidade total.',
+    miniGame:'ram_slots',
+  },
+  {
+    id:'ssd',
+    name:'SSD NVMe M.2',
+    specs:'Samsung 990 Pro · 1TB · PCIe 5.0',
+    emoji:'💾',
+    accent:'#ffd600',
+    bg:'#2a2200',
+    pts:130,
+    xp:25,
+    slot:{x:.36,y:.44,w:.12,h:.06},
+    title:'Instalar o SSD M.2 NVMe',
+    desc:'O SSD M.2 NVMe é instalado diretamente na placa-mãe sem necessidade de cabos. É até 30x mais rápido que um HD tradicional. O slot M.2 suporta tanto SATA quanto NVMe (PCIe).',
+    steps:[
+      'Localize o slot M.2 na placa-mãe (geralmente coberto por heatsink)',
+      'Remova o parafuso de fixação do slot M.2',
+      'Insira o SSD em ângulo de 30° no slot, com os contatos alinhados',
+      'Pressione suavemente para baixo e fixe com o parafuso',
+    ],
+    warn:'PCIe 5.0 NVMe pode atingir 12 GB/s — certifique-se de usar o slot M2_1 (PCIe 5.0).',
+    tip:'Remova o adesivo protetor do heatsink antes de reinstalá-lo sobre o SSD.',
+    miniGame:'cable_quiz',
+  },
+  {
+    id:'cabos',
+    name:'Cabos de Alimentação',
+    specs:'ATX 24-pin · EPS 8-pin · PCIe',
+    emoji:'🔌',
+    accent:'#ff6b35',
+    bg:'#2a1000',
+    pts:160,
+    xp:32,
+    slot:{x:.09,y:.74,w:.83,h:.12},
+    title:'Conectar os Cabos Internos',
+    desc:'O gerenciamento de cabos é fundamental para airflow e manutenção. Conecte os cabos na ordem certa para evitar erros.',
+    steps:[
+      'ATX 24-pin: maior conector, conecta no lado direito da placa-mãe',
+      'EPS 8-pin (CPU): conector de alimentação próximo ao socket no topo',
+      'Cabos SATA de dados: conecte o SSD M.2 não precisa — já usa PCIe',
+      'Cabos do painel frontal: PWR_SW, RST_SW, HDD_LED, PWR_LED',
+    ],
+    warn:'O conector EPS 8-pin da CPU não se encaixa no PCIe 8-pin — formas diferentes!',
+    tip:'Organize os cabos por trás do painel traseiro antes de fechar o gabinete.',
+    miniGame:null,
+  },
+];
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let G = {
+  diff:'easy',
+  lives:3, maxLives:3,
+  score:0, xp:0, level:1,
+  combo:0, maxCombo:0,
+  errors:0, hints:3,
+  currentStep:0,
+  installed:[],
+  startTime:0,
+  timerMax:60, timerLeft:60, timerInterval:null,
+  dragId:null,
+  toastTimer:null,
+  mgActive:false,
+  mgCallback:null,
+  cpuRotation:0, cpuDropped:false,
+  ramSlotsFilled:[],
+  cableAnswer:null,
+  bestScore: parseInt(localStorage.getItem('pcbuilder_best')||'0'),
+};
+const DIFF = {
+  easy:  {timer:60, lives:3, hints:3, shuffle:false},
+  normal:{timer:40, lives:3, hints:1, shuffle:false},
+  hard:  {timer:25, lives:2, hints:0, shuffle:true},
+};
+
+// ── CANVAS ──
+const CV = document.getElementById('cabinet-canvas');
+const cx = CV.getContext('2d');
+let CW=0, CH=0;
+
+function resizeCanvas(){
+  const c2 = document.getElementById('center');
+  CW = c2.clientWidth;
+  CH = c2.clientHeight;
+  CV.width = CW;
+  CV.height = CH;
+  draw();
+}
+window.addEventListener('resize', resizeCanvas);
+
+// ════════════════════════════════════════════════════════
+//  SCREENS
+// ════════════════════════════════════════════════════════
+function selectDiff(el, d){
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  G.diff = d;
+}
+
+function goIntro(){
+  document.getElementById('screen-intro').classList.remove('hidden');
+  document.getElementById('screen-gameover').classList.add('hidden');
+  document.getElementById('screen-complete').classList.add('hidden');
+  document.getElementById('game').style.display='none';
+  const best = parseInt(localStorage.getItem('pcbuilder_best')||'0');
+  document.getElementById('best-score-disp').textContent = best>0?`melhor pontuação: ${best.toLocaleString()}`:'melhor pontuação: —';
+}
+
+function startGame(){
+  const d = DIFF[G.diff];
+  G = {...G,
+    lives:d.lives, maxLives:d.lives,
+    score:0, xp:0, level:1,
+    combo:0, maxCombo:0,
+    errors:0, hints:d.hints,
+    currentStep:0, installed:[],
+    startTime:Date.now(),
+    timerMax:d.timer, timerLeft:d.timer,
+    dragId:null, mgActive:false,
+    pastaAmount:0, pastaOk:false,
+    cpuRotation:0, cpuDropped:false,
+    ramSlotsFilled:[],
+  };
+  if(G.timerInterval) clearInterval(G.timerInterval);
+
+  document.getElementById('screen-intro').classList.add('hidden');
+  document.getElementById('screen-gameover').classList.add('hidden');
+  document.getElementById('screen-complete').classList.add('hidden');
+  document.getElementById('game').style.display='grid';
+
+  requestAnimationFrame(()=>{
+    resizeCanvas();
+    updateHUD();
+    updateParts();
+    updateInstructions();
+    updateChecklist();
+    startTimer();
+    showStageTransition('MISSÃO INICIADA!');
+  });
+}
+
+function restartGame(){
+  if(G.timerInterval) clearInterval(G.timerInterval);
+  startGame();
+}
+
+// ════════════════════════════════════════════════════════
+//  TIMER
+// ════════════════════════════════════════════════════════
+function startTimer(){
+  G.timerLeft = G.timerMax;
+  if(G.timerInterval) clearInterval(G.timerInterval);
+  G.timerInterval = setInterval(()=>{
+    G.timerLeft--;
+    updateTimerUI();
+    if(G.timerLeft<=0){ loseLife('⏰ Tempo esgotado!'); }
+  },1000);
+}
+
+function resetTimer(){
+  G.timerLeft = G.timerMax;
+  updateTimerUI();
+}
+
+function updateTimerUI(){
+  const pct = G.timerLeft/G.timerMax;
+  const circ = 100;
+  const offset = circ * (1-pct);
+  const ring = document.getElementById('timer-ring');
+  const num = document.getElementById('timer-num');
+  if(!ring) return;
+  ring.style.strokeDashoffset = offset;
+  ring.style.stroke = G.timerLeft<=10?'var(--red)':G.timerLeft<=20?'var(--orange)':'var(--cyan)';
+  num.style.color = G.timerLeft<=10?'var(--red)':G.timerLeft<=20?'var(--orange)':'var(--cyan)';
+  num.textContent = G.timerLeft;
+}
+
+// ════════════════════════════════════════════════════════
+//  LIVES
+// ════════════════════════════════════════════════════════
+function loseLife(reason){
+  G.combo = 0;
+  G.errors++;
+  G.lives--;
+  updateHUD();
+  showToast('bad','💀 ' + reason);
+  flashCenter('red');
+  if(G.lives<=0){
+    clearInterval(G.timerInterval);
+    setTimeout(gameOver, 800);
+  } else {
+    resetTimer();
+  }
+}
+
+function gameOver(){
+  document.getElementById('game').style.display='none';
+  document.getElementById('screen-gameover').classList.remove('hidden');
+  document.getElementById('go-etapas').textContent = G.installed.length;
+  document.getElementById('go-score').textContent = G.score.toLocaleString();
+  document.getElementById('go-erros').textContent = G.errors;
+}
+
+// ════════════════════════════════════════════════════════
+//  HUD
+// ════════════════════════════════════════════════════════
+function updateHUD(){
+  document.getElementById('hud-score').textContent = G.score.toLocaleString();
+  document.getElementById('hud-level').textContent = G.level;
+  document.getElementById('hud-combo').textContent = G.combo + 'x';
+  document.getElementById('hud-erros').textContent = G.errors;
+  const hc = `(${G.hints})`;
+  document.getElementById('hint-count').textContent = hc;
+  document.getElementById('hint-count2').textContent = hc;
+  // lives
+  const lw = document.getElementById('lives-wrap');
+  lw.innerHTML='';
+  for(let i=0;i<G.maxLives;i++){
+    const d=document.createElement('div');
+    d.className='life'+(i>=G.lives?' lost':'');
+    lw.appendChild(d);
+  }
+  // xp
+  const xpNeeded = G.level*100;
+  const xpPct = Math.min(100, (G.xp/xpNeeded*100));
+  document.getElementById('hud-xp').textContent = `${G.xp}/${xpNeeded}`;
+  document.getElementById('hud-xpbar').style.width = xpPct+'%';
+  updateTimerUI();
+}
+
+function addScore(pts, isBonus=false){
+  const mult = 1 + (G.combo*0.1);
+  const earned = Math.round(pts * mult);
+  G.score += earned;
+  // xp
+  const stage = STAGES[G.currentStep];
+  G.xp += stage?.xp||20;
+  const xpNeeded = G.level*100;
+  if(G.xp >= xpNeeded){ G.level++; G.xp=0; showToast('info','⬆ LEVEL UP! Nível '+G.level); }
+  updateHUD();
+  showScoreBurst('+'+earned, isBonus);
+  return earned;
+}
+
+function showScoreBurst(text, isBonus=false){
+  const el=document.getElementById('center-score');
+  el.textContent=text;
+  el.style.color=isBonus?'var(--orange)':'var(--yellow)';
+  el.classList.remove('burst');
+  void el.offsetWidth;
+  el.classList.add('burst');
+}
+
+// ════════════════════════════════════════════════════════
+//  DRAW
+// ════════════════════════════════════════════════════════
+let pulseT=0, animReq;
+function draw(){
+  cx.clearRect(0,0,CW,CH);
+  // bg grid
+  cx.strokeStyle='rgba(30,40,70,.4)';
+  cx.lineWidth=1;
+  for(let gx=0;gx<CW;gx+=40){ cx.beginPath();cx.moveTo(gx,0);cx.lineTo(gx,CH);cx.stroke(); }
+  for(let gy=0;gy<CH;gy+=40){ cx.beginPath();cx.moveTo(0,gy);cx.lineTo(CW,gy);cx.stroke(); }
+
+  // cabinet body
+  cx.fillStyle='#0d1224';
+  rr(10,10,CW-20,CH-20,14,cx);
+  cx.fill();
+  cx.strokeStyle='#1e2844';cx.lineWidth=1.5;cx.stroke();
+
+  // decorative panel lines
+  cx.strokeStyle='rgba(0,255,231,.06)';cx.lineWidth=1;
+  cx.beginPath();cx.moveTo(30,24);cx.lineTo(30,CH-24);cx.stroke();
+  cx.beginPath();cx.moveTo(CW-30,24);cx.lineTo(CW-30,CH-24);cx.stroke();
+  cx.beginPath();cx.moveTo(30,24);cx.lineTo(CW-30,24);cx.stroke();
+
+  // label
+  cx.font='9px "Share Tech Mono"';cx.fillStyle='rgba(0,255,231,.2)';cx.textAlign='left';
+  cx.fillText('GABINETE ATX MID-TOWER v2.0',44,38);
+
+  const pulse = .5+.5*Math.sin(pulseT);
+
+  STAGES.forEach((s,i)=>{
+    if(G.diff==='hard' && i>G.currentStep && !G.installed.includes(s.id)) return;
+    const filled = G.installed.includes(s.id);
+    const isActive = i===G.currentStep && !filled;
+    const px=CW*s.slot.x, py=CH*s.slot.y, pw=CW*s.slot.w, ph=CH*s.slot.h;
+
+    if(filled){
+      // filled glow box
+      cx.shadowColor=s.accent;cx.shadowBlur=12;
+      cx.fillStyle=s.bg;
+      rr(px,py,pw,ph,8,cx);cx.fill();
+      cx.strokeStyle=s.accent;cx.lineWidth=1.5;cx.stroke();
+      cx.shadowBlur=0;
+      // icon + name
+      const fcx=px+pw/2, fcy=py+ph/2;
+      cx.font='500 12px "Exo 2"';cx.fillStyle=s.accent;cx.textAlign='center';
+      cx.fillText(s.emoji+'  '+s.name, fcx, fcy-6);
+      cx.font='9px "Share Tech Mono"';cx.fillStyle=s.accent+'99';
+      cx.fillText('✓  INSTALADO · '+s.specs, fcx, fcy+10);
+      cx.textAlign='left';
+    } else if(isActive){
+      // active animated slot
+      const a = .15+.2*pulse;
+      cx.fillStyle=`rgba(0,255,231,${a*.15})`;
+      rr(px,py,pw,ph,8,cx);cx.fill();
+      cx.strokeStyle=`rgba(0,255,231,${.6+.4*pulse})`;cx.lineWidth=2;
+      cx.setLineDash([]);cx.stroke();
+      // corner brackets
+      const bm=12;
+      cx.strokeStyle=`rgba(0,255,231,${.9+.1*pulse})`;cx.lineWidth=2.5;
+      [[px,py,1,1],[px+pw,py,-1,1],[px,py+ph,1,-1],[px+pw,py+ph,-1,-1]].forEach(([bx,by,dx,dy])=>{
+        cx.beginPath();cx.moveTo(bx+dx*bm,by);cx.lineTo(bx,by);cx.lineTo(bx,by+dy*bm);cx.stroke();
+      });
+      // scanning line
+      const scanY = py+(CH*s.slot.h)*((.5+.5*Math.sin(pulseT*.7))%1);
+      cx.strokeStyle=`rgba(0,255,231,${.15+.1*pulse})`;cx.lineWidth=1;
+      cx.setLineDash([4,4]);
+      cx.beginPath();cx.moveTo(px+4,scanY);cx.lineTo(px+pw-4,scanY);cx.stroke();
+      cx.setLineDash([]);
+      // slot label
+      cx.font=`bold 11px "Share Tech Mono"`;cx.fillStyle=`rgba(0,255,231,${.8+.2*pulse})`;cx.textAlign='center';
+      cx.fillText('▶ ARRASTE AQUI ◀', px+pw/2, py+ph/2-8);
+      cx.font='10px "Exo 2"';cx.fillStyle=`rgba(0,255,231,${.5+.3*pulse})`;
+      cx.fillText(s.name, px+pw/2, py+ph/2+10);
+      cx.textAlign='left';
+    } else {
+      // inactive
+      cx.fillStyle='rgba(255,255,255,.02)';
+      rr(px,py,pw,ph,8,cx);cx.fill();
+      cx.strokeStyle='rgba(255,255,255,.06)';cx.lineWidth=1;
+      cx.setLineDash([5,4]);cx.stroke();cx.setLineDash([]);
+      cx.font='9px "Share Tech Mono"';cx.fillStyle='rgba(255,255,255,.15)';cx.textAlign='center';
+      cx.fillText(s.name.toUpperCase(), px+pw/2, py+ph/2+4);
+      cx.textAlign='left';
+    }
+  });
+}
+
+function rr(x,y,w,h,r,c2){
+  c2.beginPath();
+  c2.moveTo(x+r,y);c2.lineTo(x+w-r,y);c2.arcTo(x+w,y,x+w,y+r,r);
+  c2.lineTo(x+w,y+h-r);c2.arcTo(x+w,y+h,x+w-r,y+h,r);
+  c2.lineTo(x+r,y+h);c2.arcTo(x,y+h,x,y+h-r,r);
+  c2.lineTo(x,y+r);c2.arcTo(x,y,x+r,y,r);
+  c2.closePath();
+}
+
+function loop(){
+  pulseT+=0.04;
+  draw();
+  animReq=requestAnimationFrame(loop);
+}
+
+// ════════════════════════════════════════════════════════
+//  PARTS LIST
+// ════════════════════════════════════════════════════════
+function updateParts(){
+  const el=document.getElementById('parts-scroll');
+  el.innerHTML='';
+  STAGES.forEach((s,i)=>{
+    const done=G.installed.includes(s.id);
+    const isNext=i===G.currentStep&&!done;
+    const isLocked = G.diff==='hard' && i>G.currentStep+2 && !done;
+    const div=document.createElement('div');
+    div.className='part-card'+(done?' installed':'')+(isNext?' active-next':'')+(isLocked?' locked':'');
+    div.style.setProperty('--accent-color',s.accent);
+    div.draggable=!done&&!isLocked;
+    div.dataset.id=s.id;
+    div.innerHTML=`
+      <div class="part-icon" style="background:${s.bg}">${s.emoji}</div>
+      <div class="part-info">
+        <div class="part-name">${s.name}</div>
+        <div class="part-specs">${s.specs}</div>
+      </div>
+      <div class="part-status">${done?'<span style="color:var(--green)">✓</span>':isNext?'<span style="color:var(--cyan);font-size:16px">→</span>':''}</div>
+      ${!done&&!isLocked?`<div class="part-pts">+${s.pts}</div>`:''}
+    `;
+    div.addEventListener('dragstart',e=>{
+      G.dragId=s.id;
+      e.dataTransfer.setData('text/plain',s.id);
+      e.dataTransfer.effectAllowed='move';
+      div.classList.add('dragging');
+    });
+    div.addEventListener('dragend',()=>div.classList.remove('dragging'));
+    el.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  INSTRUCTIONS
+// ════════════════════════════════════════════════════════
+function updateInstructions(){
+  const i=G.currentStep;
+  if(i>=STAGES.length) return;
+  const s=STAGES[i];
+  document.getElementById('inst-badge').textContent='ETAPA '+(i+1)+'/'+STAGES.length;
+  document.getElementById('inst-title-hdr').textContent=s.name.toLowerCase();
+  const body=document.getElementById('inst-body');
+  body.innerHTML=`
+    <div class="inst-component-name" style="color:${s.accent}">${s.emoji} ${s.name}</div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:8px;">${s.specs}</div>
+    <div class="inst-desc">${s.desc}</div>
+    <ul class="inst-steps-list">
+      ${s.steps.map((st,j)=>`<li><div class="num">${j+1}</div><span>${st}</span></li>`).join('')}
+    </ul>
+    ${s.warn?`<div class="warn-box">${s.warn}</div>`:''}
+    ${s.tip?`<div class="tip-box">${s.tip}</div>`:''}
+    ${s.miniGame?`<div style="margin-top:12px;padding:8px 10px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.3);border-radius:6px;font-size:11px;color:#a855f7;font-family:var(--mono);">🎮 mini-jogo obrigatório para continuar</div>`:''}
+  `;
+}
+
+// ════════════════════════════════════════════════════════
+//  CHECKLIST
+// ════════════════════════════════════════════════════════
+function updateChecklist(){
+  const el=document.getElementById('checklist');
+  el.innerHTML='';
+  STAGES.forEach((s,i)=>{
+    const done=G.installed.includes(s.id);
+    const active=i===G.currentStep&&!done;
+    const div=document.createElement('div');
+    div.className='cl-item'+(done?' done':'')+(active?' active':'');
+    div.innerHTML=`<div class="cl-dot">${done?'✓':active?'►':''}</div><span>${s.name}</span>`;
+    el.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  DRAG & DROP (canvas)
+// ════════════════════════════════════════════════════════
+CV.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';});
+CV.addEventListener('drop',e=>{
+  e.preventDefault();
+  const droppedId=e.dataTransfer.getData('text/plain')||G.dragId;
+  const rect=CV.getBoundingClientRect();
+  const px=(e.clientX-rect.left)*(CW/rect.width);
+  const py=(e.clientY-rect.top)*(CH/rect.height);
+  handleDrop(droppedId,px,py);
+});
+
+function isOnSlot(px,py,s){
+  const x=CW*s.slot.x,y=CH*s.slot.y,w=CW*s.slot.w,h=CH*s.slot.h;
+  return px>=x&&px<=x+w&&py>=y&&py<=y+h;
+}
+
+function handleDrop(droppedId,px,py){
+  if(G.mgActive) return;
+  const expected=STAGES[G.currentStep];
+  if(!expected) return;
+  if(!isOnSlot(px,py,expected)){
+    if(droppedId===expected.id){
+      spawnParticle(px,py,'error','✗ Mire no slot!');
+      showToast('bad','✗ Mire no slot destacado!');
+    }
+    return;
+  }
+  if(droppedId!==expected.id){
+    G.combo=0; G.errors++;
+    updateHUD();
+    spawnParticle(px,py,'error','✗ ERRADO');
+    showToast('bad','✗ Componente errado! Verifique a instrução.');
+    flashCenter('red');
+    shakeCenter();
+    if(G.diff==='hard'){ loseLife('Componente errado!'); }
+    return;
+  }
+  // correct — check mini-game
+  if(expected.miniGame){
+    openMiniGame(expected.miniGame, ()=>completeStep(px,py));
+  } else {
+    completeStep(px,py);
+  }
+}
+
+function completeStep(px,py){
+  const s=STAGES[G.currentStep];
+  G.combo++;
+  if(G.combo>G.maxCombo) G.maxCombo=G.combo;
+  const earned=addScore(s.pts);
+  G.installed.push(s.id);
+  const next=STAGES.findIndex((st,i)=>!G.installed.includes(st.id));
+  G.currentStep=next===-1?STAGES.length:next;
+  resetTimer();
+  spawnParticle(CW/2,CH/2,'pts','+'+earned);
+  if(G.combo>=3) spawnParticle(CW/2,CH/2-40,'combo','COMBO '+G.combo+'x!');
+  showToast('ok','✓ '+s.name+' instalado! '+(G.combo>=2?'COMBO '+G.combo+'x!':''));
+  flashCenter('green');
+  showStageTransition(G.currentStep>=STAGES.length?'PC MONTADO!':'ETAPA CONCLUÍDA!');
+  updateHUD();
+  updateParts();
+  updateInstructions();
+  updateChecklist();
+  if(G.installed.length===STAGES.length){
+    clearInterval(G.timerInterval);
+    setTimeout(showComplete,1200);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  HINT
+// ════════════════════════════════════════════════════════
+function useHint(){
+  if(G.hints<=0){ showToast('bad','Sem dicas disponíveis!'); return; }
+  if(G.currentStep>=STAGES.length) return;
+  G.hints--;
+  const s=STAGES[G.currentStep];
+  showToast('info','💡 Arraste "'+s.name+'" → slot destacado em azul');
+  updateHUD();
+}
+
+// ════════════════════════════════════════════════════════
+//  EFFECTS
+// ════════════════════════════════════════════════════════
+function showToast(type,msg){
+  const t=document.getElementById('toast');
+  clearTimeout(G.toastTimer);
+  t.className=type+' show';t.textContent=msg;
+  G.toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function spawnParticle(x,y,type,text){
+  const el=document.createElement('div');
+  el.className='particle '+type;
+  el.textContent=text;
+  el.style.left=(x-20)+'px';el.style.top=(y-10)+'px';
+  document.getElementById('center').appendChild(el);
+  setTimeout(()=>el.remove(),1300);
+}
+
+function flashCenter(color){
+  const c2=document.getElementById('center');
+  c2.classList.remove('flash-green','flash-red');
+  void c2.offsetWidth;
+  c2.classList.add(color==='green'?'flash-green':'flash-red');
+}
+
+function shakeCenter(){
+  const c2=document.getElementById('center');
+  c2.classList.remove('shake');void c2.offsetWidth;
+  c2.classList.add('shake');
+}
+
+function showStageTransition(text){
+  const el=document.getElementById('stage-transition');
+  el.innerHTML=`<div class="st-text">${text}</div>`;
+  setTimeout(()=>el.innerHTML='',1600);
+}
+
+// ════════════════════════════════════════════════════════
+//  COMPLETE
+// ════════════════════════════════════════════════════════
+function showComplete(){
+  const elapsed=Math.round((Date.now()-G.startTime)/1000);
+  const bonus=Math.max(0,(300-elapsed)*2)+(G.errors===0?500:0);
+  G.score+=bonus;
+  const best=Math.max(G.score,parseInt(localStorage.getItem('pcbuilder_best')||'0'));
+  localStorage.setItem('pcbuilder_best',best);
+  const rank=G.errors===0&&G.score>3000?'S — MESTRE DO HARDWARE':
+    G.score>2500?'A — TÉCNICO SÊNIOR':
+    G.score>1500?'B — TÉCNICO JÚNIOR':
+    G.score>800?'C — APRENDIZ':'D — INICIANTE';
+  document.getElementById('win-score').textContent=G.score.toLocaleString();
+  document.getElementById('win-tempo').textContent=elapsed+'s';
+  document.getElementById('win-erros').textContent=G.errors;
+  document.getElementById('win-combo').textContent=G.maxCombo+'x';
+  document.getElementById('win-rank').textContent='RANK: '+rank;
+  document.getElementById('game').style.display='none';
+  document.getElementById('screen-complete').classList.remove('hidden');
+}
+
+// ════════════════════════════════════════════════════════
+//  MINI-GAMES
+// ════════════════════════════════════════════════════════
+function openMiniGame(type, cb){
+  G.mgActive=true;
+  G.mgCallback=cb;
+  clearInterval(G.timerInterval);
+  const ov=document.getElementById('minigame-overlay');
+  const content=document.getElementById('mg-content');
+  ov.classList.add('show');
+  if(type==='cpu_orientation') buildCpuGame(content);
+  else if(type==='ram_slots') buildRamGame(content);
+  else if(type==='cable_quiz') buildCableQuiz(content);
+}
+
+function closeMiniGame(){
+  G.mgActive=false;
+  document.getElementById('minigame-overlay').classList.remove('show');
+  startTimer();
+}
+
+function miniGameSuccess(){
+  G.mgActive=false;
+  document.getElementById('minigame-overlay').classList.remove('show');
+  addScore(80,true);
+  showToast('ok','🎮 Mini-jogo concluído! +80 pontos bônus');
+  if(G.mgCallback) G.mgCallback();
+  G.mgCallback=null;
+  startTimer();
+}
+
+function miniGameFail(reason){
+  G.errors++;
+  showToast('bad','✗ '+reason);
+  if(G.diff!=='easy'){ loseLife(reason); }
+}
+
+// ── CPU ORIENTATION ──
+function buildCpuGame(el){
+  document.getElementById('mg-title').textContent='ORIENTAÇÃO DA CPU';
+  document.getElementById('mg-desc').textContent='Gire a CPU até o triângulo ficar alinhado com o pino 1 do soquete (canto superior esquerdo), depois solte.';
+  G.cpuRotation=Math.floor(Math.random()*4)*90;
+  G.cpuDropped=false;
+  el.innerHTML=`
+    <div id="cpu-game">
+      <div style="display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text2);margin-bottom:6px;">SOQUETE AM5</div>
+          <div class="cpu-dz-inner" id="cpu-dz" ondragover="event.preventDefault()" ondrop="dropCpu(event)">
+            <div class="socket-pin-indicator" title="Pino 1"></div>
+            <div class="pin1-label">▲ PIN 1</div>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--text3)">solte aqui</span>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text2);margin-bottom:6px;">CPU</div>
+          <div class="cpu-chip" id="cpu-chip" draggable="true"
+               ondragstart="event.dataTransfer.setData('text','cpu')"
+               style="transform:rotate(${G.cpuRotation}deg);transition:transform .3s;">
+            <div class="cpu-chip-pin tl"></div>
+            <div class="cpu-chip-label"><span>RYZEN</span>AM5 · LGA</div>
+          </div>
+          <div class="orientation-hint" id="cpu-orient-hint" style="margin-top:8px;">
+            △ triângulo: <span id="cpu-tri-pos" style="color:var(--cyan)">calculando...</span>
+          </div>
+        </div>
+      </div>
+      <div class="rotate-controls">
+        <button class="rot-btn" onclick="rotateCpu(-90)">↺</button>
+        <button class="rot-btn" onclick="rotateCpu(90)">↻</button>
+      </div>
+      <div id="cpu-feedback" style="font-family:var(--mono);font-size:11px;color:var(--text2);min-height:20px;"></div>
+    </div>
+  `;
+  updateCpuHint();
+}
+
+function rotateCpu(deg){
+  G.cpuRotation=(G.cpuRotation+deg+360)%360;
+  const chip=document.getElementById('cpu-chip');
+  if(chip) chip.style.transform=`rotate(${G.cpuRotation}deg)`;
+  updateCpuHint();
+}
+
+function updateCpuHint(){
+  const r=G.cpuRotation;
+  const positions={0:'↖ superior esquerdo (CORRETO!)',90:'↙ inferior esquerdo',180:'↘ inferior direito',270:'↗ superior direito'};
+  const el=document.getElementById('cpu-tri-pos');
+  if(el) el.textContent=positions[r]||'...';
+  if(el) el.style.color=r===0?'var(--green)':'var(--cyan)';
+}
+
+function dropCpu(e){
+  e.preventDefault();
+  const dz=document.getElementById('cpu-dz');
+  if(G.cpuRotation===0){
+    dz.classList.add('correct');
+    document.getElementById('cpu-feedback').innerHTML='<span style="color:var(--green)">✓ Orientação correta! CPU assentada perfeitamente.</span>';
+    setTimeout(miniGameSuccess,1000);
+  } else {
+    dz.classList.add('wrong');
+    document.getElementById('cpu-feedback').innerHTML='<span style="color:var(--red)">✗ Orientação errada! O triângulo deve ficar no canto superior esquerdo. Gire e tente novamente.</span>';
+    G.errors++;
+    updateHUD();
+    showToast('bad','CPU com orientação errada! Gire e tente novamente.');
+    setTimeout(()=>{ dz.classList.remove('wrong'); },800);
+  }
+}
+
+// ── RAM SLOTS ──
+function buildRamGame(el){
+  document.getElementById('mg-title').textContent='DUAL CHANNEL RAM';
+  document.getElementById('mg-desc').textContent='Instale os 2 módulos de RAM nos slots corretos para ativar o Dual Channel. Clique nos slots corretos.';
+  G.ramSlotsFilled=[];
+  el.innerHTML=`
+    <div id="ram-game">
+      <div style="font-size:12px;color:var(--text2);font-family:var(--mono);margin-bottom:4px;">
+        Placa-mãe: slots A1, A2, B1, B2<br>
+        <span style="color:var(--cyan)">Dual Channel = slots A2 e B2 (2º e 4º)</span>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">← CPU</div>
+        <div class="ram-slots-row" id="ram-slots-row">
+          ${['A1','A2','B1','B2'].map((lbl,i)=>`
+            <div style="text-align:center;">
+              <div class="ram-slot" id="ramslot-${lbl}" onclick="clickRamSlot('${lbl}')" style="height:${80+i*5}px;">
+                <div class="ram-slot-label">${lbl}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="dual-channel-badge" id="dc-badge" style="opacity:.3">DUAL CHANNEL: inativo</div>
+      <div id="ram-status" style="font-family:var(--mono);font-size:11px;color:var(--text2);text-align:center;">
+        Clique nos 2 slots corretos para instalar os módulos
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+        <button class="mg-btn" onclick="confirmRam()">✓ Confirmar instalação</button>
+        <button class="mg-btn red" onclick="resetRam()">↺ Remover módulos</button>
+      </div>
+    </div>
+  `;
+}
+
+function clickRamSlot(lbl){
+  const idx=G.ramSlotsFilled.indexOf(lbl);
+  const el=document.getElementById('ramslot-'+lbl);
+  if(idx>-1){
+    G.ramSlotsFilled.splice(idx,1);
+    el.classList.remove('filled');
+    el.innerHTML=`<div class="ram-slot-label">${lbl}</div>`;
+  } else if(G.ramSlotsFilled.length<2){
+    G.ramSlotsFilled.push(lbl);
+    el.classList.add('filled');
+    el.innerHTML=`
+      <div class="ram-module" style="height:70%;width:90%;background:var(--bg4);border:1px solid var(--blue);border-radius:3px;display:flex;align-items:center;justify-content:center;">
+        <span style="font-family:var(--mono);font-size:7px;color:var(--blue);writing-mode:vertical-rl;">DDR5</span>
+      </div>
+      <div class="ram-slot-label">${lbl}</div>
+    `;
+  }
+  const isDC=G.ramSlotsFilled.includes('A2')&&G.ramSlotsFilled.includes('B2');
+  const badge=document.getElementById('dc-badge');
+  const status=document.getElementById('ram-status');
+  if(badge){badge.style.opacity=isDC?'1':'.3';badge.textContent='DUAL CHANNEL: '+(isDC?'ATIVO ✓':'inativo');}
+  if(status){status.style.color=isDC?'var(--green)':'var(--text2)';status.textContent=G.ramSlotsFilled.length===0?'Clique nos 2 slots corretos':G.ramSlotsFilled.length===1?'Instale o segundo módulo':isDC?'✓ Dual Channel ativado!':'⚠ Esses slots não ativam Dual Channel';}
+}
+
+function confirmRam(){
+  if(G.ramSlotsFilled.length<2){showToast('bad','Instale os 2 módulos primeiro!');return;}
+  const ok=G.ramSlotsFilled.includes('A2')&&G.ramSlotsFilled.includes('B2');
+  if(ok){ miniGameSuccess(); }
+  else {
+    G.errors++;
+    updateHUD();
+    showToast('bad','Slots errados! Use A2 e B2 para ativar o Dual Channel.');
+    const status=document.getElementById('ram-status');
+    if(status){ status.style.color='var(--red)'; status.textContent='⚠ Combinação incorreta! Remova e tente os slots A2 e B2.'; }
+    resetRam();
+  }
+}
+
+function resetRam(){
+  G.ramSlotsFilled=[];
+  ['A1','A2','B1','B2'].forEach(lbl=>{
+    const el=document.getElementById('ramslot-'+lbl);
+    if(el){el.classList.remove('filled');el.innerHTML=`<div class="ram-slot-label">${lbl}</div>`;}
+  });
+  const badge=document.getElementById('dc-badge');
+  if(badge){badge.style.opacity='.3';badge.textContent='DUAL CHANNEL: inativo';}
+}
+
+// ── CABLE QUIZ ──
+const CABLE_QUESTIONS=[
+  {q:'Qual conector de alimentação principal da placa-mãe tem 24 pinos?',opts:['Conector ATX 24-pin','EPS 8-pin','PCIe 6+2 pin','Molex 4-pin'],correct:0},
+  {q:'O SSD M.2 NVMe NÃO precisa de qual tipo de cabo?',opts:['Cabo de dados SATA','Nenhum cabo (usa PCIe)','Cabo de alimentação','Nenhum dos anteriores'],correct:1},
+  {q:'O conector EPS 8-pin próximo ao socket CPU serve para:',opts:['Alimentar a placa de vídeo','Alimentar exclusivamente o processador','Conectar HDD/SSD','Alimentar ventoinhas'],correct:1},
+  {q:'Qual cabo conecta o SSD M.2 ao slot da placa-mãe?',opts:['Cabo SATA de dados','Cabo Molex','Nenhum — encaixe direto no slot','Cabo USB 3.0 interno'],correct:2},
+];
+function buildCableQuiz(el){
+  const q=CABLE_QUESTIONS[Math.floor(Math.random()*CABLE_QUESTIONS.length)];
+  G.cableAnswer=null;
+  document.getElementById('mg-title').textContent='QUIZ: CONECTORES E CABOS';
+  document.getElementById('mg-desc').textContent='Responda corretamente para continuar a instalação.';
+  el.innerHTML=`
+    <div id="cable-game">
+      <div class="cable-q">${q.q}</div>
+      <div class="cable-options">
+        ${q.opts.map((o,i)=>`
+          <div class="cable-opt" id="copt-${i}" onclick="selectCableOpt(${i},${q.correct})">
+            <span class="opt-key">OPÇÃO ${String.fromCharCode(65+i)}</span>${o}
+          </div>
+        `).join('')}
+      </div>
+      <div id="cable-feedback" style="font-family:var(--mono);font-size:11px;min-height:20px;text-align:center;margin-top:8px;"></div>
+    </div>
+  `;
+}
+
+function selectCableOpt(idx,correct){
+  if(G.cableAnswer!==null) return;
+  G.cableAnswer=idx;
+  const fb=document.getElementById('cable-feedback');
+  if(idx===correct){
+    document.getElementById('copt-'+idx).classList.add('correct');
+    fb.style.color='var(--green)';fb.textContent='✓ Correto! Excelente conhecimento técnico.';
+    setTimeout(miniGameSuccess,1000);
+  } else {
+    document.getElementById('copt-'+idx).classList.add('wrong');
+    document.getElementById('copt-'+correct).classList.add('correct');
+    fb.style.color='var(--red)';fb.textContent='✗ Incorreto! A resposta correta está destacada em verde. Uma nova pergunta será carregada.';
+    G.errors++;
+    updateHUD();
+    showToast('bad','Resposta errada no quiz! Tente a próxima pergunta.');
+    setTimeout(()=>{ G.cableAnswer=null; buildCableQuiz(document.getElementById('mg-content')); },2000);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  TOUCH DRAG (mobile)
+// ════════════════════════════════════════════════════════
+let touchGhost=null, touchId=null;
+document.addEventListener('touchstart',e=>{
+  const card=e.target.closest('.part-card');
+  if(!card||card.classList.contains('installed')||card.classList.contains('locked')) return;
+  touchId=card.dataset.id;
+  touchGhost=card.cloneNode(true);
+  touchGhost.style.cssText=`position:fixed;z-index:9999;opacity:.7;pointer-events:none;width:${card.offsetWidth}px;transform:scale(1.05);transition:none;`;
+  document.body.appendChild(touchGhost);
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+  if(!touchGhost) return;
+  const t=e.touches[0];
+  touchGhost.style.left=(t.clientX-60)+'px';
+  touchGhost.style.top=(t.clientY-20)+'px';
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(!touchId||!touchGhost) return;
+  touchGhost.remove();touchGhost=null;
+  const t=e.changedTouches[0];
+  const rect=CV.getBoundingClientRect();
+  const px=(t.clientX-rect.left)*(CW/rect.width);
+  const py=(t.clientY-rect.top)*(CH/rect.height);
+  handleDrop(touchId,px,py);
+  touchId=null;
+});
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+goIntro();
+loop();
+</script>
+</body>
+</html>
