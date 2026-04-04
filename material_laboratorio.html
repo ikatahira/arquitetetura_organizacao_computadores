@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Material de Laboratório | Arquitetura e Organização de Computadores</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0b0f0e;--bg2:#111715;--bg3:#161d1b;
+  --green:#00ff88;--green2:#00c967;--cyan:#00e5ff;
+  --yellow:#ffe033;--orange:#ff7a1a;--red:#ff3b5c;--purple:#b36bff;
+  --text:#e8f0ec;--text2:#7a9488;--text3:#3a5248;
+  --border:#1e2e28;--border2:#243830;
+  --mono:'Space Mono',monospace;--display:'Unbounded',sans-serif;--body:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");opacity:.4;}
+
+/* HEADER */
+header{padding:48px 40px 32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--yellow),transparent);}
+.hdr-tag{font-family:var(--mono);font-size:10px;color:var(--yellow);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.hdr-tag::before{content:'';width:24px;height:1px;background:var(--yellow);}
+.hdr-title{font-family:var(--display);font-size:clamp(20px,3.5vw,42px);font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--text);max-width:780px;}
+.hdr-title span{color:var(--yellow);}
+.hdr-sub{margin-top:10px;font-size:14px;color:var(--text2);max-width:600px;line-height:1.6;font-weight:300;}
+.hdr-meta{position:absolute;top:48px;right:40px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.hdr-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;}
+.bdg{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:6px 14px;border-radius:4px;border:1px solid;}
+.bdg-g{color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.06);}
+.bdg-c{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.bdg-y{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.06);}
+.bdg-p{color:var(--purple);border-color:rgba(179,107,255,.3);background:rgba(179,107,255,.06);}
+.bdg-o{color:var(--orange);border-color:rgba(255,122,26,.3);background:rgba(255,122,26,.06);}
+
+/* LAYOUT */
+.container{max-width:1280px;margin:0 auto;padding:0 40px 80px;}
+
+/* BACK LINK */
+.back-link{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--text2);text-decoration:none;margin-top:32px;padding:8px 14px;border:1px solid var(--border);border-radius:6px;transition:all .2s;letter-spacing:.08em;}
+.back-link:hover{color:var(--yellow);border-color:rgba(255,224,51,.4);background:rgba(255,224,51,.06);}
+
+/* SECTION LABEL */
+.sec-label{font-family:var(--mono);font-size:9px;color:var(--lc,var(--yellow));letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:20px;margin-top:52px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+.sec-tag{font-family:var(--display);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;}
+.mod-title{font-family:var(--display);font-size:clamp(13px,2vw,18px);font-weight:700;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:32px;}
+.stat{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px 18px;}
+.stat-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;}
+.stat-val{font-family:var(--display);font-size:22px;font-weight:900;}
+.stat-sub{font-size:11px;color:var(--text2);margin-top:3px;}
+
+/* COMPONENT GRID */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.comp-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px 20px 16px;position:relative;overflow:hidden;transition:all .2s;display:flex;flex-direction:column;gap:10px;}
+.comp-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cc,var(--yellow));opacity:.35;transition:opacity .2s;}
+.comp-card:hover{border-color:var(--border2);background:var(--bg2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.comp-card:hover::before{opacity:1;}
+.cc-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.cc-icon{font-size:22px;line-height:1;}
+.cc-name{font-family:var(--display);font-size:13px;font-weight:700;color:var(--text);flex:1;}
+.cc-qty{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:4px;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text2);white-space:nowrap;}
+.cc-qty strong{color:var(--cc,var(--yellow));}
+.cc-desc{font-size:12px;color:var(--text2);line-height:1.6;}
+.cc-specs{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.cc-spec{font-family:var(--mono);font-size:9px;letter-spacing:.08em;padding:3px 8px;border-radius:3px;border:1px solid var(--border2);color:var(--text3);}
+.cc-link{font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:6px 12px;border-radius:5px;text-decoration:none;border:1px solid rgba(255,224,51,.25);background:rgba(255,224,51,.06);color:var(--yellow);transition:all .2s;align-self:flex-start;margin-top:auto;}
+.cc-link:hover{background:rgba(255,224,51,.15);border-color:var(--yellow);}
+
+/* PROJECT CARDS */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+.proj-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px 22px 20px;position:relative;overflow:hidden;transition:all .2s;display:flex;flex-direction:column;gap:14px;}
+.proj-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pc,var(--green)),transparent);opacity:.5;}
+.proj-card:hover{border-color:var(--border2);background:var(--bg2);box-shadow:0 12px 32px rgba(0,0,0,.5);}
+.proj-card:hover::after{opacity:1;}
+.proj-ghost{font-family:var(--display);font-size:64px;font-weight:900;color:var(--border2);position:absolute;top:4px;right:14px;line-height:1;pointer-events:none;user-select:none;}
+.proj-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;border-radius:4px;border:1px solid;width:fit-content;}
+.proj-title{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text);line-height:1.3;padding-right:50px;}
+.proj-desc{font-size:13px;color:var(--text2);line-height:1.65;}
+.proj-steps{margin-top:4px;}
+.proj-steps-title{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px;}
+.proj-step{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);}
+.proj-step:last-child{border-bottom:none;}
+.proj-step-n{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--pc,var(--green));min-width:20px;margin-top:2px;}
+.proj-step-t{font-size:12px;color:var(--text2);line-height:1.5;}
+.proj-components{display:flex;flex-wrap:wrap;gap:6px;}
+.proj-comp-tag{font-family:var(--mono);font-size:9px;letter-spacing:.06em;padding:3px 8px;border-radius:3px;border:1px solid var(--border2);color:var(--text3);}
+.proj-diff{display:flex;gap:6px;align-items:center;margin-top:auto;}
+.proj-diff-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.1em;}
+.proj-diff-dot{width:8px;height:8px;border-radius:50%;}
+
+/* FILTER BAR */
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px;margin-bottom:4px;}
+.filter-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .2s;user-select:none;}
+.filter-btn:hover,.filter-btn.active{color:var(--yellow);border-color:rgba(255,224,51,.4);background:rgba(255,224,51,.08);}
+
+/* TABLE */
+.inv-table{width:100%;border-collapse:collapse;font-size:12px;}
+.inv-table th{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);padding:10px 12px;text-align:left;border-bottom:1px solid var(--border2);}
+.inv-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle;}
+.inv-table tr:hover td{background:var(--bg3);color:var(--text);}
+.inv-table .qty{font-family:var(--mono);font-weight:700;color:var(--yellow);}
+.inv-table .cat-badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid var(--border2);}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.ft-l{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.ft-sig{color:var(--yellow);font-weight:700;}
+
+@media(max-width:768px){
+  header{padding:28px 20px 20px;}.hdr-meta{display:none;}
+  .container{padding:0 20px 60px;}
+  .comp-grid,.proj-grid{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-tag">ARQ-001 · Material de Laboratório</div>
+  <h1 class="hdr-title">Laboratório de<br><span>Hardware e Sistemas</span></h1>
+  <p class="hdr-sub">Inventário completo, descrição dos componentes e projetos práticos para a disciplina de Arquitetura e Organização de Computadores.</p>
+  <div class="hdr-badges">
+    <span class="bdg bdg-y">🔧 ARDUINO + ESP32</span>
+    <span class="bdg bdg-g">📦 10+ KITS MONTADOS</span>
+    <span class="bdg bdg-c">📡 IoT READY</span>
+    <span class="bdg bdg-p">🤖 SENSORES + ATUADORES</span>
+    <span class="bdg bdg-o">💰 R$ 1.848 INVESTIDOS</span>
+  </div>
+  <div class="hdr-meta">1º SEMESTRE / 2026<br>FATEC · ADS<br><span style="color:var(--yellow)">LAB: ATIVO</span></div>
+</header>
+
+<div class="container">
+  <a href="index.html" class="back-link">← Voltar ao Índice</a>
+
+  <!-- STATS -->
+  <div class="stat-row">
+    <div class="stat"><div class="stat-lbl">Microcontroladores</div><div class="stat-val" style="color:var(--cyan)">26</div><div class="stat-sub">Arduino + ESP32 + ESP8266</div></div>
+    <div class="stat"><div class="stat-lbl">Tipos de Sensores</div><div class="stat-val" style="color:var(--green)">12</div><div class="stat-sub">temperatura, som, gás...</div></div>
+    <div class="stat"><div class="stat-lbl">Atuadores</div><div class="stat-val" style="color:var(--yellow)">24</div><div class="stat-sub">servos, motores, garras</div></div>
+    <div class="stat"><div class="stat-lbl">Kits para Alunos</div><div class="stat-val" style="color:var(--purple)">10+</div><div class="stat-sub">bancadas simultâneas</div></div>
+    <div class="stat"><div class="stat-lbl">Projetos Práticos</div><div class="stat-val" style="color:var(--orange)">12</div><div class="stat-sub">do básico ao avançado</div></div>
+  </div>
+
+  <!-- ===================== COMPONENTES ===================== -->
+  <div class="sec-label" style="--lc:#00e5ff">
+    <span class="sec-tag" style="background:#00e5ff;color:#0b0f0e;">01</span>
+    Microcontroladores e Placas
+  </div>
+  <div class="mod-title"><span>🤖</span> Microcontroladores e Placas</div>
+  <div class="comp-grid">
+
+    <div class="comp-card" style="--cc:#00e5ff;">
+      <div class="cc-top">
+        <span class="cc-icon">⚡</span>
+        <span class="cc-name">Arduino Uno (ATmega328 + CH340)</span>
+        <span class="cc-qty">Qtd: <strong>11</strong></span>
+      </div>
+      <div class="cc-desc">Placa microcontroladora 8 bits baseada no ATmega328P. Pino digital/analógico, PWM, comunicação serial UART/SPI/I²C. O CH340 é o conversor USB-Serial para programação via PC sem driver adicional na maioria dos sistemas. É o hardware central dos módulos de sistemas embarcados básicos.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">8-bit AVR</span>
+        <span class="cc-spec">16 MHz</span>
+        <span class="cc-spec">32KB Flash</span>
+        <span class="cc-spec">14 GPIO</span>
+        <span class="cc-spec">6 PWM</span>
+        <span class="cc-spec">5V logic</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">📡</span>
+        <span class="cc-name">ESP32 (WiFi + Bluetooth)</span>
+        <span class="cc-qty">Qtd: <strong>9</strong></span>
+      </div>
+      <div class="cc-desc">Microcontrolador 32 bits dual-core com WiFi 802.11 b/g/n e Bluetooth 4.2/BLE integrados. Muito mais poderoso que o Arduino — processa mais rápido, tem mais memória e conecta diretamente à internet. Ideal para projetos de IoT, automação residencial e comunicação sem fio.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">240 MHz dual-core</span>
+        <span class="cc-spec">520KB SRAM</span>
+        <span class="cc-spec">4MB Flash</span>
+        <span class="cc-spec">WiFi + BLE</span>
+        <span class="cc-spec">3.3V logic</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#b36bff;">
+      <div class="cc-top">
+        <span class="cc-icon">🌐</span>
+        <span class="cc-name">Módulo WiFi ESP8266</span>
+        <span class="cc-qty">Qtd: <strong>6</strong></span>
+      </div>
+      <div class="cc-desc">Módulo compacto com microcontrolador e WiFi integrado. Pode funcionar como módulo auxiliar de um Arduino (adicionando conectividade WiFi via Serial) ou de forma independente. Bastante usado para projetos IoT simples de baixo custo. Lógica 3.3V — atenção ao nível de tensão.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">80/160 MHz</span>
+        <span class="cc-spec">64KB RAM</span>
+        <span class="cc-spec">WiFi 802.11</span>
+        <span class="cc-spec">3.3V logic</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMUNICAÇÃO -->
+  <div class="sec-label" style="--lc:#ffe033">
+    <span class="sec-tag" style="background:#ffe033;color:#0b0f0e;">02</span>
+    Comunicação e Interfaces
+  </div>
+  <div class="mod-title"><span>📡</span> Comunicação e Interfaces de Entrada</div>
+  <div class="comp-grid">
+
+    <div class="comp-card" style="--cc:#ffe033;">
+      <div class="cc-top">
+        <span class="cc-icon">🔑</span>
+        <span class="cc-name">Kit RFID MFRC522</span>
+        <span class="cc-qty">Qtd: <strong>6</strong></span>
+      </div>
+      <div class="cc-desc">Leitor/gravador de cartões RFID 13,56 MHz via protocolo SPI. Cada kit inclui o módulo, um cartão e um chaveiro. Utilizado em controle de acesso, registro de presença e sistemas de identificação. Comunica com Arduino via pinos SDA, SCK, MOSI, MISO, RST.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">13.56 MHz</span>
+        <span class="cc-spec">SPI</span>
+        <span class="cc-spec">3.3V</span>
+        <span class="cc-spec">Alcance ~5cm</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ffe033;">
+      <div class="cc-top">
+        <span class="cc-icon">🔄</span>
+        <span class="cc-name">Conversor de Nível Lógico</span>
+        <span class="cc-qty">Qtd: <strong>6</strong></span>
+      </div>
+      <div class="cc-desc">Módulo bidirecional que converte sinais entre 3.3V e 5V. Essencial para conectar módulos ESP32/ESP8266 (3.3V) ao Arduino (5V) sem danificar os componentes. Possui 4 canais bidirecionais independentes. Sempre utilize ao conectar dispositivos de tensões diferentes.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">3.3V ↔ 5V</span>
+        <span class="cc-spec">4 canais</span>
+        <span class="cc-spec">Bidirecional</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ffe033;">
+      <div class="cc-top">
+        <span class="cc-icon">🕹️</span>
+        <span class="cc-name">Módulo Joystick</span>
+        <span class="cc-qty">Qtd: <strong>6</strong></span>
+      </div>
+      <div class="cc-desc">Joystick analógico de 2 eixos (X e Y) com botão de pressão embutido. Fornece valores analógicos via ADC para posição e sinal digital para o botão. Muito utilizado em controle de robôs, menus em displays e games embarcados. Precisa de entrada analógica do Arduino.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">2 eixos analógicos</span>
+        <span class="cc-spec">1 botão digital</span>
+        <span class="cc-spec">ADC 10-bit</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ffe033;">
+      <div class="cc-top">
+        <span class="cc-icon">⌨️</span>
+        <span class="cc-name">Teclado Matricial 4×4</span>
+        <span class="cc-qty">Qtd: <strong>4</strong></span>
+      </div>
+      <div class="cc-desc">Teclado com 16 teclas (0–9, A–D, *, #) organizado em matriz 4×4. Usa apenas 8 pinos do Arduino via varredura de linhas e colunas. Ideal para entrada de senhas, PIN, comandos e menus. Entender seu funcionamento é um ótimo exercício de multiplexação de pinos.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">4×4 matriz</span>
+        <span class="cc-spec">16 teclas</span>
+        <span class="cc-spec">8 pinos I/O</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ffe033;">
+      <div class="cc-top">
+        <span class="cc-icon">📺</span>
+        <span class="cc-name">Kit Emissor/Receptor IR</span>
+        <span class="cc-qty">Qtd: <strong>2 kits</strong> + 1 controle</span>
+      </div>
+      <div class="cc-desc">Módulo receptor infravermelho (38kHz) que detecta sinais de controles remotos. O controle remoto incluso permite enviar comandos. Com a biblioteca IRremote é possível decodificar qualquer sinal IR. Usado para automação via controle, aprendizado de protocolos de comunicação serial.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">38 kHz</span>
+        <span class="cc-spec">NEC protocol</span>
+        <span class="cc-spec">1 pino digital</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SENSORES -->
+  <div class="sec-label" style="--lc:#00ff88">
+    <span class="sec-tag" style="background:#00ff88;color:#0b0f0e;">03</span>
+    Sensores
+  </div>
+  <div class="mod-title"><span>📏</span> Sensores</div>
+  <div class="comp-grid">
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">📡</span>
+        <span class="cc-name">Sensor Ultrassônico HC-SR04</span>
+        <span class="cc-qty">Qtd: <strong>8</strong></span>
+      </div>
+      <div class="cc-desc">Mede distância por tempo de voo de pulso ultrassônico (40kHz). Envia um pulso pelo pino TRIG e mede o tempo de retorno pelo pino ECHO. A fórmula é simples: distância = (tempo × velocidade do som) / 2. Alcance de 2cm a 4m com precisão de ~3mm. Excelente para robótica e detecção de obstáculos.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">2cm – 4m</span>
+        <span class="cc-spec">±3mm</span>
+        <span class="cc-spec">2 pinos (TRIG/ECHO)</span>
+        <span class="cc-spec">5V</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">🌡️</span>
+        <span class="cc-name">Sensor DHT11</span>
+        <span class="cc-qty">Qtd: <strong>5</strong></span>
+      </div>
+      <div class="cc-desc">Sensor digital de temperatura (0–50°C, ±2°C) e umidade relativa do ar (20–90% RH, ±5%). Comunicação serial de 1 fio com protocolo proprietário. Leitura a cada 1 segundo. Muito popular em estações meteorológicas, controle de ar condicionado e IoT. Biblioteca DHT da Adafruit facilita o uso.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">Temp: 0–50°C</span>
+        <span class="cc-spec">Umidade: 20–90%</span>
+        <span class="cc-spec">1-wire digital</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">🌡️</span>
+        <span class="cc-name">Sensor DS18B20</span>
+        <span class="cc-qty">Qtd: <strong>10</strong></span>
+      </div>
+      <div class="cc-desc">Sensor de temperatura digital à prova d'água com protocolo 1-Wire. Precisão de ±0.5°C na faixa de -55°C a +125°C. Permite conectar múltiplos sensores no mesmo pino usando endereçamento único de 64 bits. Ideal para medição em líquidos, solo e ambientes externos.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">-55°C a +125°C</span>
+        <span class="cc-spec">±0.5°C</span>
+        <span class="cc-spec">1-Wire</span>
+        <span class="cc-spec">Impermeável</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">👁️</span>
+        <span class="cc-name">Sensor de Presença PIR</span>
+        <span class="cc-qty">Qtd: <strong>8</strong></span>
+      </div>
+      <div class="cc-desc">Detector de movimento passivo infravermelho que detecta alterações de calor em seu campo de visão (120°, até ~7m). Saída digital (HIGH quando detecta movimento). Possui trimpots para ajustar sensibilidade e tempo de retenção do sinal. Muito usado em alarmes e automação de iluminação.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">Alcance ~7m</span>
+        <span class="cc-spec">Ângulo 120°</span>
+        <span class="cc-spec">Saída digital</span>
+        <span class="cc-spec">Ajuste delay</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">💧</span>
+        <span class="cc-name">Sensor de Umidade do Solo</span>
+        <span class="cc-qty">Qtd: <strong>5</strong></span>
+      </div>
+      <div class="cc-desc">Módulo com dois eletrodos que medem a resistência elétrica do solo — quanto mais úmido, menor a resistência. Possui saída analógica (tensão proporcional à umidade) e saída digital comparada (com potenciômetro de ajuste). Ideal para irrigação automática e projetos de agricultura de precisão.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">Saída analógica</span>
+        <span class="cc-spec">Saída digital</span>
+        <span class="cc-spec">3.3V – 5V</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">🔊</span>
+        <span class="cc-name">Sensor de Som</span>
+        <span class="cc-qty">Qtd: <strong>6</strong></span>
+      </div>
+      <div class="cc-desc">Microfone condensador com amplificador que detecta sons. Saída analógica proporcional à amplitude sonora e saída digital (limiar ajustável por potenciômetro). Pode detectar aplausos, batidas e níveis de ruído. Útil em projetos de controle por som, medidores de volume e automação.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">Microfone condensador</span>
+        <span class="cc-spec">Saída analógica + digital</span>
+        <span class="cc-spec">Limiar ajustável</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">☁️</span>
+        <span class="cc-name">Sensor de Gás MQ-4</span>
+        <span class="cc-qty">Qtd: <strong>2</strong></span>
+      </div>
+      <div class="cc-desc">Sensor eletroquímico para detecção de metano (gás natural) e outros gases combustíveis. Resiste de sensores MQ que usam um elemento aquecido para reagir com o gás alvo, variando sua resistência. Precisa de aquecimento inicial (~1 min). Saída analógica. Aplicado em detectores de vazamento de gás.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">Metano / GNV</span>
+        <span class="cc-spec">Saída analógica</span>
+        <span class="cc-spec">Pré-aquecimento 60s</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#00ff88;">
+      <div class="cc-top">
+        <span class="cc-icon">☀️</span>
+        <span class="cc-name">Sensor LDR</span>
+        <span class="cc-qty">Qtd: <strong>2</strong></span>
+      </div>
+      <div class="cc-desc">Resistor dependente de luz (Light Dependent Resistor). Resistência cai com o aumento da luminosidade (1MΩ no escuro, alguns Ω na luz intensa). Usado em divisor de tensão com resistor fixo para criar um sensor analógico de luminosidade. Exemplo clássico de conversor A/D em ação.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">Resistivo analógico</span>
+        <span class="cc-spec">1Ω – 1MΩ</span>
+        <span class="cc-spec">Divisor de tensão</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ATUADORES -->
+  <div class="sec-label" style="--lc:#ff7a1a">
+    <span class="sec-tag" style="background:#ff7a1a;color:#0b0f0e;">04</span>
+    Atuadores e Motores
+  </div>
+  <div class="mod-title"><span>⚙️</span> Atuadores e Motores</div>
+  <div class="comp-grid">
+
+    <div class="comp-card" style="--cc:#ff7a1a;">
+      <div class="cc-top">
+        <span class="cc-icon">🔩</span>
+        <span class="cc-name">Micro Servo SG90</span>
+        <span class="cc-qty">Qtd: <strong>9</strong></span>
+      </div>
+      <div class="cc-desc">Servo motor de precisão controlado por PWM (pulso de 1–2ms em sinal de 50Hz). Gira entre 0° e 180°. Leve (9g), torque de ~1.8 kg·cm. Inclui haste plástica e parafusos. Ótimo para robótica, portas automatizadas e demonstração de controle por largura de pulso (PWM). Use a biblioteca Servo.h.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">0° – 180°</span>
+        <span class="cc-spec">PWM 50Hz</span>
+        <span class="cc-spec">1.8 kg·cm</span>
+        <span class="cc-spec">4.8–6V</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff7a1a;">
+      <div class="cc-top">
+        <span class="cc-icon">🦾</span>
+        <span class="cc-name">Garra Robótica</span>
+        <span class="cc-qty">Qtd: <strong>5</strong></span>
+      </div>
+      <div class="cc-desc">Garra mecânica com servo integrado para abrir e fechar. Estrutura plástica montada com um servo SG90 que controla o movimento. Projeto mecatrônico completo — o aluno experimenta a integração entre hardware, software e mecanismo físico. Abertura controlada via ângulo do servo (0°=fechada, 90°=aberta).</div>
+      <div class="cc-specs">
+        <span class="cc-spec">1× servo SG90</span>
+        <span class="cc-spec">PWM controlado</span>
+        <span class="cc-spec">Estrutura ABS</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff7a1a;">
+      <div class="cc-top">
+        <span class="cc-icon">🔄</span>
+        <span class="cc-name">Motor DC com Redução</span>
+        <span class="cc-qty">Qtd: <strong>4</strong></span>
+      </div>
+      <div class="cc-desc">Motor DC com caixa de redução embutida para maior torque e menor velocidade. Controle de velocidade via PWM e direção via ponte H (L298N ou L293D — use transistores TIP122 do kit). Demonstra na prática o controle de carga indutiva, necessidade de diodo flyback e controle PWM.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">3–6V DC</span>
+        <span class="cc-spec">Alta redução</span>
+        <span class="cc-spec">PWM velocidade</span>
+        <span class="cc-spec">Ponte H</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff7a1a;">
+      <div class="cc-top">
+        <span class="cc-icon">🔢</span>
+        <span class="cc-name">Motor de Passo + Driver</span>
+        <span class="cc-qty">Qtd: <strong>3</strong></span>
+      </div>
+      <div class="cc-desc">Motor de passo bipolar com driver dedicado (A4988 ou similar). Move em passos discretos e precisos — ideal para demonstrar controle de posição sem encoder. Cada passo corresponde a ~1.8°, totalizando 200 passos por volta. Muito utilizado em impressoras 3D e CNC. Requer controle de sequência específica.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">1.8°/passo</span>
+        <span class="cc-spec">200 passos/volta</span>
+        <span class="cc-spec">Driver incluso</span>
+        <span class="cc-spec">12V operação</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff7a1a;">
+      <div class="cc-top">
+        <span class="cc-icon">🔒</span>
+        <span class="cc-name">Trava Solenoide 12V</span>
+        <span class="cc-qty">Qtd: <strong>2</strong></span>
+      </div>
+      <div class="cc-desc">Trava eletromagnética de 12V DC que abre quando energizada. Simula fechaduras eletrônicas e sistemas de controle de acesso. Por ser carga indutiva 12V, necessita transistor TIP122 + diodo flyback 1N4007 para acionamento seguro pelo Arduino (que opera em 5V). Importante lição sobre acionamento de cargas.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">12V DC</span>
+        <span class="cc-spec">Normalmente fechada</span>
+        <span class="cc-spec">TIP122 + 1N4007</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DISPLAYS -->
+  <div class="sec-label" style="--lc:#b36bff">
+    <span class="sec-tag" style="background:#b36bff;color:#0b0f0e;">05</span>
+    Displays e Indicadores
+  </div>
+  <div class="mod-title"><span>📟</span> Displays e Indicadores Visuais</div>
+  <div class="comp-grid">
+
+    <div class="comp-card" style="--cc:#b36bff;">
+      <div class="cc-top">
+        <span class="cc-icon">🔢</span>
+        <span class="cc-name">Display 7 Segmentos (1 dígito)</span>
+        <span class="cc-qty">Qtd: <strong>20</strong></span>
+      </div>
+      <div class="cc-desc">Display LED de 7 segmentos (+ ponto decimal) de catodo ou anodo comum. Cada segmento é um LED controlado individualmente. O CI 4511 (decodificador BCD) do kit permite acionar com apenas 4 pinos (código BCD). Excelente para entender decodificação, multiplexação e endereçamento de hardware.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">7 segmentos + DP</span>
+        <span class="cc-spec">Catodo comum</span>
+        <span class="cc-spec">BCD com 4511</span>
+        <span class="cc-spec">5V</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#b36bff;">
+      <div class="cc-top">
+        <span class="cc-icon">🕐</span>
+        <span class="cc-name">Display 4 Dígitos (TM1637)</span>
+        <span class="cc-qty">Qtd: <strong>7</strong></span>
+      </div>
+      <div class="cc-desc">Display de 4 dígitos 7-segmentos com controlador TM1637 integrado. Comunica via apenas 2 fios (CLK + DIO), facilitando muito o uso. Perfeito para relógios, contadores e medidores. Contraste entre este e o 7-segmentos manual ilustra a evolução de interfaces: do direto ao controlado por protocolo.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">4 dígitos</span>
+        <span class="cc-spec">2 fios (CLK+DIO)</span>
+        <span class="cc-spec">Brilho ajustável</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#b36bff;">
+      <div class="cc-top">
+        <span class="cc-icon">💬</span>
+        <span class="cc-name">LCD 16×2</span>
+        <span class="cc-qty">Qtd: <strong>1</strong></span>
+      </div>
+      <div class="cc-desc">Display de cristal líquido com 2 linhas de 16 caracteres alfanuméricos. Controlador HD44780 padrão — biblioteca LiquidCrystal.h. Pode operar em modo 4-bit (6 pinos) ou 8-bit. Backlight ajustável. Ótimo para mostrar dados de sensores, menus e mensagens. Base histórica de interfaces texto embarcadas.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">16×2 chars</span>
+        <span class="cc-spec">HD44780</span>
+        <span class="cc-spec">4-bit ou 8-bit</span>
+        <span class="cc-spec">Backlight LED</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#b36bff;">
+      <div class="cc-top">
+        <span class="cc-icon">🎨</span>
+        <span class="cc-name">LED RGB (Módulo)</span>
+        <span class="cc-qty">Qtd: <strong>2 pacotes</strong></span>
+      </div>
+      <div class="cc-desc">LED com três cores (R, G, B) independentes controladas por PWM para mistura de cores (16M combinações teóricas). Catodo ou anodo comum. Demonstra mixagem de cores por intensidade luminosa e controle PWM de múltiplos canais. Muito visual e intuitivo para ensinar ADC + PWM na prática.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">3 canais PWM</span>
+        <span class="cc-spec">Catodo comum</span>
+        <span class="cc-spec">Resistores necessários</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ELETRÔNICA -->
+  <div class="sec-label" style="--lc:#ff3b5c">
+    <span class="sec-tag" style="background:#ff3b5c;color:#0b0f0e;">06</span>
+    Eletrônica Básica
+  </div>
+  <div class="mod-title"><span>🔌</span> Componentes Eletrônicos Essenciais</div>
+  <div class="comp-grid">
+
+    <div class="comp-card" style="--cc:#ff3b5c;">
+      <div class="cc-top">
+        <span class="cc-icon">🔋</span>
+        <span class="cc-name">Resistores (Kit completo)</span>
+        <span class="cc-qty">Múltiplos valores</span>
+      </div>
+      <div class="cc-desc">Kit com resistores nos valores: 100Ω (7×), 300Ω (8×), 1kΩ (7×), 2k2Ω (9×), 10kΩ (9×) + 2 kits de 100 peças diversas. Os resistores de 300Ω são para LEDs (5V / 20mA), 10kΩ são pull-ups/pull-downs e divisores de tensão, 1k e 2k2Ω para base de transistores. Sempre calcule pela Lei de Ohm: R = V/I.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">100Ω</span>
+        <span class="cc-spec">300Ω</span>
+        <span class="cc-spec">1kΩ</span>
+        <span class="cc-spec">2k2Ω</span>
+        <span class="cc-spec">10kΩ</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff3b5c;">
+      <div class="cc-top">
+        <span class="cc-icon">📈</span>
+        <span class="cc-name">Transistores (BC337, PN2222A, TIP122)</span>
+        <span class="cc-qty">4+4 pct + 5 und</span>
+      </div>
+      <div class="cc-desc">Três tipos: BC337 e PN2222A são transistores NPN de baixa potência para chaveamento de cargas leves e amplificação. TIP122 é Darlington NPN para cargas maiores (3A, 100V) — ideal para acionar motores, solenoides e relés diretamente pelo Arduino. Todos funcionam como chave digital controlada por corrente de base.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">BC337: 800mA</span>
+        <span class="cc-spec">PN2222A: 600mA</span>
+        <span class="cc-spec">TIP122: 3A Darlington</span>
+        <span class="cc-spec">NPN tipo</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff3b5c;">
+      <div class="cc-top">
+        <span class="cc-icon">➡️</span>
+        <span class="cc-name">Diodo 1N4007</span>
+        <span class="cc-qty">1 pacote</span>
+      </div>
+      <div class="cc-desc">Diodo retificador de propósito geral (1A, 1000V). Usado principalmente como diodo de roda livre (flyback) em paralelo com motores, solenoides e relés para absorver picos de tensão reversa quando a carga indutiva é desligada. Sem o diodo flyback, esses picos podem destruir transistores e pinos do Arduino.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">1A / 1000V</span>
+        <span class="cc-spec">Flyback / proteção</span>
+        <span class="cc-spec">Silício</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff3b5c;">
+      <div class="cc-top">
+        <span class="cc-icon">🔢</span>
+        <span class="cc-name">CI 4511 (Decodificador BCD)</span>
+        <span class="cc-qty">Qtd: <strong>3</strong></span>
+      </div>
+      <div class="cc-desc">Circuito integrado que decodifica entrada BCD (4 bits) para acionamento direto de display 7-segmentos (catodo comum). Converte código binário de 4 bits no padrão de 7 segmentos correspondente ao dígito decimal. Excelente para ensinar a camada de decodificação de hardware e organização de barramentos de dados.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">BCD → 7 segmentos</span>
+        <span class="cc-spec">4 entradas → 7 saídas</span>
+        <span class="cc-spec">5V CMOS/TTL</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff3b5c;">
+      <div class="cc-top">
+        <span class="cc-icon">🔔</span>
+        <span class="cc-name">Buzzer Passivo</span>
+        <span class="cc-qty">2 pacotes</span>
+      </div>
+      <div class="cc-desc">Buzzer passivo (piezoelétrico) que produz som quando alimentado por sinal PWM. Diferente do ativo (que tem frequência fixa), o passivo permite gerar qualquer tom variando a frequência do PWM. Use a função tone() do Arduino. Permite tocar melodias, alarmes e feedback sonoro variado.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">Passivo piezoeléctrico</span>
+        <span class="cc-spec">tone() / PWM</span>
+        <span class="cc-spec">Frequência variável</span>
+      </div>
+    </div>
+
+    <div class="comp-card" style="--cc:#ff3b5c;">
+      <div class="cc-top">
+        <span class="cc-icon">🔵</span>
+        <span class="cc-name">LEDs 5mm / 3mm (Kits)</span>
+        <span class="cc-qty">2 kits 100un + 4 kits 500un</span>
+      </div>
+      <div class="cc-desc">LEDs em diversas cores (vermelho, verde, azul, amarelo). Tensão direta típica: 2V (vermelho/amarelo/verde) a 3.2V (azul). Corrente: 20mA. Sempre use resistor em série calculado: R = (Vfonte – Vled) / Iled. Exemplo: 5V, LED verde (2V, 20mA) → R = 3V / 0.02A = 150Ω → use 300Ω para segurança.</div>
+      <div class="cc-specs">
+        <span class="cc-spec">Vf: 2.0 – 3.2V</span>
+        <span class="cc-spec">If: 20mA</span>
+        <span class="cc-spec">Resistor obrigatório</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== PROJETOS ===================== -->
+  <div class="sec-label" style="--lc:#ffe033">
+    <span class="sec-tag" style="background:#ffe033;color:#0b0f0e;">07</span>
+    Projetos Práticos
+  </div>
+  <div class="mod-title"><span>🎯</span> Projetos Práticos para os Alunos</div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:24px;max-width:720px;line-height:1.7;">Os projetos abaixo usam exclusivamente componentes disponíveis no laboratório. Cada projeto é acompanhado dos componentes necessários, etapas de montagem e objetivos de aprendizagem alinhados à ementa da disciplina.</p>
+
+  <div class="proj-grid">
+
+    <!-- PROJETO 1 -->
+    <div class="proj-card" style="--pc:#00e5ff;">
+      <div class="proj-ghost">01</div>
+      <div class="proj-badge" style="color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.08);">🟢 Iniciante · S13–S14</div>
+      <div class="proj-title">Semáforo de LED com Temporização</div>
+      <div class="proj-desc">O clássico semáforo eletrônico como primeiro projeto real. O aluno aprende a estrutura básica de um programa embarcado: setup(), loop(), controle de tempo com delay() e millis(), e acionamento de saídas digitais. Cada LED representa um estado do sistema — conceito fundamental de máquina de estados.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">Arduino Uno</span>
+        <span class="proj-comp-tag">3× LED (R/G/Y)</span>
+        <span class="proj-comp-tag">3× Resistor 300Ω</span>
+        <span class="proj-comp-tag">Protoboard</span>
+        <span class="proj-comp-tag">Jumpers</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Monte os LEDs com resistores na protoboard e conecte ao Arduino (pinos 11, 12, 13)</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Programe o ciclo básico: verde 3s → amarelo 1s → vermelho 3s usando delay()</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Refatore usando millis() para temporização não-bloqueante</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Desafio: adicione um botão para pedestres que interrompe o ciclo e abre o sinal verde</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 2 -->
+    <div class="proj-card" style="--pc:#00ff88;">
+      <div class="proj-ghost">02</div>
+      <div class="proj-badge" style="color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.08);">🟢 Iniciante · S13–S15</div>
+      <div class="proj-title">Contador com Display 7 Segmentos e CI 4511</div>
+      <div class="proj-desc">Contador de 0 a 9 usando display 7 segmentos controlado pelo CI decodificador 4511. O projeto é uma aula visual sobre barramentos de dados: 4 pinos do Arduino enviam código BCD que o 4511 decodifica automaticamente para os 7 segmentos. Ensina endereçamento, barramento e decodificação de hardware.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">Arduino Uno</span>
+        <span class="proj-comp-tag">1× Display 7 seg</span>
+        <span class="proj-comp-tag">1× CI 4511</span>
+        <span class="proj-comp-tag">1× Botão push</span>
+        <span class="proj-comp-tag">Resistores 300Ω</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Conecte o 4511: pinos A,B,C,D (entradas BCD) ao Arduino; pinos a–g ao display com resistores</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Programe para contar de 0 a 9 enviando valores BCD de 4 bits para os pinos de entrada</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Adicione botão para incrementar e outro para decrementar manualmente o contador</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Desafio: use 2 displays em cascata para contar até 99 com multiplexação temporal</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 3 -->
+    <div class="proj-card" style="--pc:#ffe033;">
+      <div class="proj-ghost">03</div>
+      <div class="proj-badge" style="color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.08);">🟡 Intermediário · S15</div>
+      <div class="proj-title">Estação Meteorológica com DHT11 e LCD</div>
+      <div class="proj-desc">Lê temperatura e umidade do DHT11 e exibe no LCD 16×2 em tempo real. O aluno aprende comunicação serial de um fio (1-Wire), uso de bibliotecas externas e como apresentar dados de sensores em interface de texto. Complemento natural do estudo de periféricos e barramentos de comunicação.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">Arduino Uno</span>
+        <span class="proj-comp-tag">Sensor DHT11</span>
+        <span class="proj-comp-tag">LCD 16×2</span>
+        <span class="proj-comp-tag">Resistor 10kΩ</span>
+        <span class="proj-comp-tag">Potenciômetro</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Instale a biblioteca DHT (Adafruit) e LiquidCrystal na IDE Arduino</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Conecte o LCD em modo 4-bit (pinos RS, EN, D4–D7) e ajuste contraste com potenciômetro</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Leia DHT11 a cada 2s e exiba "Temp: XX°C / Umid: XX%" no LCD</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Desafio: adicione alarme sonoro (buzzer) quando temperatura ultrapassar 30°C</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 4 -->
+    <div class="proj-card" style="--pc:#ff7a1a;">
+      <div class="proj-ghost">04</div>
+      <div class="proj-badge" style="color:var(--orange);border-color:rgba(255,122,26,.3);background:rgba(255,122,26,.08);">🟡 Intermediário · S15</div>
+      <div class="proj-title">Sensor de Distância com Alerta Visual e Sonoro</div>
+      <div class="proj-desc">Usa o HC-SR04 para medir distância e aciona LEDs e buzzer de acordo com a proximidade. Verde &gt; 50cm, amarelo 20–50cm, vermelho &lt; 20cm com alarme. Aplica conceitos de conversão analógico-digital, temporização e lógica condicional. Boa base para entender sensores de ré automotivos.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">Arduino Uno</span>
+        <span class="proj-comp-tag">HC-SR04</span>
+        <span class="proj-comp-tag">3× LED (R/G/Y)</span>
+        <span class="proj-comp-tag">Buzzer passivo</span>
+        <span class="proj-comp-tag">Resistores 300Ω</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Conecte HC-SR04 (TRIG→pino 9, ECHO→pino 10) e calcule distância via pulseIn()</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Implemente faixas de proximidade com LEDs: verde/amarelo/vermelho</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Adicione buzzer com frequência proporcional à proximidade usando tone()</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Desafio: exiba a distância em cm no Monitor Serial com média de 5 leituras</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 5 -->
+    <div class="proj-card" style="--pc:#b36bff;">
+      <div class="proj-ghost">05</div>
+      <div class="proj-badge" style="color:var(--purple);border-color:rgba(179,107,255,.3);background:rgba(179,107,255,.08);">🟡 Intermediário · S16</div>
+      <div class="proj-title">Controle de Servos com Joystick</div>
+      <div class="proj-desc">O joystick analógico controla dois servos SG90 em tempo real — eixo X move servo 1, eixo Y move servo 2. Conceito central: converter leitura analógica (0–1023) para ângulo do servo (0°–180°) usando map(). Fundamento direto de sistemas de controle embarcado e robótica. Monte na garra para projeto completo.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">Arduino Uno</span>
+        <span class="proj-comp-tag">Módulo Joystick</span>
+        <span class="proj-comp-tag">2× Servo SG90</span>
+        <span class="proj-comp-tag">Capacitor 100µF</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Conecte joystick (VRX→A0, VRY→A1, SW→D2) e dois servos nos pinos PWM 9 e 10</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Leia os valores analógicos e mapeie para ângulos com map(val, 0, 1023, 0, 180)</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Adicione zona morta central (valores entre 490–534 não movem o servo)</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Desafio: use o botão do joystick para acionar a garra robótica com servo adicional</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 6 -->
+    <div class="proj-card" style="--pc:#ff3b5c;">
+      <div class="proj-ghost">06</div>
+      <div class="proj-badge" style="color:var(--red);border-color:rgba(255,59,92,.3);background:rgba(255,59,92,.08);">🟡 Intermediário · S16</div>
+      <div class="proj-title">Cofre com Teclado Matricial e Solenoide</div>
+      <div class="proj-desc">Sistema de controle de acesso completo: senha digitada no teclado 4×4 aciona a trava solenoide (12V via TIP122) quando correta. LED verde/vermelho indicam status. Ensina entrada de dados via matriz, comparação de strings, controle de carga indutiva e padrão de segurança por senha. Muito popular em TCC de ADS.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">Arduino Uno</span>
+        <span class="proj-comp-tag">Teclado 4×4</span>
+        <span class="proj-comp-tag">Trava Solenoide</span>
+        <span class="proj-comp-tag">TIP122</span>
+        <span class="proj-comp-tag">1N4007</span>
+        <span class="proj-comp-tag">2× LED</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Instale biblioteca Keypad.h e conecte os 8 pinos do teclado ao Arduino</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Monte circuito TIP122 + diodo 1N4007 para acionar a solenoide 12V com fonte externa</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Programe: acumule teclas digitadas, compare com senha, acione solenoide se correta</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Desafio: adicione RFID em paralelo — tanto senha quanto cartão autorizado abrem o cofre</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 7 -->
+    <div class="proj-card" style="--pc:#00e5ff;">
+      <div class="proj-ghost">07</div>
+      <div class="proj-badge" style="color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.08);">🔴 Avançado · S17–S18</div>
+      <div class="proj-title">Monitor IoT de Temperatura com ESP32</div>
+      <div class="proj-desc">ESP32 lê DS18B20 e publica os dados em servidor via WiFi usando HTTP ou MQTT. O aluno experimenta a diferença arquitetural entre Arduino (embarcado local) e ESP32 (conectado à nuvem). Introduz protocolos de comunicação TCP/IP e a arquitetura cliente-servidor em sistemas embarcados modernos.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">ESP32</span>
+        <span class="proj-comp-tag">Sensor DS18B20</span>
+        <span class="proj-comp-tag">Resistor 4.7kΩ</span>
+        <span class="proj-comp-tag">WiFi rede local</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Configure ESP32 na IDE Arduino e instale bibliotecas OneWire + DallasTemperature</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Leia temperatura e conecte ao WiFi com WiFi.begin(ssid, password)</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Implemente servidor HTTP local: acesse o IP do ESP32 no navegador e veja a leitura</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Desafio: publique os dados no ThingSpeak ou similar a cada 30 segundos via HTTP POST</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 8 -->
+    <div class="proj-card" style="--pc:#00ff88;">
+      <div class="proj-ghost">08</div>
+      <div class="proj-badge" style="color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.08);">🔴 Avançado · S17–S19</div>
+      <div class="proj-title">Sistema de Irrigação Automática IoT</div>
+      <div class="proj-desc">Sensor de umidade do solo alimenta ESP32 que decide automaticamente quando ligar a mini bomba d'água. O status e controle manual são acessíveis via WiFi em página web embarcada. Projeto completo de automação agrícola que une sensoriamento, atuação, lógica de controle e conectividade IoT.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">ESP32</span>
+        <span class="proj-comp-tag">Sensor Solo</span>
+        <span class="proj-comp-tag">Mini Bomba 5V</span>
+        <span class="proj-comp-tag">TIP122 + 1N4007</span>
+        <span class="proj-comp-tag">Resistores</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Leia sensor de solo no pino ADC e calibre os valores de "seco" e "úmido" no seu solo</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Monte circuito de acionamento da bomba com TIP122 (diodo de proteção obrigatório)</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Programe lógica: se solo seco por X segundos → liga bomba por Y segundos</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Crie página web servida pelo ESP32 com dados em tempo real e botão de irrigar manual</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 9 -->
+    <div class="proj-card" style="--pc:#ffe033;">
+      <div class="proj-ghost">09</div>
+      <div class="proj-badge" style="color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.08);">🟡 Intermediário · S15–S16</div>
+      <div class="proj-title">Detector de Gás com Alerta e Ventilação</div>
+      <div class="proj-desc">O sensor MQ-4 detecta gás metano/GLP. Quando nível ultrapassa limiar, aciona alarme sonoro (buzzer), LED vermelho e motor DC simulando ventilador de emergência. Projeto que conecta teoria de sensores analógicos, ADC, limiar de decisão (comparação) e controle de atuadores em resposta a evento crítico.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">Arduino Uno</span>
+        <span class="proj-comp-tag">Sensor MQ-4</span>
+        <span class="proj-comp-tag">Motor DC</span>
+        <span class="proj-comp-tag">TIP122 + 1N4007</span>
+        <span class="proj-comp-tag">Buzzer</span>
+        <span class="proj-comp-tag">LED vermelho</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Conecte MQ-4 (pino AOUT ao A0) e aguarde 60s de aquecimento antes de calibrar</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Defina limiar (ex: valor ADC > 600) experimentalmente com gás isqueiro próximo</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Quando detectar: acenda LED, toque alarme com tone() e ligue motor via TIP122</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Desafio: envie notificação WiFi pelo ESP32 quando gás detectado (POST para servidor)</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 10 -->
+    <div class="proj-card" style="--pc:#ff7a1a;">
+      <div class="proj-ghost">10</div>
+      <div class="proj-badge" style="color:var(--orange);border-color:rgba(255,122,26,.3);background:rgba(255,122,26,.08);">🔴 Avançado · S18–S20</div>
+      <div class="proj-title">Controle de Acesso com RFID + ESP32 + Log WiFi</div>
+      <div class="proj-desc">Sistema completo de controle de acesso: lê cartão RFID, verifica se está autorizado na lista interna, aciona servo (porta) e registra todos os acessos (autorizados/negados) em servidor via WiFi. Projeto integrador que une autenticação por hardware, controle físico e registro em nuvem.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">ESP32</span>
+        <span class="proj-comp-tag">RFID MFRC522</span>
+        <span class="proj-comp-tag">Conversor 3.3V/5V</span>
+        <span class="proj-comp-tag">Servo SG90</span>
+        <span class="proj-comp-tag">LED R/G</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Conecte MFRC522 ao ESP32 via SPI (use conversor de nível 3.3V) e leia UIDs dos cartões</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Crie lista de UIDs autorizados no código; compare com cartão lido</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Acesso autorizado: servo abre (90°) + LED verde por 3s; negado: LED vermelho + buzzer</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Envie log (UID + timestamp + status) para servidor HTTP ou planilha Google Sheets via WiFi</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 11 -->
+    <div class="proj-card" style="--pc:#b36bff;">
+      <div class="proj-ghost">11</div>
+      <div class="proj-badge" style="color:var(--purple);border-color:rgba(179,107,255,.3);background:rgba(179,107,255,.08);">🔴 Avançado · S19–S20</div>
+      <div class="proj-title">Braço Robótico com Controle Serial</div>
+      <div class="proj-desc">Braço robótico com garra controlado por comandos enviados via Serial (Monitor Serial ou app mobile via Bluetooth ESP32). Cada servo controla um grau de liberdade. O projeto fecha o ciclo conceitual da disciplina: arquitetura do processador → barramento → periférico → atuador físico.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">Arduino Uno / ESP32</span>
+        <span class="proj-comp-tag">3× Servo SG90</span>
+        <span class="proj-comp-tag">Garra Robótica</span>
+        <span class="proj-comp-tag">Joystick (opcional)</span>
+        <span class="proj-comp-tag">Fonte 5V 2A</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Monte o braço com 3 servos (base, cotovelo, garra) e mapeie os limites físicos de cada eixo</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Implemente parser de comandos Serial: "B90" = base 90°, "C45" = cotovelo 45°</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Adicione movimentos suaves com incremento gradual (1°/5ms) ao invés de saltar direto</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Com ESP32: controle via Bluetooth BLE com app Serial Bluetooth Terminal no celular</span></div>
+      </div>
+    </div>
+
+    <!-- PROJETO 12 -->
+    <div class="proj-card" style="--pc:#00e5ff;">
+      <div class="proj-ghost">12</div>
+      <div class="proj-badge" style="color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.08);">🔴 Avançado · S20–S21</div>
+      <div class="proj-title">Dashboard IoT — Múltiplos Sensores em Tempo Real</div>
+      <div class="proj-desc">Projeto integrador final: ESP32 coleta dados de múltiplos sensores (temperatura DS18B20, presença PIR, luminosidade LDR, som) e serve uma página web responsiva com dados atualizados automaticamente via WebSocket ou AJAX. Demonstra a arquitetura completa de um sistema embarcado IoT de ponta a ponta.</div>
+      <div class="proj-components">
+        <span class="proj-comp-tag">ESP32</span>
+        <span class="proj-comp-tag">DS18B20</span>
+        <span class="proj-comp-tag">PIR</span>
+        <span class="proj-comp-tag">LDR + 10kΩ</span>
+        <span class="proj-comp-tag">Sensor de Som</span>
+        <span class="proj-comp-tag">LED RGB</span>
+      </div>
+      <div class="proj-steps">
+        <div class="proj-steps-title">Etapas</div>
+        <div class="proj-step"><span class="proj-step-n">01</span><span class="proj-step-t">Conecte todos os sensores ao ESP32 e valide individualmente cada leitura no Serial</span></div>
+        <div class="proj-step"><span class="proj-step-n">02</span><span class="proj-step-t">Crie servidor web com ESP32 usando biblioteca AsyncWebServer, servindo HTML/CSS/JS</span></div>
+        <div class="proj-step"><span class="proj-step-n">03</span><span class="proj-step-t">Implemente endpoint JSON: GET /dados retorna todos sensores em formato {"temp":25.3,...}</span></div>
+        <div class="proj-step"><span class="proj-step-n">04</span><span class="proj-step-t">Crie dashboard HTML com gráficos (Chart.js CDN) que busca dados a cada 2 segundos</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INVENTÁRIO RÁPIDO -->
+  <div class="sec-label" style="--lc:#3a5248">
+    <span class="sec-tag" style="background:var(--border2);color:var(--text2);">📦</span>
+    Inventário Resumido
+  </div>
+  <div class="mod-title"><span>📋</span> Tabela de Inventário Completo</div>
+  <div style="overflow-x:auto;border:1px solid var(--border);border-radius:10px;">
+  <table class="inv-table">
+    <thead>
+      <tr>
+        <th>Componente</th>
+        <th>Qtd</th>
+        <th>Categoria</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Arduino Uno (ATmega328 + CH340)</td><td class="qty">11</td><td><span class="cat-badge">Placa</span></td></tr>
+      <tr><td>ESP32 (WiFi + Bluetooth)</td><td class="qty">9</td><td><span class="cat-badge">Placa</span></td></tr>
+      <tr><td>Módulo WiFi ESP8266</td><td class="qty">6</td><td><span class="cat-badge">Placa</span></td></tr>
+      <tr><td>Case acrílico Arduino Uno</td><td class="qty">11</td><td><span class="cat-badge">Estrutura</span></td></tr>
+      <tr><td>Kit RFID MFRC522</td><td class="qty">6</td><td><span class="cat-badge">Comunicação</span></td></tr>
+      <tr><td>Conversor de nível lógico</td><td class="qty">6</td><td><span class="cat-badge">Comunicação</span></td></tr>
+      <tr><td>Kit emissor/receptor IR + controle</td><td class="qty">2 kits + 1</td><td><span class="cat-badge">Comunicação</span></td></tr>
+      <tr><td>Módulo joystick</td><td class="qty">6</td><td><span class="cat-badge">Interface</span></td></tr>
+      <tr><td>Teclado matricial 4×4</td><td class="qty">4</td><td><span class="cat-badge">Interface</span></td></tr>
+      <tr><td>Sensor ultrassônico HC-SR04</td><td class="qty">8</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor de presença PIR</td><td class="qty">8</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor de som</td><td class="qty">6</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor de obstáculo</td><td class="qty">6</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor de umidade do solo</td><td class="qty">5</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor DHT11</td><td class="qty">5</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor de chuva</td><td class="qty">3</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor de gás MQ-4</td><td class="qty">2</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor LDR</td><td class="qty">2</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor NTC 10k</td><td class="qty">2</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Sensor DS18B20 (impermeável)</td><td class="qty">10</td><td><span class="cat-badge">Sensor</span></td></tr>
+      <tr><td>Micro servo SG90</td><td class="qty">9</td><td><span class="cat-badge">Atuador</span></td></tr>
+      <tr><td>Motor DC com redução</td><td class="qty">4</td><td><span class="cat-badge">Atuador</span></td></tr>
+      <tr><td>Motor de passo + driver</td><td class="qty">3</td><td><span class="cat-badge">Atuador</span></td></tr>
+      <tr><td>Garra robótica</td><td class="qty">5</td><td><span class="cat-badge">Atuador</span></td></tr>
+      <tr><td>Trava solenoide 12V</td><td class="qty">2</td><td><span class="cat-badge">Atuador</span></td></tr>
+      <tr><td>Mini bomba de água</td><td class="qty">1</td><td><span class="cat-badge">Atuador</span></td></tr>
+      <tr><td>LCD 16×2</td><td class="qty">1</td><td><span class="cat-badge">Display</span></td></tr>
+      <tr><td>Display 7 segmentos (1 dígito)</td><td class="qty">20</td><td><span class="cat-badge">Display</span></td></tr>
+      <tr><td>Display 4 dígitos (TM1637)</td><td class="qty">7</td><td><span class="cat-badge">Display</span></td></tr>
+      <tr><td>LED RGB (módulo)</td><td class="qty">2 pct</td><td><span class="cat-badge">LED</span></td></tr>
+      <tr><td>LED 5mm (100 un. cada)</td><td class="qty">2 kits</td><td><span class="cat-badge">LED</span></td></tr>
+      <tr><td>LED 3mm (500 un. cada)</td><td class="qty">4 kits</td><td><span class="cat-badge">LED</span></td></tr>
+      <tr><td>Transistor BC337</td><td class="qty">4 pct</td><td><span class="cat-badge">Eletrônica</span></td></tr>
+      <tr><td>Transistor PN2222A</td><td class="qty">4 pct</td><td><span class="cat-badge">Eletrônica</span></td></tr>
+      <tr><td>Transistor TIP122 (Darlington)</td><td class="qty">5</td><td><span class="cat-badge">Eletrônica</span></td></tr>
+      <tr><td>CI 4511 (Decodificador BCD)</td><td class="qty">3</td><td><span class="cat-badge">Eletrônica</span></td></tr>
+      <tr><td>Diodo 1N4007</td><td class="qty">1 pct</td><td><span class="cat-badge">Eletrônica</span></td></tr>
+      <tr><td>Resistores (10kΩ, 300Ω, 100Ω, 1kΩ, 2k2Ω)</td><td class="qty">vários</td><td><span class="cat-badge">Eletrônica</span></td></tr>
+      <tr><td>Botões push</td><td class="qty">10</td><td><span class="cat-badge">Eletrônica</span></td></tr>
+      <tr><td>Buzzer passivo</td><td class="qty">2 pct</td><td><span class="cat-badge">Eletrônica</span></td></tr>
+      <tr><td>Protoboard 830 pontos</td><td class="qty">10</td><td><span class="cat-badge">Montagem</span></td></tr>
+      <tr><td>Protoboard 400 pontos</td><td class="qty">10</td><td><span class="cat-badge">Montagem</span></td></tr>
+      <tr><td>Jumpers (kits M-F, F-F, M-M + avulsos)</td><td class="qty">vários</td><td><span class="cat-badge">Montagem</span></td></tr>
+      <tr><td>Cabo USB Micro B</td><td class="qty">6</td><td><span class="cat-badge">Cabo</span></td></tr>
+      <tr><td>Bateria 9V + conector P4</td><td class="qty">2 bat / 9 con</td><td><span class="cat-badge">Energia</span></td></tr>
+      <tr><td>Caixa organizadora</td><td class="qty">3</td><td><span class="cat-badge">Organização</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+</div>
+
+<footer>
+  <div class="ft-l">
+    <span class="ft-sig">MATERIAL DE LABORATÓRIO</span><br>
+    Centro Estadual de Educação Tecnológica Paula Souza · FATEC<br>
+    CST em Análise e Desenvolvimento de Sistemas · 1º Semestre 2026
+  </div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">
+    12 PROJETOS PRÁTICOS<br>ARDUINO + ESP32 · IoT<br>
+    <span style="color:var(--yellow)">LAB-001</span>
+  </div>
+</footer>
+
+</body>
+</html>
