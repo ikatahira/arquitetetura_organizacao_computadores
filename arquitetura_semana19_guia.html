@@ -3,263 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia - Semana 19</title>
+<title>Guia — Semana 19 | Arquitetura de Computadores</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);min-height:100vh;padding:20px}
-.container{max-width:1200px;margin:0 auto}
-.header{background:white;border-radius:15px;padding:30px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-.header h1{color:#1e3c72;font-size:2.2em;margin-bottom:10px}
-.nav-buttons{display:flex;gap:15px;margin-top:20px}
-.nav-btn{padding:12px 24px;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;text-decoration:none;border-radius:8px;font-weight:bold;transition:all 0.3s}
-.nav-btn.disabled{opacity:0.5;pointer-events:none}
-.section{background:white;border-radius:12px;padding:30px;margin-bottom:25px;box-shadow:0 5px 20px rgba(0,0,0,0.2)}
-.section h2{color:#1e3c72;font-size:1.8em;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid #2a5298}
-.rubric-table{width:100%;border-collapse:collapse;margin:20px 0;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-radius:8px;overflow:hidden}
-.rubric-table th{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;padding:15px;text-align:left}
-.rubric-table td{padding:12px 15px;border-bottom:1px solid #e0e0e0}
-.rubric-table tr:hover{background:#f5f5f5}
-.criterion{font-weight:bold;color:#1e3c72}
-.solution-box{background:linear-gradient(to right,#e8f5e9,#f1f8e9);border-left:5px solid #4caf50;padding:25px;margin:20px 0;border-radius:8px}
-.solution-box h3{color:#2e7d32;margin-bottom:15px}
+:root {
+  --bg: #0b0f0e; --bg2: #111715; --bg3: #161d1b;
+  --green: #00ff88; --green2: #00c967; --cyan: #00e5ff;
+  --yellow: #ffe033; --orange: #ff7a1a; --red: #ff3b5c; --purple: #b36bff;
+  --text: #e8f0ec; --text2: #7a9488; --text3: #3a5248;
+  --border: #1e2e28; --border2: #243830;
+  --mono: 'Space Mono', monospace; --display: 'Unbounded', sans-serif; --body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");opacity:.4;}
+header{padding:48px 40px 32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.header-tag{font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.header-tag::before{content:'';width:24px;height:1px;background:var(--purple);}
+.header-title{font-family:var(--display);font-size:clamp(20px,3.5vw,40px);font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--text);max-width:760px;}
+.header-title span{color:var(--purple);}
+.header-subtitle{margin-top:10px;font-size:14px;color:var(--text2);max-width:580px;line-height:1.6;font-weight:300;}
+.header-meta{position:absolute;top:48px;right:40px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.container{max-width:1200px;margin:0 auto;padding:0 40px 80px;}
+.section-label{font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:20px;margin-top:52px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+.ex-block{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:32px;position:relative;overflow:hidden;margin-bottom:24px;}
+.ex-block::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--block-color,var(--purple)),transparent);}
+.ex-block-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.ex-block-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);}
+.ex-block-sub{font-size:12px;color:var(--text2);margin-top:4px;}
+.ex-block-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.ex-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid;white-space:nowrap;}
+.ex-badge-time{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.07);}
+.rubric-wrap{overflow-x:auto;margin-top:16px;}
+.rubric{width:100%;border-collapse:collapse;font-size:12px;}
+.rubric th{background:var(--bg2);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border2);color:var(--text2);}
+.rubric td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+.rubric td:first-child{font-weight:600;color:var(--text);font-size:12px;min-width:120px;}
+.rubric tr:hover td{background:var(--bg2);}
+.rubric .c-ins{color:var(--red);}.rubric .c-bas{color:var(--yellow);}.rubric .c-prof{color:var(--cyan);}.rubric .c-exc{color:var(--green);}
+.dica-box{background:var(--bg3);border:1px solid rgba(0,255,136,.2);border-radius:10px;padding:20px 24px;position:relative;overflow:hidden;margin-top:20px;}
+.dica-box::before{content:'💡';position:absolute;right:20px;top:16px;font-size:36px;opacity:.15;}
+.dica-title{font-family:var(--display);font-size:11px;font-weight:700;color:var(--yellow);letter-spacing:.1em;margin-bottom:8px;}
+.dica-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.dica-list li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;}
+.dica-list li::before{content:'→';color:var(--yellow);flex-shrink:0;}
+.code-hint{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:12px 16px;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--cyan);line-height:1.8;}
+.nav-bar{display:flex;gap:10px;flex-wrap:wrap;padding:24px 40px;border-top:1px solid var(--border);margin-top:40px;}
+.nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:10px 20px;border-radius:6px;text-decoration:none;border:1px solid;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.nav-btn-sec{color:var(--text2);border-color:var(--border2);background:transparent;}
+.nav-btn-sec:hover{color:var(--text);border-color:var(--text2);}
+.nav-btn-aula{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.nav-btn-aula:hover{background:rgba(0,229,255,.14);}
+footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-left{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.footer-sig{color:var(--purple);font-weight:700;}
+@media(max-width:768px){header{padding:28px 20px 20px;}.header-meta{display:none;}.container{padding:0 20px 60px;}.nav-bar{padding:20px;}}
 </style>
 </head>
 <body>
+<header>
+  <div class="header-tag">S19 · GUIA DE ATIVIDADES · ARQ-001</div>
+  <h1 class="header-title">Guia — Semana 19<br><span>Projeto Integrador</span></h1>
+  <p class="header-subtitle">Rubricas de avaliação, orientações e dicas para as atividades práticas</p>
+  <div class="header-meta">1º SEMESTRE / 2026<br>FATEC · ADS<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</header>
 <div class="container">
-<div class="header">
-<h1>📚 Guia - Semana 19</h1>
-<p>Projeto Integrador</p>
-<div class="nav-buttons">
-<a href="arquitetura_semana18_guia.html" class="nav-btn">⬅️ Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana19_aula.html" class="nav-btn">📖 Aula</a>
-<a href="arquitetura_semana20_guia.html" class="nav-btn">Próxima ➡️</a>
+
+  <div class="section-label">01 · Planejamento do Projeto</div>
+  <div class="ex-block" style="--block-color:#00ff88">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 1 — Definição de Escopo e Requisitos</div>
+        <div class="ex-block-sub">📋 Objetivo: Documentar o projeto com clareza antes de implementar</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 30 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Definição do Problema</td><td class="c-ins">Projeto vago, sem problema real</td><td class="c-bas">Problema definido mas sem contexto</td><td class="c-prof">Problema claro com contexto e motivação justificados</td><td class="c-exc">Inclui pesquisa de soluções similares e diferenciação</td></tr>
+          <tr><td>Requisitos Funcionais</td><td class="c-ins">Sem lista de requisitos</td><td class="c-bas">Lista vaga: "deve funcionar bem"</td><td class="c-prof">Ao menos 5 requisitos específicos e verificáveis</td><td class="c-exc">Requisitos com critério de aceite mensuráv el (ex: "latência &lt; 2s")</td></tr>
+          <tr><td>Diagrama de Blocos</td><td class="c-ins">Sem diagrama</td><td class="c-bas">Diagrama impreciso sem conexões</td><td class="c-prof">Diagrama com sensores, ESP32, comunicação e nuvem conectados</td><td class="c-exc">Diagrama com protocolos nas setas e frequência de amostragem</td></tr>
+          <tr><td>Justificativa Técnica</td><td class="c-ins">Sem justificativa de escolhas</td><td class="c-bas">Escolheu por "ser mais fácil"</td><td class="c-prof">Justifica protocolo escolhido (ex: MQTT vs HTTP) com prós e contras</td><td class="c-exc">Tabela comparativa de alternativas com critérios de decisão</td></tr>
+          <tr><td>Viabilidade</td><td class="c-ins">Projeto impossível no prazo</td><td class="c-bas">Projeto grande sem priorização</td><td class="c-prof">Escopo realista com MVP definido para a aula 20</td><td class="c-exc">MVP + features opcionais organizados por prioridade (MoSCoW)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>MVP (Minimum Viable Product): o que é o mínimo que precisa funcionar na apresentação? Defina isso primeiro</li>
+        <li>Sugestões de projetos viáveis em 2 aulas: estação climática (temp + umidade → ThingSpeak), monitor de presença (PIR + LED + BT alerta), irrigação automática (solo seco → bomba liga), ou semáforo inteligente (conta carros via sensor ultrassônico)</li>
+        <li>Diagrama de blocos: sensor → ESP32 → [WiFi/BT] → [nuvem/celular/outro ESP32] → [dashboard/LED/display]</li>
+        <li>FreeRTOS tasks ajudam a separar responsabilidades: Task1=leitura, Task2=comunicação, Task3=interface</li>
+        <li>Documente tudo desde o início — na apresentação, mostrar o processo é tão importante quanto o produto</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">02 · Implementação</div>
+  <div class="ex-block" style="--block-color:#ffe033">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 2 — Desenvolvimento e Integração</div>
+        <div class="ex-block-sub">📋 Objetivo: Construir o sistema integrando subsistemas das semanas 16–18</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 40 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Integração de Módulos</td><td class="c-ins">Apenas 1 tecnologia utilizada</td><td class="c-bas">2 tecnologias, mas isoladas</td><td class="c-prof">3+ tecnologias integradas e funcionando juntas</td><td class="c-exc">4+ tecnologias com fluxo de dados coerente de ponta a ponta</td></tr>
+          <tr><td>Qualidade do Código</td><td class="c-ins">Código todo em loop() sem organização</td><td class="c-bas">Funções separadas mas sem coesão</td><td class="c-prof">Código modular com funções e comentários claros</td><td class="c-exc">FreeRTOS tasks com prioridades definidas e sem busy-wait</td></tr>
+          <tr><td>Tratamento de Erros</td><td class="c-ins">Sem tratamento de erros</td><td class="c-bas">Apenas Serial.println() de erros</td><td class="c-prof">Reconexão automática de WiFi/BT e fallback para erro</td><td class="c-exc">Watchdog timer de hardware + reset controlado com log de causa</td></tr>
+          <tr><td>Funcionamento Contínuo</td><td class="c-ins">Trava em minutos</td><td class="c-bas">Funciona mas com delay() em todo lugar</td><td class="c-prof">Funciona por 10+ minutos sem travar com millis() correto</td><td class="c-exc">30+ minutos de uptime; loop() sem delay() algum</td></tr>
+          <tr><td>Conexão com Conteúdo</td><td class="c-ins">Sem menção à arquitetura de computadores</td><td class="c-bas">Menciona ESP32 e WiFi superficialmente</td><td class="c-prof">Relaciona escolhas de design a conceitos de I/O e arquitetura</td><td class="c-exc">Explica como dual-core e FreeRTOS aplicam paralelismo estudado</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>FreeRTOS no ESP32: <code>xTaskCreate(taskFunc, "Nome", 4096, NULL, 1, NULL);</code> — a prioridade 1 é baixa, 5 é alta</li>
+        <li>Não misture Serial e SerialBT no mesmo task — use mutexes ou filas (xQueueCreate) para comunicação entre tasks</li>
+        <li>Reconexão WiFi automática: verifique <code>WiFi.status()</code> em task dedicada e chame <code>WiFi.reconnect()</code> se desconectado</li>
+        <li>Watchdog de hardware: <code>esp_task_wdt_init(30, true); esp_task_wdt_add(NULL);</code> + <code>esp_task_wdt_reset();</code> no loop</li>
+        <li>Conexão com teoria: FreeRTOS é um SO de tempo real — o scheduler é o "despachante de processos" da aula de sistemas operacionais!</li>
+      </ul>
+      <div class="code-hint">
+        // Task de leitura de sensor (Core 0)<br>
+        void taskSensor(void *param) {<br>
+        &nbsp;&nbsp;for(;;) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;float temp = readTemperature();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;xQueueSend(dataQueue, &amp;temp, 0);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;vTaskDelay(pdMS_TO_TICKS(2000));<br>
+        &nbsp;&nbsp;}<br>
+        }<br>
+        // Task de comunicação WiFi (Core 1)<br>
+        void taskComm(void *param) {<br>
+        &nbsp;&nbsp;for(;;) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;float val;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;if (xQueueReceive(dataQueue, &amp;val, portMAX_DELAY)) sendToCloud(val);<br>
+        &nbsp;&nbsp;}<br>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">03 · Testes e Refinamento</div>
+  <div class="ex-block" style="--block-color:#b36bff">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 3 — Plano de Testes e Validação</div>
+        <div class="ex-block-sub">📋 Objetivo: Validar o sistema contra os requisitos definidos no Ex. 1</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 20 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Casos de Teste</td><td class="c-ins">Sem casos de teste documentados</td><td class="c-bas">1–2 casos vagos</td><td class="c-prof">5+ casos com entrada, saída esperada e resultado real</td><td class="c-exc">Casos de borda e falha explícitos (sensor ausente, WiFi cai, etc.)</td></tr>
+          <tr><td>Teste de Uptime</td><td class="c-ins">Sem teste de uptime</td><td class="c-bas">Testou menos de 5 minutos</td><td class="c-prof">10 minutos de operação contínua documentados</td><td class="c-exc">30+ minutos com log de eventos no serial durante o período</td></tr>
+          <tr><td>Métricas de Desempenho</td><td class="c-ins">Sem métricas</td><td class="c-bas">Apenas "funcionou" ou "não funcionou"</td><td class="c-prof">Latência, frequência de envio e taxa de erro medidos</td><td class="c-exc">Gráfico de latência ao longo do tempo e análise de picos</td></tr>
+          <tr><td>Refinamento</td><td class="c-ins">Sem alterações após testes</td><td class="c-bas">Corrigiu bug óbvio sem documentar</td><td class="c-prof">Pelo menos 1 melhoria rastreável a um caso de teste</td><td class="c-exc">Relatório de iterações: versão 1 → bug → correção → versão 2</td></tr>
+          <tr><td>Preparação para S20</td><td class="c-ins">Sem preparação</td><td class="c-bas">Código não subiu no GitHub</td><td class="c-prof">GitHub com README e código; apresentação esboçada</td><td class="c-exc">Demo gravado em vídeo como backup + slides com diagrama de blocos</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>Modelo de caso de teste: ID | Descrição | Pré-condição | Passos | Resultado Esperado | Resultado Real | Status (PASS/FAIL)</li>
+        <li>Teste de falha importante: desconecte o sensor durante operação — o sistema trava ou se recupera?</li>
+        <li>Medir latência: <code>long t0 = millis(); enviarDados(); long lat = millis() - t0; Serial.println("Latência: " + String(lat) + "ms");</code></li>
+        <li>GitHub: crie repositório público, faça commit com mensagem descritiva, adicione README com: objetivo, hardware necessário e como rodar</li>
+        <li>Backup da demo: grave um vídeo de 2 min do sistema funcionando — se der problema ao vivo, você tem prova que funcionou!</li>
+      </ul>
+    </div>
+  </div>
+
 </div>
+<div class="nav-bar">
+  <a href="index.html" class="nav-btn nav-btn-sec">⬅ Índice</a>
+  <a href="arquitetura_semana18_guia.html" class="nav-btn nav-btn-sec">← Guia Anterior</a>
+  <a href="arquitetura_semana19_aula.html" class="nav-btn nav-btn-aula">📖 Ver Aula</a>
+  <a href="arquitetura_semana20_guia.html" class="nav-btn nav-btn-sec">Próximo Guia →</a>
 </div>
-<div class="section">
-<h2>✏️ Exercício 1: Planejamento do Projeto</h2>
-<p><strong>📋 Objetivo:</strong> Definir escopo e requisitos</p>
-<p><strong>⏱️ Duração:</strong> 30 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 2: Implementação</h2>
-<p><strong>📋 Objetivo:</strong> Desenvolver sistema completo</p>
-<p><strong>⏱️ Duração:</strong> 40 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 3: Testes e Refinamento</h2>
-<p><strong>📋 Objetivo:</strong> Validar e otimizar solução</p>
-<p><strong>⏱️ Duração:</strong> 20 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="nav-buttons">
-<a href="arquitetura_semana18_guia.html" class="nav-btn">⬅️ Guia Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana20_guia.html" class="nav-btn">Próximo Guia ➡️</a>
-</div>
-</div>
+<footer>
+  <div class="footer-left"><span class="footer-sig">ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES</span><br>Guia · Semana 19 · Projeto Integrador<br>Centro Paula Souza · FATEC · 2026</div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">ARQ-001 · S19<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</footer>
 </body>
 </html>

@@ -3,263 +3,195 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia - Semana 18</title>
+<title>Guia — Semana 18 | Arquitetura de Computadores</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);min-height:100vh;padding:20px}
-.container{max-width:1200px;margin:0 auto}
-.header{background:white;border-radius:15px;padding:30px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-.header h1{color:#1e3c72;font-size:2.2em;margin-bottom:10px}
-.nav-buttons{display:flex;gap:15px;margin-top:20px}
-.nav-btn{padding:12px 24px;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;text-decoration:none;border-radius:8px;font-weight:bold;transition:all 0.3s}
-.nav-btn.disabled{opacity:0.5;pointer-events:none}
-.section{background:white;border-radius:12px;padding:30px;margin-bottom:25px;box-shadow:0 5px 20px rgba(0,0,0,0.2)}
-.section h2{color:#1e3c72;font-size:1.8em;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid #2a5298}
-.rubric-table{width:100%;border-collapse:collapse;margin:20px 0;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-radius:8px;overflow:hidden}
-.rubric-table th{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;padding:15px;text-align:left}
-.rubric-table td{padding:12px 15px;border-bottom:1px solid #e0e0e0}
-.rubric-table tr:hover{background:#f5f5f5}
-.criterion{font-weight:bold;color:#1e3c72}
-.solution-box{background:linear-gradient(to right,#e8f5e9,#f1f8e9);border-left:5px solid #4caf50;padding:25px;margin:20px 0;border-radius:8px}
-.solution-box h3{color:#2e7d32;margin-bottom:15px}
+:root {
+  --bg: #0b0f0e; --bg2: #111715; --bg3: #161d1b;
+  --green: #00ff88; --green2: #00c967; --cyan: #00e5ff;
+  --yellow: #ffe033; --orange: #ff7a1a; --red: #ff3b5c; --purple: #b36bff;
+  --text: #e8f0ec; --text2: #7a9488; --text3: #3a5248;
+  --border: #1e2e28; --border2: #243830;
+  --mono: 'Space Mono', monospace; --display: 'Unbounded', sans-serif; --body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");opacity:.4;}
+header{padding:48px 40px 32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.header-tag{font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.header-tag::before{content:'';width:24px;height:1px;background:var(--purple);}
+.header-title{font-family:var(--display);font-size:clamp(20px,3.5vw,40px);font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--text);max-width:760px;}
+.header-title span{color:var(--purple);}
+.header-subtitle{margin-top:10px;font-size:14px;color:var(--text2);max-width:580px;line-height:1.6;font-weight:300;}
+.header-meta{position:absolute;top:48px;right:40px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.container{max-width:1200px;margin:0 auto;padding:0 40px 80px;}
+.section-label{font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:20px;margin-top:52px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+.ex-block{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:32px;position:relative;overflow:hidden;margin-bottom:24px;}
+.ex-block::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--block-color,var(--purple)),transparent);}
+.ex-block-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.ex-block-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);}
+.ex-block-sub{font-size:12px;color:var(--text2);margin-top:4px;}
+.ex-block-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.ex-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid;white-space:nowrap;}
+.ex-badge-time{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.07);}
+.rubric-wrap{overflow-x:auto;margin-top:16px;}
+.rubric{width:100%;border-collapse:collapse;font-size:12px;}
+.rubric th{background:var(--bg2);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border2);color:var(--text2);}
+.rubric td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+.rubric td:first-child{font-weight:600;color:var(--text);font-size:12px;min-width:120px;}
+.rubric tr:hover td{background:var(--bg2);}
+.rubric .c-ins{color:var(--red);}.rubric .c-bas{color:var(--yellow);}.rubric .c-prof{color:var(--cyan);}.rubric .c-exc{color:var(--green);}
+.dica-box{background:var(--bg3);border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:20px 24px;position:relative;overflow:hidden;margin-top:20px;}
+.dica-box::before{content:'💡';position:absolute;right:20px;top:16px;font-size:36px;opacity:.15;}
+.dica-title{font-family:var(--display);font-size:11px;font-weight:700;color:var(--yellow);letter-spacing:.1em;margin-bottom:8px;}
+.dica-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.dica-list li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;}
+.dica-list li::before{content:'→';color:var(--yellow);flex-shrink:0;}
+.code-hint{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:12px 16px;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--cyan);line-height:1.8;}
+.nav-bar{display:flex;gap:10px;flex-wrap:wrap;padding:24px 40px;border-top:1px solid var(--border);margin-top:40px;}
+.nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:10px 20px;border-radius:6px;text-decoration:none;border:1px solid;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.nav-btn-sec{color:var(--text2);border-color:var(--border2);background:transparent;}
+.nav-btn-sec:hover{color:var(--text);border-color:var(--text2);}
+.nav-btn-aula{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.nav-btn-aula:hover{background:rgba(0,229,255,.14);}
+footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-left{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.footer-sig{color:var(--purple);font-weight:700;}
+@media(max-width:768px){header{padding:28px 20px 20px;}.header-meta{display:none;}.container{padding:0 20px 60px;}.nav-bar{padding:20px;}}
 </style>
 </head>
 <body>
+<header>
+  <div class="header-tag">S18 · GUIA DE ATIVIDADES · ARQ-001</div>
+  <h1 class="header-title">Guia — Semana 18<br><span>Bluetooth e Comunicação</span></h1>
+  <p class="header-subtitle">Rubricas de avaliação, orientações e dicas para as atividades práticas</p>
+  <div class="header-meta">1º SEMESTRE / 2026<br>FATEC · ADS<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</header>
 <div class="container">
-<div class="header">
-<h1>📚 Guia - Semana 18</h1>
-<p>Bluetooth e Comunicação</p>
-<div class="nav-buttons">
-<a href="arquitetura_semana17_guia.html" class="nav-btn">⬅️ Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana18_aula.html" class="nav-btn">📖 Aula</a>
-<a href="arquitetura_semana19_guia.html" class="nav-btn">Próxima ➡️</a>
+
+  <div class="section-label">01 · Bluetooth Serial</div>
+  <div class="ex-block" style="--block-color:#00e5ff">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 1 — Comunicação Serial via Bluetooth</div>
+        <div class="ex-block-sub">📋 Objetivo: Estabelecer canal bidirecional ESP32 ↔ smartphone</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 30 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Pareamento BT</td><td class="c-ins">Não aparece na lista de dispositivos</td><td class="c-bas">Aparece mas falha no pareamento</td><td class="c-prof">Pareia com sucesso e exibe "Cliente conectado!" no serial</td><td class="c-exc">Trata evento de desconexão e aguarda nova conexão sem reiniciar</td></tr>
+          <tr><td>Recepção de Comandos</td><td class="c-ins">Não recebe dados</td><td class="c-bas">Recebe mas não processa</td><td class="c-prof">Interpreta LED_ON, LED_OFF e STATUS corretamente</td><td class="c-exc">Parser robusto: case-insensitive, ignora espaços e quebras de linha</td></tr>
+          <tr><td>Resposta ao Celular</td><td class="c-ins">Sem resposta enviada</td><td class="c-bas">Envia resposta mas sem conteúdo útil</td><td class="c-prof">Responde com estado atual após cada comando</td><td class="c-exc">Inclui timestamp (uptime), RSSI e temperatura interna na resposta</td></tr>
+          <tr><td>Controle do LED</td><td class="c-ins">LED não responde</td><td class="c-bas">LED responde mas sem confirmação BT</td><td class="c-prof">LED liga/desliga e ESP32 confirma via Bluetooth</td><td class="c-exc">Feedback de blink diferente para cada comando (1 pisca=ON, 2 piscas=OFF)</td></tr>
+          <tr><td>Relação com Teoria</td><td class="c-ins">Sem conexão teórica</td><td class="c-bas">Menciona "comunicação sem fio"</td><td class="c-prof">Compara SPP Bluetooth com UART (mesma abstração, meio diferente)</td><td class="c-exc">Explica como o controlador BT usa DMA para não bloquear a CPU Xtensa</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>Biblioteca: <code>#include "BluetoothSerial.h"</code> — não é compatível com BLE, é Bluetooth Classic</li>
+        <li>Iniciar: <code>BluetoothSerial SerialBT; SerialBT.begin("ESP32-ARQ");</code></li>
+        <li>Receber: <code>if (SerialBT.available()) { String cmd = SerialBT.readStringUntil('\n'); cmd.trim(); }</code></li>
+        <li>Enviar resposta: <code>SerialBT.println("LED: ON | Uptime: " + String(millis()/1000) + "s");</code></li>
+        <li>App Android gratuito: "Serial Bluetooth Terminal" (Kai Morich). Selecione o dispositivo "ESP32-ARQ" após pareamento no Bluetooth do celular</li>
+      </ul>
+      <div class="code-hint">
+        #include "BluetoothSerial.h"<br>
+        BluetoothSerial SerialBT;<br>
+        SerialBT.begin("ESP32-ARQ");<br>
+        if (SerialBT.available()) {<br>
+        &nbsp;&nbsp;String cmd = SerialBT.readStringUntil('\n');<br>
+        &nbsp;&nbsp;cmd.trim();<br>
+        &nbsp;&nbsp;if (cmd == "LED_ON") { digitalWrite(2, HIGH); SerialBT.println("OK: LED ON"); }<br>
+        &nbsp;&nbsp;else if (cmd == "LED_OFF") { digitalWrite(2, LOW); SerialBT.println("OK: LED OFF"); }<br>
+        &nbsp;&nbsp;else if (cmd == "STATUS") { SerialBT.println("UP:" + String(millis()/1000) + "s"); }<br>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">02 · Controle Remoto BT</div>
+  <div class="ex-block" style="--block-color:#b36bff">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 2 — Controle Remoto com Watchdog</div>
+        <div class="ex-block-sub">📋 Objetivo: Controle PWM bidirecional com segurança por timeout</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 35 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Controle PWM</td><td class="c-ins">Sem controle de intensidade</td><td class="c-bas">PWM fixo, não responde a comandos</td><td class="c-prof">Comando numérico (0–255) controla ledcWrite() corretamente</td><td class="c-exc">Rampa suave entre valores para evitar saltos bruscos</td></tr>
+          <tr><td>Leitura ADC → BT</td><td class="c-ins">Não envia ADC</td><td class="c-bas">Envia valor bruto sem conversão</td><td class="c-prof">Envia tensão convertida (0–3.3V) ao celular a cada 2s</td><td class="c-exc">Envia também média de 5 amostras e desvio padrão</td></tr>
+          <tr><td>Watchdog por Timeout</td><td class="c-ins">Sem watchdog</td><td class="c-bas">Tem timer mas não desliga nada</td><td class="c-prof">Após 10s sem comando, desliga LED e exibe aviso no serial</td><td class="c-exc">Watchdog reiniciável via comando RESET; log de ativações no serial</td></tr>
+          <tr><td>Robustez</td><td class="c-ins">Trava com comandos inválidos</td><td class="c-bas">Ignora comandos inválidos silenciosamente</td><td class="c-prof">Responde "ERRO: comando desconhecido" para entradas inválidas</td><td class="c-exc">Valida range (0–255) e retorna "ERRO: valor fora do range 0-255"</td></tr>
+          <tr><td>Documentação</td><td class="c-ins">Sem documentação</td><td class="c-bas">Código sem comentários</td><td class="c-prof">Código comentado com protocolo descrito no cabeçalho</td><td class="c-exc">Inclui diagrama de estados do sistema (conectado/desconectado/watchdog)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>PWM: <code>ledcSetup(0, 5000, 8); ledcAttachPin(2, 0);</code> depois <code>ledcWrite(0, valor);</code> onde valor = 0–255</li>
+        <li>Watchdog com millis(): <code>if (millis() - lastCmd &gt; 10000) { ledcWrite(0, 0); SerialBT.println("WATCHDOG: desligado!"); }</code></li>
+        <li>Parse de número: <code>int valor = cmd.toInt();</code> — retorna 0 se não for número, então valide com <code>if (valor &gt;= 0 &amp;&amp; valor &lt;= 255)</code></li>
+        <li>ADC periódico sem delay: use millis() para enviar leitura a cada 2000ms independente dos comandos</li>
+        <li>Conexão com teoria: o watchdog é um mecanismo de timeout por hardware (Timer periférico) — o mesmo conceito de DMA timeout!</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">03 · Rede de Sensores</div>
+  <div class="ex-block" style="--block-color:#00ff88">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 3 — Rede P2P com ESP-NOW</div>
+        <div class="ex-block-sub">📋 Objetivo: Comunicação direta entre dois ESP32s sem infraestrutura</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 25 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Configuração ESP-NOW</td><td class="c-ins">Não configura ESP-NOW</td><td class="c-bas">Inicializa mas sem peer registrado</td><td class="c-prof">Sender registra MAC do receiver; comunicação funcional</td><td class="c-exc">Troca bidirecional: receiver envia ACK com seu ADC de volta</td></tr>
+          <tr><td>Estrutura de Dados</td><td class="c-ins">Envia string não estruturada</td><td class="c-bas">Usa struct mas sem campos relevantes</td><td class="c-prof">struct com id, valor ADC, timestamp e contador de pacotes</td><td class="c-exc">CRC simples para detecção de corrupção de pacote</td></tr>
+          <tr><td>Taxa de Perda</td><td class="c-ins">Sem medição de perda</td><td class="c-bas">Conta pacotes mas não calcula %</td><td class="c-prof">Calcula % de perda: (enviados - recebidos) / enviados × 100</td><td class="c-exc">Gráfico de barras ASCII no serial mostrando evolução da perda</td></tr>
+          <tr><td>Conexão com Teoria</td><td class="c-ins">Sem conexão teórica</td><td class="c-bas">Menciona que é "sem fio"</td><td class="c-prof">Compara ESP-NOW (sem ACK físico) com I2C (com ACK no bit 9)</td><td class="c-exc">Mapeia protocolo ESP-NOW na hierarquia de protocolos estudada</td></tr>
+          <tr><td>Documentação</td><td class="c-ins">Sem documentação</td><td class="c-bas">Apenas código</td><td class="c-prof">Log serial estruturado com RSSI e estatísticas</td><td class="c-exc">Relatório comparando ESP-NOW vs MQTT vs BT em tabela com latência medida</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>MAC do receiver: execute <code>Serial.println(WiFi.macAddress());</code> no receiver para descobrir o endereço</li>
+        <li>ESP-NOW sender: <code>esp_now_init(); esp_now_add_peer(&amp;peerInfo); esp_now_send(mac, (uint8_t*)&amp;data, sizeof(data));</code></li>
+        <li>Callback de recepção: <code>void onDataRecv(const uint8_t *mac, const uint8_t *data, int len) { memcpy(&amp;received, data, sizeof(received)); }</code></li>
+        <li>Comparação com I2C: I2C usa ACK (bit 9 da transmissão), ESP-NOW por padrão é "fire and forget" — sem garantia de entrega!</li>
+        <li>Alcance típico: ~200m em espaço aberto, ~20m através de paredes — muito maior que Bluetooth Classic (10m)</li>
+      </ul>
+    </div>
+  </div>
+
 </div>
+<div class="nav-bar">
+  <a href="index.html" class="nav-btn nav-btn-sec">⬅ Índice</a>
+  <a href="arquitetura_semana17_guia.html" class="nav-btn nav-btn-sec">← Guia Anterior</a>
+  <a href="arquitetura_semana18_aula.html" class="nav-btn nav-btn-aula">📖 Ver Aula</a>
+  <a href="arquitetura_semana19_guia.html" class="nav-btn nav-btn-sec">Próximo Guia →</a>
 </div>
-<div class="section">
-<h2>✏️ Exercício 1: Bluetooth Serial</h2>
-<p><strong>📋 Objetivo:</strong> Comunicação com app mobile</p>
-<p><strong>⏱️ Duração:</strong> 30 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 2: Controle Remoto</h2>
-<p><strong>📋 Objetivo:</strong> Comandar dispositivos via BT</p>
-<p><strong>⏱️ Duração:</strong> 35 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 3: Rede de Sensores</h2>
-<p><strong>📋 Objetivo:</strong> Comunicação entre ESP32s</p>
-<p><strong>⏱️ Duração:</strong> 25 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="nav-buttons">
-<a href="arquitetura_semana17_guia.html" class="nav-btn">⬅️ Guia Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana19_guia.html" class="nav-btn">Próximo Guia ➡️</a>
-</div>
-</div>
+<footer>
+  <div class="footer-left"><span class="footer-sig">ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES</span><br>Guia · Semana 18 · Bluetooth e Comunicação<br>Centro Paula Souza · FATEC · 2026</div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">ARQ-001 · S18<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</footer>
 </body>
 </html>
