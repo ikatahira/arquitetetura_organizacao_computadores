@@ -3,263 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia - Semana 14</title>
+<title>Guia — Semana 14 | Arquitetura de Computadores</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);min-height:100vh;padding:20px}
-.container{max-width:1200px;margin:0 auto}
-.header{background:white;border-radius:15px;padding:30px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-.header h1{color:#1e3c72;font-size:2.2em;margin-bottom:10px}
-.nav-buttons{display:flex;gap:15px;margin-top:20px}
-.nav-btn{padding:12px 24px;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;text-decoration:none;border-radius:8px;font-weight:bold;transition:all 0.3s}
-.nav-btn.disabled{opacity:0.5;pointer-events:none}
-.section{background:white;border-radius:12px;padding:30px;margin-bottom:25px;box-shadow:0 5px 20px rgba(0,0,0,0.2)}
-.section h2{color:#1e3c72;font-size:1.8em;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid #2a5298}
-.rubric-table{width:100%;border-collapse:collapse;margin:20px 0;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-radius:8px;overflow:hidden}
-.rubric-table th{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;padding:15px;text-align:left}
-.rubric-table td{padding:12px 15px;border-bottom:1px solid #e0e0e0}
-.rubric-table tr:hover{background:#f5f5f5}
-.criterion{font-weight:bold;color:#1e3c72}
-.solution-box{background:linear-gradient(to right,#e8f5e9,#f1f8e9);border-left:5px solid #4caf50;padding:25px;margin:20px 0;border-radius:8px}
-.solution-box h3{color:#2e7d32;margin-bottom:15px}
+:root {
+  --bg: #0b0f0e; --bg2: #111715; --bg3: #161d1b;
+  --green: #00ff88; --green2: #00c967; --cyan: #00e5ff;
+  --yellow: #ffe033; --orange: #ff7a1a; --red: #ff3b5c; --purple: #b36bff;
+  --text: #e8f0ec; --text2: #7a9488; --text3: #3a5248;
+  --border: #1e2e28; --border2: #243830;
+  --mono: 'Space Mono', monospace; --display: 'Unbounded', sans-serif; --body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");opacity:.4;}
+header{padding:48px 40px 32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.header-tag{font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.header-tag::before{content:'';width:24px;height:1px;background:var(--purple);}
+.header-title{font-family:var(--display);font-size:clamp(20px,3.5vw,40px);font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--text);max-width:760px;}
+.header-title span{color:var(--purple);}
+.header-subtitle{margin-top:10px;font-size:14px;color:var(--text2);max-width:580px;line-height:1.6;font-weight:300;}
+.header-meta{position:absolute;top:48px;right:40px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.container{max-width:1200px;margin:0 auto;padding:0 40px 80px;}
+.section-label{font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:20px;margin-top:52px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+.ex-block{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:32px;position:relative;overflow:hidden;margin-bottom:24px;}
+.ex-block::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--block-color,var(--purple)),transparent);}
+.ex-block-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.ex-block-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);}
+.ex-block-sub{font-size:12px;color:var(--text2);margin-top:4px;}
+.ex-block-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.ex-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid;white-space:nowrap;}
+.ex-badge-time{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.07);}
+.rubric-wrap{overflow-x:auto;margin-top:16px;}
+.rubric{width:100%;border-collapse:collapse;font-size:12px;}
+.rubric th{background:var(--bg2);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border2);color:var(--text2);}
+.rubric td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+.rubric td:first-child{font-weight:600;color:var(--text);font-size:12px;min-width:120px;}
+.rubric tr:hover td{background:var(--bg2);}
+.rubric .c-ins{color:var(--red);} .rubric .c-bas{color:var(--yellow);} .rubric .c-prof{color:var(--cyan);} .rubric .c-exc{color:var(--green);}
+.dica-box{background:var(--bg3);border:1px solid rgba(255,224,51,.2);border-radius:10px;padding:20px 24px;position:relative;overflow:hidden;margin-top:20px;}
+.dica-box::before{content:'💡';position:absolute;right:20px;top:16px;font-size:36px;opacity:.15;}
+.dica-title{font-family:var(--display);font-size:11px;font-weight:700;color:var(--yellow);letter-spacing:.1em;margin-bottom:8px;}
+.dica-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.dica-list li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;}
+.dica-list li::before{content:'→';color:var(--yellow);flex-shrink:0;}
+.nav-bar{display:flex;gap:10px;flex-wrap:wrap;padding:24px 40px;border-top:1px solid var(--border);margin-top:40px;}
+.nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:10px 20px;border-radius:6px;text-decoration:none;border:1px solid;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.nav-btn-sec{color:var(--text2);border-color:var(--border2);background:transparent;}
+.nav-btn-sec:hover{color:var(--text);border-color:var(--text2);}
+.nav-btn-pri{color:var(--orange);border-color:rgba(255,122,26,.3);background:rgba(255,122,26,.06);}
+.nav-btn-pri:hover{background:rgba(255,122,26,.14);}
+.nav-btn-aula{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.nav-btn-aula:hover{background:rgba(0,229,255,.14);}
+footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-left{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.footer-sig{color:var(--purple);font-weight:700;}
+@media(max-width:768px){header{padding:28px 20px 20px;}.header-meta{display:none;}.container{padding:0 20px 60px;}.nav-bar{padding:20px;}}
 </style>
 </head>
 <body>
+<header>
+  <div class="header-tag">S14 · GUIA DE ATIVIDADES · ARQ-001</div>
+  <h1 class="header-title">Guia — Semana 14<br><span>Memória Cache</span></h1>
+  <p class="header-subtitle">Rubricas de avaliação, orientações e dicas para as atividades práticas</p>
+  <div class="header-meta">1º SEMESTRE / 2026<br>FATEC · ADS<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</header>
 <div class="container">
-<div class="header">
-<h1>📚 Guia - Semana 14</h1>
-<p>Memória Cache</p>
-<div class="nav-buttons">
-<a href="arquitetura_semana13_guia.html" class="nav-btn">⬅️ Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana14_aula.html" class="nav-btn">📖 Aula</a>
-<a href="arquitetura_semana15_guia.html" class="nav-btn">Próxima ➡️</a>
+
+  <div class="section-label">01 · Simulação de Cache</div>
+  <div class="ex-block" style="--block-color:#ff7a1a">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 1 — Simulação de Cache</div>
+        <div class="ex-block-sub">📋 Objetivo: Simular mapeamento direto passo a passo</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 30 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Tabela de Simulação</td><td class="c-ins">Sem tabela ou completamente errada</td><td class="c-bas">Tabela com erros em mais de 2 acessos</td><td class="c-prof">Tabela correta para todos os 8 acessos</td><td class="c-exc">Tabela com estado completo da cache após cada acesso</td></tr>
+          <tr><td>Identificação HIT/MISS</td><td class="c-ins">Mais de 50% das classificações erradas</td><td class="c-bas">Alguns erros de classificação</td><td class="c-prof">Todos classificados corretamente</td><td class="c-exc">Identifica tipo de miss (cold, conflict, capacity)</td></tr>
+          <tr><td>Cálculo do Índice</td><td class="c-ins">Não calcula índice da linha</td><td class="c-bas">Calcula com erros</td><td class="c-prof">Índice = (endereço / bloco) mod 8 aplicado correto</td><td class="c-exc">Mostra decomposição bit a bit do endereço</td></tr>
+          <tr><td>Taxa de Acerto</td><td class="c-ins">Não calcula</td><td class="c-bas">Cálculo errado</td><td class="c-prof">Hit rate = hits / total calculado corretamente</td><td class="c-exc">Compara com cache fully-associative na mesma sequência</td></tr>
+          <tr><td>Análise do Thrashing</td><td class="c-ins">Não identifica conflito</td><td class="c-bas">Menciona conflito sem explicar</td><td class="c-prof">Explica por que 0, 4, 8, 12 colidem na mesma linha</td><td class="c-exc">Propõe mudança de mapeamento para resolver</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>Índice da linha = (número do bloco) mod 8, onde número do bloco = endereço ÷ 4</li>
+        <li>Endereços 0, 4, 8, 12... mapeiam para o bloco 0, 1, 2, 3... → índices 0, 1, 2, 3 na cache</li>
+        <li>O padrão 0, 4, 0, 4 causa thrashing: ambos mapeiam para a linha 0 → miss constante!</li>
+        <li>Monte a tabela: acesso | bloco | índice | tag | H/M | estado da cache</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">02 · Cálculo de Desempenho</div>
+  <div class="ex-block" style="--block-color:#ffe033">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 2 — Cálculo de Desempenho</div>
+        <div class="ex-block-sub">📋 Objetivo: Calcular e comparar AMAT de dois sistemas de cache</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 35 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>AMAT Sistema A</td><td class="c-ins">Fórmula errada ou não calculado</td><td class="c-bas">Fórmula correta, erro aritmético</td><td class="c-prof">AMAT_A = 2 + 0.1×100 = 12ns calculado</td><td class="c-exc">Decompõe em contribuição de hit e miss</td></tr>
+          <tr><td>AMAT Sistema B</td><td class="c-ins">Fórmula errada ou não calculado</td><td class="c-bas">Fórmula correta, erro aritmético</td><td class="c-prof">AMAT_B = 4 + 0.04×100 = 8ns calculado</td><td class="c-exc">Justifica por que hit time maior pode valer a pena</td></tr>
+          <tr><td>Comparação</td><td class="c-ins">Sem comparação</td><td class="c-bas">Compara apenas o número final</td><td class="c-prof">Conclui que B é melhor com justificativa</td><td class="c-exc">Calcula ponto de cruzamento: qual hit rate tornaria A melhor?</td></tr>
+          <tr><td>Interpretação</td><td class="c-ins">Sem interpretação</td><td class="c-bas">Interpretação superficial</td><td class="c-prof">Conecta AMAT ao IPC do processador</td><td class="c-exc">Estima impacto em programa com 40% de memory accesses</td></tr>
+          <tr><td>Qualidade Técnica</td><td class="c-ins">Muitos erros conceituais</td><td class="c-bas">Conceitos corretos com lacunas</td><td class="c-prof">Demonstra domínio de AMAT e hit/miss rate</td><td class="c-exc">Análise digna de artigo técnico</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>AMAT = Hit Time + Miss Rate × Miss Penalty</li>
+        <li>Sistema A: AMAT = 2 + (1 − 0.90) × 100 = 2 + 10 = 12ns</li>
+        <li>Sistema B: AMAT = 4 + (1 − 0.96) × 100 = 4 + 4 = 8ns → B vence!</li>
+        <li>Conclusão: aumentar a associatividade reduz misses o suficiente para compensar o maior hit time</li>
+        <li>Para o ponto de cruzamento: 2 + (1−h)×100 = 4 + 0.04×100 → h = 0.98 → abaixo de 98%, B é melhor</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">03 · Comparação de Políticas</div>
+  <div class="ex-block" style="--block-color:#b36bff">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 3 — Comparação de Políticas</div>
+        <div class="ex-block-sub">📋 Objetivo: Comparar LRU vs FIFO na mesma sequência de acessos</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 25 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th class="c-exc"><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Simulação LRU</td><td class="c-ins">Simulação incorreta</td><td class="c-bas">Pequenos erros de ordem</td><td class="c-prof">Simulação correta de todos os acessos</td><td class="c-exc">Mostra estado completo (MRU/LRU bits) a cada passo</td></tr>
+          <tr><td>Simulação FIFO</td><td class="c-ins">Simulação incorreta</td><td class="c-bas">Pequenos erros de ordem de inserção</td><td class="c-prof">Simulação correta de todos os acessos</td><td class="c-exc">Mostra fila explícita a cada passo</td></tr>
+          <tr><td>Contagem de Misses</td><td class="c-ins">Contagem errada para ambos</td><td class="c-bas">Um dos dois correto</td><td class="c-prof">Ambos contados corretamente</td><td class="c-exc">Classifica cada miss como cold, conflict ou capacity</td></tr>
+          <tr><td>Análise Comparativa</td><td class="c-ins">Sem análise</td><td class="c-bas">Apenas conclui qual foi melhor</td><td class="c-prof">Explica por que um foi melhor neste padrão</td><td class="c-exc">Propõe sequência onde FIFO supera LRU (anomalia de Belady)</td></tr>
+          <tr><td>Conclusão Crítica</td><td class="c-ins">Sem conclusão</td><td class="c-bas">Conclusão genérica</td><td class="c-prof">Relaciona a padrões de acesso reais</td><td class="c-exc">Discute custo de implementação de LRU em hardware</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>LRU: ao fazer eviction, remove o item que está há mais tempo sem ser acessado</li>
+        <li>FIFO: remove o item que entrou há mais tempo na cache (independe de acessos recentes)</li>
+        <li>Monte duas tabelas paralelas, passo a passo, com o estado das 2 vias de cada conjunto</li>
+        <li>Neste padrão A, B, C, A, B, D, A, B: note que LRU favorece A e B que retornam; FIFO pode despejar algo que será usado logo</li>
+        <li>Bônus: pesquise "Anomalia de Belady" — FIFO pode ter MAIS misses com cache maior!</li>
+      </ul>
+    </div>
+  </div>
+
 </div>
+<div class="nav-bar">
+  <a href="index.html" class="nav-btn nav-btn-sec">⬅ Índice</a>
+  <a href="arquitetura_semana13_guia.html" class="nav-btn nav-btn-sec">← Guia Anterior</a>
+  <a href="arquitetura_semana14_aula.html" class="nav-btn nav-btn-aula">📖 Ver Aula</a>
+  <a href="arquitetura_semana15_guia.html" class="nav-btn nav-btn-pri">Próximo Guia →</a>
 </div>
-<div class="section">
-<h2>✏️ Exercício 1: Simulação de Cache</h2>
-<p><strong>📋 Objetivo:</strong> Simular operações de cache</p>
-<p><strong>⏱️ Duração:</strong> 30 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 2: Cálculo de Desempenho</h2>
-<p><strong>📋 Objetivo:</strong> Determinar taxa de acerto</p>
-<p><strong>⏱️ Duração:</strong> 35 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 3: Comparação de Políticas</h2>
-<p><strong>📋 Objetivo:</strong> Avaliar diferentes estratégias</p>
-<p><strong>⏱️ Duração:</strong> 25 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="nav-buttons">
-<a href="arquitetura_semana13_guia.html" class="nav-btn">⬅️ Guia Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana15_guia.html" class="nav-btn">Próximo Guia ➡️</a>
-</div>
-</div>
+<footer>
+  <div class="footer-left"><span class="footer-sig">ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES</span><br>Guia · Semana 14 · Memória Cache<br>Centro Paula Souza · FATEC · 2026</div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">ARQ-001 · S14<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</footer>
 </body>
 </html>

@@ -3,263 +3,183 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia - Semana 15</title>
+<title>Guia — Semana 15 | Arquitetura de Computadores</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);min-height:100vh;padding:20px}
-.container{max-width:1200px;margin:0 auto}
-.header{background:white;border-radius:15px;padding:30px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-.header h1{color:#1e3c72;font-size:2.2em;margin-bottom:10px}
-.nav-buttons{display:flex;gap:15px;margin-top:20px}
-.nav-btn{padding:12px 24px;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;text-decoration:none;border-radius:8px;font-weight:bold;transition:all 0.3s}
-.nav-btn.disabled{opacity:0.5;pointer-events:none}
-.section{background:white;border-radius:12px;padding:30px;margin-bottom:25px;box-shadow:0 5px 20px rgba(0,0,0,0.2)}
-.section h2{color:#1e3c72;font-size:1.8em;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid #2a5298}
-.rubric-table{width:100%;border-collapse:collapse;margin:20px 0;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-radius:8px;overflow:hidden}
-.rubric-table th{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;padding:15px;text-align:left}
-.rubric-table td{padding:12px 15px;border-bottom:1px solid #e0e0e0}
-.rubric-table tr:hover{background:#f5f5f5}
-.criterion{font-weight:bold;color:#1e3c72}
-.solution-box{background:linear-gradient(to right,#e8f5e9,#f1f8e9);border-left:5px solid #4caf50;padding:25px;margin:20px 0;border-radius:8px}
-.solution-box h3{color:#2e7d32;margin-bottom:15px}
+:root {
+  --bg: #0b0f0e; --bg2: #111715; --bg3: #161d1b;
+  --green: #00ff88; --green2: #00c967; --cyan: #00e5ff;
+  --yellow: #ffe033; --orange: #ff7a1a; --red: #ff3b5c; --purple: #b36bff;
+  --text: #e8f0ec; --text2: #7a9488; --text3: #3a5248;
+  --border: #1e2e28; --border2: #243830;
+  --mono: 'Space Mono', monospace; --display: 'Unbounded', sans-serif; --body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");opacity:.4;}
+header{padding:48px 40px 32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.header-tag{font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.header-tag::before{content:'';width:24px;height:1px;background:var(--purple);}
+.header-title{font-family:var(--display);font-size:clamp(20px,3.5vw,40px);font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--text);max-width:760px;}
+.header-title span{color:var(--purple);}
+.header-subtitle{margin-top:10px;font-size:14px;color:var(--text2);max-width:580px;line-height:1.6;font-weight:300;}
+.header-meta{position:absolute;top:48px;right:40px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.container{max-width:1200px;margin:0 auto;padding:0 40px 80px;}
+.section-label{font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:20px;margin-top:52px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+.ex-block{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:32px;position:relative;overflow:hidden;margin-bottom:24px;}
+.ex-block::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--block-color,var(--purple)),transparent);}
+.ex-block-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.ex-block-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);}
+.ex-block-sub{font-size:12px;color:var(--text2);margin-top:4px;}
+.ex-block-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.ex-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid;white-space:nowrap;}
+.ex-badge-time{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.07);}
+.rubric-wrap{overflow-x:auto;margin-top:16px;}
+.rubric{width:100%;border-collapse:collapse;font-size:12px;}
+.rubric th{background:var(--bg2);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border2);color:var(--text2);}
+.rubric td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+.rubric td:first-child{font-weight:600;color:var(--text);font-size:12px;min-width:120px;}
+.rubric tr:hover td{background:var(--bg2);}
+.rubric .c-ins{color:var(--red);}.rubric .c-bas{color:var(--yellow);}.rubric .c-prof{color:var(--cyan);}.rubric .c-exc{color:var(--green);}
+.dica-box{background:var(--bg3);border:1px solid rgba(255,224,51,.2);border-radius:10px;padding:20px 24px;position:relative;overflow:hidden;margin-top:20px;}
+.dica-box::before{content:'💡';position:absolute;right:20px;top:16px;font-size:36px;opacity:.15;}
+.dica-title{font-family:var(--display);font-size:11px;font-weight:700;color:var(--yellow);letter-spacing:.1em;margin-bottom:8px;}
+.dica-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.dica-list li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;}
+.dica-list li::before{content:'→';color:var(--yellow);flex-shrink:0;}
+.nav-bar{display:flex;gap:10px;flex-wrap:wrap;padding:24px 40px;border-top:1px solid var(--border);margin-top:40px;}
+.nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:10px 20px;border-radius:6px;text-decoration:none;border:1px solid;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.nav-btn-sec{color:var(--text2);border-color:var(--border2);background:transparent;}
+.nav-btn-sec:hover{color:var(--text);border-color:var(--text2);}
+.nav-btn-pri{color:var(--red);border-color:rgba(255,59,92,.3);background:rgba(255,59,92,.06);}
+.nav-btn-pri:hover{background:rgba(255,59,92,.14);}
+.nav-btn-aula{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.nav-btn-aula:hover{background:rgba(0,229,255,.14);}
+footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-left{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.footer-sig{color:var(--purple);font-weight:700;}
+@media(max-width:768px){header{padding:28px 20px 20px;}.header-meta{display:none;}.container{padding:0 20px 60px;}.nav-bar{padding:20px;}}
 </style>
 </head>
 <body>
+<header>
+  <div class="header-tag">S15 · GUIA DE ATIVIDADES · ARQ-001</div>
+  <h1 class="header-title">Guia — Semana 15<br><span>Entrada e Saída (I/O)</span></h1>
+  <p class="header-subtitle">Rubricas de avaliação, orientações e dicas para as atividades práticas</p>
+  <div class="header-meta">1º SEMESTRE / 2026<br>FATEC · ADS<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</header>
 <div class="container">
-<div class="header">
-<h1>📚 Guia - Semana 15</h1>
-<p>Entrada e Saída (I/O)</p>
-<div class="nav-buttons">
-<a href="arquitetura_semana14_guia.html" class="nav-btn">⬅️ Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana15_aula.html" class="nav-btn">📖 Aula</a>
-<a href="arquitetura_semana16_guia.html" class="nav-btn">Próxima ➡️</a>
+
+  <div class="section-label">01 · Comparação de Técnicas</div>
+  <div class="ex-block" style="--block-color:#ff3b5c">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 1 — Comparação de Técnicas de I/O</div>
+        <div class="ex-block-sub">📋 Objetivo: Avaliar Polling × Interrupção × DMA</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 30 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Tabela Comparativa</td><td class="c-ins">Menos de 2 técnicas ou incompleta</td><td class="c-bas">3 técnicas com dados superficiais</td><td class="c-prof">Tabela completa com critérios relevantes</td><td class="c-exc">Inclui dados numéricos (% CPU, MB/s)</td></tr>
+          <tr><td>Uso de CPU (Polling)</td><td class="c-ins">Não menciona busy-wait</td><td class="c-bas">Menciona sem quantificar</td><td class="c-prof">Explica que CPU fica 100% ocupada</td><td class="c-exc">Calcula ciclos desperdiçados por byte transferido</td></tr>
+          <tr><td>Mecanismo de Interrupção</td><td class="c-ins">Confunde com polling</td><td class="c-bas">Descreve superficialmente</td><td class="c-prof">Descreve salvar contexto → ISR → restaurar</td><td class="c-exc">Menciona overhead de interrupção e latência de resposta</td></tr>
+          <tr><td>Vantagens do DMA</td><td class="c-ins">Não identifica vantagem</td><td class="c-bas">Diz que libera a CPU</td><td class="c-prof">Explica transferência direta mem↔dispositivo</td><td class="c-exc">Analisa bus contention e DMA cycles stealing</td></tr>
+          <tr><td>Cenário de Uso</td><td class="c-ins">Sem indicação de cenários</td><td class="c-bas">Cenários muito genéricos</td><td class="c-prof">Cenário específico para cada técnica</td><td class="c-exc">Justifica com base em taxa de dados e latência exigida</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>Polling: simples, CPU fica presa em loop. Ideal para: dispositivos muito rápidos ou sistemas embarcados simples</li>
+        <li>Interrupção: CPU faz outras tarefas, mas há overhead de contexto (~100 ciclos). Ideal para: teclado, mouse, eventos esporádicos</li>
+        <li>DMA: CPU configura e esquece. Ideal para: transferências grandes (disco, rede, áudio). Custo: controlador extra</li>
+        <li>Para 1MB a 100 MB/s com polling: CPU ocupada por 10ms — isso é ~20 milhões de ciclos a 2GHz desperdiçados!</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">02 · Simulação de Interrupções</div>
+  <div class="ex-block" style="--block-color:#ff7a1a">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 2 — Simulação de Interrupções</div>
+        <div class="ex-block-sub">📋 Objetivo: Simular tratamento de IRQ com prioridades</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 35 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Timeline</td><td class="c-ins">Sem representação temporal</td><td class="c-bas">Timeline parcialmente correto</td><td class="c-prof">Timeline correto com todos os eventos</td><td class="c-exc">Timeline com granularidade em μs e ciclos</td></tr>
+          <tr><td>Tratamento de IRQ Teclado</td><td class="c-ins">Não representa o fluxo</td><td class="c-bas">Representa parcialmente</td><td class="c-prof">Save context → ISR → restore → return</td><td class="c-exc">Inclui latência de reconhecimento do controlador</td></tr>
+          <tr><td>Preempção pelo Disco</td><td class="c-ins">Não trata prioridade</td><td class="c-bas">Menciona sem representar</td><td class="c-prof">Mostra ISR do teclado interrompida pelo disco</td><td class="c-exc">Discute níveis de interrupção (PIC/APIC) e mascaramento</td></tr>
+          <tr><td>Retorno ao Programa</td><td class="c-ins">Não representa retorno</td><td class="c-bas">Retorno incorreto</td><td class="c-prof">Fluxo correto: disco ISR → teclado ISR → programa</td><td class="c-exc">Explica impacto no registrador PC a cada transição</td></tr>
+          <tr><td>Diagrama</td><td class="c-ins">Sem diagrama</td><td class="c-bas">Diagrama incompleto</td><td class="c-prof">Diagrama claro e correto</td><td class="c-exc">Diagrama de fluxo com registradores salvos e PC</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>Use uma linha do tempo horizontal: t=0ms (programa), t=5ms (IRQ teclado), t=7ms (IRQ disco)</li>
+        <li>Salvar contexto = empilhar registradores + PC na stack</li>
+        <li>Disco tem prioridade maior → pode interromper a ISR do teclado (interrupção aninhada)</li>
+        <li>Ordem de retorno: ISR disco finaliza → continua ISR teclado → continua programa original</li>
+        <li>A instrução IRET/RTI restaura o contexto e retorna ao ponto exato de interrupção</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">03 · Projeto de Interface</div>
+  <div class="ex-block" style="--block-color:#b36bff">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 3 — Projeto de Interface I2C</div>
+        <div class="ex-block-sub">📋 Objetivo: Especificar controlador de sensor de temperatura</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 25 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Endereço I2C</td><td class="c-ins">Não especifica</td><td class="c-bas">Endereço sem justificativa</td><td class="c-prof">Endereço de 7 bits com formato correto</td><td class="c-exc">Explica bit R/W e processo de arbitração</td></tr>
+          <tr><td>Mapa de Registradores</td><td class="c-ins">Sem registradores</td><td class="c-bas">1 ou 2 registradores apenas</td><td class="c-prof">Status, Data e Config com bits descritos</td><td class="c-exc">Cada bit de cada registrador descrito e justificado</td></tr>
+          <tr><td>Protocolo de Leitura</td><td class="c-ins">Sem protocolo</td><td class="c-bas">Etapas incompletas</td><td class="c-prof">START → ADDR+W → REG → ADDR+R → DATA → STOP</td><td class="c-exc">Inclui ACK/NACK e tratamento de erro</td></tr>
+          <tr><td>Interface com Driver SO</td><td class="c-ins">Sem considerar o SO</td><td class="c-bas">Menciona ioctl superficialmente</td><td class="c-prof">Descreve chamadas do driver: open, read, ioctl</td><td class="c-exc">Projeta struct de dados e interface sysfs/devfs</td></tr>
+          <tr><td>Criatividade Técnica</td><td class="c-ins">Cópia sem adaptação</td><td class="c-bas">Especificação básica funcional</td><td class="c-prof">Inclui modo de alerta por threshold</td><td class="c-exc">Adiciona modo de economia de energia e taxa configurável</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>I2C usa 2 fios: SDA (dados) e SCL (clock). Endereços são de 7 bits (0x00–0x7F)</li>
+        <li>Exemplo real: sensor LM75 usa endereço 0x48, registrador 0x00 = temperatura em 0.5°C steps</li>
+        <li>Protocolo de leitura: START, envie addr+W, envie número do registrador, repeated START, envie addr+R, leia byte, STOP</li>
+        <li>Registradores sugeridos: 0x00=Temp (16 bits, MSB first), 0x01=Config (bit 0 = shutdown mode), 0x02=T_high, 0x03=T_low</li>
+        <li>O driver do SO lê via <code>i2c_smbus_read_word_data()</code> no Linux</li>
+      </ul>
+    </div>
+  </div>
+
 </div>
+<div class="nav-bar">
+  <a href="index.html" class="nav-btn nav-btn-sec">⬅ Índice</a>
+  <a href="arquitetura_semana14_guia.html" class="nav-btn nav-btn-sec">← Guia Anterior</a>
+  <a href="arquitetura_semana15_aula.html" class="nav-btn nav-btn-aula">📖 Ver Aula</a>
+  <a href="arquitetura_semana16_guia.html" class="nav-btn nav-btn-pri">Próximo Guia →</a>
 </div>
-<div class="section">
-<h2>✏️ Exercício 1: Comparação de Técnicas</h2>
-<p><strong>📋 Objetivo:</strong> Avaliar I/O programado vs interrupção vs DMA</p>
-<p><strong>⏱️ Duração:</strong> 30 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 2: Simulação de Interrupções</h2>
-<p><strong>📋 Objetivo:</strong> Implementar tratamento de IRQ</p>
-<p><strong>⏱️ Duração:</strong> 35 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 3: Projeto de Interface</h2>
-<p><strong>📋 Objetivo:</strong> Especificar controlador de dispositivo</p>
-<p><strong>⏱️ Duração:</strong> 25 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="nav-buttons">
-<a href="arquitetura_semana14_guia.html" class="nav-btn">⬅️ Guia Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana16_guia.html" class="nav-btn">Próximo Guia ➡️</a>
-</div>
-</div>
+<footer>
+  <div class="footer-left"><span class="footer-sig">ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES</span><br>Guia · Semana 15 · Entrada e Saída (I/O)<br>Centro Paula Souza · FATEC · 2026</div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">ARQ-001 · S15<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</footer>
 </body>
 </html>

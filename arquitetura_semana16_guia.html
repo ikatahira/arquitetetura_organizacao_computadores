@@ -3,263 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia - Semana 16</title>
+<title>Guia — Semana 16 | Arquitetura de Computadores</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);min-height:100vh;padding:20px}
-.container{max-width:1200px;margin:0 auto}
-.header{background:white;border-radius:15px;padding:30px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-.header h1{color:#1e3c72;font-size:2.2em;margin-bottom:10px}
-.nav-buttons{display:flex;gap:15px;margin-top:20px}
-.nav-btn{padding:12px 24px;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;text-decoration:none;border-radius:8px;font-weight:bold;transition:all 0.3s}
-.nav-btn.disabled{opacity:0.5;pointer-events:none}
-.section{background:white;border-radius:12px;padding:30px;margin-bottom:25px;box-shadow:0 5px 20px rgba(0,0,0,0.2)}
-.section h2{color:#1e3c72;font-size:1.8em;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid #2a5298}
-.rubric-table{width:100%;border-collapse:collapse;margin:20px 0;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-radius:8px;overflow:hidden}
-.rubric-table th{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;padding:15px;text-align:left}
-.rubric-table td{padding:12px 15px;border-bottom:1px solid #e0e0e0}
-.rubric-table tr:hover{background:#f5f5f5}
-.criterion{font-weight:bold;color:#1e3c72}
-.solution-box{background:linear-gradient(to right,#e8f5e9,#f1f8e9);border-left:5px solid #4caf50;padding:25px;margin:20px 0;border-radius:8px}
-.solution-box h3{color:#2e7d32;margin-bottom:15px}
+:root {
+  --bg: #0b0f0e; --bg2: #111715; --bg3: #161d1b;
+  --green: #00ff88; --green2: #00c967; --cyan: #00e5ff;
+  --yellow: #ffe033; --orange: #ff7a1a; --red: #ff3b5c; --purple: #b36bff;
+  --text: #e8f0ec; --text2: #7a9488; --text3: #3a5248;
+  --border: #1e2e28; --border2: #243830;
+  --mono: 'Space Mono', monospace; --display: 'Unbounded', sans-serif; --body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");opacity:.4;}
+header{padding:48px 40px 32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.header-tag{font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.header-tag::before{content:'';width:24px;height:1px;background:var(--purple);}
+.header-title{font-family:var(--display);font-size:clamp(20px,3.5vw,40px);font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--text);max-width:760px;}
+.header-title span{color:var(--purple);}
+.header-subtitle{margin-top:10px;font-size:14px;color:var(--text2);max-width:580px;line-height:1.6;font-weight:300;}
+.header-meta{position:absolute;top:48px;right:40px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.container{max-width:1200px;margin:0 auto;padding:0 40px 80px;}
+.section-label{font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:20px;margin-top:52px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+.ex-block{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:32px;position:relative;overflow:hidden;margin-bottom:24px;}
+.ex-block::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--block-color,var(--purple)),transparent);}
+.ex-block-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.ex-block-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);}
+.ex-block-sub{font-size:12px;color:var(--text2);margin-top:4px;}
+.ex-block-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.ex-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid;white-space:nowrap;}
+.ex-badge-time{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.07);}
+.rubric-wrap{overflow-x:auto;margin-top:16px;}
+.rubric{width:100%;border-collapse:collapse;font-size:12px;}
+.rubric th{background:var(--bg2);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border2);color:var(--text2);}
+.rubric td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+.rubric td:first-child{font-weight:600;color:var(--text);font-size:12px;min-width:120px;}
+.rubric tr:hover td{background:var(--bg2);}
+.rubric .c-ins{color:var(--red);}.rubric .c-bas{color:var(--yellow);}.rubric .c-prof{color:var(--cyan);}.rubric .c-exc{color:var(--green);}
+.dica-box{background:var(--bg3);border:1px solid rgba(255,224,51,.2);border-radius:10px;padding:20px 24px;position:relative;overflow:hidden;margin-top:20px;}
+.dica-box::before{content:'💡';position:absolute;right:20px;top:16px;font-size:36px;opacity:.15;}
+.dica-title{font-family:var(--display);font-size:11px;font-weight:700;color:var(--yellow);letter-spacing:.1em;margin-bottom:8px;}
+.dica-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.dica-list li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;}
+.dica-list li::before{content:'→';color:var(--yellow);flex-shrink:0;}
+.code-hint{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:12px 16px;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--cyan);line-height:1.8;}
+.nav-bar{display:flex;gap:10px;flex-wrap:wrap;padding:24px 40px;border-top:1px solid var(--border);margin-top:40px;}
+.nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:10px 20px;border-radius:6px;text-decoration:none;border:1px solid;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.nav-btn-sec{color:var(--text2);border-color:var(--border2);background:transparent;}
+.nav-btn-sec:hover{color:var(--text);border-color:var(--text2);}
+.nav-btn-aula{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.nav-btn-aula:hover{background:rgba(0,229,255,.14);}
+footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-left{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.footer-sig{color:var(--purple);font-weight:700;}
+@media(max-width:768px){header{padding:28px 20px 20px;}.header-meta{display:none;}.container{padding:0 20px 60px;}.nav-bar{padding:20px;}}
 </style>
 </head>
 <body>
+<header>
+  <div class="header-tag">S16 · GUIA DE ATIVIDADES · ARQ-001</div>
+  <h1 class="header-title">Guia — Semana 16<br><span>Introdução ao ESP32</span></h1>
+  <p class="header-subtitle">Rubricas de avaliação, orientações e dicas para as atividades práticas</p>
+  <div class="header-meta">1º SEMESTRE / 2026<br>FATEC · ADS<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</header>
 <div class="container">
-<div class="header">
-<h1>📚 Guia - Semana 16</h1>
-<p>Introdução ao ESP32</p>
-<div class="nav-buttons">
-<a href="arquitetura_semana15_guia.html" class="nav-btn">⬅️ Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana16_aula.html" class="nav-btn">📖 Aula</a>
-<a href="arquitetura_semana17_guia.html" class="nav-btn">Próxima ➡️</a>
+
+  <div class="section-label">01 · Setup do ESP32</div>
+  <div class="ex-block" style="--block-color:#ffe033">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 1 — Setup do Ambiente</div>
+        <div class="ex-block-sub">📋 Objetivo: Configurar Arduino IDE para programar o ESP32</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 30 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Instalação</td><td class="c-ins">Não conseguiu instalar o board</td><td class="c-bas">Instalou com auxílio constante</td><td class="c-prof">Instalou corretamente de forma autônoma</td><td class="c-exc">Documentou o processo com capturas de tela</td></tr>
+          <tr><td>Configuração da Placa</td><td class="c-ins">Board incorreto selecionado</td><td class="c-bas">Board correto mas com erros de porta</td><td class="c-prof">Placa e porta COM configuradas corretamente</td><td class="c-exc">Explica cada opção de configuração (frequência, flash, etc)</td></tr>
+          <tr><td>Upload Bem-sucedido</td><td class="c-ins">Não conseguiu fazer upload</td><td class="c-bas">Upload com erros esporádicos</td><td class="c-prof">Upload confiável e monitor serial funcionando</td><td class="c-exc">Upload otimizado com boot mode e partition scheme</td></tr>
+          <tr><td>Saída Serial</td><td class="c-ins">Sem saída no monitor serial</td><td class="c-bas">Saída com lixo ou baud rate errado</td><td class="c-prof">"Hello, ESP32!" correto no baud 115200</td><td class="c-exc">Inclui chip info: modelo, revisão, MAC address</td></tr>
+          <tr><td>Relação com Conteúdo</td><td class="c-ins">Sem conexão teórica</td><td class="c-bas">Menciona que é um microcontrolador</td><td class="c-prof">Relaciona à arquitetura de ISA estudada</td><td class="c-exc">Identifica elementos do ESP32 nos conceitos do curso</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>URL do Board Manager: <strong>https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json</strong></li>
+        <li>Em Arquivo → Preferências → "URLs adicionais para Gerenciador de Placas"</li>
+        <li>Em Ferramentas → Placas → Gerenciador de Placas → pesquise "esp32" → instale "esp32 by Espressif Systems"</li>
+        <li>Se o upload falhar: segure o botão BOOT no ESP32 durante o upload, solte após "Connecting..."</li>
+        <li>Baud rate do Monitor Serial deve ser 115200 para coincidir com Serial.begin(115200)</li>
+      </ul>
+      <div class="code-hint">
+        // Código mínimo para verificar setup<br>
+        void setup() {<br>
+        &nbsp;&nbsp;Serial.begin(115200);<br>
+        &nbsp;&nbsp;Serial.println("Hello, ESP32!");<br>
+        &nbsp;&nbsp;Serial.printf("Chip: %s, Rev: %d\n", ESP.getChipModel(), ESP.getChipRevision());<br>
+        }<br>
+        void loop() {}
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">02 · Blink com ESP32</div>
+  <div class="ex-block" style="--block-color:#00ff88">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 2 — Blink e Temporização</div>
+        <div class="ex-block-sub">📋 Objetivo: Controlar GPIO e explorar temporização sem bloqueio</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 35 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Blink Básico</td><td class="c-ins">LED não pisca</td><td class="c-bas">LED pisca mas com código incorreto</td><td class="c-prof">LED pisca corretamente no GPIO 2</td><td class="c-exc">Explica por que GPIO 2 é o LED interno do ESP32</td></tr>
+          <tr><td>Padrão SOS</td><td class="c-ins">Não implementou</td><td class="c-bas">Padrão incorreto (·−−·)</td><td class="c-prof">SOS correto: ···−−−··· com timings Morse</td><td class="c-exc">Timings rigorosos: dot=100ms, dash=300ms, gap=100ms</td></tr>
+          <tr><td>millis() vs delay()</td><td class="c-ins">Não usa millis()</td><td class="c-bas">Usa millis() mas bloqueia mesmo assim</td><td class="c-prof">Loop não-bloqueante com millis() correto</td><td class="c-exc">Explica por que delay() impede outras tarefas</td></tr>
+          <tr><td>Variável de Frequência</td><td class="c-ins">Frequência fixa no código</td><td class="c-bas">Variável existe mas não funciona</td><td class="c-prof">Variável controla período do piscar</td><td class="c-exc">Lê variável do potenciômetro (ADC) em tempo real</td></tr>
+          <tr><td>Relação com Arquitetura</td><td class="c-ins">Sem conexão teórica</td><td class="c-bas">Menciona GPIO superficialmente</td><td class="c-prof">Relaciona GPIO ao subsistema de I/O estudado</td><td class="c-exc">Explica como o registrador de GPIO funciona internamente</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>GPIO 2 = LED azul interno. <code>pinMode(2, OUTPUT)</code> e <code>digitalWrite(2, HIGH/LOW)</code></li>
+        <li>Código Morse SOS: dot=·, dash=−. SOS = · · · − − − · · ·. Pausas: entre elementos=1 dot, entre letras=3 dots</li>
+        <li>Padrão millis(): <code>if (millis() - lastTime &gt;= interval) { lastTime = millis(); toggleLed(); }</code></li>
+        <li>delay() bloqueia a CPU (busy-wait!) — é exatamente o I/O programado (polling) que estudamos!</li>
+        <li>millis() usa o timer do sistema (interrupção periódica) — isso é I/O por interrupção em ação!</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">03 · Exploração de Recursos</div>
+  <div class="ex-block" style="--block-color:#00e5ff">
+    <div class="ex-block-header">
+      <div>
+        <div class="ex-block-title">✏️ Exercício 3 — Periféricos do ESP32</div>
+        <div class="ex-block-sub">📋 Objetivo: Explorar ADC, PWM e UART com conexão teórica</div>
+      </div>
+      <div class="ex-block-meta"><span class="ex-badge ex-badge-time">⏱ 25 min</span></div>
+    </div>
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr><th>Critério</th><th class="c-ins">Insuficiente (0–5)</th><th class="c-bas">Básico (6–7)</th><th class="c-prof">Proficiente (8–9)</th><th class="c-exc">Excelente (10)</th></tr></thead>
+        <tbody>
+          <tr><td>ADC (leitura analógica)</td><td class="c-ins">Não lê ADC</td><td class="c-bas">Lê mas não interpreta o valor</td><td class="c-prof">Converte o valor ADC (0–4095) para tensão (0–3.3V)</td><td class="c-exc">Testa linearidade e explica resolução de 12 bits</td></tr>
+          <tr><td>PWM (saída analógica)</td><td class="c-ins">Não gera PWM</td><td class="c-bas">PWM fixo sem controle de duty cycle</td><td class="c-prof">Fade suave com ledcWrite() e duty cycle variável</td><td class="c-exc">Explica canal LEDC e frequência do ESP32</td></tr>
+          <tr><td>UART (comunicação serial)</td><td class="c-ins">Não usa UART adicional</td><td class="c-bas">Usa apenas Serial0 (USB)</td><td class="c-prof">Usa Serial2 com TX/RX configurados em pinos específicos</td><td class="c-exc">Implementa protocolo simples de request-response</td></tr>
+          <tr><td>Conexão com Teoria de I/O</td><td class="c-ins">Sem conexão</td><td class="c-bas">Menciona que é I/O</td><td class="c-prof">Classifica cada periférico na técnica de I/O correta</td><td class="c-exc">Identifica DMA no ESP32 para SPI/I2S de alta velocidade</td></tr>
+          <tr><td>Documentação</td><td class="c-ins">Sem documentação</td><td class="c-bas">Código sem comentários</td><td class="c-prof">Código comentado e relatório da exploração</td><td class="c-exc">Inclui diagrama de blocos do subsistema de I/O do ESP32</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica-box">
+      <div class="dica-title">💡 ORIENTAÇÕES E DICAS</div>
+      <ul class="dica-list">
+        <li>ADC: <code>int val = analogRead(34);</code> → val de 0 a 4095 (12 bits). Tensão = val × 3.3 / 4095</li>
+        <li>PWM no ESP32 usa LEDC: <code>ledcSetup(0, 5000, 8)</code> (canal, freq, resolução), <code>ledcAttachPin(LED_PIN, 0)</code>, <code>ledcWrite(0, dutyCycle)</code></li>
+        <li>UART2: <code>Serial2.begin(9600, SERIAL_8N1, 16, 17)</code> — GPIO 16=RX, 17=TX</li>
+        <li>Conexão com teoria: ADC = I/O por polling (você pergunta quando quer). Interrupções GPIO = I/O por IRQ. SPI com DMA = DMA!</li>
+        <li>Datasheet ESP32 técnico: docs.espressif.com — veja seção "Peripheral Input/Output"</li>
+      </ul>
+    </div>
+  </div>
+
 </div>
+<div class="nav-bar">
+  <a href="index.html" class="nav-btn nav-btn-sec">⬅ Índice</a>
+  <a href="arquitetura_semana15_guia.html" class="nav-btn nav-btn-sec">← Guia Anterior</a>
+  <a href="arquitetura_semana16_aula.html" class="nav-btn nav-btn-aula">📖 Ver Aula</a>
 </div>
-<div class="section">
-<h2>✏️ Exercício 1: Setup do ESP32</h2>
-<p><strong>📋 Objetivo:</strong> Configurar Arduino IDE para ESP32</p>
-<p><strong>⏱️ Duração:</strong> 30 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 2: Blink com ESP32</h2>
-<p><strong>📋 Objetivo:</strong> Testar primeiro programa</p>
-<p><strong>⏱️ Duração:</strong> 35 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="section">
-<h2>✏️ Exercício 3: Exploração de Recursos</h2>
-<p><strong>📋 Objetivo:</strong> Testar diferentes periféricos</p>
-<p><strong>⏱️ Duração:</strong> 25 minutos</p>
-<h3>📊 Rubrica de Avaliação</h3>
-<table class="rubric-table">
-<thead><tr>
-<th>Critério</th>
-<th>Insuficiente (0-5)</th>
-<th>Básico (6-7)</th>
-<th>Proficiente (8-9)</th>
-<th>Excelente (10)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="criterion">Compreensão</td>
-<td>Não compreendeu conceitos</td>
-<td>Compreensão básica</td>
-<td>Boa compreensão</td>
-<td>Compreensão completa e profunda</td>
-</tr>
-<tr>
-<td class="criterion">Implementação</td>
-<td>Não implementou</td>
-<td>Implementação parcial</td>
-<td>Bem implementado</td>
-<td>Implementação exemplar</td>
-</tr>
-<tr>
-<td class="criterion">Funcionalidade</td>
-<td>Não funciona</td>
-<td>Funciona parcialmente</td>
-<td>Funciona bem</td>
-<td>Funciona perfeitamente</td>
-</tr>
-<tr>
-<td class="criterion">Qualidade Técnica</td>
-<td>Baixa qualidade</td>
-<td>Qualidade básica</td>
-<td>Boa qualidade</td>
-<td>Qualidade profissional</td>
-</tr>
-<tr>
-<td class="criterion">Documentação</td>
-<td>Sem documentação</td>
-<td>Documentação básica</td>
-<td>Bem documentado</td>
-<td>Documentação completa</td>
-</tr>
-<tr>
-<td class="criterion">Criatividade</td>
-<td>Sem criatividade</td>
-<td>Pouco criativo</td>
-<td>Criativo</td>
-<td>Muito criativo e inovador</td>
-</tr>
-</tbody>
-</table>
-<div class="solution-box">
-<h3>💡 Orientações e Dicas</h3>
-<p><strong>Passo a passo sugerido:</strong></p>
-<ol>
-<li>Analise cuidadosamente o problema proposto</li>
-<li>Identifique os conceitos teóricos envolvidos</li>
-<li>Planeje sua solução antes de implementar</li>
-<li>Execute com atenção aos detalhes técnicos</li>
-<li>Teste extensivamente sua solução</li>
-<li>Documente o processo e resultados</li>
-<li>Prepare uma apresentação clara dos resultados</li>
-</ol>
-<p><strong>💡 Dica Importante:</strong> Consulte o material da aula teórica, datasheet dos componentes (quando aplicável) e não hesite em pedir ajuda ao professor durante a atividade!</p>
-</div>
-</div>
-<div class="nav-buttons">
-<a href="arquitetura_semana15_guia.html" class="nav-btn">⬅️ Guia Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana17_guia.html" class="nav-btn">Próximo Guia ➡️</a>
-</div>
-</div>
+<footer>
+  <div class="footer-left"><span class="footer-sig">ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES</span><br>Guia · Semana 16 · Introdução ao ESP32<br>Centro Paula Souza · FATEC · 2026</div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">ARQ-001 · S16<br><span style="color:#b36bff">GUIA DE ATIVIDADES</span></div>
+</footer>
 </body>
 </html>
