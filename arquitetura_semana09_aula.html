@@ -3,79 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Semana 09 - Sensores e Atuadores</title>
+<title>Semana 15 — Sensores e Atuadores | Arquitetura de Computadores</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;background:#f0f2f5}
-.header{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;padding:20px 0;box-shadow:0 2px 10px rgba(0,0,0,0.2)}
-.header-content{max-width:1400px;margin:0 auto;padding:0 20px}
-.header h1{font-size:1.8em;margin-bottom:5px}
-.container{max-width:1400px;margin:20px auto;padding:0 20px}
-.section{background:white;border-radius:12px;padding:30px;margin-bottom:25px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
-.section h2{color:#1e3c72;font-size:1.8em;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid #2a5298}
-ul{margin-left:20px;margin-top:10px}
-li{margin-bottom:8px}
-.objetivos{background:#e6f2ff;padding:20px;border-radius:8px;border-left:5px solid #2a5298}
-.activity-card{background:#f8f9fa;border-left:5px solid#1e3c72;padding:20px;margin:15px 0;border-radius:8px}
-.nav-buttons{display:flex;gap:15px;margin-top:20px}
-.nav-btn{padding:12px 24px;background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:white;text-decoration:none;border-radius:8px;font-weight:bold;transition:all 0.3s}
-.nav-btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(30,60,114,0.3)}
-.nav-btn.disabled{opacity:0.5;pointer-events:none}
+:root { --accent: #b36bff; }
+
+:root {
+  --bg: #0b0f0e; --bg2: #111715; --bg3: #161d1b; --panel: #0e1310;
+  --green: #00ff88; --green2: #00c967; --cyan: #00e5ff;
+  --yellow: #ffe033; --orange: #ff7a1a; --red: #ff3b5c; --purple: #b36bff;
+  --text: #e8f0ec; --text2: #7a9488; --text3: #3a5248;
+  --border: #1e2e28; --border2: #243830;
+  --mono: 'Space Mono', monospace;
+  --display: 'Unbounded', sans-serif;
+  --body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:.4;
+}
+header{padding:48px 40px 32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent,var(--green)),transparent);}
+.header-tag{font-family:var(--mono);font-size:10px;color:var(--accent,var(--green2));
+  letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;}
+.header-tag::before{content:'';width:24px;height:1px;background:var(--accent,var(--green2));}
+.header-title{font-family:var(--display);font-size:clamp(20px,3.5vw,40px);
+  font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--text);max-width:760px;}
+.header-title span{color:var(--accent,var(--green));}
+.header-subtitle{margin-top:10px;font-size:14px;color:var(--text2);max-width:580px;line-height:1.6;font-weight:300;}
+.header-meta{position:absolute;top:48px;right:40px;text-align:right;
+  font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.container{max-width:1200px;margin:0 auto;padding:0 40px 80px;}
+.section-label{font-family:var(--mono);font-size:9px;color:var(--accent,var(--green2));
+  letter-spacing:.25em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:20px;margin-top:52px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+/* ── CARDS DE OBJETIVO/CONTEÚDO ── */
+.obj-box{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;
+  padding:28px 32px;position:relative;overflow:hidden;}
+.obj-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent,var(--green)),var(--cyan),var(--accent,var(--green)));}
+.obj-title{font-family:var(--display);font-size:12px;font-weight:700;
+  color:var(--accent,var(--green));letter-spacing:.1em;margin-bottom:16px;}
+.obj-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.obj-list li{font-size:14px;color:var(--text);line-height:1.5;
+  display:flex;align-items:flex-start;gap:10px;}
+.obj-list li::before{content:'▸';color:var(--accent,var(--green));font-size:12px;margin-top:2px;flex-shrink:0;}
+/* ── GRID DE EXERCÍCIOS ── */
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:24px 20px;position:relative;overflow:hidden;transition:all .2s;}
+.ex-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--card-color,var(--accent,var(--green)));opacity:.5;transition:opacity .2s;}
+.ex-card:hover{border-color:var(--border2);background:var(--bg2);transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.ex-card:hover::before{opacity:1;}
+.ex-num{font-family:var(--display);font-size:48px;font-weight:900;
+  color:var(--border2);position:absolute;top:10px;right:16px;line-height:1;pointer-events:none;}
+.ex-tag{font-family:var(--mono);font-size:9px;color:var(--card-color,var(--accent,var(--green)));
+  letter-spacing:.2em;margin-bottom:8px;}
+.ex-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.ex-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.ex-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid;}
+.ex-badge-time{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.07);}
+.ex-badge-obj {color:var(--cyan); border-color:rgba(0,229,255,.3); background:rgba(0,229,255,.07);}
+.ex-desc{font-size:12px;color:var(--text2);line-height:1.6;}
+/* ── RUBRICA ── */
+.rubric-wrap{overflow-x:auto;margin-top:16px;}
+.rubric{width:100%;border-collapse:collapse;font-size:12px;}
+.rubric th{background:var(--bg2);font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;padding:10px 14px;text-align:left;
+  border-bottom:1px solid var(--border2);color:var(--text2);}
+.rubric td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+.rubric td:first-child{font-weight:600;color:var(--text);font-size:12px;}
+.rubric tr:hover td{background:var(--bg2);}
+.rubric .c-ins  {color:var(--red);}
+.rubric .c-bas  {color:var(--yellow);}
+.rubric .c-prof {color:var(--cyan);}
+.rubric .c-exc  {color:var(--green);}
+/* ── DICA ── */
+.dica-box{background:var(--bg3);border:1px solid rgba(255,224,51,.2);border-radius:10px;
+  padding:20px 24px;position:relative;overflow:hidden;margin-top:16px;}
+.dica-box::before{content:'💡';position:absolute;right:20px;top:16px;font-size:36px;opacity:.15;}
+.dica-title{font-family:var(--display);font-size:11px;font-weight:700;
+  color:var(--yellow);letter-spacing:.1em;margin-bottom:8px;}
+.dica-text{font-size:13px;color:var(--text2);line-height:1.75;max-width:720px;}
+/* ── NAV ── */
+.nav-bar{display:flex;gap:10px;flex-wrap:wrap;padding:24px 40px;
+  border-top:1px solid var(--border);margin-top:40px;}
+.nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  padding:10px 20px;border-radius:6px;text-decoration:none;border:1px solid;
+  transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.nav-btn-sec{color:var(--text2);border-color:var(--border2);background:transparent;}
+.nav-btn-sec:hover{color:var(--text);border-color:var(--text2);}
+.nav-btn-pri{color:var(--accent,var(--green));border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.06);}
+.nav-btn-pri:hover{background:rgba(0,255,136,.14);}
+.nav-btn-guia{color:var(--purple);border-color:rgba(179,107,255,.3);background:rgba(179,107,255,.06);}
+.nav-btn-guia:hover{background:rgba(179,107,255,.14);}
+footer{border-top:1px solid var(--border);padding:28px 40px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-left{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
+.footer-sig{color:var(--accent,var(--green2));font-weight:700;}
+@media(max-width:768px){
+  header{padding:28px 20px 20px;} .header-meta{display:none;}
+  .container{padding:0 20px 60px;} .nav-bar{padding:20px;}
+  .ex-grid{grid-template-columns:1fr;}
+}
+
 </style>
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<h1>⚙️ Semana 09 - Sensores e Atuadores</h1>
-<p>Arquitetura e Organização de Computadores</p>
-</div>
-</div>
+
+<header>
+  <div class="header-tag">S15 · AULA TEÓRICA · ARQ-001</div>
+  <h1 class="header-title">Semana 15<br><span>Sensores e Atuadores</span></h1>
+  <p class="header-subtitle">Arquitetura e Organização de Computadores · Módulo 3 · Arquitetura Interna do Computador</p>
+  <div class="header-meta">
+    1º SEMESTRE / 2026<br>
+    FATEC · ADS<br>
+    <span style="color:#b36bff">AULA TEÓRICA</span>
+  </div>
+</header>
+
 <div class="container">
-<div class="section">
-<h2>🎯 Objetivos</h2>
-<div class="objetivos">
-<ul>
-<li>Integrar sensores ao Arduino</li>
-<li>Processar dados analógicos</li>
-<li>Controlar atuadores diversos</li>
-</ul>
+
+  <div class="section-label">01 · Objetivos de Aprendizagem</div>
+  <div class="obj-box">
+    <div class="obj-title">🎯 OBJETIVOS DA SEMANA</div>
+    <ul class="obj-list"><li>Integrar sensores de temperatura e ultrassônico ao Arduino</li><li>Processar sinais analógicos com analogRead()</li><li>Controlar atuadores: servomotores e buzzer</li><li>Exibir dados em display LCD 16x2</li></ul>
+  </div>
+
+  <div class="section-label">02 · Conteúdo Programático</div>
+  <div class="obj-box">
+    <div class="obj-title">📖 TÓPICOS ABORDADOS</div>
+    <ul class="obj-list"><li>Sensor de temperatura DHT11/DHT22</li><li>Sensor ultrassônico HC-SR04</li><li>Potenciômetros e entradas analógicas (ADC)</li><li>Displays LCD 16x2 com biblioteca LiquidCrystal</li><li>Servomotores e controle PWM</li><li>Buzzer passivo e geração de sons</li></ul>
+  </div>
+
+  <div class="section-label">03 · Atividades Práticas</div>
+  <div class="ex-grid">
+        <div class="ex-card" style="--card-color:#b36bff">
+          <div class="ex-num">01</div>
+          <div class="ex-tag">EX-01 · EXERCÍCIO</div>
+          <div class="ex-title">Termômetro Digital</div>
+          <div class="ex-meta">
+            <span class="ex-badge ex-badge-time">⏱ 30 min</span>
+            <span class="ex-badge ex-badge-obj">🎯 Ler e exibir temperatura no Serial Monitor</span>
+          </div>
+          <div class="ex-desc">Conecte o sensor DHT11. Leia temperatura e umidade com a biblioteca DHT. Exiba os valores no Serial Monitor a cada 2 segundos. Adicione alerta LED se T > 30°C.</div>
+        </div>
+        <div class="ex-card" style="--card-color:#ff7a1a">
+          <div class="ex-num">02</div>
+          <div class="ex-tag">EX-02 · EXERCÍCIO</div>
+          <div class="ex-title">Medidor de Distância</div>
+          <div class="ex-meta">
+            <span class="ex-badge ex-badge-time">⏱ 35 min</span>
+            <span class="ex-badge ex-badge-obj">🎯 Usar sensor ultrassônico HC-SR04</span>
+          </div>
+          <div class="ex-desc">Calcule a distância usando pulsoIN() e a fórmula física (velocidade do som). Exiba em cm no LCD e acione buzzer quando distância < 10 cm.</div>
+        </div>
+        <div class="ex-card" style="--card-color:#ff3b5c">
+          <div class="ex-num">03</div>
+          <div class="ex-tag">EX-03 · EXERCÍCIO</div>
+          <div class="ex-title">Sistema de Alerta</div>
+          <div class="ex-meta">
+            <span class="ex-badge ex-badge-time">⏱ 25 min</span>
+            <span class="ex-badge ex-badge-obj">🎯 Criar alarme com buzzer e LED baseado em sensor</span>
+          </div>
+          <div class="ex-desc">Combine sensor ultrassônico + buzzer + 2 LEDs: verde (seguro, >30 cm), vermelho + buzzer (perigo, <10 cm). Simule um sensor de ré de carro.</div>
+        </div></div>
+
 </div>
+
+<div class="nav-bar">
+  <a href="index.html" class="nav-btn nav-btn-sec">⬅ Índice</a>
+  <a href="arquitetura_semana08_aula.html" class="nav-btn nav-btn-sec">← Aula Anterior</a>
+  <a href="arquitetura_semana09_guia.html" class="nav-btn nav-btn-guia">✏️ Ir para o Guia</a>
+  <a href="arquitetura_semana10_aula.html" class="nav-btn nav-btn-pri">Próxima Aula →</a>
 </div>
-<div class="section">
-<h2>📖 Conteúdo</h2>
-<ul>
-<li>Sensores de temperatura (DHT11/DHT22)</li>
-<li>Sensor ultrassônico (HC-SR04)</li>
-<li>Potenciômetros e entradas analógicas</li>
-<li>Displays LCD 16x2</li>
-<li>Servomotores</li>
-<li>Buzzer e sons</li>
-</ul>
-</div>
-<div class="section">
-<h2>✏️ Atividades Práticas</h2>
-<div class="activity-card">
-<h3>Exercício 1: Termômetro Digital</h3>
-<p><strong>Objetivo:</strong> Ler e exibir temperatura</p>
-<p><strong>Duração:</strong> 30 minutos</p>
-</div>
-<div class="activity-card">
-<h3>Exercício 2: Medidor de Distância</h3>
-<p><strong>Objetivo:</strong> Usar sensor ultrassônico</p>
-<p><strong>Duração:</strong> 35 minutos</p>
-</div>
-<div class="activity-card">
-<h3>Exercício 3: Sistema de Alerta</h3>
-<p><strong>Objetivo:</strong> Criar alarme com buzzer e LED</p>
-<p><strong>Duração:</strong> 25 minutos</p>
-</div>
-</div>
-<div class="nav-buttons">
-<a href="arquitetura_semana08_aula.html" class="nav-btn">⬅️ Anterior</a>
-<a href="index_arquitetura.html" class="nav-btn">📚 Índice</a>
-<a href="arquitetura_semana09_guia.html" class="nav-btn">✏️ Guia</a>
-<a href="arquitetura_semana10_aula.html" class="nav-btn">Próxima ➡️</a>
-</div>
-</div>
+
+<footer>
+  <div class="footer-left">
+    <span class="footer-sig">ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES</span><br>
+    Semana 15 · Sensores e Atuadores<br>
+    Centro Paula Souza · FATEC · 2026
+  </div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">
+    ARQ-001 · S15<br>
+    <span style="color:#b36bff">AULA TEÓRICA</span>
+  </div>
+</footer>
+
 </body>
 </html>
