@@ -33,29 +33,50 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .bdg-c{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
 .bdg-y{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.06);}
 .bdg-p{color:var(--purple);border-color:rgba(179,107,255,.3);background:rgba(179,107,255,.06);}
+.bdg-o{color:var(--orange);border-color:rgba(255,122,26,.3);background:rgba(255,122,26,.06);}
 .container{max-width:1280px;margin:0 auto;padding:0 40px 80px;}
-/* overview */
-.overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:40px;}
+.overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:40px;}
 .ov{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px 18px;}
 .ov-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;}
 .ov-val{font-family:var(--display);font-size:22px;font-weight:900;}
 .ov-sub{font-size:11px;color:var(--text2);margin-top:3px;}
-/* sec label */
+.ementa-strip{margin-top:36px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:20px 24px;position:relative;overflow:hidden;}
+.ementa-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
+.ementa-lbl{font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:.25em;text-transform:uppercase;margin-bottom:10px;}
+.ementa-text{font-size:12px;color:var(--text2);line-height:1.8;}
+.ementa-text strong{color:var(--text);font-weight:500;}
+.legend{margin-top:24px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;padding:16px 20px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;}
+.legend-title{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;width:100%;margin-bottom:4px;}
+.leg-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2);}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .sec-label{font-family:var(--mono);font-size:9px;color:var(--lc,var(--green2));letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:20px;margin-top:52px;}
 .sec-label::after{content:'';flex:1;height:1px;background:var(--border2);}
 .sec-tag{font-family:var(--display);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;}
-.mod-title{font-family:var(--display);font-size:clamp(13px,2vw,18px);font-weight:700;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
-/* weeks grid */
-.weeks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
-.week-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px 18px 16px;position:relative;overflow:hidden;transition:all .2s;display:flex;flex-direction:column;gap:12px;}
+.mod-title{font-family:var(--display);font-size:clamp(13px,2vw,18px);font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.mod-desc{font-size:12px;color:var(--text2);margin-bottom:22px;line-height:1.65;max-width:780px;}
+.weeks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
+.week-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px 18px 16px;position:relative;overflow:hidden;transition:all .2s;display:flex;flex-direction:column;gap:10px;}
 .week-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ca,var(--green));opacity:.4;transition:opacity .2s;}
 .week-card:hover{border-color:var(--border2);background:var(--bg2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
 .week-card:hover::before{opacity:1;}
+.week-card.has-lab{border-color:rgba(255,122,26,.18);}
+.week-card.has-lab:hover{border-color:rgba(255,122,26,.45);}
 .wc-ghost{font-family:var(--display);font-size:52px;font-weight:900;color:var(--border2);position:absolute;top:6px;right:12px;line-height:1;pointer-events:none;user-select:none;}
-.wc-top{display:flex;align-items:center;gap:8px;}
+.wc-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .wc-num{font-family:var(--display);font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.05em;}
 .wc-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.15em;text-transform:uppercase;}
-.wc-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;padding-right:26px;}
+.kit{font-family:var(--mono);font-size:9px;letter-spacing:.06em;padding:2px 8px;border-radius:3px;border:1px solid;}
+.kit-arduino{color:var(--orange);border-color:rgba(255,122,26,.4);background:rgba(255,122,26,.09);}
+.kit-esp32{color:var(--purple);border-color:rgba(179,107,255,.4);background:rgba(179,107,255,.09);}
+.kit-sim{color:var(--yellow);border-color:rgba(255,224,51,.4);background:rgba(255,224,51,.09);}
+.kit-hw{color:var(--cyan);border-color:rgba(0,229,255,.4);background:rgba(0,229,255,.09);}
+.wc-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;padding-right:28px;}
+.wc-topics{font-size:11px;color:var(--text2);line-height:1.6;padding-right:28px;}
+.lab-box{background:rgba(255,122,26,.055);border:1px solid rgba(255,122,26,.22);border-radius:7px;padding:11px 13px;display:flex;flex-direction:column;gap:5px;}
+.lab-title{font-family:var(--mono);font-size:9px;color:var(--orange);letter-spacing:.14em;text-transform:uppercase;}
+.lab-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+.lab-anchor{font-size:10px;color:var(--text3);font-style:italic;margin-top:4px;padding-top:6px;border-top:1px solid rgba(255,122,26,.16);}
+.lab-anchor strong{color:var(--text3);font-style:normal;}
 .wc-links{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;}
 .wl{font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:6px 12px;border-radius:5px;text-decoration:none;border:1px solid;transition:all .2s;}
 .wl-aula{color:var(--cyan);border-color:rgba(0,229,255,.25);background:rgba(0,229,255,.06);}
@@ -64,8 +85,18 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .wl-guia:hover{background:rgba(0,255,136,.15);border-color:var(--green);}
 .wl-proj{color:var(--yellow);border-color:rgba(255,224,51,.25);background:rgba(255,224,51,.06);}
 .wl-proj:hover{background:rgba(255,224,51,.15);border-color:var(--yellow);}
-.wl-special{color:var(--orange);border-color:rgba(255,122,26,.25);background:rgba(255,122,26,.06);}
-.wl-special:hover{background:rgba(255,122,26,.15);border-color:var(--orange);}
+.wl-lab{color:var(--orange);border-color:rgba(255,122,26,.3);background:rgba(255,122,26,.07);}
+.wl-lab:hover{background:rgba(255,122,26,.18);border-color:var(--orange);}
+.wl-special{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.wl-special:hover{background:rgba(0,229,255,.15);border-color:var(--cyan);}
+.card-special{border-color:rgba(0,229,255,.22) !important;}
+.card-final{border-color:rgba(255,224,51,.3) !important;background:rgba(255,224,51,.025) !important;}
+.nota-ped{margin-top:48px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:24px 28px;position:relative;overflow:hidden;}
+.nota-ped::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green2),transparent);}
+.nota-ped-lbl{font-family:var(--mono);font-size:9px;color:var(--green2);letter-spacing:.25em;text-transform:uppercase;margin-bottom:16px;}
+.nota-ped-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+.nota-col-lbl{font-family:var(--mono);font-size:10px;margin-bottom:6px;}
+.nota-col-body{font-size:11px;color:var(--text2);line-height:1.7;}
 footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 .ft-l{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;}
 .ft-sig{color:var(--green2);font-weight:700;}
@@ -80,263 +111,418 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
 <body>
 
 <header>
-  <div class="hdr-tag">ARQ-001 · Índice da Disciplina</div>
+  <div class="hdr-tag">ARQ-001 · Índice da Disciplina · 1º Semestre 2026</div>
   <h1 class="hdr-title">Arquitetura e<br><span>Organização de Computadores</span></h1>
-  <p class="hdr-sub">Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas · Centro Paula Souza</p>
+  <p class="hdr-sub">Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas · Centro Paula Souza · FATEC</p>
   <div class="hdr-badges">
-    <span class="bdg bdg-g">⚙ 21 SEMANAS</span>
+    <span class="bdg bdg-g">⚙ 20 SEMANAS</span>
     <span class="bdg bdg-c">⏱ 80 HORAS-AULA</span>
-    <span class="bdg bdg-y">🔧 ARDUINO + ESP32</span>
+    <span class="bdg bdg-o">🔬 12 LABS PRÁTICOS</span>
+    <span class="bdg bdg-y">🧪 ARDUINO + ESP32</span>
     <span class="bdg bdg-p">💻 TEORIA + PRÁTICA</span>
   </div>
-  <div class="hdr-meta">1º SEMESTRE / 2026<br>FATEC · ADS<br><span style="color:var(--green2)">STATUS: ATIVO</span></div>
+  <div class="hdr-meta">1º SEMESTRE / 2026<br>FATEC · ADS · 1º SEM<br><span style="color:var(--green2)">STATUS: ATIVO</span></div>
 </header>
 
 <div class="container">
 
   <div class="overview">
     <div class="ov"><div class="ov-lbl">Módulos</div><div class="ov-val" style="color:var(--cyan)">04</div><div class="ov-sub">blocos temáticos</div></div>
-    <div class="ov"><div class="ov-lbl">Semanas</div><div class="ov-val" style="color:var(--green)">21</div><div class="ov-sub">aulas semanais</div></div>
-    <div class="ov"><div class="ov-lbl">Hardware</div><div class="ov-val" style="color:var(--yellow);font-size:15px;margin-top:4px;">ESP32</div><div class="ov-sub">+ Arduino Uno</div></div>
+    <div class="ov"><div class="ov-lbl">Semanas</div><div class="ov-val" style="color:var(--green)">20</div><div class="ov-sub">aulas semanais</div></div>
     <div class="ov"><div class="ov-lbl">Carga Horária</div><div class="ov-val" style="color:var(--purple)">80h</div><div class="ov-sub">total da disciplina</div></div>
-    <div class="ov"><div class="ov-lbl">Destaque S07</div><div class="ov-val" style="color:var(--orange);font-size:14px;margin-top:4px;">Placa-Mãe</div><div class="ov-sub">atividade especial</div></div>
+    <div class="ov"><div class="ov-lbl">Labs Práticos</div><div class="ov-val" style="color:var(--orange)">12</div><div class="ov-sub">Arduino + ESP32</div></div>
+    <div class="ov"><div class="ov-lbl">Avaliações</div><div class="ov-val" style="color:var(--yellow)">02</div><div class="ov-sub">provas + projeto</div></div>
+  </div>
+
+  <div class="ementa-strip">
+    <div class="ementa-lbl">📋 Ementa — PPC ADS 2026 · FATEC / Centro Paula Souza</div>
+    <div class="ementa-text">
+      <strong>Bases numéricas e codificação de dados</strong> · <strong>Introdução à lógica digital</strong> · Conceitos básicos de arquitetura computacional incluindo <strong>gerações de computadores, níveis de computação, processadores, canais, periféricos, modo de endereçamento, tipo de dados, conjunto de instruções, interrupções</strong> · <strong>Sistemas paralelos</strong> · Estudo da <strong>microarquitetura, interrupções e sistemas de entrada/saída (I/O)</strong> · Exploração de <strong>sistemas de memória, hierarquias de memória e gerenciamento de memória</strong> · Análise de <strong>sistemas paralelos e distribuídos</strong>, além da <strong>interconexão de componentes de hardware (buses e interfaces de comunicação)</strong> · <strong>Sistemas operacionais: conceitos e funções</strong> · <strong>Linguagens e ferramentas</strong> · <strong>Organização de arquivos</strong> · <strong>Arquiteturas RISC e CISC</strong>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">legenda — tipos de atividade prática</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div><strong style="color:var(--text);font-weight:500;">Arduino Uno</strong> — lógica digital, ULA, registradores, ISA, interrupções</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--purple)"></div><strong style="color:var(--text);font-weight:500;">ESP32</strong> — memória, barramentos, dual-core, FreeRTOS, RTOS e sistemas paralelos</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--yellow)"></div><strong style="color:var(--text);font-weight:500;">Simulador</strong> Tinkercad / Wokwi — sem hardware físico necessário</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--cyan)"></div><strong style="color:var(--text);font-weight:500;">Hardware real</strong> — análise física de placa-mãe e datasheets</div>
   </div>
 
 
-  <!-- LAB MATERIALS BANNER -->
-  <div style="margin-top:40px;background:var(--bg3);border:1px solid rgba(255,224,51,.2);border-radius:10px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--yellow),transparent);"></div>
-    <div style="display:flex;align-items:center;gap:14px;">
-      <span style="font-size:28px;">🔧</span>
-      <div>
-        <div style="font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;">Material de Laboratório</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--text2);">Inventário completo · 12 projetos práticos · Arduino + ESP32</div>
+  <!-- ══════════════════════════════════════
+       MÓDULO 01
+  ══════════════════════════════════════ -->
+  <div class="sec-label" style="--lc:#00e5ff">
+    <span class="sec-tag" style="background:#00e5ff;color:#0b0f0e;">01</span>
+    Bases Numéricas e Lógica Digital
+  </div>
+  <div class="mod-title"><span>🔢</span> Módulo 01 — Bases Numéricas e Lógica Digital</div>
+  <div class="mod-desc">Fundamentos matemáticos da computação: sistemas de numeração, codificação de dados, portas lógicas e álgebra booleana. O Arduino Uno usa um microcontrolador de 8 bits onde cada pino digital opera em 0 V ou 5 V — tornando mensurável com multímetro o que é apenas teoria no quadro.</div>
+  <div class="weeks-grid">
+
+    <div class="week-card" style="--ca:#00e5ff;">
+      <div class="wc-ghost">01</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S01</span><span class="wc-lbl">semana</span></div>
+      <div class="wc-title">Apresentação, Gerações de Computadores e Níveis de Abstração</div>
+      <div class="wc-topics">Ementa e critérios · Gerações (válvulas → VLSI) · Níveis: digital, microarquitetura, ISA, SO, linguagem · Papel do hardware no ADS</div>
+      <div class="wc-links">
+        <a href="arquitetura_semana01_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana01_guia.html" class="wl wl-guia">✏️ Guia</a>
       </div>
     </div>
-    <a href="material_laboratorio.html" style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:9px 18px;border-radius:6px;border:1px solid rgba(255,224,51,.35);background:rgba(255,224,51,.08);color:var(--yellow);text-decoration:none;transition:all .2s;white-space:nowrap;" onmouseover="this.style.background='rgba(255,224,51,.18)';this.style.borderColor='var(--yellow)'" onmouseout="this.style.background='rgba(255,224,51,.08)';this.style.borderColor='rgba(255,224,51,.35)'">📦 Ver Materiais →</a>
+
+    <div class="week-card has-lab" style="--ca:#00e5ff;">
+      <div class="wc-ghost">02</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S02</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
+      <div class="wc-title">Sistemas Numéricos e Codificação de Dados</div>
+      <div class="wc-topics">Binário, octal, hexadecimal · Conversões entre bases · Complemento de 2 · ASCII, Unicode, BCD · IEEE 754</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 01 — Contador Binário com 8 LEDs</div>
+        <div class="lab-desc">8 LEDs nos pinos digitais do Arduino contam de 0 a 255. Cada LED é um bit — o peso posicional fica visível e contável. Alunos convertem valores manualmente e conferem no hardware.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> representação binária, peso posicional, registrador de 8 bits como unidade natural do hardware</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana02_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana02_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="projetosemana_02_conversor_decimal_binario.html" class="wl wl-proj">💻 Conversor</a>
+        <a href="arquitetura_semana02_lab.html" class="wl wl-lab">🔬 Lab 01</a>
+      </div>
+    </div>
+
+    <div class="week-card has-lab" style="--ca:#00e5ff;">
+      <div class="wc-ghost">03</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S03</span><span class="wc-lbl">semana</span><span class="kit kit-sim">Tinkercad</span></div>
+      <div class="wc-title">Lógica Digital — Portas e Álgebra Booleana</div>
+      <div class="wc-topics">Portas AND, OR, NOT, NAND, NOR, XOR · Álgebra de Boole · Tabelas-verdade · Mapa de Karnaugh · Simplificação de expressões</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 02 — Portas Lógicas TTL no Tinkercad</div>
+        <div class="lab-desc">No simulador gratuito Tinkercad, alunos montam circuitos com CIs 7400/7408, verificam tabelas-verdade com LEDs e multímetro virtual. Nenhum hardware físico necessário.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> relação entre equação booleana e circuito elétrico, níveis lógicos 0/1 como tensão real (0 V e 5 V)</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana03_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana03_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana03_lab.html" class="wl wl-lab">🔬 Lab 02</a>
+      </div>
+    </div>
+
+    <div class="week-card has-lab" style="--ca:#00e5ff;">
+      <div class="wc-ghost">04</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S04</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
+      <div class="wc-title">Circuitos Combinacionais e ULA</div>
+      <div class="wc-topics">Somadores e subtratores · Multiplexadores e demux · Codificadores e decodificadores · ULA (Unidade Lógica e Aritmética)</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 03 — Mini-ULA de 4 bits com Arduino</div>
+        <div class="lab-desc">Dois potenciômetros fornecem os operandos; dois botões selecionam a operação (AND, OR, XOR, soma). Resultado em 4 LEDs + display de 7 segmentos. Alunos comparam resultado com cálculo manual.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> funcionamento da ULA, como o hardware executa operações aritméticas e lógicas, seleção de operação por bits de controle</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana04_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana04_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana04_lab.html" class="wl wl-lab">🔬 Lab 03</a>
+      </div>
+    </div>
+
+    <div class="week-card has-lab" style="--ca:#00e5ff;">
+      <div class="wc-ghost">05</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S05</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
+      <div class="wc-title">Circuitos Sequenciais e Memórias Elementares</div>
+      <div class="wc-topics">Flip-flops (D, JK, T) · Registradores e contadores · Clock e sincronia · Memória SRAM e DRAM · EEPROM interna do ATmega328</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 04 — Registrador 74HC595 + EEPROM Interna</div>
+        <div class="lab-desc">Shift register 74HC595 controla 8 LEDs com apenas 3 pinos (demonstra registrador + clock serial). Em seguida, bytes são gravados na EEPROM interna e verificados após reset — persistência de dados em hardware.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> registradores, sincronismo por clock, memória volátil vs. não-volátil, como dados persistem no hardware</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana05_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana05_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana05_lab.html" class="wl wl-lab">🔬 Lab 04</a>
+      </div>
+    </div>
+
+  </div><!-- /M01 -->
+
+
+  <!-- ══════════════════════════════════════
+       MÓDULO 02
+  ══════════════════════════════════════ -->
+  <div class="sec-label" style="--lc:#00ff88">
+    <span class="sec-tag" style="background:#00ff88;color:#0b0f0e;">02</span>
+    Arquitetura do Computador e Microarquitetura
+  </div>
+  <div class="mod-title"><span>🖥️</span> Módulo 02 — Arquitetura do Computador e Microarquitetura</div>
+  <div class="mod-desc">Da arquitetura clássica de von Neumann à microarquitetura interna do processador: CPU, conjunto de instruções, modos de endereçamento e sistemas de I/O. O ATmega328 do Arduino possui CPU, Flash, SRAM, EEPROM e periféricos num único chip — o mesmo modelo arquitetural de um PC, em escala visível e programável com datasheet aberto.</div>
+  <div class="weeks-grid">
+
+    <div class="week-card has-lab" style="--ca:#00ff88;">
+      <div class="wc-ghost">06</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S06</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Datasheet ATmega</span></div>
+      <div class="wc-title">Arquitetura Von Neumann e Componentes do Computador</div>
+      <div class="wc-topics">Modelo von Neumann · CPU, memória, barramentos e periféricos · Ciclo busca-decodifica-executa · Placa-mãe e chipset · O ATmega328 como modelo concreto</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 05 — Mapeando o ATmega328 pelo Datasheet</div>
+        <div class="lab-desc">Com o datasheet em mãos, alunos localizam e mapeiam: Flash de programa (32 KB), SRAM de dados (2 KB), EEPROM (1 KB), registradores de I/O, barramentos internos e periféricos integrados. Cada componente é relacionado ao modelo de von Neumann.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> arquitetura von Neumann na prática, diferença entre memória de programa e dados, leitura de datasheet</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana06_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana06_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana06_lab.html" class="wl wl-lab">🔬 Lab 05</a>
+      </div>
+    </div>
+
+    <div class="week-card card-special has-lab" style="--ca:#00e5ff;">
+      <div class="wc-ghost">07</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S07</span><span class="wc-lbl" style="color:var(--cyan)">✦ atividade especial</span><span class="kit kit-hw">Hardware real</span></div>
+      <div class="wc-title" style="color:var(--cyan)">Mapeando a Placa-Mãe de um PC</div>
+      <div class="wc-topics">Identificação física de componentes · Slots PCIe, DIMM, M.2, SATA · Chipset · BIOS/UEFI · Canais e periféricos · Comparação com a placa Arduino</div>
+      <div class="lab-box" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.2);">
+        <div class="lab-title" style="color:var(--cyan)">🖥 Análise comparativa: placa-mãe ATX vs. Arduino</div>
+        <div class="lab-desc">Alunos recebem uma placa-mãe para análise física e preenchem um mapa de componentes. Em seguida fazem o mesmo para o Arduino. Discutem: o que é igual, o que é diferente e por quê — microcontrolador vs. microprocessador.</div>
+        <div class="lab-anchor" style="border-color:rgba(0,229,255,.15);"><strong>Ancora:</strong> hierarquia de componentes, barramentos físicos, diferença entre microcontrolador e microprocessador</div>
+      </div>
+      <div class="wc-links">
+        <a href="atividade-placa-mae.html" class="wl wl-special">🔧 Atividade</a>
+      </div>
+    </div>
+
+    <div class="week-card has-lab" style="--ca:#00ff88;">
+      <div class="wc-ghost">08</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S08</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
+      <div class="wc-title">CPU e Microarquitetura do Processador</div>
+      <div class="wc-topics">Unidade de controle e ULA · Registradores (acumulador, PC, SP, SREG) · Pipeline · Processadores multicore · CPI (ciclos por instrução)</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 06 — Medindo Ciclos de Clock com Timer1</div>
+        <div class="lab-desc">Alunos usam micros() e o Timer1 do ATmega para medir quantos ciclos de clock diferentes operações consomem: soma, multiplicação, acesso à SRAM e acesso à Flash. Resultados são comparados com os valores do datasheet.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> ciclo de instrução, CPI, clock como unidade de tempo do processador, custo diferente de cada tipo de operação</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana08_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana08_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana08_lab.html" class="wl wl-lab">🔬 Lab 06</a>
+      </div>
+    </div>
+
+    <div class="week-card has-lab" style="--ca:#00ff88;">
+      <div class="wc-ghost">09</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S09</span><span class="wc-lbl">semana</span><span class="kit kit-sim">Wokwi / AVR Studio</span></div>
+      <div class="wc-title">Conjunto de Instruções (ISA) e Modos de Endereçamento</div>
+      <div class="wc-topics">Tipos de instrução (aritmética, lógica, desvio, I/O) · Modos: imediato, direto, indireto, indexado · Formato de instrução no AVR · Espaço de endereçamento do ATmega</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 07 — Lendo o Assembly Gerado pelo Compilador</div>
+        <div class="lab-desc">No Wokwi ou AVR Studio, alunos compilam um programa simples em C e analisam o Assembly gerado pelo avr-gcc. Identificam instruções de carga (LDI, LD, ST), aritmética (ADD, MUL) e desvio (BREQ, BRNE), e os modos de endereçamento usados.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> ISA do AVR, relação C → Assembly → código de máquina, modos de endereçamento reais escolhidos pelo compilador</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana09_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana09_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana09_lab.html" class="wl wl-lab">🔬 Lab 07</a>
+      </div>
+    </div>
+
+    <div class="week-card has-lab" style="--ca:#00ff88;">
+      <div class="wc-ghost">10</div>
+      <div class="wc-top"><span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S10</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
+      <div class="wc-title">Interrupções e Sistemas de Entrada/Saída (I/O)</div>
+      <div class="wc-topics">Mecanismo de interrupção e exceção · ISR (rotina de serviço) · DMA · Polling vs. interrupção · GPIO, ADC, PWM, UART, SPI, I²C no ATmega</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 08 — Polling vs. Interrupção: Medindo a Latência</div>
+        <div class="lab-desc">Alunos implementam a mesma detecção de botão de duas formas: (1) polling no loop e (2) ISR via INT0. Com Timer1 configurado em 1 kHz como segunda ISR, medem a latência de cada abordagem. O Wokwi exibe a análise lógica dos pinos.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> vetor de interrupção, latência, preempção, diferença entre I/O por programa e I/O orientado a interrupção</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana10_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana10_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana10_lab.html" class="wl wl-lab">🔬 Lab 08</a>
+      </div>
+    </div>
+
+  </div><!-- /M02 -->
+
+
+  <!-- ══════════════════════════════════════
+       MÓDULO 03
+  ══════════════════════════════════════ -->
+  <div class="sec-label" style="--lc:#b36bff">
+    <span class="sec-tag" style="background:#b36bff;color:#0b0f0e;">03</span>
+    Memória, Barramentos e Sistemas Paralelos
+  </div>
+  <div class="mod-title"><span>💾</span> Módulo 03 — Memória, Barramentos e Sistemas Paralelos</div>
+  <div class="mod-desc">Hierarquia de memória, barramentos e interconexão de componentes. O ESP32 entra como plataforma central: dois núcleos Xtensa LX6 (sistema paralelo real), suporte a I²C, SPI, UART e WiFi (múltiplos barramentos), FreeRTOS integrado e um mapa de memória complexo — IRAM → DRAM → Flash → rede — que torna a hierarquia de memória visível e mensurável.</div>
+  <div class="weeks-grid">
+
+    <div class="week-card has-lab" style="--ca:#b36bff;">
+      <div class="wc-ghost">11</div>
+      <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S11</span><span class="wc-lbl">semana</span><span class="kit kit-esp32">ESP32</span></div>
+      <div class="wc-title">Hierarquia de Memória e Gerenciamento</div>
+      <div class="wc-topics">Registradores → Cache → RAM → Flash → Armazenamento remoto · Princípio da localidade · Memória virtual e paginação · Segmentação · Mapa de memória do ESP32 (IRAM, DRAM, Flash)</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 09 — Mapa de Memória do ESP32 na Prática</div>
+        <div class="lab-desc">Alunos imprimem via serial os endereços de variáveis declaradas em regiões diferentes (IRAM, DRAM, RTC_MEM, Flash/PROGMEM), constroem o mapa de memória manualmente e medem com micros() o custo de acesso a cada região.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> hierarquia de memória, endereçamento físico, localidade de referência, custo diferente de acesso a cada nível</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana11_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana11_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana11_lab.html" class="wl wl-lab">🔬 Lab 09</a>
+      </div>
+    </div>
+
+    <div class="week-card" style="--ca:#b36bff;">
+      <div class="wc-ghost">12</div>
+      <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S12</span><span class="wc-lbl">semana</span></div>
+      <div class="wc-title">Memória Cache — Organização e Políticas</div>
+      <div class="wc-topics">Mapeamento direto, associativo e conjunto-associativo · Políticas LRU, FIFO, Random · Write-back vs. Write-through · Cache L1/L2/L3 · IRAM do ESP32 como cache de instrução</div>
+      <div class="wc-links">
+        <a href="arquitetura_semana12_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana12_guia.html" class="wl wl-guia">✏️ Guia</a>
+      </div>
+    </div>
+
+    <div class="week-card has-lab" style="--ca:#b36bff;">
+      <div class="wc-ghost">13</div>
+      <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S13</span><span class="wc-lbl">semana</span><span class="kit kit-esp32">ESP32</span></div>
+      <div class="wc-title">Barramentos e Interfaces de Comunicação</div>
+      <div class="wc-topics">Barramentos de dados, endereço e controle · I²C, SPI, UART, PCIe, USB · Largura de banda e latência · Árbitro de barramento · ESP32 como hub de múltiplos protocolos</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 10 — I²C e SPI na Prática com ESP32</div>
+        <div class="lab-desc">Sensor de temperatura via I²C (SHT30 ou BME280) e memória Flash SPI (W25Q32) conectados ao ESP32. Com o analisador lógico do Wokwi, alunos observam sinais SCL/SDA e CLK/MOSI/MISO/CS e medem a taxa de transferência de cada barramento.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> diferença entre barramento série e paralelo, papel do clock, master/slave, largura de banda, por que periféricos usam protocolos diferentes</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana13_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana13_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana13_lab.html" class="wl wl-lab">🔬 Lab 10</a>
+      </div>
+    </div>
+
+    <div class="week-card has-lab" style="--ca:#b36bff;">
+      <div class="wc-ghost">14</div>
+      <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S14</span><span class="wc-lbl">semana</span><span class="kit kit-esp32">ESP32</span></div>
+      <div class="wc-title">Sistemas Paralelos e Distribuídos</div>
+      <div class="wc-topics">Taxonomia de Flynn (SISD, SIMD, MISD, MIMD) · Multiprocessadores e multicore · Coerência de cache · ESP32 dual-core como sistema MIMD real · Primitivas de sincronização</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 11 — Dual-Core com FreeRTOS: Race Condition e Mutex</div>
+        <div class="lab-desc">Duas tasks são fixadas em núcleos diferentes (xTaskCreatePinnedToCore): Core 0 lê um sensor; Core 1 formata e exibe. Uma variável compartilhada sem mutex provoca race condition visível. Alunos a corrigem com SemaphoreTake/Give e comparam comportamento antes e depois.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> paralelismo MIMD real, race condition, necessidade de sincronização, coerência de memória entre núcleos</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana14_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana14_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana14_lab.html" class="wl wl-lab">🔬 Lab 11</a>
+      </div>
+    </div>
+
+    <div class="week-card" style="--ca:#b36bff;">
+      <div class="wc-ghost">15</div>
+      <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S15</span><span class="wc-lbl">semana</span></div>
+      <div class="wc-title">Arquiteturas RISC e CISC</div>
+      <div class="wc-topics">Comparativo RISC vs. CISC · AVR (Arduino) = RISC 8 bits · Xtensa LX6 (ESP32) = RISC 32 bits · x86 (Intel/AMD) = CISC · ARM = RISC moderno · Impacto no pipeline, compilador e consumo · RISC-V e tendências abertas</div>
+      <div class="wc-links">
+        <a href="arquitetura_semana15_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana15_guia.html" class="wl wl-guia">✏️ Guia</a>
+      </div>
+    </div>
+
+  </div><!-- /M03 -->
+
+
+  <!-- ══════════════════════════════════════
+       MÓDULO 04
+  ══════════════════════════════════════ -->
+  <div class="sec-label" style="--lc:#ff7a1a">
+    <span class="sec-tag" style="background:#ff7a1a;color:#0b0f0e;">04</span>
+    Sistemas Operacionais, Linguagens e Organização de Arquivos
+  </div>
+  <div class="mod-title"><span>⚙️</span> Módulo 04 — SO, Linguagens e Organização de Arquivos</div>
+  <div class="mod-desc">Conceitos e funções do sistema operacional, linguagens de programação e sua relação com o hardware, e organização de arquivos. O ESP32 com FreeRTOS demonstra escalonamento preemptivo, gerência de memória, filas e semáforos de forma controlável. O sistema de arquivos LittleFS em Flash embarcada torna visível a organização de arquivos no nível do hardware.</div>
+  <div class="weeks-grid">
+
+    <div class="week-card has-lab" style="--ca:#ff7a1a;">
+      <div class="wc-ghost">16</div>
+      <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S16</span><span class="wc-lbl">semana</span><span class="kit kit-esp32">ESP32 + FreeRTOS</span></div>
+      <div class="wc-title">Sistemas Operacionais — Conceitos e Funções</div>
+      <div class="wc-topics">SO como interface hardware-software · Gerência de processos, memória, dispositivos e arquivos · Kernel, chamadas de sistema, modo usuário/kernel · Tipos de SO · FreeRTOS como RTOS embarcado</div>
+      <div class="lab-box">
+        <div class="lab-title">🔬 Lab 12 — Escalonador Preemptivo e Heap com FreeRTOS</div>
+        <div class="lab-desc">Três tasks com prioridades diferentes piscam LEDs em frequências próprias — o escalonador preemptivo fica visível. Alunos então usam pvPortMalloc/vPortFree para alocar e liberar memória no heap gerenciado pelo RTOS, imprimindo o heap livre no monitor serial.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> escalonamento preemptivo, estados de processo (pronto/executando/bloqueado), gerência de memória pelo SO, fragmentação de heap</div>
+      </div>
+      <div class="wc-links">
+        <a href="arquitetura_semana16_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana16_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_semana16_lab.html" class="wl wl-lab">🔬 Lab 12</a>
+      </div>
+    </div>
+
+    <div class="week-card" style="--ca:#ff7a1a;">
+      <div class="wc-ghost">17</div>
+      <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S17</span><span class="wc-lbl">semana</span></div>
+      <div class="wc-title">Linguagens, Compiladores e Ferramentas</div>
+      <div class="wc-topics">Espectro: Assembly → C/C++ → linguagens de alto nível · Processo de compilação (pré-processamento, compilação, montagem, link) · Interpretadores e máquinas virtuais · Como a linguagem influencia a arquitetura · Toolchain Arduino IDE e ESP-IDF</div>
+      <div class="wc-links">
+        <a href="arquitetura_semana17_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana17_guia.html" class="wl wl-guia">✏️ Guia</a>
+      </div>
+    </div>
+
+    <div class="week-card" style="--ca:#ff7a1a;">
+      <div class="wc-ghost">18</div>
+      <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S18</span><span class="wc-lbl">semana</span></div>
+      <div class="wc-title">Organização de Arquivos e Sistemas de Armazenamento</div>
+      <div class="wc-topics">Sistemas de arquivos (FAT32, NTFS, ext4) · Estrutura de diretórios · Acesso sequencial e aleatório · RAID · SSD vs. HDD · SPIFFS e LittleFS no ESP32 como FS em Flash embarcada</div>
+      <div class="wc-links">
+        <a href="arquitetura_semana18_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana18_guia.html" class="wl wl-guia">✏️ Guia</a>
+      </div>
+    </div>
+
+    <div class="week-card" style="--ca:#ff7a1a;">
+      <div class="wc-ghost">19</div>
+      <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S19</span><span class="wc-lbl">semana</span></div>
+      <div class="wc-title">Revisão Integrada e Estudo de Caso</div>
+      <div class="wc-topics">Conexão entre todos os módulos · Estudo de caso: arquitetura completa de um sistema ESP32 (CPU + memória + barramentos + SO + FS) · Exercícios de fixação · Preparação para a avaliação final</div>
+      <div class="wc-links">
+        <a href="arquitetura_semana19_aula.html" class="wl wl-aula">📖 Aula</a>
+        <a href="arquitetura_semana19_guia.html" class="wl wl-guia">✏️ Guia</a>
+      </div>
+    </div>
+
+    <div class="week-card card-final" style="--ca:#ffe033;">
+      <div class="wc-ghost">20</div>
+      <div class="wc-top"><span class="wc-num" style="background:#ffe033;color:#0b0f0e;">S20</span><span class="wc-lbl" style="color:var(--yellow)">✦ avaliação final</span></div>
+      <div class="wc-title" style="color:var(--yellow)">Apresentação de Projetos e Avaliação Final</div>
+      <div class="wc-topics" style="color:#8a7820;">Os projetos devem demonstrar em hardware real (Arduino ou ESP32) pelo menos um conceito de cada módulo da ementa · Apresentação oral · Avaliação somativa · Feedback e encerramento</div>
+      <div class="wc-links">
+        <a href="arquitetura_semana20_aula.html" class="wl wl-aula">📖 Roteiro</a>
+        <a href="arquitetura_semana20_guia.html" class="wl wl-guia">✏️ Critérios</a>
+      </div>
+    </div>
+
+  </div><!-- /M04 -->
+
+
+  <!-- NOTA PEDAGÓGICA -->
+  <div class="nota-ped">
+    <div class="nota-ped-lbl">📐 Nota Pedagógica — Por que Arduino e ESP32?</div>
+    <div class="nota-ped-grid">
+      <div>
+        <div class="nota-col-lbl" style="color:var(--orange);">Arduino Uno (ATmega328) — RISC 8 bits</div>
+        <div class="nota-col-body">16 MHz · 32 KB Flash · 2 KB SRAM · 1 KB EEPROM. Arquitetura simples o suficiente para ser mapeada integralmente em sala a partir do datasheet. Ideal para lógica digital, ULA, registradores, ciclo de instrução, ISA, modos de endereçamento e interrupções.</div>
+      </div>
+      <div>
+        <div class="nota-col-lbl" style="color:var(--purple);">ESP32 (Xtensa LX6) — RISC 32 bits dual-core</div>
+        <div class="nota-col-body">240 MHz · 4 MB Flash · 520 KB SRAM · FreeRTOS · I²C, SPI, UART, WiFi, BT. Ideal para hierarquia de memória, barramentos, sistemas paralelos, SO (RTOS) e organização de arquivos (LittleFS/SPIFFS em Flash).</div>
+      </div>
+      <div>
+        <div class="nota-col-lbl" style="color:var(--green2);">Princípio pedagógico</div>
+        <div class="nota-col-body">Cada lab ancora um conceito específico da ementa em um experimento mensurável. O aluno não apenas lê sobre interrupções — ele configura um vetor de interrupção e mede a latência. Não apenas estuda paralelismo — ele cria uma race condition e a corrige com semáforo. A teoria ganha endereço de memória e frequência de clock.</div>
+      </div>
+    </div>
   </div>
 
-      <div class="sec-label" style="--lc:#00e5ff">
-        <span class="sec-tag" style="background:#00e5ff;color:#0b0f0e;">01</span>
-        Fundamentos da Arquitetura de Computadores
-      </div>
-      <div class="mod-title"><span>🎯</span> Módulo 01 — Fundamentos da Arquitetura de Computadores</div>
-      <div class="weeks-grid">
-            <div class="week-card" style="--ca:#00e5ff;">
-              <div class="wc-ghost">01</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S01</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Apresentação e Fundamentos</div>
-              <div class="wc-links"><a href="arquitetura_semana01_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana01_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#00e5ff;">
-              <div class="wc-ghost">02</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S02</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Sistemas Numéricos</div>
-              <div class="wc-links"><a href="arquitetura_semana02_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana02_guia.html" class="wl wl-guia">✏️ Guia</a><a href="projetosemana_02_conversor_decimal_binario.html" class="wl wl-proj">💻 Projeto</a></div>
-            </div>
-            <div class="week-card" style="--ca:#00e5ff;">
-              <div class="wc-ghost">03</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S03</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Portas Lógicas e Álgebra Booleana</div>
-              <div class="wc-links"><a href="arquitetura_semana03_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana03_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#00e5ff;">
-              <div class="wc-ghost">04</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S04</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Circuitos Combinacionais</div>
-              <div class="wc-links"><a href="arquitetura_semana04_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana04_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#00e5ff;">
-              <div class="wc-ghost">05</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S05</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Circuitos Sequenciais</div>
-              <div class="wc-links"><a href="arquitetura_semana05_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana05_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div></div>
-
-      <div class="sec-label" style="--lc:#00ff88">
-        <span class="sec-tag" style="background:#00ff88;color:#0b0f0e;">02</span>
-        Arquitetura Básica e Placa-Mãe
-      </div>
-      <div class="mod-title"><span>🔧</span> Módulo 02 — Arquitetura Básica e Placa-Mãe</div>
-      <div class="weeks-grid">
-            <div class="week-card" style="--ca:#00ff88;">
-              <div class="wc-ghost">06</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S06</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Arquitetura de von Neumann</div>
-              <div class="wc-links"><a href="arquitetura_semana06_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana06_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card card-special" style="--ca:#ff7a1a;border-color:rgba(255,122,26,.35);background:rgba(255,122,26,.04);">
-              <div class="wc-ghost">07</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S07</span>
-                <span class="wc-lbl" style="color:#ff7a1a">✦ atividade especial</span>
-              </div>
-              <div class="wc-title" style="color:#ff7a1a">Mapeando a Placa-Mãe</div>
-              <div class="wc-links">
-                <a href="atividade-placa-mae.html" class="wl wl-special">🔧 Atividade</a>
-              </div>
-            </div></div>
-
-      <div class="sec-label" style="--lc:#b36bff">
-        <span class="sec-tag" style="background:#b36bff;color:#0b0f0e;">03</span>
-        Arquitetura Interna do Computador
-      </div>
-      <div class="mod-title"><span>💾</span> Módulo 03 — Arquitetura Interna do Computador</div>
-      <div class="weeks-grid">
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">08</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S08</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">CPU e Ciclo de Instrução</div>
-              <div class="wc-links"><a href="arquitetura_semana11_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana11_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">09</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S09</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Conjunto de Instruções (ISA)</div>
-              <div class="wc-links"><a href="arquitetura_semana12_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana12_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">10</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S10</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Hierarquia de Memória</div>
-              <div class="wc-links"><a href="arquitetura_semana13_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana13_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">11</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S11</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Memória Cache</div>
-              <div class="wc-links"><a href="arquitetura_semana14_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana14_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">12</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S12</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Entrada e Saída (I/O)</div>
-              <div class="wc-links"><a href="arquitetura_semana15_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana15_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">13</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S13</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Introdução ao Arduino — Hardware</div>
-              <div class="wc-links"><a href="arquitetura_semana07_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana07_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">14</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S14</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Programação Arduino — Básico</div>
-              <div class="wc-links"><a href="arquitetura_semana08_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana08_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">15</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S15</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Sensores e Atuadores</div>
-              <div class="wc-links"><a href="arquitetura_semana09_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana09_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#b36bff;">
-              <div class="wc-ghost">16</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S16</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Projeto Prático Arduino 1</div>
-              <div class="wc-links"><a href="arquitetura_semana10_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana10_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div></div>
-
-      <div class="sec-label" style="--lc:#ff7a1a">
-        <span class="sec-tag" style="background:#ff7a1a;color:#0b0f0e;">04</span>
-        Arquitetura Avançada e ESP32
-      </div>
-      <div class="mod-title"><span>📡</span> Módulo 04 — Arquitetura Avançada e ESP32</div>
-      <div class="weeks-grid">
-            <div class="week-card" style="--ca:#ff7a1a;">
-              <div class="wc-ghost">17</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S17</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Introdução ao ESP32</div>
-              <div class="wc-links"><a href="arquitetura_semana16_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana16_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#ff7a1a;">
-              <div class="wc-ghost">18</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S18</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">WiFi e IoT com ESP32</div>
-              <div class="wc-links"><a href="arquitetura_semana17_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana17_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#ff7a1a;">
-              <div class="wc-ghost">19</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S19</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Bluetooth e Comunicação</div>
-              <div class="wc-links"><a href="arquitetura_semana18_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana18_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#ff7a1a;">
-              <div class="wc-ghost">20</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S20</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Projeto Integrador</div>
-              <div class="wc-links"><a href="arquitetura_semana19_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana19_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div>
-            <div class="week-card" style="--ca:#ff7a1a;">
-              <div class="wc-ghost">21</div>
-              <div class="wc-top">
-                <span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S21</span>
-                <span class="wc-lbl">semana</span>
-              </div>
-              <div class="wc-title">Apresentação dos Projetos</div>
-              <div class="wc-links"><a href="arquitetura_semana20_aula.html" class="wl wl-aula">📖 Aula</a><a href="arquitetura_semana20_guia.html" class="wl wl-guia">✏️ Guia</a></div>
-            </div></div>
-
-
-</div>
+</div><!-- /container -->
 
 <footer>
   <div class="ft-l">
@@ -345,8 +531,9 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
     CST em Análise e Desenvolvimento de Sistemas · 1º Semestre 2026
   </div>
   <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">
-    4 MÓDULOS · 21 SEMANAS<br>ARDUINO + ESP32 · IoT<br>
-    <span style="color:var(--green2)">ARQ-001</span>
+    4 MÓDULOS · 20 SEMANAS · 80 HORAS-AULA<br>
+    12 LABS · ARDUINO UNO + ESP32 · RISC · CISC · RTOS<br>
+    <span style="color:var(--green2)">ARQ-001 · PPC ADS 2026</span>
   </div>
 </footer>
 
