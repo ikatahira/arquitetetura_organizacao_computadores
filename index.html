@@ -45,6 +45,30 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .ementa-lbl{font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:.25em;text-transform:uppercase;margin-bottom:10px;}
 .ementa-text{font-size:12px;color:var(--text2);line-height:1.8;}
 .ementa-text strong{color:var(--text);font-weight:500;}
+
+/* PROJETOS ÂNCORA — destaque especial */
+.projects-panel{margin-top:40px;background:linear-gradient(135deg,rgba(255,224,51,.04),rgba(255,122,26,.04));border:1px solid rgba(255,224,51,.25);border-radius:12px;padding:24px 28px;position:relative;overflow:hidden;}
+.projects-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--orange),var(--yellow));}
+.projects-panel-lbl{font-family:var(--mono);font-size:9px;color:var(--yellow);letter-spacing:.3em;text-transform:uppercase;margin-bottom:6px;}
+.projects-panel-title{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.projects-panel-desc{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.65;}
+.proj-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.proj-card{background:var(--bg3);border:1px solid rgba(255,224,51,.18);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:all .2s;}
+.proj-card:hover{border-color:rgba(255,224,51,.45);background:var(--bg2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4);}
+.proj-card-tag{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:2px;}
+.proj-card-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;}
+.proj-card-semana{font-size:11px;color:var(--text3);font-family:var(--mono);}
+.proj-card-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+.proj-card-link{margin-top:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:7px 14px;border-radius:5px;text-decoration:none;border:1px solid;display:inline-block;transition:all .2s;align-self:flex-start;}
+.proj-link-conversor{color:var(--yellow);border-color:rgba(255,224,51,.35);background:rgba(255,224,51,.07);}
+.proj-link-conversor:hover{background:rgba(255,224,51,.18);border-color:var(--yellow);}
+.proj-link-portas{color:var(--orange);border-color:rgba(255,122,26,.35);background:rgba(255,122,26,.07);}
+.proj-link-portas:hover{background:rgba(255,122,26,.18);border-color:var(--orange);}
+.proj-link-sim{color:var(--cyan);border-color:rgba(0,229,255,.35);background:rgba(0,229,255,.07);}
+.proj-link-sim:hover{background:rgba(0,229,255,.18);border-color:var(--cyan);}
+.proj-link-prova{color:var(--purple);border-color:rgba(179,107,255,.35);background:rgba(179,107,255,.07);}
+.proj-link-prova:hover{background:rgba(179,107,255,.18);border-color:var(--purple);}
+
 .legend{margin-top:24px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;padding:16px 20px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;}
 .legend-title{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;width:100%;margin-bottom:4px;}
 .leg-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2);}
@@ -61,6 +85,8 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .week-card:hover::before{opacity:1;}
 .week-card.has-lab{border-color:rgba(255,122,26,.18);}
 .week-card.has-lab:hover{border-color:rgba(255,122,26,.45);}
+.week-card.has-proj{border-color:rgba(255,224,51,.2);}
+.week-card.has-proj:hover{border-color:rgba(255,224,51,.5);}
 .wc-ghost{font-family:var(--display);font-size:52px;font-weight:900;color:var(--border2);position:absolute;top:6px;right:12px;line-height:1;pointer-events:none;user-select:none;}
 .wc-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .wc-num{font-family:var(--display);font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.05em;}
@@ -70,6 +96,8 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .kit-esp32{color:var(--purple);border-color:rgba(179,107,255,.4);background:rgba(179,107,255,.09);}
 .kit-sim{color:var(--yellow);border-color:rgba(255,224,51,.4);background:rgba(255,224,51,.09);}
 .kit-hw{color:var(--cyan);border-color:rgba(0,229,255,.4);background:rgba(0,229,255,.09);}
+.kit-proj{color:var(--yellow);border-color:rgba(255,224,51,.5);background:rgba(255,224,51,.12);font-weight:700;}
+.kit-prova{color:var(--purple);border-color:rgba(179,107,255,.5);background:rgba(179,107,255,.12);font-weight:700;}
 .wc-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;padding-right:28px;}
 .wc-topics{font-size:11px;color:var(--text2);line-height:1.6;padding-right:28px;}
 .lab-box{background:rgba(255,122,26,.055);border:1px solid rgba(255,122,26,.22);border-radius:7px;padding:11px 13px;display:flex;flex-direction:column;gap:5px;}
@@ -77,20 +105,36 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .lab-desc{font-size:11px;color:var(--text2);line-height:1.6;}
 .lab-anchor{font-size:10px;color:var(--text3);font-style:italic;margin-top:4px;padding-top:6px;border-top:1px solid rgba(255,122,26,.16);}
 .lab-anchor strong{color:var(--text3);font-style:normal;}
+/* Caixa projeto âncora dentro do card da semana */
+.proj-box{background:rgba(255,224,51,.045);border:1px solid rgba(255,224,51,.28);border-radius:7px;padding:11px 13px;display:flex;flex-direction:column;gap:5px;}
+.proj-box-title{font-family:var(--mono);font-size:9px;color:var(--yellow);letter-spacing:.14em;text-transform:uppercase;}
+.proj-box-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+.proj-box-anchor{font-size:10px;color:var(--text3);font-style:italic;margin-top:4px;padding-top:6px;border-top:1px solid rgba(255,224,51,.16);}
+/* Caixa simulador */
+.sim-box{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.25);border-radius:7px;padding:11px 13px;display:flex;flex-direction:column;gap:5px;}
+.sim-box-title{font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:.14em;text-transform:uppercase;}
+.sim-box-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+/* Caixa prova */
+.prova-box{background:rgba(179,107,255,.04);border:1px solid rgba(179,107,255,.25);border-radius:7px;padding:11px 13px;display:flex;flex-direction:column;gap:5px;}
+.prova-box-title{font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:.14em;text-transform:uppercase;}
+.prova-box-desc{font-size:11px;color:var(--text2);line-height:1.6;}
 .wc-links{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;}
 .wl{font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:6px 12px;border-radius:5px;text-decoration:none;border:1px solid;transition:all .2s;}
 .wl-aula{color:var(--cyan);border-color:rgba(0,229,255,.25);background:rgba(0,229,255,.06);}
 .wl-aula:hover{background:rgba(0,229,255,.15);border-color:var(--cyan);}
 .wl-guia{color:var(--green);border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.06);}
 .wl-guia:hover{background:rgba(0,255,136,.15);border-color:var(--green);}
-.wl-proj{color:var(--yellow);border-color:rgba(255,224,51,.25);background:rgba(255,224,51,.06);}
-.wl-proj:hover{background:rgba(255,224,51,.15);border-color:var(--yellow);}
+.wl-proj{color:var(--yellow);border-color:rgba(255,224,51,.35);background:rgba(255,224,51,.08);}
+.wl-proj:hover{background:rgba(255,224,51,.2);border-color:var(--yellow);}
 .wl-lab{color:var(--orange);border-color:rgba(255,122,26,.3);background:rgba(255,122,26,.07);}
 .wl-lab:hover{background:rgba(255,122,26,.18);border-color:var(--orange);}
 .wl-special{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
 .wl-special:hover{background:rgba(0,229,255,.15);border-color:var(--cyan);}
+.wl-prova{color:var(--purple);border-color:rgba(179,107,255,.35);background:rgba(179,107,255,.08);}
+.wl-prova:hover{background:rgba(179,107,255,.2);border-color:var(--purple);}
 .card-special{border-color:rgba(0,229,255,.22) !important;}
 .card-final{border-color:rgba(255,224,51,.3) !important;background:rgba(255,224,51,.025) !important;}
+.card-prova{border-color:rgba(179,107,255,.3) !important;background:rgba(179,107,255,.02) !important;}
 .nota-ped{margin-top:48px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:24px 28px;position:relative;overflow:hidden;}
 .nota-ped::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green2),transparent);}
 .nota-ped-lbl{font-family:var(--mono);font-size:9px;color:var(--green2);letter-spacing:.25em;text-transform:uppercase;margin-bottom:16px;}
@@ -105,6 +149,7 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
   .container{padding:0 20px 60px;}
   .weeks-grid{grid-template-columns:1fr;}
   .overview{grid-template-columns:repeat(2,1fr);}
+  .proj-cards{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -120,6 +165,7 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
     <span class="bdg bdg-o">🔬 12 LABS PRÁTICOS</span>
     <span class="bdg bdg-y">🧪 ARDUINO + ESP32</span>
     <span class="bdg bdg-p">💻 TEORIA + PRÁTICA</span>
+    <span class="bdg" style="color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.06);">🎯 04 PROJETOS INTEGRADOS</span>
   </div>
   <div class="hdr-meta">1º SEMESTRE / 2026<br>FATEC · ADS · 1º SEM<br><span style="color:var(--green2)">STATUS: ATIVO</span></div>
 </header>
@@ -131,7 +177,8 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
     <div class="ov"><div class="ov-lbl">Semanas</div><div class="ov-val" style="color:var(--green)">20</div><div class="ov-sub">aulas semanais</div></div>
     <div class="ov"><div class="ov-lbl">Carga Horária</div><div class="ov-val" style="color:var(--purple)">80h</div><div class="ov-sub">total da disciplina</div></div>
     <div class="ov"><div class="ov-lbl">Labs Práticos</div><div class="ov-val" style="color:var(--orange)">12</div><div class="ov-sub">Arduino + ESP32</div></div>
-    <div class="ov"><div class="ov-lbl">Avaliações</div><div class="ov-val" style="color:var(--yellow)">02</div><div class="ov-sub">provas + projeto</div></div>
+    <div class="ov"><div class="ov-lbl">Projetos</div><div class="ov-val" style="color:var(--yellow)">04</div><div class="ov-sub">integrados às aulas</div></div>
+    <div class="ov"><div class="ov-lbl">Avaliações</div><div class="ov-val" style="color:var(--red)">02</div><div class="ov-sub">provas + projeto</div></div>
   </div>
 
   <div class="ementa-strip">
@@ -141,12 +188,56 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
     </div>
   </div>
 
+  <!-- PAINEL DE PROJETOS INTEGRADOS -->
+  <div class="projects-panel">
+    <div class="projects-panel-lbl">🎯 Projetos Práticos Integrados à Disciplina</div>
+    <div class="projects-panel-title">Recursos Digitais de Apoio — Diretamente Vinculados às Aulas</div>
+    <div class="projects-panel-desc">Cada projeto abaixo é um recurso interativo desenvolvido especificamente para esta disciplina, integrado à semana e ao tópico curricular correspondente. Acesse diretamente pelo card da semana ou pelos atalhos abaixo.</div>
+    <div class="proj-cards">
+
+      <div class="proj-card">
+        <div class="proj-card-tag" style="color:var(--yellow)">📐 Projeto 01 · Semana 02</div>
+        <div class="proj-card-title">Conversor Decimal → Binário</div>
+        <div class="proj-card-semana">arquivo: projeto_arduino_sistemas_numericos_conversor_decimal_binario.html</div>
+        <div class="proj-card-desc">Ferramenta interativa que demonstra a conversão entre bases numéricas com visualização passo a passo. Integrada ao Lab 01 (Contador Binário com 8 LEDs) — o aluno converte o valor no simulador e confere fisicamente no Arduino.</div>
+        <a href="projeto_arduino_sistemas_numericos_conversor_decimal_binario.html" class="proj-card-link proj-link-conversor">🔢 Abrir Conversor →</a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-card-tag" style="color:var(--orange)">⚡ Projeto 02 · Semana 03–05</div>
+        <div class="proj-card-title">Arduino: Portas Lógicas no Mundo Real</div>
+        <div class="proj-card-semana">arquivo: arquitetura_projeto_arduino_portas_logicas.html</div>
+        <div class="proj-card-desc">Projeto prático completo de implementação de portas lógicas físicas com Arduino UNO. Cobre AND, OR, NOT, NAND, XOR com montagem real e verificação de tabelas-verdade. Ancora os Módulo 01 inteiro — lógica digital aplicada.</div>
+        <a href="arquitetura_projeto_arduino_portas_logicas.html" class="proj-card-link proj-link-portas">🔧 Abrir Projeto →</a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-card-tag" style="color:var(--cyan)">🖥️ Projeto 03 · Semana 06–07</div>
+        <div class="proj-card-title">Simulador de Montagem de PC</div>
+        <div class="proj-card-semana">arquivo: simulador-montagem-pc-v3.html</div>
+        <div class="proj-card-desc">PC Builder Pro — simulador interativo de montagem de computador. O aluno identifica e posiciona componentes (CPU, RAM, GPU, PSU, armazenamento) compreendendo a arquitetura física real do hardware. Integrado à semana de análise de placa-mãe.</div>
+        <a href="simulador-montagem-pc-v3.html" class="proj-card-link proj-link-sim">💻 Abrir Simulador →</a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-card-tag" style="color:var(--purple)">📝 Avaliação · Semanas 02–03</div>
+        <div class="proj-card-title">Prova: Sistemas Numéricos & Portas Lógicas</div>
+        <div class="proj-card-semana">arquivo: prova_s02_s03.html</div>
+        <div class="proj-card-desc">Instrumento avaliativo digital cobrindo o conteúdo das semanas 02 e 03 — conversão de bases, representação binária, complemento de 2, portas lógicas e tabelas-verdade. Aplica diretamente o que foi praticado nos Labs 01 e 02.</div>
+        <a href="prova_s02_s03.html" class="proj-card-link proj-link-prova">📝 Abrir Prova →</a>
+      </div>
+
+    </div>
+  </div>
+
   <div class="legend">
     <div class="legend-title">legenda — tipos de atividade prática</div>
     <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div><strong style="color:var(--text);font-weight:500;">Arduino Uno</strong> — lógica digital, ULA, registradores, ISA, interrupções</div>
     <div class="leg-item"><div class="leg-dot" style="background:var(--purple)"></div><strong style="color:var(--text);font-weight:500;">ESP32</strong> — memória, barramentos, dual-core, FreeRTOS, RTOS e sistemas paralelos</div>
     <div class="leg-item"><div class="leg-dot" style="background:var(--yellow)"></div><strong style="color:var(--text);font-weight:500;">Simulador</strong> Tinkercad / Wokwi — sem hardware físico necessário</div>
     <div class="leg-item"><div class="leg-dot" style="background:var(--cyan)"></div><strong style="color:var(--text);font-weight:500;">Hardware real</strong> — análise física de placa-mãe e datasheets</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--yellow);border:2px solid rgba(255,224,51,.6);"></div><strong style="color:var(--yellow);font-weight:500;">Projeto Integrado</strong> — recurso digital vinculado à semana</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--purple);border:2px solid rgba(179,107,255,.6);"></div><strong style="color:var(--purple);font-weight:500;">Avaliação</strong> — instrumento de verificação de aprendizagem</div>
   </div>
 
 
@@ -172,76 +263,104 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       </div>
     </div>
 
-    <div class="week-card has-lab" style="--ca:#00e5ff;">
+    <div class="week-card has-lab has-proj" style="--ca:#00e5ff;">
       <div class="wc-ghost">02</div>
-      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S02</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S02</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span><span class="kit kit-proj">🎯 Projeto</span><span class="kit kit-prova">📝 Avaliação</span></div>
       <div class="wc-title">Sistemas Numéricos e Codificação de Dados</div>
       <div class="wc-topics">Binário, octal, hexadecimal · Conversões entre bases · Complemento de 2 · ASCII, Unicode, BCD · IEEE 754</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 01 — Contador Binário com 8 LEDs</div>
-        <div class="lab-desc">8 LEDs nos pinos digitais do Arduino contam de 0 a 255. Cada LED é um bit — o peso posicional fica visível e contável. Alunos convertem valores manualmente e conferem no hardware.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> representação binária, peso posicional, registrador de 8 bits como unidade natural do hardware</div>
+        <div class="lab-desc">8 LEDs nos pinos digitais do Arduino contam de 0 a 255. Cada LED é um bit — o peso posicional fica visível e contável.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> representação binária, peso posicional, registrador de 8 bits</div>
+      </div>
+      <div class="proj-box">
+        <div class="proj-box-title">🎯 Projeto 01 — Conversor Decimal → Binário</div>
+        <div class="proj-box-desc">Use o simulador para converter valores manualmente e conferir o resultado no hardware físico do Lab 01. A ferramenta mostra o processo passo a passo com visualização dos bits.</div>
+        <div class="proj-box-anchor">Vinculado ao conteúdo de representação binária e bases numéricas desta semana</div>
+      </div>
+      <div class="prova-box">
+        <div class="prova-box-title">📝 Prova Semanas 02–03 — Sistemas Numéricos & Portas Lógicas</div>
+        <div class="prova-box-desc">Instrumento avaliativo cobrindo o conteúdo desta semana e da S03. Aplicar após conclusão dos Labs 01 e 02.</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana02_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana02_guia.html" class="wl wl-guia">✏️ Guia</a>
-        <a href="projetosemana_02_conversor_decimal_binario.html" class="wl wl-proj">💻 Conversor</a>
+        <a href="projeto_arduino_sistemas_numericos_conversor_decimal_binario.html" class="wl wl-proj">🎯 Projeto 01</a>
         <a href="arquitetura_semana02_lab.html" class="wl wl-lab">🔬 Lab 01</a>
+        <a href="prova_s02_s03.html" class="wl wl-prova">📝 Prova S02–03</a>
       </div>
     </div>
 
-    <div class="week-card has-lab" style="--ca:#00e5ff;">
+    <div class="week-card has-lab has-proj" style="--ca:#00e5ff;">
       <div class="wc-ghost">03</div>
-      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S03</span><span class="wc-lbl">semana</span><span class="kit kit-sim">Tinkercad</span></div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S03</span><span class="wc-lbl">semana</span><span class="kit kit-sim">Tinkercad</span><span class="kit kit-proj">🎯 Projeto</span></div>
       <div class="wc-title">Lógica Digital — Portas e Álgebra Booleana</div>
       <div class="wc-topics">Portas AND, OR, NOT, NAND, NOR, XOR · Álgebra de Boole · Tabelas-verdade · Mapa de Karnaugh · Simplificação de expressões</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 02 — Portas Lógicas TTL no Tinkercad</div>
         <div class="lab-desc">No simulador gratuito Tinkercad, alunos montam circuitos com CIs 7400/7408, verificam tabelas-verdade com LEDs e multímetro virtual. Nenhum hardware físico necessário.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> relação entre equação booleana e circuito elétrico, níveis lógicos 0/1 como tensão real (0 V e 5 V)</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> tabelas-verdade, álgebra booleana, comportamento elétrico das portas TTL</div>
+      </div>
+      <div class="proj-box">
+        <div class="proj-box-title">🎯 Projeto 02 — Arduino: Portas Lógicas no Mundo Real</div>
+        <div class="proj-box-desc">Extensão prática do Lab 02: após simular no Tinkercad, implementar portas físicas com Arduino UNO. O projeto cobre montagem completa com verificação elétrica real.</div>
+        <div class="proj-box-anchor">Inicio do Projeto 02 — continua nas semanas S04 e S05</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana03_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana03_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_projeto_arduino_portas_logicas.html" class="wl wl-proj">🎯 Projeto 02</a>
         <a href="arquitetura_semana03_lab.html" class="wl wl-lab">🔬 Lab 02</a>
       </div>
     </div>
 
-    <div class="week-card has-lab" style="--ca:#00e5ff;">
+    <div class="week-card has-lab has-proj" style="--ca:#00e5ff;">
       <div class="wc-ghost">04</div>
-      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S04</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S04</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span><span class="kit kit-proj">🎯 Projeto</span></div>
       <div class="wc-title">Circuitos Combinacionais e ULA</div>
-      <div class="wc-topics">Somadores e subtratores · Multiplexadores e demux · Codificadores e decodificadores · ULA (Unidade Lógica e Aritmética)</div>
+      <div class="wc-topics">Multiplexadores, decodificadores · Somadores (half, full) · ULA de 4 bits · Flags (zero, carry, overflow) · Implementação em hardware</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 03 — Mini-ULA de 4 bits com Arduino</div>
-        <div class="lab-desc">Dois potenciômetros fornecem os operandos; dois botões selecionam a operação (AND, OR, XOR, soma). Resultado em 4 LEDs + display de 7 segmentos. Alunos comparam resultado com cálculo manual.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> funcionamento da ULA, como o hardware executa operações aritméticas e lógicas, seleção de operação por bits de controle</div>
+        <div class="lab-desc">Implementar operações aritméticas e lógicas básicas em Arduino simulando uma ULA simplificada. Botões selecionam a operação, display exibe o resultado em binário.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> unidade lógica aritmética, operações binárias, flags de estado</div>
+      </div>
+      <div class="proj-box">
+        <div class="proj-box-title">🎯 Projeto 02 continua — Portas Lógicas no Hardware</div>
+        <div class="proj-box-desc">Aprofundamento do Projeto 02: circuitos combinacionais implementados com portas físicas, validando os conceitos da ULA estudados nesta semana com medições reais.</div>
+        <div class="proj-box-anchor">Semana S04 do Projeto 02 — conclusão prevista na S05</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana04_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana04_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_projeto_arduino_portas_logicas.html" class="wl wl-proj">🎯 Projeto 02</a>
         <a href="arquitetura_semana04_lab.html" class="wl wl-lab">🔬 Lab 03</a>
       </div>
     </div>
 
-    <div class="week-card has-lab" style="--ca:#00e5ff;">
+    <div class="week-card has-lab has-proj" style="--ca:#00e5ff;">
       <div class="wc-ghost">05</div>
-      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S05</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S05</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span><span class="kit kit-proj">🎯 Entrega</span></div>
       <div class="wc-title">Circuitos Sequenciais e Memórias Elementares</div>
-      <div class="wc-topics">Flip-flops (D, JK, T) · Registradores e contadores · Clock e sincronia · Memória SRAM e DRAM · EEPROM interna do ATmega328</div>
+      <div class="wc-topics">Flip-flops D, JK, T · Registradores de deslocamento · SRAM vs DRAM · EEPROM interna do AVR · Contadores síncronos</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 04 — Registrador 74HC595 + EEPROM Interna</div>
-        <div class="lab-desc">Shift register 74HC595 controla 8 LEDs com apenas 3 pinos (demonstra registrador + clock serial). Em seguida, bytes são gravados na EEPROM interna e verificados após reset — persistência de dados em hardware.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> registradores, sincronismo por clock, memória volátil vs. não-volátil, como dados persistem no hardware</div>
+        <div class="lab-desc">Usar o 74HC595 (registrador de deslocamento 8 bits) para expandir as saídas do Arduino e gravar/ler a EEPROM interna do ATmega328, demonstrando persistência de dados sem energia.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> flip-flops, registradores, memória não-volátil, serialização de dados</div>
+      </div>
+      <div class="proj-box">
+        <div class="proj-box-title">🎯 Entrega Final — Projeto 02: Portas Lógicas Físicas</div>
+        <div class="proj-box-desc">Apresentação e entrega do Projeto 02 completo (arquivo: arquitetura_projeto_arduino_portas_logicas.html). Demonstração funcional do circuito com todas as portas implementadas e tabelas-verdade verificadas.</div>
+        <div class="proj-box-anchor">Entrega e apresentação do Projeto 02 nesta semana</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana05_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana05_guia.html" class="wl wl-guia">✏️ Guia</a>
+        <a href="arquitetura_projeto_arduino_portas_logicas.html" class="wl wl-proj">🎯 Projeto 02 — Entrega</a>
         <a href="arquitetura_semana05_lab.html" class="wl wl-lab">🔬 Lab 04</a>
       </div>
     </div>
 
-  </div><!-- /M01 -->
+  </div><!-- /weeks-grid módulo 01 -->
 
 
   <!-- ══════════════════════════════════════
@@ -252,18 +371,18 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
     Arquitetura do Computador e Microarquitetura
   </div>
   <div class="mod-title"><span>🖥️</span> Módulo 02 — Arquitetura do Computador e Microarquitetura</div>
-  <div class="mod-desc">Da arquitetura clássica de von Neumann à microarquitetura interna do processador: CPU, conjunto de instruções, modos de endereçamento e sistemas de I/O. O ATmega328 do Arduino possui CPU, Flash, SRAM, EEPROM e periféricos num único chip — o mesmo modelo arquitetural de um PC, em escala visível e programável com datasheet aberto.</div>
+  <div class="mod-desc">Do transistor ao processador: Von Neumann, datapath, ciclo de instrução, ISA e interrupções. O ATmega328 do Arduino tem datasheet aberto de 450 páginas — cada conceito teórico tem endereço real de registrador para verificar.</div>
   <div class="weeks-grid">
 
     <div class="week-card has-lab" style="--ca:#00ff88;">
       <div class="wc-ghost">06</div>
       <div class="wc-top"><span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S06</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Datasheet ATmega</span></div>
       <div class="wc-title">Arquitetura Von Neumann e Componentes do Computador</div>
-      <div class="wc-topics">Modelo von Neumann · CPU, memória, barramentos e periféricos · Ciclo busca-decodifica-executa · Placa-mãe e chipset · O ATmega328 como modelo concreto</div>
+      <div class="wc-topics">Modelo Von Neumann · CPU, memória, I/O, barramentos · Harvard x Von Neumann · Ciclo Fetch-Decode-Execute · Registradores de propósito geral</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 05 — Mapeando o ATmega328 pelo Datasheet</div>
-        <div class="lab-desc">Com o datasheet em mãos, alunos localizam e mapeiam: Flash de programa (32 KB), SRAM de dados (2 KB), EEPROM (1 KB), registradores de I/O, barramentos internos e periféricos integrados. Cada componente é relacionado ao modelo de von Neumann.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> arquitetura von Neumann na prática, diferença entre memória de programa e dados, leitura de datasheet</div>
+        <div class="lab-desc">Leitura guiada do datasheet do ATmega328P: identificar os registradores de propósito geral, SREG, SP e PC. Criar uma "vista explodida" do processador no papel, validada pelo código gerado pelo compilador.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> arquitetura Harvard modificada, registradores reais, organização interna da CPU</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana06_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -272,18 +391,18 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       </div>
     </div>
 
-    <div class="week-card card-special has-lab" style="--ca:#00e5ff;">
+    <div class="week-card card-special has-lab has-proj" style="--ca:#00e5ff;">
       <div class="wc-ghost">07</div>
-      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S07</span><span class="wc-lbl" style="color:var(--cyan)">✦ atividade especial</span><span class="kit kit-hw">Hardware real</span></div>
+      <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S07</span><span class="wc-lbl" style="color:var(--cyan)">✦ atividade especial</span><span class="kit kit-hw">Hardware real</span><span class="kit kit-proj">🖥️ Simulador</span></div>
       <div class="wc-title" style="color:var(--cyan)">Mapeando a Placa-Mãe de um PC</div>
-      <div class="wc-topics">Identificação física de componentes · Slots PCIe, DIMM, M.2, SATA · Chipset · BIOS/UEFI · Canais e periféricos · Comparação com a placa Arduino</div>
-      <div class="lab-box" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.2);">
-        <div class="lab-title" style="color:var(--cyan)">🖥 Análise comparativa: placa-mãe ATX vs. Arduino</div>
-        <div class="lab-desc">Alunos recebem uma placa-mãe para análise física e preenchem um mapa de componentes. Em seguida fazem o mesmo para o Arduino. Discutem: o que é igual, o que é diferente e por quê — microcontrolador vs. microprocessador.</div>
-        <div class="lab-anchor" style="border-color:rgba(0,229,255,.15);"><strong>Ancora:</strong> hierarquia de componentes, barramentos físicos, diferença entre microcontrolador e microprocessador</div>
+      <div class="wc-topics">Identificação física dos componentes · Soquete CPU · Slots RAM (DIMM) · PCIe · Chipset · Conectores de energia e armazenamento · BIOS/UEFI</div>
+      <div class="sim-box">
+        <div class="sim-box-title">🖥️ Projeto 03 — Simulador de Montagem de PC (PC Builder Pro)</div>
+        <div class="sim-box-desc">Atividade central desta semana: usar o PC Builder Pro para simular a montagem completa de um computador, identificando cada componente e sua função na arquitetura. Compara a placa real (desmontada em aula) com o simulador digital.</div>
       </div>
       <div class="wc-links">
-        <a href="atividade-placa-mae.html" class="wl wl-special">🔧 Atividade</a>
+        <a href="atividade-placa-mae.html" class="wl wl-special">🔧 Atividade Placa-Mãe</a>
+        <a href="simulador-montagem-pc-v3.html" class="wl wl-proj">🖥️ Projeto 03 — PC Builder</a>
       </div>
     </div>
 
@@ -291,11 +410,11 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">08</div>
       <div class="wc-top"><span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S08</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
       <div class="wc-title">CPU e Microarquitetura do Processador</div>
-      <div class="wc-topics">Unidade de controle e ULA · Registradores (acumulador, PC, SP, SREG) · Pipeline · Processadores multicore · CPI (ciclos por instrução)</div>
+      <div class="wc-topics">Datapath e unidade de controle · Pipeline (IF, ID, EX, MEM, WB) · Hazards · Superescalar · Clock e ciclos de instrução · Benchmarks</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 06 — Medindo Ciclos de Clock com Timer1</div>
-        <div class="lab-desc">Alunos usam micros() e o Timer1 do ATmega para medir quantos ciclos de clock diferentes operações consomem: soma, multiplicação, acesso à SRAM e acesso à Flash. Resultados são comparados com os valores do datasheet.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> ciclo de instrução, CPI, clock como unidade de tempo do processador, custo diferente de cada tipo de operação</div>
+        <div class="lab-desc">Usar o Timer1 de 16 bits do ATmega para medir com precisão de nanosegundos o tempo de execução de diferentes trechos de código. Demonstra concretamente a relação entre código, instruções e ciclos de relógio.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> CPI, ciclo de instrução, desempenho do processador, relação clock/instrução</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana08_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -308,11 +427,11 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">09</div>
       <div class="wc-top"><span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S09</span><span class="wc-lbl">semana</span><span class="kit kit-sim">Wokwi / AVR Studio</span></div>
       <div class="wc-title">Conjunto de Instruções (ISA) e Modos de Endereçamento</div>
-      <div class="wc-topics">Tipos de instrução (aritmética, lógica, desvio, I/O) · Modos: imediato, direto, indireto, indexado · Formato de instrução no AVR · Espaço de endereçamento do ATmega</div>
+      <div class="wc-topics">Instruções RISC vs CISC · Modos: imediato, direto, indireto, indexado · Formato de instrução AVR · Espaço de memória de programa vs dados · Endianness</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 07 — Lendo o Assembly Gerado pelo Compilador</div>
-        <div class="lab-desc">No Wokwi ou AVR Studio, alunos compilam um programa simples em C e analisam o Assembly gerado pelo avr-gcc. Identificam instruções de carga (LDI, LD, ST), aritmética (ADD, MUL) e desvio (BREQ, BRNE), e os modos de endereçamento usados.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> ISA do AVR, relação C → Assembly → código de máquina, modos de endereçamento reais escolhidos pelo compilador</div>
+        <div class="lab-desc">Compilar código C++ no AVR Studio/Wokwi e analisar o assembly gerado. Identificar as instruções AVR correspondentes a cada operação C++, visualizando a ISA em ação.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> ISA AVR, mapeamento C→Assembly, modos de endereçamento reais</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana09_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -325,11 +444,11 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">10</div>
       <div class="wc-top"><span class="wc-num" style="background:#00ff88;color:#0b0f0e;">S10</span><span class="wc-lbl">semana</span><span class="kit kit-arduino">Arduino Uno</span></div>
       <div class="wc-title">Interrupções e Sistemas de Entrada/Saída (I/O)</div>
-      <div class="wc-topics">Mecanismo de interrupção e exceção · ISR (rotina de serviço) · DMA · Polling vs. interrupção · GPIO, ADC, PWM, UART, SPI, I²C no ATmega</div>
+      <div class="wc-topics">Polling vs interrupção · Vetores de interrupção · ISR (Interrupt Service Routine) · Controlador DMA · Portas paralelas e seriais · Prioridade de interrupções</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 08 — Polling vs. Interrupção: Medindo a Latência</div>
-        <div class="lab-desc">Alunos implementam a mesma detecção de botão de duas formas: (1) polling no loop e (2) ISR via INT0. Com Timer1 configurado em 1 kHz como segunda ISR, medem a latência de cada abordagem. O Wokwi exibe a análise lógica dos pinos.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> vetor de interrupção, latência, preempção, diferença entre I/O por programa e I/O orientado a interrupção</div>
+        <div class="lab-desc">Medir com osciloscópio (ou lógica com segundo Arduino) a latência de resposta de um botão usando polling e comparar com ISR de interrupção externa. A diferença em microssegundos é mensurável e surpreendente.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> latência, eficiência de CPU, ISR real, vetor de interrupção do ATmega</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana10_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -338,7 +457,7 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       </div>
     </div>
 
-  </div><!-- /M02 -->
+  </div><!-- /weeks-grid módulo 02 -->
 
 
   <!-- ══════════════════════════════════════
@@ -349,18 +468,18 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
     Memória, Barramentos e Sistemas Paralelos
   </div>
   <div class="mod-title"><span>💾</span> Módulo 03 — Memória, Barramentos e Sistemas Paralelos</div>
-  <div class="mod-desc">Hierarquia de memória, barramentos e interconexão de componentes. O ESP32 entra como plataforma central: dois núcleos Xtensa LX6 (sistema paralelo real), suporte a I²C, SPI, UART e WiFi (múltiplos barramentos), FreeRTOS integrado e um mapa de memória complexo — IRAM → DRAM → Flash → rede — que torna a hierarquia de memória visível e mensurável.</div>
+  <div class="mod-desc">Hierarquia de memória, cache, protocolos de barramento e processamento paralelo. O ESP32 tem dual-core com 520 KB de SRAM divididos em regiões, barramentos I²C e SPI acessíveis e suporte a FreeRTOS — tornando cada conceito verificável em hardware real.</div>
   <div class="weeks-grid">
 
     <div class="week-card has-lab" style="--ca:#b36bff;">
       <div class="wc-ghost">11</div>
       <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S11</span><span class="wc-lbl">semana</span><span class="kit kit-esp32">ESP32</span></div>
       <div class="wc-title">Hierarquia de Memória e Gerenciamento</div>
-      <div class="wc-topics">Registradores → Cache → RAM → Flash → Armazenamento remoto · Princípio da localidade · Memória virtual e paginação · Segmentação · Mapa de memória do ESP32 (IRAM, DRAM, Flash)</div>
+      <div class="wc-topics">Registradores → L1/L2/L3 Cache → DRAM → SSD/HDD · Princípios de localidade temporal e espacial · MMU e paginação · TLB · Memória virtual</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 09 — Mapa de Memória do ESP32 na Prática</div>
-        <div class="lab-desc">Alunos imprimem via serial os endereços de variáveis declaradas em regiões diferentes (IRAM, DRAM, RTC_MEM, Flash/PROGMEM), constroem o mapa de memória manualmente e medem com micros() o custo de acesso a cada região.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> hierarquia de memória, endereçamento físico, localidade de referência, custo diferente de acesso a cada nível</div>
+        <div class="lab-desc">Ler e interpretar o mapa de memória do ESP32 (IRAM, DRAM, Flash, ROM). Medir o tempo de acesso a variáveis em diferentes regiões de memória para demonstrar empiricamente a hierarquia e os custos de acesso.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> mapa de memória real, latência por nível, IRAM vs DRAM no ESP32</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana11_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -373,7 +492,7 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">12</div>
       <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S12</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Memória Cache — Organização e Políticas</div>
-      <div class="wc-topics">Mapeamento direto, associativo e conjunto-associativo · Políticas LRU, FIFO, Random · Write-back vs. Write-through · Cache L1/L2/L3 · IRAM do ESP32 como cache de instrução</div>
+      <div class="wc-topics">Mapeamento direto, associativo e por conjunto · Políticas de substituição (LRU, FIFO, Random) · Write-back vs write-through · Cache hit/miss · Coerência de cache</div>
       <div class="wc-links">
         <a href="arquitetura_semana12_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana12_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -384,11 +503,11 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">13</div>
       <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S13</span><span class="wc-lbl">semana</span><span class="kit kit-esp32">ESP32</span></div>
       <div class="wc-title">Barramentos e Interfaces de Comunicação</div>
-      <div class="wc-topics">Barramentos de dados, endereço e controle · I²C, SPI, UART, PCIe, USB · Largura de banda e latência · Árbitro de barramento · ESP32 como hub de múltiplos protocolos</div>
+      <div class="wc-topics">Barramentos de dados, endereço e controle · I²C (SDA/SCL, endereçamento 7 bits) · SPI (MOSI/MISO/SCK/CS) · UART · USB · PCIe · Throughput e latência</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 10 — I²C e SPI na Prática com ESP32</div>
-        <div class="lab-desc">Sensor de temperatura via I²C (SHT30 ou BME280) e memória Flash SPI (W25Q32) conectados ao ESP32. Com o analisador lógico do Wokwi, alunos observam sinais SCL/SDA e CLK/MOSI/MISO/CS e medem a taxa de transferência de cada barramento.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> diferença entre barramento série e paralelo, papel do clock, master/slave, largura de banda, por que periféricos usam protocolos diferentes</div>
+        <div class="lab-desc">Conectar sensor via I²C (BMP280 ou MPU6050) e display via SPI ao ESP32. Usar o analisador lógico (ou osciloscópio) para capturar e decodificar os frames de comunicação, tornando o protocolo visível no hardware.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> protocolos seriais reais, sinais elétricos de barramento, endereçamento I²C</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana13_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -401,11 +520,11 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">14</div>
       <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S14</span><span class="wc-lbl">semana</span><span class="kit kit-esp32">ESP32</span></div>
       <div class="wc-title">Sistemas Paralelos e Distribuídos</div>
-      <div class="wc-topics">Taxonomia de Flynn (SISD, SIMD, MISD, MIMD) · Multiprocessadores e multicore · Coerência de cache · ESP32 dual-core como sistema MIMD real · Primitivas de sincronização</div>
+      <div class="wc-topics">SISD, SIMD, MIMD (Taxonomia de Flynn) · Multithreading e multicore · Memória compartilhada vs distribuída · OpenMP · Race condition e sincronização · Mutex e semáforos</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 11 — Dual-Core com FreeRTOS: Race Condition e Mutex</div>
-        <div class="lab-desc">Duas tasks são fixadas em núcleos diferentes (xTaskCreatePinnedToCore): Core 0 lê um sensor; Core 1 formata e exibe. Uma variável compartilhada sem mutex provoca race condition visível. Alunos a corrigem com SemaphoreTake/Give e comparam comportamento antes e depois.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> paralelismo MIMD real, race condition, necessidade de sincronização, coerência de memória entre núcleos</div>
+        <div class="lab-desc">Criar duas tasks FreeRTOS rodando nos dois cores do ESP32. Demonstrar empiricamente uma race condition (dado corrompido) e corrigi-la com Mutex. A condição de corrida fica visível no Serial Monitor em tempo real.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> paralelismo real, race condition demonstrável, primitivas de sincronização</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana14_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -418,14 +537,14 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">15</div>
       <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S15</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Arquiteturas RISC e CISC</div>
-      <div class="wc-topics">Comparativo RISC vs. CISC · AVR (Arduino) = RISC 8 bits · Xtensa LX6 (ESP32) = RISC 32 bits · x86 (Intel/AMD) = CISC · ARM = RISC moderno · Impacto no pipeline, compilador e consumo · RISC-V e tendências abertas</div>
+      <div class="wc-topics">Filosofias RISC vs CISC · x86 (CISC) vs ARM (RISC) vs AVR (RISC) vs RISC-V · Microcódigo · Comparativo de desempenho e consumo · Tendências atuais (Apple M-series, Snapdragon)</div>
       <div class="wc-links">
         <a href="arquitetura_semana15_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana15_guia.html" class="wl wl-guia">✏️ Guia</a>
       </div>
     </div>
 
-  </div><!-- /M03 -->
+  </div><!-- /weeks-grid módulo 03 -->
 
 
   <!-- ══════════════════════════════════════
@@ -433,21 +552,21 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
   ══════════════════════════════════════ -->
   <div class="sec-label" style="--lc:#ff7a1a">
     <span class="sec-tag" style="background:#ff7a1a;color:#0b0f0e;">04</span>
-    Sistemas Operacionais, Linguagens e Organização de Arquivos
+    SO, Linguagens e Organização de Arquivos
   </div>
   <div class="mod-title"><span>⚙️</span> Módulo 04 — SO, Linguagens e Organização de Arquivos</div>
-  <div class="mod-desc">Conceitos e funções do sistema operacional, linguagens de programação e sua relação com o hardware, e organização de arquivos. O ESP32 com FreeRTOS demonstra escalonamento preemptivo, gerência de memória, filas e semáforos de forma controlável. O sistema de arquivos LittleFS em Flash embarcada torna visível a organização de arquivos no nível do hardware.</div>
+  <div class="mod-desc">A camada de software que gerencia o hardware: sistemas operacionais, compiladores, linguagens de máquina e organização de arquivos. O FreeRTOS no ESP32 materializa escalonamento preemptivo e gerenciamento de heap em código aberto e observável.</div>
   <div class="weeks-grid">
 
     <div class="week-card has-lab" style="--ca:#ff7a1a;">
       <div class="wc-ghost">16</div>
       <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S16</span><span class="wc-lbl">semana</span><span class="kit kit-esp32">ESP32 + FreeRTOS</span></div>
       <div class="wc-title">Sistemas Operacionais — Conceitos e Funções</div>
-      <div class="wc-topics">SO como interface hardware-software · Gerência de processos, memória, dispositivos e arquivos · Kernel, chamadas de sistema, modo usuário/kernel · Tipos de SO · FreeRTOS como RTOS embarcado</div>
+      <div class="wc-topics">Kernel e espaço de usuário · Gerenciamento de processos e threads · Escalonamento (Round-Robin, Prioridade, FCFS) · Gerenciamento de memória pelo SO · Chamadas de sistema (syscalls)</div>
       <div class="lab-box">
         <div class="lab-title">🔬 Lab 12 — Escalonador Preemptivo e Heap com FreeRTOS</div>
-        <div class="lab-desc">Três tasks com prioridades diferentes piscam LEDs em frequências próprias — o escalonador preemptivo fica visível. Alunos então usam pvPortMalloc/vPortFree para alocar e liberar memória no heap gerenciado pelo RTOS, imprimindo o heap livre no monitor serial.</div>
-        <div class="lab-anchor"><strong>Ancora:</strong> escalonamento preemptivo, estados de processo (pronto/executando/bloqueado), gerência de memória pelo SO, fragmentação de heap</div>
+        <div class="lab-desc">Criar múltiplas tasks FreeRTOS com diferentes prioridades e monitorar o escalonador preemptivo via Serial. Medir o uso de heap com heap_caps_get_free_size(), observando o gerenciamento de memória do SO em tempo real.</div>
+        <div class="lab-anchor"><strong>Ancora:</strong> escalonamento real observável, heap do SO, preempção com prioridades</div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana16_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -460,7 +579,7 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">17</div>
       <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S17</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Linguagens, Compiladores e Ferramentas</div>
-      <div class="wc-topics">Espectro: Assembly → C/C++ → linguagens de alto nível · Processo de compilação (pré-processamento, compilação, montagem, link) · Interpretadores e máquinas virtuais · Como a linguagem influencia a arquitetura · Toolchain Arduino IDE e ESP-IDF</div>
+      <div class="wc-topics">Linguagem de máquina vs assembly vs alto nível · Fases do compilador (lexer, parser, gerador de código) · Interpretadores vs compiladores · Linker e loader · Bibliotecas estáticas e dinâmicas</div>
       <div class="wc-links">
         <a href="arquitetura_semana17_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana17_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -471,7 +590,7 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">18</div>
       <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S18</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Organização de Arquivos e Sistemas de Armazenamento</div>
-      <div class="wc-topics">Sistemas de arquivos (FAT32, NTFS, ext4) · Estrutura de diretórios · Acesso sequencial e aleatório · RAID · SSD vs. HDD · SPIFFS e LittleFS no ESP32 como FS em Flash embarcada</div>
+      <div class="wc-topics">FAT32, NTFS, ext4 · Inodes e diretórios · Acesso sequencial vs aleatório · RAID (0, 1, 5, 10) · SSD vs HDD: impacto na organização · NVMe e M.2</div>
       <div class="wc-links">
         <a href="arquitetura_semana18_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana18_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -482,7 +601,7 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">19</div>
       <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S19</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Revisão Integrada e Estudo de Caso</div>
-      <div class="wc-topics">Conexão entre todos os módulos · Estudo de caso: arquitetura completa de um sistema ESP32 (CPU + memória + barramentos + SO + FS) · Exercícios de fixação · Preparação para a avaliação final</div>
+      <div class="wc-topics">Revisão cruzada dos 4 módulos · Estudo de caso: arquitetura de um smartphone moderno · Rastreio de uma instrução do código-fonte ao hardware · Preparação para avaliação final</div>
       <div class="wc-links">
         <a href="arquitetura_semana19_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana19_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -493,31 +612,31 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-ghost">20</div>
       <div class="wc-top"><span class="wc-num" style="background:#ffe033;color:#0b0f0e;">S20</span><span class="wc-lbl" style="color:var(--yellow)">✦ avaliação final</span></div>
       <div class="wc-title" style="color:var(--yellow)">Apresentação de Projetos e Avaliação Final</div>
-      <div class="wc-topics" style="color:#8a7820;">Os projetos devem demonstrar em hardware real (Arduino ou ESP32) pelo menos um conceito de cada módulo da ementa · Apresentação oral · Avaliação somativa · Feedback e encerramento</div>
+      <div class="wc-topics">Apresentação dos projetos do semestre · Avaliação final escrita · Consolidação de competências da ementa · Feedback individualizado</div>
       <div class="wc-links">
         <a href="arquitetura_semana20_aula.html" class="wl wl-aula">📖 Roteiro</a>
         <a href="arquitetura_semana20_guia.html" class="wl wl-guia">✏️ Critérios</a>
       </div>
     </div>
 
-  </div><!-- /M04 -->
+  </div><!-- /weeks-grid módulo 04 -->
 
 
   <!-- NOTA PEDAGÓGICA -->
   <div class="nota-ped">
-    <div class="nota-ped-lbl">📐 Nota Pedagógica — Por que Arduino e ESP32?</div>
+    <div class="nota-ped-lbl">📌 Nota Pedagógica — Integração Projetos × PPC ADS 2026</div>
     <div class="nota-ped-grid">
       <div>
-        <div class="nota-col-lbl" style="color:var(--orange);">Arduino Uno (ATmega328) — RISC 8 bits</div>
-        <div class="nota-col-body">16 MHz · 32 KB Flash · 2 KB SRAM · 1 KB EEPROM. Arquitetura simples o suficiente para ser mapeada integralmente em sala a partir do datasheet. Ideal para lógica digital, ULA, registradores, ciclo de instrução, ISA, modos de endereçamento e interrupções.</div>
+        <div class="nota-col-lbl" style="color:var(--yellow)">🎯 Projetos como extensão das aulas</div>
+        <div class="nota-col-body">Os quatro projetos deste índice não são atividades isoladas — são extensões digitais das aulas, desenvolvidos para tornar mensuráveis os conceitos da ementa. O Conversor (S02) ancora representação binária, o Projeto Arduino (S03–05) ancora lógica digital, o PC Builder (S07) ancora arquitetura física e a Prova (S02–03) fecha o ciclo avaliativo do Módulo 01.</div>
       </div>
       <div>
-        <div class="nota-col-lbl" style="color:var(--purple);">ESP32 (Xtensa LX6) — RISC 32 bits dual-core</div>
-        <div class="nota-col-body">240 MHz · 4 MB Flash · 520 KB SRAM · FreeRTOS · I²C, SPI, UART, WiFi, BT. Ideal para hierarquia de memória, barramentos, sistemas paralelos, SO (RTOS) e organização de arquivos (LittleFS/SPIFFS em Flash).</div>
+        <div class="nota-col-lbl" style="color:var(--cyan)">🔗 Vinculação com o PPC</div>
+        <div class="nota-col-body">Alinhado ao PPC do CST em ADS 2026 (FATEC/CPS) — componente Arquitetura e Organização de Computadores, 80 aulas presenciais, 1º semestre. Competência: <em>Integrar os sistemas de informação otimizando o uso das bases de dados e dos recursos em rede e nuvem, aplicando protocolos de segurança, integridade e performance do SO, das bases de dados e das redes utilizadas.</em></div>
       </div>
       <div>
-        <div class="nota-col-lbl" style="color:var(--green2);">Princípio pedagógico</div>
-        <div class="nota-col-body">Cada lab ancora um conceito específico da ementa em um experimento mensurável. O aluno não apenas lê sobre interrupções — ele configura um vetor de interrupção e mede a latência. Não apenas estuda paralelismo — ele cria uma race condition e a corrige com semáforo. A teoria ganha endereço de memória e frequência de clock.</div>
+        <div class="nota-col-lbl" style="color:var(--green)">⚙️ Infraestrutura mínima</div>
+        <div class="nota-col-body">Labs práticos com Arduino Uno (pinos digitais, Timer1, EEPROM, Serial) e ESP32 (dual-core, FreeRTOS, I²C, SPI, mapa de memória). Todos os projetos digitais funcionam diretamente no navegador, sem instalação. Laboratório de informática com acesso à internet é suficiente para 100% das atividades.</div>
       </div>
     </div>
   </div>
@@ -525,15 +644,10 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
 </div><!-- /container -->
 
 <footer>
-  <div class="ft-l">
-    <span class="ft-sig">ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES</span><br>
-    Centro Estadual de Educação Tecnológica Paula Souza · FATEC<br>
-    CST em Análise e Desenvolvimento de Sistemas · 1º Semestre 2026
-  </div>
-  <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">
-    4 MÓDULOS · 20 SEMANAS · 80 HORAS-AULA<br>
-    12 LABS · ARDUINO UNO + ESP32 · RISC · CISC · RTOS<br>
-    <span style="color:var(--green2)">ARQ-001 · PPC ADS 2026</span>
+  <div class="ft-l">ARQ-001 · Arquitetura e Organização de Computadores<br>CST em ADS 2026 · FATEC · Centro Paula Souza<br><span class="ft-sig">04 projetos integrados · 12 labs práticos · 20 semanas</span></div>
+  <div class="ft-l" style="text-align:right;">
+    <span style="color:var(--yellow)">🎯 Projetos:</span> S02 Conversor · S03–05 Arduino Portas · S07 PC Builder · S02–03 Prova<br>
+    <span style="color:var(--green2)">📋 Ementa PPC ADS 2026 · 80 aulas · Presencial</span>
   </div>
 </footer>
 
