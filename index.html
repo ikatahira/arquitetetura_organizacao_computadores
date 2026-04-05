@@ -151,6 +151,72 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
   .overview{grid-template-columns:repeat(2,1fr);}
   .proj-cards{grid-template-columns:1fr;}
 }
+/* ── BIBLIOGRAFIA ─────────────────────────────── */
+.biblio-panel{margin-top:40px;background:var(--bg3);border:1px solid rgba(0,229,255,.25);border-radius:12px;padding:24px 28px;position:relative;overflow:hidden;}
+.biblio-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--cyan));}
+.biblio-lbl{font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:.3em;text-transform:uppercase;margin-bottom:6px;}
+.biblio-title{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.biblio-desc{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.65;}
+.biblio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.bib-card{background:var(--bg2);border:1px solid rgba(0,229,255,.15);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px;transition:all .2s;}
+.bib-card:hover{border-color:rgba(0,229,255,.4);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4);}
+.bib-badge{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:3px;border:1px solid;display:inline-block;align-self:flex-start;}
+.bib-b{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.07);}
+.bib-c{color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.07);}
+.bib-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;margin-top:2px;}
+.bib-author{font-size:11px;color:var(--text2);}
+.bib-modules{font-size:10px;color:var(--text3);font-family:var(--mono);}
+.bib-link{margin-top:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:6px 13px;border-radius:5px;text-decoration:none;border:1px solid;display:inline-block;transition:all .2s;align-self:flex-start;color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.bib-link:hover{background:rgba(0,229,255,.18);border-color:var(--cyan);}
+
+/* ── METODOLOGIAS ─────────────────────────────── */
+.metod-panel{margin-top:40px;background:linear-gradient(135deg,rgba(0,255,136,.03),rgba(0,229,255,.03));border:1px solid rgba(0,255,136,.2);border-radius:12px;padding:24px 28px;position:relative;overflow:hidden;}
+.metod-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--cyan),var(--green));}
+.metod-lbl{font-family:var(--mono);font-size:9px;color:var(--green2);letter-spacing:.3em;text-transform:uppercase;margin-bottom:6px;}
+.metod-title{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.metod-desc{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.65;}
+.metod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.met-card{background:var(--bg2);border:1px solid rgba(0,255,136,.12);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:all .2s;}
+.met-card:hover{border-color:rgba(0,255,136,.35);background:var(--bg3);}
+.met-icon{font-size:22px;line-height:1;}
+.met-name{font-size:12px;font-weight:600;color:var(--green);line-height:1.3;}
+.met-semanas{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.08em;}
+.met-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+
+/* ── AVALIAÇÕES ──────────────────────────────── */
+.aval-panel{margin-top:40px;background:linear-gradient(135deg,rgba(179,107,255,.04),rgba(255,59,92,.03));border:1px solid rgba(179,107,255,.22);border-radius:12px;padding:24px 28px;position:relative;overflow:hidden;}
+.aval-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--red),var(--purple));}
+.aval-lbl{font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:.3em;text-transform:uppercase;margin-bottom:6px;}
+.aval-title{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.aval-desc{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.65;}
+.aval-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.av-card{background:var(--bg2);border:1px solid rgba(179,107,255,.15);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px;transition:all .2s;}
+.av-card:hover{border-color:rgba(179,107,255,.4);transform:translateY(-2px);}
+.av-tipo-badge{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:3px;border:1px solid;display:inline-block;align-self:flex-start;}
+.av-prova{color:var(--purple);border-color:rgba(179,107,255,.3);background:rgba(179,107,255,.07);}
+.av-seminar{color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.07);}
+.av-projeto{color:var(--orange);border-color:rgba(255,122,26,.3);background:rgba(255,122,26,.07);}
+.av-pares{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.07);}
+.av-teste{color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.07);}
+.av-card-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;}
+.av-card-semana{font-family:var(--mono);font-size:9px;color:var(--text3);}
+.av-card-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+.av-card-link{margin-top:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:6px 12px;border-radius:5px;text-decoration:none;border:1px solid;display:inline-block;transition:all .2s;align-self:flex-start;color:var(--purple);border-color:rgba(179,107,255,.3);background:rgba(179,107,255,.06);}
+.av-card-link:hover{background:rgba(179,107,255,.18);border-color:var(--purple);}
+
+/* ── MAPEAMENTO LIVRO×SEMANA inline nos cards ─── */
+.bib-map{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.18);border-radius:7px;padding:9px 12px;display:flex;flex-direction:column;gap:4px;}
+.bib-map-title{font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:.14em;text-transform:uppercase;}
+.bib-map-body{font-size:10px;color:var(--text2);line-height:1.6;}
+
+/* ── METOD+AVAL inline nos cards ─────────────── */
+.ma-box{background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);border-radius:7px;padding:9px 12px;display:flex;flex-direction:column;gap:3px;}
+.ma-box-title{font-family:var(--mono);font-size:9px;color:var(--green2);letter-spacing:.14em;text-transform:uppercase;}
+.ma-body{font-size:10px;color:var(--text2);line-height:1.7;}
+.ma-tag{display:inline-block;font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:2px;margin:1px 2px 1px 0;}
+.ma-m{background:rgba(0,255,136,.12);color:var(--green);}
+.ma-a{background:rgba(179,107,255,.12);color:var(--purple);}
+
 </style>
 </head>
 <body>
@@ -257,6 +323,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-top"><span class="wc-num" style="background:#00e5ff;color:#0b0f0e;">S01</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Apresentação, Gerações de Computadores e Níveis de Abstração</div>
       <div class="wc-topics">Ementa e critérios · Gerações (válvulas → VLSI) · Níveis: digital, microarquitetura, ISA, SO, linguagem · Papel do hardware no ADS</div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 1 · Tanenbaum cap. 1 (Introdução, gerações e níveis)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Aula Expositiva</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Quiz inicial (diagnóstico)</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana01_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana01_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -282,6 +357,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="prova-box-title">📝 Prova Semanas 02–03 — Sistemas Numéricos & Portas Lógicas</div>
         <div class="prova-box-desc">Instrumento avaliativo cobrindo o conteúdo desta semana e da S03. Aplicar após conclusão dos Labs 01 e 02.</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 2 · Tocci cap. 1–3 · CompSim cap. 1–2 (Sistemas numéricos, binário, BCD)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Aula Expositiva</span><span class="ma-tag ma-m">PBL</span><span class="ma-tag ma-m">Gamificação</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Lab 01 (relatório)</span><span class="ma-tag ma-a">Prova S02–03 ao final do Módulo I</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana02_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana02_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -306,6 +390,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="proj-box-desc">Extensão prática do Lab 02: após simular no Tinkercad, implementar portas físicas com Arduino UNO. O projeto cobre montagem completa com verificação elétrica real.</div>
         <div class="proj-box-anchor">Inicio do Projeto 02 — continua nas semanas S04 e S05</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 2 · Tocci cap. 4–6 · CompSim cap. 3 (Portas lógicas, Boole)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Rotação por Estações</span><span class="ma-tag ma-m">PBL</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Lab 02 (relatório)</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana03_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana03_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -329,6 +422,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="proj-box-desc">Aprofundamento do Projeto 02: circuitos combinacionais implementados com portas físicas, validando os conceitos da ULA estudados nesta semana com medições reais.</div>
         <div class="proj-box-anchor">Semana S04 do Projeto 02 — conclusão prevista na S05</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 2 · Tocci cap. 7–8 (Circuitos combinacionais, Karnaugh)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Rotação por Estações</span><span class="ma-tag ma-m">Atividades em Grupos</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Lab 03 (relatório)</span><span class="ma-tag ma-a">Avaliação por Pares (progresso projeto)</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana04_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana04_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -351,6 +453,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="proj-box-title">🎯 Entrega Final — Projeto 02: Portas Lógicas Físicas</div>
         <div class="proj-box-desc">Apresentação e entrega do Projeto 02 completo (arquivo: arquitetura_projeto_arduino_portas_logicas.html). Demonstração funcional do circuito com todas as portas implementadas e tabelas-verdade verificadas.</div>
         <div class="proj-box-anchor">Entrega e apresentação do Projeto 02 nesta semana</div>
+      </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 2 · Tocci cap. 8–9 (Flip-flops, circuitos sequenciais)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">PBL</span><span class="ma-tag ma-m">Atividades em Grupos</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Entrega Projeto 02 · Avaliação por Pares</span><span class="ma-tag ma-a">Lab 04 (relatório)</span></div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana05_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -384,6 +495,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="lab-desc">Leitura guiada do datasheet do ATmega328P: identificar os registradores de propósito geral, SREG, SP e PC. Criar uma "vista explodida" do processador no papel, validada pelo código gerado pelo compilador.</div>
         <div class="lab-anchor"><strong>Ancora:</strong> arquitetura Harvard modificada, registradores reais, organização interna da CPU</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 1–2 · Silva cap. 3 · CompSim cap. 4 (Von Neumann, CPU, ciclo F-D-E)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Sala de Aula Invertida</span><span class="ma-tag ma-m">Estudo de Caso Real</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Quiz (leitura prévia Stallings cap. 1)</span><span class="ma-tag ma-a">Lab 05 (relatório)</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana06_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana06_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -400,6 +520,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="sim-box-title">🖥️ Projeto 03 — Simulador de Montagem de PC (PC Builder Pro)</div>
         <div class="sim-box-desc">Atividade central desta semana: usar o PC Builder Pro para simular a montagem completa de um computador, identificando cada componente e sua função na arquitetura. Compara a placa real (desmontada em aula) com o simulador digital.</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 3 · Silva cap. 3 (Componentes do computador, placa-mãe)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Estudo de Caso Real</span><span class="ma-tag ma-m">Gamificação</span><span class="ma-tag ma-m">Atividades em Grupos</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Avaliação por Pares (PC Builder)</span><span class="ma-tag ma-a">Seminário breve de identificação de componentes</span></div>
+      </div>
       <div class="wc-links">
         <a href="atividade-placa-mae.html" class="wl wl-special">🔧 Atividade Placa-Mãe</a>
         <a href="simulador-montagem-pc-v3.html" class="wl wl-proj">🖥️ Projeto 03 — PC Builder</a>
@@ -415,6 +544,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="lab-title">🔬 Lab 06 — Medindo Ciclos de Clock com Timer1</div>
         <div class="lab-desc">Usar o Timer1 de 16 bits do ATmega para medir com precisão de nanosegundos o tempo de execução de diferentes trechos de código. Demonstra concretamente a relação entre código, instruções e ciclos de relógio.</div>
         <div class="lab-anchor"><strong>Ancora:</strong> CPI, ciclo de instrução, desempenho do processador, relação clock/instrução</div>
+      </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 3–4 · Tanenbaum cap. 2 · Silva cap. 4 (Microarquitetura, pipeline, clock)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Sala de Aula Invertida</span><span class="ma-tag ma-m">Aula Expositiva</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Quiz · Lab 06 (relatório)</span></div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana08_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -433,6 +571,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="lab-desc">Compilar código C++ no AVR Studio/Wokwi e analisar o assembly gerado. Identificar as instruções AVR correspondentes a cada operação C++, visualizando a ISA em ação.</div>
         <div class="lab-anchor"><strong>Ancora:</strong> ISA AVR, mapeamento C→Assembly, modos de endereçamento reais</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 11–12 · Tanenbaum cap. 5 · Silva cap. 5 (ISA, modos de endereçamento)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Sala de Aula Invertida</span><span class="ma-tag ma-m">Estudo de Caso Real</span><span class="ma-tag ma-m">Gamificação</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Seminário ISA comparada · Lab 07 (relatório)</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana09_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana09_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -449,6 +596,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="lab-title">🔬 Lab 08 — Polling vs. Interrupção: Medindo a Latência</div>
         <div class="lab-desc">Medir com osciloscópio (ou lógica com segundo Arduino) a latência de resposta de um botão usando polling e comparar com ISR de interrupção externa. A diferença em microssegundos é mensurável e surpreendente.</div>
         <div class="lab-anchor"><strong>Ancora:</strong> latência, eficiência de CPU, ISR real, vetor de interrupção do ATmega</div>
+      </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 7–8 · Silva cap. 7 (Entrada/saída, interrupções, DMA)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Aula Expositiva</span><span class="ma-tag ma-m">Atividades em Pares</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Lab 08 (relatório)</span></div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana10_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -481,6 +637,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="lab-desc">Ler e interpretar o mapa de memória do ESP32 (IRAM, DRAM, Flash, ROM). Medir o tempo de acesso a variáveis em diferentes regiões de memória para demonstrar empiricamente a hierarquia e os custos de acesso.</div>
         <div class="lab-anchor"><strong>Ancora:</strong> mapa de memória real, latência por nível, IRAM vs DRAM no ESP32</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 5–6 · Tanenbaum cap. 4 · Silva cap. 6 (Hierarquia de memória, cache, paginação)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Sala de Aula Invertida</span><span class="ma-tag ma-m">Aula Expositiva</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Quiz (leitura prévia Stallings cap. 5) · Lab 09 (relatório)</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana11_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana11_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -493,6 +658,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S12</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Memória Cache — Organização e Políticas</div>
       <div class="wc-topics">Mapeamento direto, associativo e por conjunto · Políticas de substituição (LRU, FIFO, Random) · Write-back vs write-through · Cache hit/miss · Coerência de cache</div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 5 · Tanenbaum cap. 4 · Silva cap. 6 (Cache: mapeamento, substituição, coerência)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Sala de Aula Invertida</span><span class="ma-tag ma-m">Aula Expositiva</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Quiz diagnóstico de cache hit/miss</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana12_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana12_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -508,6 +682,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="lab-title">🔬 Lab 10 — I²C e SPI na Prática com ESP32</div>
         <div class="lab-desc">Conectar sensor via I²C (BMP280 ou MPU6050) e display via SPI ao ESP32. Usar o analisador lógico (ou osciloscópio) para capturar e decodificar os frames de comunicação, tornando o protocolo visível no hardware.</div>
         <div class="lab-anchor"><strong>Ancora:</strong> protocolos seriais reais, sinais elétricos de barramento, endereçamento I²C</div>
+      </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 3 · Tanenbaum cap. 3 · Silva cap. 7 (Barramentos, I²C, SPI, USB)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Rotação por Estações</span><span class="ma-tag ma-m">Atividades em Grupos</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Lab 10 (relatório)</span></div>
       </div>
       <div class="wc-links">
         <a href="arquitetura_semana13_aula.html" class="wl wl-aula">📖 Aula</a>
@@ -526,6 +709,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="lab-desc">Criar duas tasks FreeRTOS rodando nos dois cores do ESP32. Demonstrar empiricamente uma race condition (dado corrompido) e corrigi-la com Mutex. A condição de corrida fica visível no Serial Monitor em tempo real.</div>
         <div class="lab-anchor"><strong>Ancora:</strong> paralelismo real, race condition demonstrável, primitivas de sincronização</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 13 · Tanenbaum cap. 8 · Silva cap. 9 (Sistemas paralelos, SIMD, MIMD, sincronização)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">PBL</span><span class="ma-tag ma-m">Atividades em Grupos</span><span class="ma-tag ma-m">Rotação por Estações</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Lab 11 (relatório)</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana14_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana14_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -538,6 +730,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-top"><span class="wc-num" style="background:#b36bff;color:#0b0f0e;">S15</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Arquiteturas RISC e CISC</div>
       <div class="wc-topics">Filosofias RISC vs CISC · x86 (CISC) vs ARM (RISC) vs AVR (RISC) vs RISC-V · Microcódigo · Comparativo de desempenho e consumo · Tendências atuais (Apple M-series, Snapdragon)</div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Stallings cap. 11 · Tanenbaum cap. 5 · Silva cap. 3 (RISC vs CISC, ARM, x86, RISC-V)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Estudo de Caso Real</span><span class="ma-tag ma-m">Sala de Aula Invertida</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Seminário RISC vs CISC · Quiz</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana15_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana15_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -568,6 +769,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="lab-desc">Criar múltiplas tasks FreeRTOS com diferentes prioridades e monitorar o escalonador preemptivo via Serial. Medir o uso de heap com heap_caps_get_free_size(), observando o gerenciamento de memória do SO em tempo real.</div>
         <div class="lab-anchor"><strong>Ancora:</strong> escalonamento real observável, heap do SO, preempção com prioridades</div>
       </div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 8 · Tanenbaum cap. 6 (Sistemas operacionais, escalonamento, gerenciamento de memória)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Aula Expositiva</span><span class="ma-tag ma-m">Atividades em Grupos</span><span class="ma-tag ma-m">Rotação por Estações</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Lab 12 (relatório)</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana16_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana16_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -580,6 +790,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S17</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Linguagens, Compiladores e Ferramentas</div>
       <div class="wc-topics">Linguagem de máquina vs assembly vs alto nível · Fases do compilador (lexer, parser, gerador de código) · Interpretadores vs compiladores · Linker e loader · Bibliotecas estáticas e dinâmicas</div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 10 · Tanenbaum cap. 7 (Linguagens, compiladores, montadores, linker)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Sala de Aula Invertida</span><span class="ma-tag ma-m">Aula Expositiva</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Quiz de compiladores · Estudo de código gerado</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana17_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana17_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -591,6 +810,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S18</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Organização de Arquivos e Sistemas de Armazenamento</div>
       <div class="wc-topics">FAT32, NTFS, ext4 · Inodes e diretórios · Acesso sequencial vs aleatório · RAID (0, 1, 5, 10) · SSD vs HDD: impacto na organização · NVMe e M.2</div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 11 · Tanenbaum cap. 6 (FAT, NTFS, inodes, RAID, SSD, NVMe)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Aula Expositiva</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Quiz de sistemas de arquivos</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana18_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana18_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -602,6 +830,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-top"><span class="wc-num" style="background:#ff7a1a;color:#0b0f0e;">S19</span><span class="wc-lbl">semana</span></div>
       <div class="wc-title">Revisão Integrada e Estudo de Caso</div>
       <div class="wc-topics">Revisão cruzada dos 4 módulos · Estudo de caso: arquitetura de um smartphone moderno · Rastreio de uma instrução do código-fonte ao hardware · Preparação para avaliação final</div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Silva cap. 1–11 (Revisão integrada) · Stallings (todos) · Tanenbaum (todos)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">Estudo de Caso Real</span><span class="ma-tag ma-m">Gamificação</span><span class="ma-tag ma-m">Atividades em Grupos</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Seminário final: arquitetura de smartphone · Revisão cruzada entre grupos</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana19_aula.html" class="wl wl-aula">📖 Aula</a>
         <a href="arquitetura_semana19_guia.html" class="wl wl-guia">✏️ Guia</a>
@@ -613,6 +850,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
       <div class="wc-top"><span class="wc-num" style="background:#ffe033;color:#0b0f0e;">S20</span><span class="wc-lbl" style="color:var(--yellow)">✦ avaliação final</span></div>
       <div class="wc-title" style="color:var(--yellow)">Apresentação de Projetos e Avaliação Final</div>
       <div class="wc-topics">Apresentação dos projetos do semestre · Avaliação final escrita · Consolidação de competências da ementa · Feedback individualizado</div>
+      
+      <div class="bib-map">
+        <div class="bib-map-title">📚 Referências desta semana</div>
+        <div class="bib-map-body">Todos os livros-base (revisão semestral)</div>
+      </div>
+      <div class="ma-box">
+        <div class="ma-box-title">🧑‍🏫 Metodologia & Avaliação</div>
+        <div class="ma-body"><strong style="color:var(--green2)">Metodologias:</strong> <span class="ma-tag ma-m">PBL</span><span class="ma-tag ma-m">Atividades em Grupos</span><br><strong style="color:var(--purple)">Avaliação:</strong> <span class="ma-tag ma-a">Apresentação de Projetos · Prova integradora · Avaliação por Pares</span></div>
+      </div>
       <div class="wc-links">
         <a href="arquitetura_semana20_aula.html" class="wl wl-aula">📖 Roteiro</a>
         <a href="arquitetura_semana20_guia.html" class="wl wl-guia">✏️ Critérios</a>
@@ -621,6 +867,196 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
 
   </div><!-- /weeks-grid módulo 04 -->
 
+
+
+  <!-- ══════════════════════════════════════
+       REFERÊNCIAS BIBLIOGRÁFICAS
+  ══════════════════════════════════════ -->
+  <div class="biblio-panel">
+    <div class="biblio-lbl">📚 Referências Bibliográficas</div>
+    <div class="biblio-title">Livros-Base da Disciplina — Arquitetura e Organização de Computadores</div>
+    <div class="biblio-desc">Todos os PDFs estão disponíveis para download direto. Cada livro é referenciado nas semanas e módulos correspondentes.</div>
+    <div class="biblio-grid">
+
+      <div class="bib-card">
+        <span class="bib-badge bib-b">📗 Básica</span>
+        <div class="bib-title">Organização e Arquitetura de Computadores — Uma Jornada do Fundamental ao Inovador</div>
+        <div class="bib-author">Luiz Ricardo Mantovani da Silva</div>
+        <div class="bib-modules">Módulos: 01 · 02 · 03 · 04 · Todos os módulos</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.6;">22 capítulos: sistemas numéricos, CPU, memória, I/O, SO, linguagens, nuvem, IoT, IA, computação quântica.</div>
+        <a class="bib-link" href="ORGANIZAÇÃO-E-ARQUITETURA-DE-COMPUTADORES.pdf" download>⬇ Download PDF</a>
+      </div>
+
+      <div class="bib-card">
+        <span class="bib-badge bib-b">📗 Básica</span>
+        <div class="bib-title">Organização Estruturada de Computadores</div>
+        <div class="bib-author">Andrew S. Tanenbaum</div>
+        <div class="bib-modules">Módulos: 01 · 02 · 03 — cap. 1–6</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.6;">Níveis de abstração, lógica digital, microarquitetura, ISA, arquitetura paralela. Clássico indispensável.</div>
+        <a class="bib-link" href="Organização_estruturada_de_computadores_-_Tanenbaum__2_.pdf" download>⬇ Download PDF</a>
+      </div>
+
+      <div class="bib-card">
+        <span class="bib-badge bib-b">📗 Básica</span>
+        <div class="bib-title">Arquitetura e Organização de Computadores</div>
+        <div class="bib-author">William Stallings</div>
+        <div class="bib-modules">Módulos: 02 · 03 — cap. 1, 3–5, 8, 11–13</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.6;">CPU, conjuntos de instrução, hierarquia de memória, I/O, barramentos, RISC/CISC. Referência internacional.</div>
+        <a class="bib-link" href="Livro_de_Arquitetura_e_organização_de_computadores__Willian.pdf" download>⬇ Download PDF</a>
+      </div>
+
+      <div class="bib-card">
+        <span class="bib-badge bib-c">📘 Complementar</span>
+        <div class="bib-title">Fundamentos e Práticas em Arquitetura e Organização de Computadores — Estudos de Caso com o Simulador CompSim</div>
+        <div class="bib-author">Autoria nacional</div>
+        <div class="bib-modules">Módulos: 01 · 02 — prático, simulação</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.6;">Abordagem prática com simulador CompSim. Excelente para os labs de sistemas numéricos e ciclo de instrução.</div>
+        <a class="bib-link" href="FUNDAMENTOS_E_PRÁTICAS_EM_ARQUITETURA_E_ORGANIZAÇÃO_DE_COMPUTADORES_Estudos_de_Caso_com_o_Simulador_CompSim.pdf" download>⬇ Download PDF</a>
+      </div>
+
+      <div class="bib-card">
+        <span class="bib-badge bib-c">📘 Complementar</span>
+        <div class="bib-title">Computação — Arquitetura de Computadores</div>
+        <div class="bib-author">Autoria nacional</div>
+        <div class="bib-modules">Módulos: 01 · 02 · 03</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.6;">Introdução abrangente aos conceitos de arquitetura computacional. Ideal como leitura paralela às semanas 01–10.</div>
+        <a class="bib-link" href="Livro_Computacao_Arquitetura_de_Computadores__1_.PDF" download>⬇ Download PDF</a>
+      </div>
+
+      <div class="bib-card">
+        <span class="bib-badge bib-c">📘 Complementar</span>
+        <div class="bib-title">Sistemas Digitais — Princípios e Aplicações</div>
+        <div class="bib-author">Ronald J. Tocci · Neal S. Widmer</div>
+        <div class="bib-modules">Módulo: 01 — cap. 1–8 (portas lógicas)</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.6;">Lógica digital, álgebra booleana, flip-flops, contadores. Referência direta para as semanas 02–05.</div>
+        <a class="bib-link" href="Sistemas_Digitais_Princípios_e_Aplicações__Ronald_J__Tocci__Neal_S__Widmer_etc__.pdf" download>⬇ Download PDF</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       METODOLOGIAS PROPOSTAS
+  ══════════════════════════════════════ -->
+  <div class="metod-panel">
+    <div class="metod-lbl">🧑‍🏫 Metodologias Propostas</div>
+    <div class="metod-title">Estratégias Pedagógicas Ativas — Disciplina ARQ-001</div>
+    <div class="metod-desc">As metodologias abaixo são combinadas ao longo dos módulos conforme a especificidade de cada semana. Cada card indica as semanas de maior aplicação e o racional pedagógico.</div>
+    <div class="metod-grid">
+
+      <div class="met-card">
+        <div class="met-icon">🎙️</div>
+        <div class="met-name">Aulas Expositivas Dialogadas</div>
+        <div class="met-semanas">Semanas: 01 · 06 · 08 · 09 · 11 · 12 · 15 · 17 · 18</div>
+        <div class="met-desc">Introdução estruturada de novos conceitos com interação mediada — perguntas, exemplos contextualizados e analogias com hardware real. Base para todo o restante do trabalho ativo.</div>
+      </div>
+
+      <div class="met-card">
+        <div class="met-icon">🏗️</div>
+        <div class="met-name">Aprendizagem Baseada em Projetos (PBL)</div>
+        <div class="met-semanas">Semanas: 02 · 03–05 · 06–07 · 11–14 · 20</div>
+        <div class="met-desc">Os quatro projetos integrados (Conversor, Portas Lógicas, PC Builder, Prova) são desenvolvidos ao longo de semanas, ancorados em problemas reais de hardware e sistemas. Culmina na apresentação final da S20.</div>
+      </div>
+
+      <div class="met-card">
+        <div class="met-icon">🎮</div>
+        <div class="met-name">Gamificação</div>
+        <div class="met-semanas">Semanas: 02 · 03 · 07 · 09 · 19</div>
+        <div class="met-desc">Uso do simulador PC Builder Pro com mecânica de montagem e validação, conversor com feedback imediato, e prova digital interativa com pontuação. Estimula a curiosidade e a repetição deliberada.</div>
+      </div>
+
+      <div class="met-card">
+        <div class="met-icon">👥</div>
+        <div class="met-name">Atividades em Pares / Grupos</div>
+        <div class="met-semanas">Semanas: 04 · 05 · 07 · 10 · 13 · 14 · 16 · 20</div>
+        <div class="met-desc">Labs práticos com Arduino e ESP32 realizados em duplas ou trios. Seminários em grupos de 3–4 alunos. A apresentação final (S20) é em equipe. Promove aprendizagem colaborativa e comunicação técnica.</div>
+      </div>
+
+      <div class="met-card">
+        <div class="met-icon">🔄</div>
+        <div class="met-name">Sala de Aula Invertida</div>
+        <div class="met-semanas">Semanas: 06 · 08 · 11 · 12 · 15 · 17</div>
+        <div class="met-desc">Alunos leem o capítulo do livro-base antes da aula (Stallings ou Tanenbaum indicados pelo Guia da semana). Em sala, o tempo é usado para resolução de problemas, análise de datasheets e discussão de dúvidas.</div>
+      </div>
+
+      <div class="met-card">
+        <div class="met-icon">🔬</div>
+        <div class="met-name">Estudo de Caso Real</div>
+        <div class="met-semanas">Semanas: 07 · 09 · 15 · 19</div>
+        <div class="met-desc">Análise de casos concretos: placa-mãe física desmontada (S07), assembly gerado pelo compilador AVR (S09), comparativo RISC vs CISC com Apple M4 e Intel Core Ultra (S15), arquitetura de smartphone moderno (S19).</div>
+      </div>
+
+      <div class="met-card">
+        <div class="met-icon">🔃</div>
+        <div class="met-name">Rotação por Estações</div>
+        <div class="met-semanas">Semanas: 03 · 04 · 13 · 16</div>
+        <div class="met-desc">Em laboratório, grupos rotacionam por estações: (1) teoria/leitura, (2) simulação (Tinkercad/Wokwi), (3) hardware físico, (4) documentação. Cada estação tem 20 min e um guia impresso de orientação.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       INSTRUMENTOS DE AVALIAÇÃO
+  ══════════════════════════════════════ -->
+  <div class="aval-panel">
+    <div class="aval-lbl">📋 Instrumentos de Avaliação Propostos</div>
+    <div class="aval-title">Avaliação Contínua e Diversificada — Ao Longo dos 4 Módulos</div>
+    <div class="aval-desc">Os instrumentos são distribuídos conforme a especificidade de cada semana, garantindo evidências de aprendizagem em múltiplas dimensões: conceitual, procedimental e atitudinal.</div>
+    <div class="aval-grid">
+
+      <div class="av-card">
+        <span class="av-tipo-badge av-prova">📝 Prova Escrita / Digital</span>
+        <div class="av-card-title">Prova — Módulo I: Sistemas Numéricos & Portas Lógicas</div>
+        <div class="av-card-semana">Semanas 02–03 · Final do Módulo I · Obrigatória</div>
+        <div class="av-card-desc">Instrumento formal cobrindo conversão de bases, complemento de 2, portas lógicas e tabelas-verdade. Formato digital interativo com correção imediata. Aplicar após conclusão dos Labs 01 e 02.</div>
+        <a class="av-card-link" href="prova_s02_s03.html">📝 Abrir Prova S02–03 →</a>
+      </div>
+
+      <div class="av-card">
+        <span class="av-tipo-badge av-teste">✅ Testes Rápidos (Quiz)</span>
+        <div class="av-card-title">Quizzes de Verificação Formativa</div>
+        <div class="av-card-semana">Semanas: 01 · 06 · 08 · 11 · 12 · 15 · 17 · 18</div>
+        <div class="av-card-desc">Testes de 5–10 questões objetivas aplicados no início ou fim da aula para verificar leitura prévia (sala invertida) ou consolidação imediata. Podem ser feitos via forms digitais ou cartões.</div>
+      </div>
+
+      <div class="av-card">
+        <span class="av-tipo-badge av-projeto">🔬 Relatório de Lab</span>
+        <div class="av-card-title">Relatórios dos Labs Práticos (Arduino/ESP32)</div>
+        <div class="av-card-semana">Semanas: 02 · 03 · 04 · 05 · 06 · 08 · 09 · 10 · 11 · 13 · 14 · 16</div>
+        <div class="av-card-desc">Relatório técnico de cada lab prático: objetivo, montagem, código, resultados medidos (osciloscópio/serial monitor), análise e conclusão. Entregue na semana seguinte ao lab. Formato padrão fornecido no Guia.</div>
+      </div>
+
+      <div class="av-card">
+        <span class="av-tipo-badge av-seminar">🎤 Seminário</span>
+        <div class="av-card-title">Seminários Temáticos por Grupos</div>
+        <div class="av-card-semana">Semanas: 09 · 15 · 19</div>
+        <div class="av-card-desc">Grupos de 3–4 alunos apresentam tema técnico aprofundado (15 min + 5 min perguntas): ISA comparada (S09), RISC vs CISC atual (S15), arquitetura de dispositivo moderno (S19). Avaliado com rubrica pública.</div>
+      </div>
+
+      <div class="av-card">
+        <span class="av-tipo-badge av-projeto">🏗️ Desenvolvimento de Projeto</span>
+        <div class="av-card-title">Projetos Integrados (Portfólio)</div>
+        <div class="av-card-semana">Projetos: S02 · S03–05 · S06–07 · Entrega S20</div>
+        <div class="av-card-desc">Os quatro projetos integrados (Conversor, Portas Lógicas, PC Builder, Prova) compõem o portfólio digital da disciplina. Avaliação por etapas com critérios de funcionalidade, documentação e apresentação oral na S20.</div>
+      </div>
+
+      <div class="av-card">
+        <span class="av-tipo-badge av-pares">🔁 Avaliação por Pares</span>
+        <div class="av-card-title">Peer Review — Projetos e Seminários</div>
+        <div class="av-card-semana">Semanas: 05 · 07 · 20</div>
+        <div class="av-card-desc">Após entrega dos projetos e seminários, cada grupo avalia os trabalhos de outros dois grupos usando rubrica padronizada. Desenvolve senso crítico e habilidade de comunicação técnica. Peso de 20% na nota do instrumento.</div>
+      </div>
+
+      <div class="av-card">
+        <span class="av-tipo-badge av-prova">🎯 Avaliação Final</span>
+        <div class="av-card-title">Apresentação de Projetos + Prova Integradora</div>
+        <div class="av-card-semana">Semana 20 · Avaliação Final do Semestre</div>
+        <div class="av-card-desc">Apresentação pública dos projetos desenvolvidos + prova escrita integradora cobrindo os 4 módulos. Composta por questões dissertativas e problemas práticos. Feedback individualizado ao final da sessão.</div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- NOTA PEDAGÓGICA -->
   <div class="nota-ped">
