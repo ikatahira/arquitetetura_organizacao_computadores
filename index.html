@@ -151,6 +151,20 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
   .overview{grid-template-columns:repeat(2,1fr);}
   .proj-cards{grid-template-columns:1fr;}
 }
+/* ── BADGE BIBLIOGRAFIA NO HEADER ─────────────── */
+.bdg-biblio{color:#00e5ff;border-color:rgba(0,229,255,.4);background:rgba(0,229,255,.09);text-decoration:none;cursor:pointer;transition:all .2s;}
+.bdg-biblio:hover{background:rgba(0,229,255,.2);border-color:var(--cyan);}
+
+/* ── BARRA DE ACESSO RÁPIDO À BIBLIOGRAFIA ─────── */
+.bib-quickbar{margin-top:20px;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.22);border-radius:8px;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.bib-quickbar-label{font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;}
+.bib-quickbar-links{display:flex;flex-wrap:wrap;gap:7px;}
+.bib-ql{font-family:var(--mono);font-size:9px;letter-spacing:.05em;padding:5px 11px;border-radius:4px;text-decoration:none;border:1px solid;transition:all .2s;white-space:nowrap;}
+.bib-ql-basic{color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.06);}
+.bib-ql-basic:hover{background:rgba(0,229,255,.18);border-color:var(--cyan);}
+.bib-ql-comp{color:var(--green2);border-color:rgba(0,201,103,.3);background:rgba(0,201,103,.06);}
+.bib-ql-comp:hover{background:rgba(0,201,103,.18);border-color:var(--green2);}
+
 /* ── BIBLIOGRAFIA ─────────────────────────────── */
 .biblio-panel{margin-top:40px;background:var(--bg3);border:1px solid rgba(0,229,255,.25);border-radius:12px;padding:24px 28px;position:relative;overflow:hidden;}
 .biblio-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--cyan));}
@@ -232,6 +246,20 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
     <span class="bdg bdg-y">🧪 ARDUINO + ESP32</span>
     <span class="bdg bdg-p">💻 TEORIA + PRÁTICA</span>
     <span class="bdg" style="color:var(--yellow);border-color:rgba(255,224,51,.3);background:rgba(255,224,51,.06);">🎯 04 PROJETOS INTEGRADOS</span>
+    <a href="#bibliografia" class="bdg bdg-biblio">📚 BIBLIOGRAFIA & PDFs</a>
+  </div>
+
+  <!-- BARRA DE ACESSO RÁPIDO À BIBLIOGRAFIA -->
+  <div class="bib-quickbar">
+    <div class="bib-quickbar-label">📚 Baixar PDFs dos Livros</div>
+    <div class="bib-quickbar-links">
+      <a href="ORGANIZAÇÃO-E-ARQUITETURA-DE-COMPUTADORES.pdf" download class="bib-ql bib-ql-basic">⬇ Silva — Org. e Arq. de Computadores</a>
+      <a href="Organização_estruturada_de_computadores_-_Tanenbaum__2_.pdf" download class="bib-ql bib-ql-basic">⬇ Tanenbaum — Org. Estruturada</a>
+      <a href="Livro_de_Arquitetura_e_organização_de_computadores__Willian.pdf" download class="bib-ql bib-ql-basic">⬇ Stallings — Arq. e Org.</a>
+      <a href="FUNDAMENTOS_E_PRÁTICAS_EM_ARQUITETURA_E_ORGANIZAÇÃO_DE_COMPUTADORES_Estudos_de_Caso_com_o_Simulador_CompSim.pdf" download class="bib-ql bib-ql-comp">⬇ CompSim — Fundamentos & Práticas</a>
+      <a href="Livro_Computacao_Arquitetura_de_Computadores__1_.PDF" download class="bib-ql bib-ql-comp">⬇ Computação — Arq. de Computadores</a>
+      <a href="Sistemas_Digitais_Princípios_e_Aplicações__Ronald_J__Tocci__Neal_S__Widmer_etc__.pdf" download class="bib-ql bib-ql-comp">⬇ Tocci — Sistemas Digitais</a>
+    </div>
   </div>
   <div class="hdr-meta">1º SEMESTRE / 2026<br>FATEC · ADS · 1º SEM<br><span style="color:var(--green2)">STATUS: ATIVO</span></div>
 </header>
@@ -872,7 +900,7 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
   <!-- ══════════════════════════════════════
        REFERÊNCIAS BIBLIOGRÁFICAS
   ══════════════════════════════════════ -->
-  <div class="biblio-panel">
+  <div class="biblio-panel" id="bibliografia">
     <div class="biblio-lbl">📚 Referências Bibliográficas</div>
     <div class="biblio-title">Livros-Base da Disciplina — Arquitetura e Organização de Computadores</div>
     <div class="biblio-desc">Todos os PDFs estão disponíveis para download direto. Cada livro é referenciado nas semanas e módulos correspondentes.</div>
