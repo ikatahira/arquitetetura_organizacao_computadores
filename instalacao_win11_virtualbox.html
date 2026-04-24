@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instalação Win 11 no VirtualBox | GSO I 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0f172a;
+  --blue:#1e3a5f;
+  --accent:#2563eb;
+  --vb:#183153;
+  --win:#0078d4;
+  --green:#16a34a;
+  --green-light:#dcfce7;
+  --red:#dc2626;
+  --red-light:#fee2e2;
+  --amber:#d97706;
+  --amber-light:#fef3c7;
+  --gray-50:#f8fafc;
+  --gray-100:#f1f5f9;
+  --gray-200:#e2e8f0;
+  --gray-400:#94a3b8;
+  --gray-600:#475569;
+  --gray-700:#334155;
+  --white:#fff;
+  --radius:12px;
+  --radius-sm:8px;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+}
+body{font-family:var(--sans);background:var(--gray-50);color:var(--gray-700);line-height:1.6;}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 40%,#183153 70%,#0078d4 100%);
+  color:#fff;padding:52px 32px 44px;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 60px),
+            repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 60px);
+}
+.hero-inner{position:relative;z-index:1;}
+.hero-badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:5px 16px;font-size:.78em;font-weight:600;font-family:var(--mono);letter-spacing:.04em;}
+.hero h1{font-size:clamp(1.6em,4vw,2.8em);font-weight:700;letter-spacing:-.03em;margin-bottom:8px;}
+.hero h1 .win{color:#60a5fa;}
+.hero h1 .vb{color:#f97316;}
+.hero-sub{opacity:.7;font-size:.9em;margin-bottom:28px;}
+.hero-pills{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+.pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:50px;padding:5px 14px;font-size:.78em;font-weight:600;}
+
+/* ── BACK BAR ── */
+.back-bar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:12px 24px;}
+.back-bar-inner{max-width:1100px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.83em;color:var(--accent);font-weight:600;text-decoration:none;}
+.back-link:hover{opacity:.8;}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{background:var(--white);border-bottom:2px solid var(--gray-200);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow-x:auto;}
+.progress-inner{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;gap:6px;align-items:center;white-space:nowrap;}
+.prog-step{display:flex;align-items:center;gap:6px;font-size:.75em;font-weight:600;color:var(--gray-400);font-family:var(--mono);}
+.prog-step.active{color:var(--accent);}
+.prog-step.done{color:var(--green);}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.prog-line{width:20px;height:2px;background:var(--gray-200);flex-shrink:0;}
+.prog-line.done{background:var(--green);}
+
+/* ── CONTAINER ── */
+.container{max-width:1100px;margin:0 auto;padding:36px 24px;}
+
+/* ── PHASE HEADER ── */
+.phase{margin-bottom:48px;}
+.phase-header{display:flex;align-items:center;gap:14px;padding:18px 22px;border-radius:var(--radius);margin-bottom:20px;color:#fff;}
+.phase-icon{font-size:2em;}
+.phase-title{font-family:var(--mono);font-size:1.1em;font-weight:700;letter-spacing:.02em;}
+.phase-sub{font-size:.82em;opacity:.8;margin-top:2px;}
+.phase-badge{margin-left:auto;font-family:var(--mono);font-size:.75em;font-weight:700;background:rgba(255,255,255,.2);border-radius:50px;padding:4px 12px;white-space:nowrap;}
+
+/* Phase colors */
+.phase-vb{background:linear-gradient(135deg,#1e3a5f,#183153);}
+.phase-vm{background:linear-gradient(135deg,#183153,#1e4080);}
+.phase-iso{background:linear-gradient(135deg,#064e3b,#065f46);}
+.phase-install{background:linear-gradient(135deg,#1e3a5f,#0078d4);}
+.phase-oobe{background:linear-gradient(135deg,#0078d4,#0891b2);}
+.phase-done{background:linear-gradient(135deg,#14532d,#16a34a);}
+
+/* ── STEP CARD ── */
+.step-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);margin-bottom:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.step-head{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--gray-100);}
+.step-num{font-family:var(--mono);font-size:.8em;font-weight:700;color:#fff;border-radius:50px;padding:3px 11px;white-space:nowrap;}
+.step-title{font-size:.95em;font-weight:700;color:var(--navy);flex:1;}
+.step-tag{font-family:var(--mono);font-size:.68em;font-weight:700;color:var(--gray-400);letter-spacing:.05em;}
+.step-body{padding:20px;}
+
+.step-desc{font-size:.9em;color:var(--gray-700);margin-bottom:16px;line-height:1.6;}
+
+/* ── ACTION LIST ── */
+.action-list{list-style:none;margin-bottom:16px;}
+.action-list li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--gray-100);font-size:.88em;line-height:1.5;align-items:flex-start;}
+.action-list li:last-child{border:none;}
+.action-n{font-family:var(--mono);font-weight:700;font-size:.78em;color:#fff;background:var(--accent);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.action-text{flex:1;color:var(--gray-700);}
+.action-text code{font-family:var(--mono);background:var(--gray-100);border:1px solid var(--gray-200);padding:1px 6px;border-radius:4px;font-size:.88em;color:var(--navy);}
+.action-resp{margin-top:6px;background:var(--green-light);border:1px solid #86efac;border-radius:var(--radius-sm);padding:7px 10px;font-size:.82em;color:#14532d;line-height:1.4;}
+.action-warn{margin-top:6px;background:var(--amber-light);border:1px solid #fcd34d;border-radius:var(--radius-sm);padding:7px 10px;font-size:.82em;color:#78350f;line-height:1.4;}
+.action-info{margin-top:6px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--radius-sm);padding:7px 10px;font-size:.82em;color:#1e40af;line-height:1.4;}
+
+/* ── SCREENSHOT ── */
+.screenshot-wrap{border-radius:var(--radius-sm);overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.18);border:1px solid #c8cdd4;margin:16px 0 4px;}
+.screenshot-caption{font-family:var(--mono);font-size:.72em;color:var(--gray-400);margin-top:6px;margin-bottom:14px;text-align:center;letter-spacing:.03em;}
+.screenshot-row{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0 4px;}
+.screenshot-row>div{flex:1;min-width:260px;}
+
+/* ── SPEC TABLE ── */
+.spec-table{width:100%;border-collapse:collapse;font-size:.83em;margin:12px 0;}
+.spec-table th{text-align:left;padding:8px 12px;background:var(--navy);color:#fff;font-family:var(--mono);font-size:.75em;font-weight:700;letter-spacing:.04em;}
+.spec-table th:first-child{border-radius:var(--radius-sm) 0 0 0;}
+.spec-table th:last-child{border-radius:0 var(--radius-sm) 0 0;}
+.spec-table td{padding:8px 12px;border-bottom:1px solid var(--gray-100);vertical-align:top;}
+.spec-table tr:last-child td{border:none;}
+.spec-table td:first-child{font-family:var(--mono);font-weight:700;font-size:.8em;color:var(--navy);white-space:nowrap;}
+.val-ok{color:var(--green);font-weight:700;}
+.val-min{color:var(--amber);font-weight:700;}
+.val-bad{color:var(--red);font-weight:700;}
+
+/* ── TIP / WARN BOXES ── */
+.tip-box{border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0;font-size:.86em;line-height:1.5;}
+.tip-box.green{background:var(--green-light);border-left:3px solid var(--green);color:#14532d;}
+.tip-box.amber{background:var(--amber-light);border-left:3px solid var(--amber);color:#78350f;}
+.tip-box.blue{background:#eff6ff;border-left:3px solid var(--accent);color:#1e40af;}
+.tip-box.red{background:var(--red-light);border-left:3px solid var(--red);color:#991b1b;}
+
+/* ── CHECKLIST ── */
+.checklist{display:flex;flex-direction:column;gap:5px;margin:12px 0;}
+.cl-item{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:var(--radius-sm);background:var(--gray-50);border:1px solid var(--gray-200);font-size:.84em;color:var(--gray-700);}
+.cl-icon{font-size:.9em;flex-shrink:0;margin-top:1px;}
+
+footer{text-align:center;padding:28px;color:var(--gray-400);font-size:.8em;border-top:1px solid var(--gray-200);margin-top:48px;}
+
+@media(max-width:768px){
+  .hero{padding:36px 16px;}
+  .container{padding:20px 16px;}
+  .screenshot-row{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <div class="back-bar-inner">
+    <a href="index.html" class="back-link">← Voltar para o início</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-badges">
+      <span class="hero-badge">📋 GSO I 2026</span>
+      <span class="hero-badge">🖥️ Virtualização</span>
+      <span class="hero-badge">Guia Prático</span>
+    </div>
+    <h1>Instalação do <span class="win">Windows 11</span><br>no <span class="vb">VirtualBox</span></h1>
+    <div class="hero-sub">Passo a passo completo — da criação da VM até o desktop configurado</div>
+    <div class="hero-pills">
+      <span class="pill">⚙️ 6 fases</span>
+      <span class="pill">📸 30+ telas ilustradas</span>
+      <span class="pill">⏱️ ~60 min</span>
+      <span class="pill">🆓 VirtualBox 7.x · ISO Win 11</span>
+    </div>
+  </div>
+</header>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="prog-step done"><span class="prog-dot"></span>Pré-requisitos</div>
+    <div class="prog-line done"></div>
+    <div class="prog-step done"><span class="prog-dot"></span>Instalar VirtualBox</div>
+    <div class="prog-line done"></div>
+    <div class="prog-step done"><span class="prog-dot"></span>Criar VM</div>
+    <div class="prog-line done"></div>
+    <div class="prog-step done"><span class="prog-dot"></span>Configurar VM</div>
+    <div class="prog-line done"></div>
+    <div class="prog-step done"><span class="prog-dot"></span>Instalar Win 11</div>
+    <div class="prog-line done"></div>
+    <div class="prog-step done"><span class="prog-dot"></span>Configurar OOBE</div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════
+     FASE 0 — PRÉ-REQUISITOS
+═══════════════════════════════════════ -->
+<div class="phase">
+  <div class="phase-header phase-vb">
+    <span class="phase-icon">📋</span>
+    <div>
+      <div class="phase-title">FASE 0 — Pré-requisitos</div>
+      <div class="phase-sub">O que você precisa ter antes de começar</div>
+    </div>
+    <span class="phase-badge">~5 min</span>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#475569;">PRÉ</span>
+      <span class="step-title">Requisitos de hardware e software</span>
+      <span class="step-tag">VERIFICAR ANTES</span>
+    </div>
+    <div class="step-body">
+      <div class="step-desc">Antes de começar, verifique se o seu computador físico (host) atende aos requisitos mínimos. O VirtualBox precisa de virtualização ativada na BIOS/UEFI.</div>
+
+      <table class="spec-table">
+        <thead><tr><th>Componente</th><th>Mínimo (funciona)</th><th>Recomendado (aula)</th><th>Status ideal</th></tr></thead>
+        <tbody>
+          <tr><td>CPU (host)</td><td>Intel/AMD 64-bit, 4 núcleos</td><td>6+ núcleos, VT-x/AMD-V ativo</td><td class="val-ok">✅ com virtualização</td></tr>
+          <tr><td>RAM (host)</td><td>8 GB total</td><td>16 GB total</td><td class="val-min">⚠ 8 GB é o mínimo</td></tr>
+          <tr><td>Disco livre</td><td>50 GB disponíveis</td><td>80+ GB disponíveis</td><td class="val-ok">✅ SSD preferido</td></tr>
+          <tr><td>VirtualBox</td><td>Versão 7.0+</td><td>7.1.x (mais recente)</td><td class="val-ok">✅ gratuito</td></tr>
+          <tr><td>ISO Win 11</td><td>Win 11 Home/Pro 64-bit</td><td>Win 11 Pro 23H2 pt-BR</td><td class="val-ok">✅ baixar da Microsoft</td></tr>
+          <tr><td>VT-x/AMD-V</td><td>Obrigatório na BIOS</td><td>Habilitado por padrão em CPUs novas</td><td class="val-bad">❌ se desativado = falha</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-box blue">💡 <strong>Onde baixar:</strong> VirtualBox gratuito em <code>virtualbox.org</code> · ISO do Windows 11 oficial em <code>microsoft.com/pt-br/software-download/windows11</code> — escolha "Download da Imagem de Disco ISO do Windows 11 64 bits"</div>
+      <div class="tip-box amber">⚠️ <strong>VT-x/AMD-V:</strong> Se o VirtualBox reclamar de virtualização, reinicie o PC, entre na BIOS (Del/F2) e ative "Intel VT-x" ou "AMD-V / SVM Mode" em Configurações Avançadas da CPU.</div>
+
+      <!-- VT-x BIOS visual -->
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <rect width="700" height="160" fill="#1a1a2e"/>
+          <!-- BIOS header -->
+          <rect width="700" height="24" fill="#00008b"/>
+          <text x="350" y="16" font-family="Consolas,monospace" font-size="11" fill="white" text-anchor="middle">UEFI BIOS Utility — Advanced Mode · CPU Configuration</text>
+          <!-- Menu items -->
+          <text x="30" y="52" font-family="Consolas,monospace" font-size="11" fill="#aaa">Intel(R) Virtualization Technology</text>
+          <rect x="420" y="38" width="120" height="20" rx="2" fill="#00008b" stroke="#00aaff" stroke-width="1"/>
+          <text x="480" y="52" font-family="Consolas,monospace" font-size="11" fill="#00ff00" text-anchor="middle" font-weight="bold">[Enabled]</text>
+          <text x="30" y="74" font-family="Consolas,monospace" font-size="11" fill="#aaa">VT-d</text>
+          <rect x="420" y="60" width="120" height="20" rx="2" fill="#333"/>
+          <text x="480" y="74" font-family="Consolas,monospace" font-size="11" fill="#aaa" text-anchor="middle">[Enabled]</text>
+          <text x="30" y="96" font-family="Consolas,monospace" font-size="11" fill="#aaa">Hyper-Threading Technology</text>
+          <rect x="420" y="82" width="120" height="20" rx="2" fill="#333"/>
+          <text x="480" y="96" font-family="Consolas,monospace" font-size="11" fill="#aaa" text-anchor="middle">[Enabled]</text>
+          <text x="30" y="118" font-family="Consolas,monospace" font-size="11" fill="#aaa">Active Processor Cores</text>
+          <rect x="420" y="104" width="120" height="20" rx="2" fill="#333"/>
+          <text x="480" y="118" font-family="Consolas,monospace" font-size="11" fill="#aaa" text-anchor="middle">[All]</text>
+          <!-- callout -->
+          <rect x="550" y="34" width="140" height="28" rx="3" fill="#00aa00"/>
+          <text x="620" y="44" font-family="Consolas,monospace" font-size="9" fill="white" text-anchor="middle" font-weight="bold">← ATIVAR AQUI</text>
+          <text x="620" y="56" font-family="Consolas,monospace" font-size="9" fill="#ccffcc" text-anchor="middle">obrigatório!</text>
+          <line x1="550" y1="48" x2="542" y2="48" stroke="#00ff00" stroke-width="1.5"/>
+          <!-- bottom bar -->
+          <rect y="138" width="700" height="22" fill="#00008b"/>
+          <text x="350" y="153" font-family="Consolas,monospace" font-size="9" fill="#aaa" text-anchor="middle">F1: Ajuda  ↑↓: Selecionar  Enter: Confirmar  F10: Salvar e Sair  Esc: Cancelar</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ BIOS/UEFI — Intel Virtualization Technology (VT-x) deve estar <strong>[Enabled]</strong>. Sem isso o VirtualBox não cria VMs de 64-bit.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FASE 1 — INSTALAR O VIRTUALBOX
+═══════════════════════════════════════ -->
+<div class="phase">
+  <div class="phase-header phase-vb">
+    <span class="phase-icon">📦</span>
+    <div>
+      <div class="phase-title">FASE 1 — Instalar o VirtualBox</div>
+      <div class="phase-sub">Download e instalação do VirtualBox 7.x no Windows</div>
+    </div>
+    <span class="phase-badge">~10 min</span>
+  </div>
+
+  <!-- PASSO 1 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#183153;">P01</span>
+      <span class="step-title">Baixar o instalador do VirtualBox</span>
+      <span class="step-tag">DOWNLOAD</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Abra o navegador e acesse <code>virtualbox.org</code> → clique em <strong>"Download VirtualBox"</strong></div></li>
+        <li><span class="action-n">2</span><div class="action-text">Clique em <strong>"Windows hosts"</strong> para baixar o instalador <code>.exe</code></div></li>
+        <li><span class="action-n">3</span><div class="action-text">Aguarde o download (~120 MB). O arquivo será algo como <code>VirtualBox-7.1.x-Win.exe</code></div></li>
+      </ul>
+
+      <!-- VirtualBox website mockup -->
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <!-- Browser chrome -->
+          <rect width="700" height="260" fill="#f0f0f0"/>
+          <rect width="700" height="36" fill="#e8e8e8"/>
+          <rect x="6" y="6" width="22" height="22" rx="11" fill="#d0d0d0"/>
+          <text x="17" y="21" font-family="sans-serif" font-size="12" fill="#888" text-anchor="middle">←</text>
+          <rect x="34" y="6" width="22" height="22" rx="11" fill="#d0d0d0"/>
+          <text x="45" y="21" font-family="sans-serif" font-size="12" fill="#ccc" text-anchor="middle">→</text>
+          <rect x="62" y="8" width="480" height="18" rx="9" fill="white" stroke="#ccc" stroke-width="1"/>
+          <text x="76" y="21" font-family="sans-serif" font-size="11" fill="#555">🔒 www.virtualbox.org/wiki/Downloads</text>
+          <!-- Page content -->
+          <rect y="36" width="700" height="224" fill="white"/>
+          <!-- VirtualBox logo area -->
+          <rect x="20" y="52" width="180" height="50" rx="4" fill="#183153"/>
+          <text x="110" y="72" font-family="sans-serif" font-size="14" fill="white" text-anchor="middle" font-weight="bold">VirtualBox</text>
+          <text x="110" y="88" font-family="sans-serif" font-size="10" fill="#93c5fd" text-anchor="middle">by Oracle</text>
+          <!-- Download section -->
+          <text x="220" y="70" font-family="sans-serif" font-size="16" fill="#183153" font-weight="bold">VirtualBox 7.1.8 platform packages</text>
+          <text x="220" y="88" font-family="sans-serif" font-size="11" fill="#555">The binaries are released under the terms of the GPL version 3.</text>
+          <!-- Platform links -->
+          <rect x="220" y="100" width="200" height="30" rx="4" fill="#183153"/>
+          <text x="320" y="119" font-family="sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="bold">⬇ Windows hosts</text>
+          <!-- callout -->
+          <rect x="430" y="98" width="130" height="34" rx="4" fill="#16a34a"/>
+          <text x="495" y="112" font-family="sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="bold">← CLICAR AQUI</text>
+          <text x="495" y="124" font-family="sans-serif" font-size="9" fill="#bbf7d0" text-anchor="middle">~120 MB .exe</text>
+          <line x1="430" y1="115" x2="422" y2="115" stroke="#4ade80" stroke-width="2"/>
+          <text x="220" y="148" font-family="sans-serif" font-size="11" fill="#888">macOS / ARM64 hosts</text>
+          <text x="220" y="166" font-family="sans-serif" font-size="11" fill="#888">Linux distributions</text>
+          <text x="220" y="184" font-family="sans-serif" font-size="11" fill="#888">Solaris hosts</text>
+          <!-- Also get Extension Pack note -->
+          <rect x="20" y="210" width="660" height="32" rx="4" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+          <text x="30" y="224" font-family="sans-serif" font-size="10.5" fill="#1e40af">💡 Dica: baixe também o "VirtualBox Extension Pack" na mesma página — adiciona suporte a USB 3.0 e RDP.</text>
+          <text x="30" y="237" font-family="sans-serif" font-size="10" fill="#3b82f6">Clique em "All supported platforms" abaixo de "VirtualBox Extension Pack"</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🌐 Site oficial virtualbox.org → Downloads → clicar em <strong>"Windows hosts"</strong></div>
+    </div>
+  </div>
+
+  <!-- PASSO 2 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#183153;">P02</span>
+      <span class="step-title">Executar o instalador do VirtualBox</span>
+      <span class="step-tag">INSTALAÇÃO</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Clique duas vezes no arquivo <code>VirtualBox-7.1.x-Win.exe</code> baixado. Confirme o UAC (<em>Controle de Conta de Usuário</em>) clicando em <strong>Sim</strong>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Na tela de boas-vindas, clique em <strong>Next</strong>. Mantenha as opções padrão em todas as telas intermediárias.</div></li>
+        <li><span class="action-n">3</span><div class="action-text">Na tela de aviso de interface de rede (<em>"Warning: Network Interfaces"</em>), clique em <strong>Yes</strong> — a rede ficará brevemente desconectada.</div></li>
+        <li><span class="action-n">4</span><div class="action-text">Clique em <strong>Install</strong> e aguarde (~2–3 minutos). Confirme a instalação de drivers caso o Windows solicite.</div></li>
+        <li><span class="action-n">5</span><div class="action-text">Na última tela, deixe marcado <strong>"Start Oracle VirtualBox after installation"</strong> e clique em <strong>Finish</strong>.</div></li>
+      </ul>
+
+      <div class="screenshot-row">
+        <div>
+          <div class="screenshot-wrap">
+            <svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+              <rect width="340" height="280" fill="#f0f0f0"/>
+              <!-- Dialog title bar -->
+              <rect width="340" height="30" fill="#183153"/>
+              <text x="14" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="white" font-weight="600">Oracle VirtualBox 7.1.8 Setup</text>
+              <text x="318" y="20" font-family="Segoe UI,sans-serif" font-size="12" fill="#aaa">✕</text>
+              <!-- VB logo in dialog -->
+              <rect x="0" y="30" width="340" height="70" fill="#183153"/>
+              <rect x="20" y="46" width="54" height="38" rx="4" fill="#0078d4"/>
+              <text x="47" y="70" font-family="sans-serif" font-size="28" fill="white" text-anchor="middle">□</text>
+              <text x="88" y="62" font-family="Segoe UI,sans-serif" font-size="14" fill="white" font-weight="700">Welcome to the</text>
+              <text x="88" y="80" font-family="Segoe UI,sans-serif" font-size="14" fill="#60a5fa" font-weight="700">Oracle VirtualBox Setup</text>
+              <!-- Body -->
+              <rect x="0" y="100" width="340" height="140" fill="white"/>
+              <text x="20" y="124" font-family="Segoe UI,sans-serif" font-size="11" fill="#333">This wizard will guide you through the</text>
+              <text x="20" y="140" font-family="Segoe UI,sans-serif" font-size="11" fill="#333">installation of Oracle VirtualBox 7.1.8.</text>
+              <text x="20" y="165" font-family="Segoe UI,sans-serif" font-size="11" fill="#555">It is recommended that you close all other</text>
+              <text x="20" y="181" font-family="Segoe UI,sans-serif" font-size="11" fill="#555">applications before starting Setup.</text>
+              <text x="20" y="207" font-family="Segoe UI,sans-serif" font-size="11" fill="#555">Click Next to continue.</text>
+              <!-- Buttons -->
+              <rect x="196" y="228" width="64" height="26" rx="3" fill="#183153"/>
+              <text x="228" y="245" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="700">Next ›</text>
+              <rect x="268" y="228" width="60" height="26" rx="3" fill="#e0e0e0" stroke="#c0c0c0" stroke-width="1"/>
+              <text x="298" y="245" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" text-anchor="middle">Cancel</text>
+            </svg>
+          </div>
+          <div class="screenshot-caption">Tela de boas-vindas → clicar em <strong>Next</strong></div>
+        </div>
+        <div>
+          <div class="screenshot-wrap">
+            <svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+              <rect width="340" height="280" fill="#f0f0f0"/>
+              <rect width="340" height="30" fill="#183153"/>
+              <text x="14" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="white" font-weight="600">Oracle VirtualBox 7.1.8 Setup</text>
+              <text x="318" y="20" font-family="Segoe UI,sans-serif" font-size="12" fill="#aaa">✕</text>
+              <rect x="0" y="30" width="340" height="70" fill="#183153"/>
+              <text x="88" y="62" font-family="Segoe UI,sans-serif" font-size="13" fill="white" font-weight="700">Installation Complete</text>
+              <text x="88" y="80" font-family="Segoe UI,sans-serif" font-size="11" fill="#93c5fd">VirtualBox 7.1.8 installed successfully</text>
+              <rect x="30" y="46" width="46" height="46" rx="23" fill="#16a34a"/>
+              <text x="53" y="75" font-family="sans-serif" font-size="24" fill="white" text-anchor="middle">✓</text>
+              <rect x="0" y="100" width="340" height="140" fill="white"/>
+              <text x="20" y="130" font-family="Segoe UI,sans-serif" font-size="11" fill="#333">Oracle VirtualBox has been successfully</text>
+              <text x="20" y="146" font-family="Segoe UI,sans-serif" font-size="11" fill="#333">installed on your computer.</text>
+              <!-- Checkbox -->
+              <rect x="20" y="172" width="14" height="14" rx="2" fill="#183153" stroke="#183153"/>
+              <text x="23" y="183" font-family="sans-serif" font-size="10" fill="white">✓</text>
+              <text x="40" y="183" font-family="Segoe UI,sans-serif" font-size="11" fill="#333">Start Oracle VirtualBox after installation</text>
+              <!-- Finish button -->
+              <rect x="196" y="228" width="70" height="26" rx="3" fill="#183153"/>
+              <text x="231" y="245" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="700">Finish</text>
+            </svg>
+          </div>
+          <div class="screenshot-caption">Instalação concluída — deixar marcado "Start VirtualBox" → <strong>Finish</strong></div>
+        </div>
+      </div>
+
+      <div class="tip-box green">✅ O VirtualBox abrirá automaticamente após a instalação. A janela principal mostra "Bem-vindo ao VirtualBox!" com o botão <strong>Novo</strong> em destaque.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FASE 2 — CRIAR A MÁQUINA VIRTUAL
+═══════════════════════════════════════ -->
+<div class="phase">
+  <div class="phase-header phase-vm">
+    <span class="phase-icon">🖥️</span>
+    <div>
+      <div class="phase-title">FASE 2 — Criar a Máquina Virtual</div>
+      <div class="phase-sub">Definir nome, tipo e alocação de hardware virtual</div>
+    </div>
+    <span class="phase-badge">~5 min</span>
+  </div>
+
+  <!-- PASSO 3 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#1e4080;">P03</span>
+      <span class="step-title">Criar nova VM — Nome e sistema operacional</span>
+      <span class="step-tag">NOVA MÁQUINA VIRTUAL</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Na tela principal do VirtualBox, clique em <strong>Novo</strong> (ícone azul com estrela) ou pressione <code>Ctrl+N</code>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">No campo <strong>Nome:</strong> digite <code>Windows 11 - GSO</code>. O VirtualBox detectará automaticamente o tipo e versão.</div></li>
+        <li><span class="action-n">3</span><div class="action-text">Confirme: <strong>Tipo:</strong> Microsoft Windows · <strong>Versão:</strong> Windows 11 (64-bit).</div></li>
+        <li><span class="action-n">4</span><div class="action-text">No campo <strong>ISO Image</strong>, clique na pasta e navegue até a ISO do Windows 11 que você baixou. Selecione-a.
+          <div class="action-resp">✅ O VirtualBox exibirá o nome da ISO abaixo do campo. Se não detectar automaticamente, verifique se o arquivo <code>.iso</code> está íntegro.</div>
+        </div></li>
+        <li><span class="action-n">5</span><div class="action-text">Marque a opção <strong>"Skip Unattended Installation"</strong> para fazer a instalação manual passo a passo (recomendado para aprendizado).</div></li>
+      </ul>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <!-- VirtualBox main window bg -->
+          <rect width="700" height="360" fill="#e8e8e8"/>
+          <!-- Title bar -->
+          <rect width="700" height="30" fill="#183153"/>
+          <text x="14" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="white" font-weight="600">Oracle VirtualBox Manager</text>
+          <text x="650" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="#aaa">─  □  ✕</text>
+          <!-- Left sidebar -->
+          <rect x="0" y="30" width="200" height="330" fill="#f0f0f0" stroke="#d0d0d0" stroke-width="1"/>
+          <text x="14" y="56" font-family="Segoe UI,sans-serif" font-size="11" fill="#333" font-weight="600">Máquinas</text>
+          <text x="14" y="76" font-family="Segoe UI,sans-serif" font-size="10" fill="#888">(nenhuma máquina virtual)</text>
+          <!-- Toolbar -->
+          <rect x="200" y="30" width="500" height="40" fill="#fafafa" stroke="#e0e0e0" stroke-width="1"/>
+          <rect x="210" y="37" width="72" height="26" rx="4" fill="#183153"/>
+          <text x="246" y="54" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="700">★ Novo</text>
+          <rect x="290" y="37" width="72" height="26" rx="4" fill="#e8e8e8" stroke="#ccc" stroke-width="1"/>
+          <text x="326" y="54" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" text-anchor="middle">Adicionar</text>
+
+          <!-- "New VM" dialog overlay -->
+          <rect x="140" y="60" width="440" height="290" rx="8" fill="white" stroke="#c0c0c0" stroke-width="1" style="filter:drop-shadow(0 6px 20px rgba(0,0,0,.25))"/>
+          <!-- Dialog title -->
+          <rect x="140" y="60" width="440" height="34" rx="8" fill="#183153"/>
+          <rect x="140" y="80" width="440" height="14" fill="#183153"/>
+          <text x="360" y="82" font-family="Segoe UI,sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="700">Criar Máquina Virtual</text>
+          <!-- Steps indicator -->
+          <rect x="140" y="94" width="440" height="28" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+          <rect x="152" y="100" width="110" height="16" rx="8" fill="#183153"/>
+          <text x="207" y="112" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="600">1. Nome e SO</text>
+          <rect x="270" y="100" width="80" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="310" y="112" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">2. Hardware</text>
+          <rect x="358" y="100" width="80" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="398" y="112" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">3. Disco</text>
+          <rect x="446" y="100" width="80" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="486" y="112" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">4. Resumo</text>
+
+          <!-- Form fields -->
+          <text x="156" y="142" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Nome:</text>
+          <rect x="200" y="128" width="368" height="22" rx="3" fill="white" stroke="#0078d4" stroke-width="2"/>
+          <text x="208" y="143" font-family="Segoe UI,sans-serif" font-size="11" fill="#111" font-weight="600">Windows 11 - GSO</text>
+
+          <text x="156" y="170" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">ISO Image:</text>
+          <rect x="220" y="156" width="288" height="22" rx="3" fill="#f0f7ff" stroke="#bfdbfe" stroke-width="1"/>
+          <text x="228" y="171" font-family="Segoe UI,sans-serif" font-size="10" fill="#1e40af">Win11_23H2_Portuguese_x64.iso</text>
+          <rect x="512" y="156" width="44" height="22" rx="3" fill="#e0e0e0" stroke="#ccc" stroke-width="1"/>
+          <text x="534" y="171" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" text-anchor="middle">📁</text>
+
+          <text x="156" y="198" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Tipo:</text>
+          <rect x="200" y="184" width="160" height="22" rx="3" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="1"/>
+          <text x="208" y="199" font-family="Segoe UI,sans-serif" font-size="11" fill="#333">Microsoft Windows</text>
+
+          <text x="370" y="198" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Versão:</text>
+          <rect x="410" y="184" width="158" height="22" rx="3" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="1"/>
+          <text x="418" y="199" font-family="Segoe UI,sans-serif" font-size="11" fill="#333">Windows 11 (64-bit)</text>
+
+          <!-- Skip unattended checkbox -->
+          <rect x="156" y="222" width="14" height="14" rx="2" fill="#183153" stroke="#183153"/>
+          <text x="159" y="233" font-family="sans-serif" font-size="10" fill="white">✓</text>
+          <text x="178" y="233" font-family="Segoe UI,sans-serif" font-size="11" fill="#333">Skip Unattended Installation (instalação manual)</text>
+
+          <!-- Info detected -->
+          <rect x="156" y="244" width="372" height="28" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+          <text x="164" y="256" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#14532d">✅ ISO detectada: Windows 11 Pro 23H2 · pt-BR · 64-bit · 5,8 GB</text>
+          <text x="164" y="268" font-family="Segoe UI,sans-serif" font-size="10" fill="#166534">   Tipo e versão definidos automaticamente.</text>
+
+          <!-- Next button -->
+          <rect x="480" y="326" width="84" height="16" rx="3" fill="#183153"/>
+          <text x="522" y="338" font-family="Segoe UI,sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="700">Próximo ›</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ VirtualBox — Criar Nova VM: nome <strong>"Windows 11 - GSO"</strong>, ISO selecionada, Skip Unattended marcado</div>
+    </div>
+  </div>
+
+  <!-- PASSO 4 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#1e4080;">P04</span>
+      <span class="step-title">Configurar RAM e CPU da VM</span>
+      <span class="step-tag">HARDWARE VIRTUAL</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Na tela <strong>"Hardware"</strong>, ajuste a memória RAM para <strong>4096 MB (4 GB)</strong> — arraste o slider ou digite o valor.
+          <div class="action-resp">✅ Win 11 exige mínimo 4 GB. Se o seu computador tem 16+ GB, pode colocar 6 GB ou 8 GB para melhor desempenho.</div>
+        </div></li>
+        <li><span class="action-n">2</span><div class="action-text">Defina os <strong>Processadores</strong> para <code>2</code> (dois núcleos virtuais).
+          <div class="action-warn">⚠️ Não atribua mais da metade dos núcleos do seu processador físico. Ex: CPU com 8 núcleos → máximo 4 para a VM.</div>
+        </div></li>
+        <li><span class="action-n">3</span><div class="action-text">Deixe marcada a opção <strong>"Enable EFI (special OSes only)"</strong> — o Windows 11 requer UEFI/EFI para inicializar corretamente.</div></li>
+        <li><span class="action-n">4</span><div class="action-text">Clique em <strong>Próximo</strong>.</div></li>
+      </ul>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <rect width="560" height="300" fill="#f5f5f5"/>
+          <rect width="560" height="30" fill="#183153"/>
+          <text x="14" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="white" font-weight="600">Criar Máquina Virtual — Hardware</text>
+          <text x="524" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="#aaa">✕</text>
+          <!-- Steps -->
+          <rect x="0" y="30" width="560" height="28" fill="#f0f0f0" stroke="#e0e0e0" stroke-width="1"/>
+          <rect x="10" y="36" width="90" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="55" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">1. Nome e SO</text>
+          <rect x="108" y="36" width="90" height="16" rx="8" fill="#183153"/>
+          <text x="153" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">2. Hardware</text>
+          <rect x="206" y="36" width="80" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="246" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">3. Disco</text>
+          <rect x="294" y="36" width="80" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="334" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">4. Resumo</text>
+          <!-- Form -->
+          <rect x="0" y="58" width="560" height="210" fill="white"/>
+          <!-- RAM -->
+          <text x="20" y="86" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Memória RAM:</text>
+          <rect x="160" y="72" width="300" height="22" rx="3" fill="#e0e0e0"/>
+          <rect x="160" y="72" width="200" height="22" rx="3" fill="#183153"/>
+          <text x="490" y="86" font-family="Segoe UI,sans-serif" font-size="11" fill="#183153" font-weight="700">4096 MB</text>
+          <!-- RAM labels -->
+          <text x="160" y="104" font-family="Segoe UI,sans-serif" font-size="9" fill="#888">4 MB</text>
+          <text x="418" y="104" font-family="Segoe UI,sans-serif" font-size="9" fill="#888">8192 MB</text>
+          <rect x="310" y="78" width="10" height="10" rx="5" fill="white" stroke="#183153" stroke-width="2"/>
+          <!-- CPU -->
+          <text x="20" y="132" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Processadores:</text>
+          <rect x="160" y="118" width="300" height="22" rx="3" fill="#e0e0e0"/>
+          <rect x="160" y="118" width="100" height="22" rx="3" fill="#1e4080"/>
+          <text x="490" y="132" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e4080" font-weight="700">2 CPU</text>
+          <rect x="210" y="124" width="10" height="10" rx="5" fill="white" stroke="#1e4080" stroke-width="2"/>
+          <!-- EFI checkbox -->
+          <rect x="20" y="160" width="14" height="14" rx="2" fill="#183153"/>
+          <text x="23" y="171" font-family="sans-serif" font-size="10" fill="white">✓</text>
+          <text x="40" y="171" font-family="Segoe UI,sans-serif" font-size="11" fill="#333" font-weight="600">Enable EFI (special OSes only)</text>
+          <rect x="200" y="157" width="170" height="20" rx="3" fill="#fef3c7" stroke="#fcd34d" stroke-width="1"/>
+          <text x="285" y="170" font-family="Segoe UI,sans-serif" font-size="9.5" fill="#92400e" text-anchor="middle" font-weight="700">⚠ Obrigatório para Win 11!</text>
+
+          <!-- OK/warning callout -->
+          <rect x="20" y="192" width="520" height="38" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+          <text x="30" y="207" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#14532d">✅ RAM: 4 GB é o mínimo exigido pelo Windows 11. Processadores: 2 núcleos virtuais.</text>
+          <text x="30" y="222" font-family="Segoe UI,sans-serif" font-size="10" fill="#166534">   EFI habilitado = necessário para inicializar Win 11 corretamente pelo instalador.</text>
+          <!-- Buttons -->
+          <rect x="360" y="248" width="84" height="24" rx="3" fill="#183153"/>
+          <text x="402" y="263" font-family="Segoe UI,sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="700">Próximo ›</text>
+          <rect x="456" y="248" width="84" height="24" rx="3" fill="#e0e0e0" stroke="#ccc" stroke-width="1"/>
+          <text x="498" y="263" font-family="Segoe UI,sans-serif" font-size="10" fill="#555" text-anchor="middle">Cancelar</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ VirtualBox — Configuração de hardware: <strong>4096 MB RAM, 2 CPUs, EFI habilitado</strong></div>
+    </div>
+  </div>
+
+  <!-- PASSO 5 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#1e4080;">P05</span>
+      <span class="step-title">Criar o disco virtual (VHD)</span>
+      <span class="step-tag">DISCO VIRTUAL</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Na tela <strong>"Disco Rígido Virtual"</strong>, selecione <strong>"Criar um novo disco rígido virtual agora"</strong>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Defina o tamanho para <strong>60 GB</strong> (mínimo recomendado para Win 11 + atualizações + software).
+          <div class="action-info">💡 O disco virtual é dinâmico por padrão — só ocupa espaço real à medida que for usado. Um disco de 60 GB não ocupa 60 GB imediatamente no seu HD.</div>
+        </div></li>
+        <li><span class="action-n">3</span><div class="action-text">Mantenha o formato <strong>VDI</strong> (VirtualBox Disk Image) — formato nativo do VirtualBox.</div></li>
+        <li><span class="action-n">4</span><div class="action-text">Clique em <strong>Próximo</strong> e depois em <strong>Finalizar</strong> na tela de resumo.</div></li>
+      </ul>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <rect width="560" height="260" fill="#f5f5f5"/>
+          <rect width="560" height="30" fill="#183153"/>
+          <text x="14" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="white" font-weight="600">Criar Máquina Virtual — Disco Rígido Virtual</text>
+          <text x="524" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="#aaa">✕</text>
+          <!-- Steps -->
+          <rect x="0" y="30" width="560" height="28" fill="#f0f0f0" stroke="#e0e0e0" stroke-width="1"/>
+          <rect x="10" y="36" width="90" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="55" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">1. Nome e SO</text>
+          <rect x="108" y="36" width="90" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="153" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">2. Hardware</text>
+          <rect x="206" y="36" width="80" height="16" rx="8" fill="#183153"/>
+          <text x="246" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">3. Disco</text>
+          <rect x="294" y="36" width="80" height="16" rx="8" fill="#e0e0e0"/>
+          <text x="334" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">4. Resumo</text>
+          <!-- Disk options -->
+          <rect x="0" y="58" width="560" height="170" fill="white"/>
+          <!-- Radio option 1 (selected) -->
+          <circle cx="28" cy="86" r="8" fill="white" stroke="#183153" stroke-width="2"/>
+          <circle cx="28" cy="86" r="4" fill="#183153"/>
+          <text x="44" y="91" font-family="Segoe UI,sans-serif" font-size="11" fill="#111" font-weight="600">Criar um novo disco rígido virtual agora</text>
+          <!-- Radio option 2 -->
+          <circle cx="28" cy="114" r="8" fill="white" stroke="#ccc" stroke-width="2"/>
+          <text x="44" y="119" font-family="Segoe UI,sans-serif" font-size="11" fill="#888">Usar um arquivo de disco rígido virtual existente</text>
+          <!-- Size slider -->
+          <text x="20" y="148" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Tamanho do disco:</text>
+          <rect x="160" y="134" width="300" height="22" rx="3" fill="#e8e8e8"/>
+          <rect x="160" y="134" width="200" height="22" rx="3" fill="#1e4080"/>
+          <rect x="352" y="140" width="10" height="10" rx="5" fill="white" stroke="#1e4080" stroke-width="2"/>
+          <text x="488" y="148" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e4080" font-weight="700">60,00 GB</text>
+          <!-- Format -->
+          <text x="20" y="178" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Formato:</text>
+          <rect x="90" y="164" width="80" height="22" rx="3" fill="#183153"/>
+          <text x="130" y="179" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="600">VDI</text>
+          <rect x="178" y="164" width="80" height="22" rx="3" fill="#e0e0e0" stroke="#ccc" stroke-width="1"/>
+          <text x="218" y="179" font-family="Segoe UI,sans-serif" font-size="11" fill="#888" text-anchor="middle">VMDK</text>
+          <rect x="266" y="164" width="80" height="22" rx="3" fill="#e0e0e0" stroke="#ccc" stroke-width="1"/>
+          <text x="306" y="179" font-family="Segoe UI,sans-serif" font-size="11" fill="#888" text-anchor="middle">VHD</text>
+          <!-- Dynamic callout -->
+          <rect x="20" y="196" width="520" height="20" rx="3" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+          <text x="30" y="209" font-family="Segoe UI,sans-serif" font-size="10" fill="#1e40af">💡 Disco dinâmico: o arquivo VDI cresce conforme o uso — não ocupa 60 GB imediatamente no HD físico.</text>
+          <!-- Buttons -->
+          <rect x="356" y="232" width="84" height="24" rx="3" fill="#183153"/>
+          <text x="398" y="247" font-family="Segoe UI,sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="700">Próximo ›</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ VirtualBox — Disco virtual: <strong>60 GB, formato VDI, dinâmico</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FASE 3 — CONFIGURAR A VM (ajustes finos)
+═══════════════════════════════════════ -->
+<div class="phase">
+  <div class="phase-header phase-iso">
+    <span class="phase-icon">⚙️</span>
+    <div>
+      <div class="phase-title">FASE 3 — Configurações adicionais da VM</div>
+      <div class="phase-sub">TPM, Secure Boot e ajustes de vídeo</div>
+    </div>
+    <span class="phase-badge">~5 min</span>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#065f46;">P06</span>
+      <span class="step-title">Habilitar TPM 2.0 e Secure Boot na VM</span>
+      <span class="step-tag">OBRIGATÓRIO WIN 11</span>
+    </div>
+    <div class="step-body">
+      <div class="tip-box red">🔴 <strong>Atenção:</strong> O Windows 11 exige TPM 2.0 e Secure Boot. Sem isso, o instalador bloqueará a instalação com a mensagem <em>"Este PC não pode executar o Windows 11"</em>. Configure antes de iniciar.</div>
+
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Na tela principal do VirtualBox, clique na VM <strong>"Windows 11 - GSO"</strong> e clique em <strong>Configurações</strong> (ícone de engrenagem) ou pressione <code>Ctrl+S</code>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Vá em <strong>Sistema → Placa-Mãe</strong>. Confirme que <strong>"EFI"</strong> está habilitado.</div></li>
+        <li><span class="action-n">3</span><div class="action-text">Ainda em Sistema, vá na aba <strong>Segurança</strong>. Habilite <strong>"Enable Secure Boot"</strong>.</div></li>
+        <li><span class="action-n">4</span><div class="action-text">Habilite <strong>"Enable TPM"</strong> e selecione a versão <strong>2.0</strong> no menu dropdown.
+          <div class="action-resp">✅ O VirtualBox inclui emulação de TPM 2.0 a partir da versão 6.1. Certifique-se de usar VirtualBox 7.x.</div>
+        </div></li>
+        <li><span class="action-n">5</span><div class="action-text">Vá em <strong>Vídeo → Controlador de Vídeo</strong>. Defina a memória de vídeo para <strong>128 MB</strong> e selecione <strong>VMSVGA</strong>.</div></li>
+        <li><span class="action-n">6</span><div class="action-text">Clique em <strong>OK</strong> para salvar todas as configurações.</div></li>
+      </ul>
+
+      <div class="screenshot-row">
+        <div>
+          <div class="screenshot-wrap">
+            <svg viewBox="0 0 340 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+              <rect width="340" height="300" fill="#f5f5f5"/>
+              <rect width="340" height="30" fill="#183153"/>
+              <text x="14" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="white" font-weight="600">Configurações · Sistema</text>
+              <text x="312" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="#aaa">✕</text>
+              <!-- Left menu -->
+              <rect x="0" y="30" width="110" height="270" fill="#f0f0f0" stroke="#e0e0e0" stroke-width="1"/>
+              <text x="14" y="56" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Geral</text>
+              <rect x="0" y="63" width="110" height="22" fill="#183153"/>
+              <text x="14" y="78" font-family="Segoe UI,sans-serif" font-size="10.5" fill="white" font-weight="700">Sistema</text>
+              <text x="14" y="100" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Vídeo</text>
+              <text x="14" y="120" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Armazenamento</text>
+              <text x="14" y="140" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Áudio</text>
+              <text x="14" y="160" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Rede</text>
+              <text x="14" y="180" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Portas Seriais</text>
+              <text x="14" y="200" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">USB</text>
+              <text x="14" y="220" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Pastas Compart.</text>
+              <!-- Right panel -->
+              <rect x="110" y="30" width="230" height="270" fill="white"/>
+              <!-- Tabs inside Sistema -->
+              <rect x="116" y="36" width="56" height="18" rx="3" fill="#e0e0e0"/>
+              <text x="144" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">Placa-Mãe</text>
+              <rect x="176" y="36" width="56" height="18" rx="3" fill="#e0e0e0"/>
+              <text x="204" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="#888" text-anchor="middle">Processador</text>
+              <rect x="236" y="36" width="56" height="18" rx="3" fill="#183153"/>
+              <text x="264" y="48" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">Segurança</text>
+              <!-- Security settings -->
+              <!-- EFI -->
+              <rect x="120" y="66" width="14" height="14" rx="2" fill="#183153"/>
+              <text x="123" y="77" font-family="sans-serif" font-size="10" fill="white">✓</text>
+              <text x="140" y="77" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#333">Enable EFI</text>
+              <!-- Secure Boot -->
+              <rect x="120" y="90" width="14" height="14" rx="2" fill="#16a34a"/>
+              <text x="123" y="101" font-family="sans-serif" font-size="10" fill="white">✓</text>
+              <text x="140" y="101" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#111" font-weight="600">Enable Secure Boot</text>
+              <rect x="240" y="88" width="88" height="18" rx="3" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+              <text x="284" y="100" font-family="Segoe UI,sans-serif" font-size="8.5" fill="#14532d" text-anchor="middle" font-weight="700">✅ obrigatório</text>
+              <!-- TPM -->
+              <text x="120" y="128" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#555" font-weight="600">TPM:</text>
+              <rect x="156" y="114" width="100" height="20" rx="3" fill="#f0f7ff" stroke="#bfdbfe" stroke-width="1"/>
+              <text x="164" y="128" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#1e40af" font-weight="700">v2.0</text>
+              <text x="264" y="128" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#555">▼</text>
+              <rect x="120" y="136" width="14" height="14" rx="2" fill="#16a34a"/>
+              <text x="123" y="147" font-family="sans-serif" font-size="10" fill="white">✓</text>
+              <text x="140" y="147" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#111" font-weight="600">Enable TPM</text>
+              <rect x="240" y="134" width="88" height="18" rx="3" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+              <text x="284" y="146" font-family="Segoe UI,sans-serif" font-size="8.5" fill="#14532d" text-anchor="middle" font-weight="700">✅ obrigatório</text>
+              <!-- OK button -->
+              <rect x="196" y="264" width="64" height="24" rx="3" fill="#183153"/>
+              <text x="228" y="279" font-family="Segoe UI,sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="700">OK</text>
+              <rect x="268" y="264" width="64" height="24" rx="3" fill="#e0e0e0" stroke="#ccc" stroke-width="1"/>
+              <text x="300" y="279" font-family="Segoe UI,sans-serif" font-size="10" fill="#555" text-anchor="middle">Cancelar</text>
+            </svg>
+          </div>
+          <div class="screenshot-caption">Sistema → Segurança: <strong>Secure Boot ✓ e TPM v2.0 ✓</strong></div>
+        </div>
+        <div>
+          <div class="screenshot-wrap">
+            <svg viewBox="0 0 340 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+              <rect width="340" height="300" fill="#f5f5f5"/>
+              <rect width="340" height="30" fill="#183153"/>
+              <text x="14" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="white" font-weight="600">Configurações · Vídeo</text>
+              <text x="312" y="20" font-family="Segoe UI,sans-serif" font-size="11" fill="#aaa">✕</text>
+              <rect x="0" y="30" width="110" height="270" fill="#f0f0f0" stroke="#e0e0e0" stroke-width="1"/>
+              <text x="14" y="56" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Geral</text>
+              <text x="14" y="76" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Sistema</text>
+              <rect x="0" y="85" width="110" height="22" fill="#183153"/>
+              <text x="14" y="100" font-family="Segoe UI,sans-serif" font-size="10.5" fill="white" font-weight="700">Vídeo</text>
+              <text x="14" y="120" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Armazenamento</text>
+              <text x="14" y="140" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Áudio</text>
+              <text x="14" y="160" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#888">Rede</text>
+              <!-- Right panel -->
+              <rect x="110" y="30" width="230" height="270" fill="white"/>
+              <text x="120" y="60" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Memória de vídeo:</text>
+              <rect x="120" y="66" width="180" height="22" rx="3" fill="#e8e8e8"/>
+              <rect x="120" y="66" width="138" height="22" rx="3" fill="#1e4080"/>
+              <rect x="252" y="72" width="10" height="10" rx="5" fill="white" stroke="#1e4080" stroke-width="2"/>
+              <text x="300" y="80" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e4080" font-weight="700">128 MB</text>
+              <text x="120" y="108" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-weight="600">Controlador gráfico:</text>
+              <rect x="120" y="114" width="130" height="22" rx="3" fill="#f0f7ff" stroke="#bfdbfe" stroke-width="1"/>
+              <text x="128" y="129" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e40af" font-weight="700">VMSVGA</text>
+              <text x="256" y="129" font-family="Segoe UI,sans-serif" font-size="11" fill="#555">▼</text>
+              <!-- 3D accel -->
+              <rect x="120" y="150" width="14" height="14" rx="2" fill="#183153"/>
+              <text x="123" y="161" font-family="sans-serif" font-size="10" fill="white">✓</text>
+              <text x="140" y="161" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#333">Habilitar aceleração 3D</text>
+              <!-- Scale factor -->
+              <text x="120" y="188" font-family="Segoe UI,sans-serif" font-size="11" fill="#555">Fator de escala: <tspan font-weight="700" fill="#183153">100%</tspan></text>
+              <!-- Recommended callout -->
+              <rect x="120" y="204" width="210" height="44" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+              <text x="130" y="219" font-family="Segoe UI,sans-serif" font-size="10" fill="#14532d">✅ 128 MB + VMSVGA = melhor</text>
+              <text x="130" y="233" font-family="Segoe UI,sans-serif" font-size="10" fill="#14532d">compatibilidade com Win 11</text>
+              <text x="130" y="244" font-family="Segoe UI,sans-serif" font-size="9" fill="#166534">Aumento para 200% se tela pequena</text>
+              <!-- OK -->
+              <rect x="196" y="264" width="64" height="24" rx="3" fill="#183153"/>
+              <text x="228" y="279" font-family="Segoe UI,sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="700">OK</text>
+            </svg>
+          </div>
+          <div class="screenshot-caption">Vídeo: <strong>128 MB + VMSVGA</strong> para melhor desempenho gráfico</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FASE 4 — INSTALAR O WINDOWS 11
+═══════════════════════════════════════ -->
+<div class="phase">
+  <div class="phase-header phase-install">
+    <span class="phase-icon">💿</span>
+    <div>
+      <div class="phase-title">FASE 4 — Instalação do Windows 11</div>
+      <div class="phase-sub">Boot pela ISO e processo de instalação</div>
+    </div>
+    <span class="phase-badge">~30 min</span>
+  </div>
+
+  <!-- PASSO 7 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#0078d4;">P07</span>
+      <span class="step-title">Iniciar a VM e dar boot pela ISO</span>
+      <span class="step-tag">BOOT PELO INSTALADOR</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Selecione a VM <strong>"Windows 11 - GSO"</strong> e clique em <strong>Iniciar</strong> (seta verde) ou pressione <code>Ctrl+F</code>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Uma janela preta abrirá e rapidamente aparecerá a mensagem <strong>"Press any key to boot from CD or DVD..."</strong> — pressione qualquer tecla imediatamente.
+          <div class="action-warn">⚠️ Você tem apenas 5 segundos! Se perder, reinicie a VM com <code>Ctrl+R</code>.</div>
+        </div></li>
+        <li><span class="action-n">3</span><div class="action-text">O logotipo do Windows aparecerá com pontos de carregamento. Aguarde ~2 minutos até o instalador iniciar.</div></li>
+      </ul>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <!-- VM window chrome -->
+          <rect width="700" height="300" fill="#2d2d2d"/>
+          <rect width="700" height="28" fill="#404040"/>
+          <text x="14" y="19" font-family="Segoe UI,sans-serif" font-size="11" fill="#ccc" font-weight="600">Windows 11 - GSO [Em execução] - Oracle VirtualBox</text>
+          <text x="654" y="19" font-family="Segoe UI,sans-serif" font-size="11" fill="#aaa">─  □  ✕</text>
+          <!-- VM screen (black boot screen) -->
+          <rect x="0" y="28" width="700" height="244" fill="#000"/>
+          <!-- Windows logo -->
+          <rect x="312" y="80" width="38" height="38" fill="transparent"/>
+          <!-- 4 colored squares -->
+          <rect x="312" y="80" width="17" height="17" fill="#00adef"/>
+          <rect x="332" y="80" width="17" height="17" fill="#00adef"/>
+          <rect x="312" y="100" width="17" height="17" fill="#00adef"/>
+          <rect x="332" y="100" width="17" height="17" fill="#00adef"/>
+          <!-- Loading dots -->
+          <circle cx="326" cy="154" r="5" fill="white" opacity="1"/>
+          <circle cx="344" cy="154" r="5" fill="white" opacity="0.7"/>
+          <circle cx="362" cy="154" r="5" fill="white" opacity="0.4"/>
+          <circle cx="380" cy="154" r="5" fill="white" opacity="0.2"/>
+          <!-- Press any key message (fading) -->
+          <text x="350" y="200" font-family="Consolas,monospace" font-size="12" fill="#888" text-anchor="middle">Press any key to boot from CD or DVD...</text>
+          <!-- Bottom VM toolbar -->
+          <rect x="0" y="272" width="700" height="28" fill="#404040"/>
+          <text x="14" y="289" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa">⌨️ Ctrl+Alt  🖱️  💿 Win11_23H2.iso  🔊  📺 VMSVGA 1024x768</text>
+          <!-- callout -->
+          <rect x="460" y="188" width="228" height="34" rx="4" fill="#d97706"/>
+          <text x="574" y="202" font-family="Segoe UI,sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="700">⚡ Pressione qualquer tecla AGORA!</text>
+          <text x="574" y="215" font-family="Segoe UI,sans-serif" font-size="9" fill="#fef3c7" text-anchor="middle">Você tem ~5 segundos</text>
+          <line x1="460" y1="204" x2="424" y2="200" stroke="#f97316" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ VM em boot — tela preta com logotipo Windows carregando. Pressione qualquer tecla quando aparecer a mensagem.</div>
+    </div>
+  </div>
+
+  <!-- PASSO 8 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#0078d4;">P08</span>
+      <span class="step-title">Configurar idioma e iniciar instalação</span>
+      <span class="step-tag">SETUP INICIAL</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Na tela de idioma, confirme: <strong>Idioma:</strong> Português (Brasil) · <strong>Formato de hora:</strong> Português (Brasil) · <strong>Teclado:</strong> Português (Brasil ABNT2). Clique em <strong>Avançar</strong>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Clique em <strong>"Instalar agora"</strong> — o botão azul no centro da tela.</div></li>
+        <li><span class="action-n">3</span><div class="action-text">Na tela de chave de produto, clique em <strong>"Não tenho uma chave do produto"</strong> — para instalar e avaliar sem licença permanente.</div></li>
+        <li><span class="action-n">4</span><div class="action-text">Selecione a edição <strong>"Windows 11 Pro"</strong> e clique em <strong>Avançar</strong>.</div></li>
+        <li><span class="action-n">5</span><div class="action-text">Aceite os termos de licença marcando a caixa e clique em <strong>Avançar</strong>.</div></li>
+      </ul>
+
+      <div class="screenshot-row">
+        <div>
+          <div class="screenshot-wrap">
+            <svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+              <rect width="340" height="280" fill="#000"/>
+              <!-- Windows setup screen - dark bg -->
+              <rect width="340" height="280" fill="#1a1a2e"/>
+              <!-- Windows logo top left -->
+              <rect x="14" y="14" width="10" height="10" fill="#00adef"/>
+              <rect x="26" y="14" width="10" height="10" fill="#00adef"/>
+              <rect x="14" y="26" width="10" height="10" fill="#00adef"/>
+              <rect x="26" y="26" width="10" height="10" fill="#00adef"/>
+              <!-- Title -->
+              <text x="170" y="60" font-family="Segoe UI,sans-serif" font-size="14" fill="white" text-anchor="middle" font-weight="300">Configuração do Windows</text>
+              <!-- Language dropdowns -->
+              <text x="50" y="100" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa">Idioma a instalar:</text>
+              <rect x="50" y="106" width="240" height="22" rx="3" fill="#2a2a3e" stroke="#444" stroke-width="1"/>
+              <text x="60" y="121" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#ddd">Português (Brasil)</text>
+              <text x="270" y="121" font-family="Segoe UI,sans-serif" font-size="11" fill="#666">▼</text>
+              <text x="50" y="142" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa">Formato de hora e moeda:</text>
+              <rect x="50" y="148" width="240" height="22" rx="3" fill="#2a2a3e" stroke="#444" stroke-width="1"/>
+              <text x="60" y="163" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#ddd">Português (Brasil)</text>
+              <text x="270" y="163" font-family="Segoe UI,sans-serif" font-size="11" fill="#666">▼</text>
+              <text x="50" y="184" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa">Teclado ou método de entrada:</text>
+              <rect x="50" y="190" width="240" height="22" rx="3" fill="#2a2a3e" stroke="#444" stroke-width="1"/>
+              <text x="60" y="205" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#ddd">Português (Brasil ABNT2)</text>
+              <text x="270" y="205" font-family="Segoe UI,sans-serif" font-size="11" fill="#666">▼</text>
+              <!-- Next button -->
+              <rect x="220" y="240" width="100" height="28" rx="3" fill="#0078d4"/>
+              <text x="270" y="258" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="600">Avançar</text>
+            </svg>
+          </div>
+          <div class="screenshot-caption">Configuração de idioma — selecionar <strong>Português (Brasil)</strong> nos três campos</div>
+        </div>
+        <div>
+          <div class="screenshot-wrap">
+            <svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+              <rect width="340" height="280" fill="#1a1a2e"/>
+              <rect x="14" y="14" width="10" height="10" fill="#00adef"/>
+              <rect x="26" y="14" width="10" height="10" fill="#00adef"/>
+              <rect x="14" y="26" width="10" height="10" fill="#00adef"/>
+              <rect x="26" y="26" width="10" height="10" fill="#00adef"/>
+              <!-- Edition list -->
+              <text x="170" y="54" font-family="Segoe UI,sans-serif" font-size="13" fill="white" text-anchor="middle" font-weight="300">Selecionar edição</text>
+              <text x="50" y="82" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#aaa">Selecione o sistema operacional que deseja instalar:</text>
+              <!-- Edition options -->
+              <rect x="50" y="92" width="240" height="26" rx="3" fill="#2a2a3e" stroke="#0078d4" stroke-width="1"/>
+              <text x="60" y="109" font-family="Segoe UI,sans-serif" font-size="11" fill="#ddd">Windows 11 Home</text>
+              <rect x="50" y="122" width="240" height="26" rx="3" fill="#0078d4"/>
+              <text x="60" y="139" font-family="Segoe UI,sans-serif" font-size="11" fill="white" font-weight="600">Windows 11 Pro ✓</text>
+              <rect x="50" y="152" width="240" height="26" rx="3" fill="#2a2a3e" stroke="#444" stroke-width="1"/>
+              <text x="60" y="169" font-family="Segoe UI,sans-serif" font-size="11" fill="#888">Windows 11 Pro Education</text>
+              <rect x="50" y="182" width="240" height="26" rx="3" fill="#2a2a3e" stroke="#444" stroke-width="1"/>
+              <text x="60" y="199" font-family="Segoe UI,sans-serif" font-size="11" fill="#888">Windows 11 Education</text>
+              <!-- Callout -->
+              <rect x="50" y="220" width="240" height="20" rx="3" fill="#0f2d12" stroke="#16a34a" stroke-width="1"/>
+              <text x="170" y="233" font-family="Segoe UI,sans-serif" font-size="9.5" fill="#4ade80" text-anchor="middle">✅ Selecionar: Windows 11 Pro</text>
+              <!-- Next button -->
+              <rect x="220" y="246" width="100" height="26" rx="3" fill="#0078d4"/>
+              <text x="270" y="263" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="600">Avançar</text>
+            </svg>
+          </div>
+          <div class="screenshot-caption">Seleção de edição — escolher <strong>Windows 11 Pro</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASSO 9 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#0078d4;">P09</span>
+      <span class="step-title">Particionamento do disco virtual</span>
+      <span class="step-tag">PARTIÇÃO DE DISCO</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Na tela "Que tipo de instalação você quer?", selecione <strong>"Personalizado: instalar somente o Windows (avançado)"</strong>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Você verá o disco virtual de <strong>60 GB sem partições</strong> (Espaço Não Alocado). Clique em <strong>Próximo</strong> — o instalador criará automaticamente as partições necessárias (EFI, MSR, Windows).
+          <div class="action-info">💡 Não é necessário criar partições manualmente. O Windows criará: uma partição EFI (~100 MB), uma MSR (~16 MB) e a partição principal C:\ com o restante.</div>
+        </div></li>
+        <li><span class="action-n">3</span><div class="action-text">O instalador iniciará a cópia dos arquivos. Aguarde — este processo leva entre <strong>10 e 25 minutos</strong> dependendo do PC host.</div></li>
+      </ul>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <rect width="700" height="300" fill="#1a1a2e"/>
+          <rect x="14" y="12" width="10" height="10" fill="#00adef"/>
+          <rect x="26" y="12" width="10" height="10" fill="#00adef"/>
+          <rect x="14" y="24" width="10" height="10" fill="#00adef"/>
+          <rect x="26" y="24" width="10" height="10" fill="#00adef"/>
+          <text x="350" y="52" font-family="Segoe UI,sans-serif" font-size="14" fill="white" text-anchor="middle" font-weight="300">Onde deseja instalar o Windows?</text>
+          <!-- Disk column headers -->
+          <rect x="40" y="66" width="620" height="22" fill="#2a2a3e" stroke="#444" stroke-width="1"/>
+          <text x="52" y="81" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" font-weight="600">Nome</text>
+          <text x="280" y="81" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" font-weight="600">Tamanho total</text>
+          <text x="400" y="81" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" font-weight="600">Espaço livre</text>
+          <text x="500" y="81" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" font-weight="600">Tipo</text>
+          <!-- Single unallocated disk row - selected -->
+          <rect x="40" y="88" width="620" height="28" fill="#0078d4"/>
+          <text x="52" y="106" font-family="Segoe UI,sans-serif" font-size="11" fill="white">Disco 0 · Espaço Não Alocado</text>
+          <text x="280" y="106" font-family="Segoe UI,sans-serif" font-size="11" fill="white">60,0 GB</text>
+          <text x="400" y="106" font-family="Segoe UI,sans-serif" font-size="11" fill="white">60,0 GB</text>
+          <text x="500" y="106" font-family="Segoe UI,sans-serif" font-size="11" fill="#9dd9f5">Não alocado</text>
+          <!-- Disk visual bar -->
+          <rect x="40" y="126" width="620" height="28" rx="3" fill="#2a2a3e" stroke="#444" stroke-width="1"/>
+          <rect x="44" y="130" width="610" height="20" rx="2" fill="#1a3a5f" stroke="#1d4ed8" stroke-width="1" stroke-dasharray="4,2"/>
+          <text x="350" y="144" font-family="Segoe UI,sans-serif" font-size="10" fill="#93c5fd" text-anchor="middle">60 GB — Não alocado</text>
+          <!-- Partition buttons -->
+          <rect x="40" y="166" width="88" height="24" rx="3" fill="#2a2a3e" stroke="#555" stroke-width="1"/>
+          <text x="84" y="182" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" text-anchor="middle">Atualizar</text>
+          <rect x="136" y="166" width="88" height="24" rx="3" fill="#2a2a3e" stroke="#555" stroke-width="1"/>
+          <text x="180" y="182" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" text-anchor="middle">Excluir</text>
+          <rect x="232" y="166" width="88" height="24" rx="3" fill="#2a2a3e" stroke="#555" stroke-width="1"/>
+          <text x="276" y="182" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" text-anchor="middle">Formatar</text>
+          <rect x="328" y="166" width="88" height="24" rx="3" fill="#2a2a3e" stroke="#555" stroke-width="1"/>
+          <text x="372" y="182" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" text-anchor="middle">Novo</text>
+          <!-- Info callout -->
+          <rect x="40" y="200" width="620" height="34" rx="4" fill="#0f2d12" stroke="#16a34a" stroke-width="1"/>
+          <text x="54" y="213" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">✅ Com o disco não alocado selecionado, clique em "Próximo" — o Windows criará as partições automaticamente.</text>
+          <text x="54" y="228" font-family="Segoe UI,sans-serif" font-size="10" fill="#166534">   Serão criadas: EFI (100 MB) · MSR (16 MB) · Windows C:\ (~59,8 GB)</text>
+          <!-- Next button -->
+          <rect x="556" y="256" width="104" height="30" rx="3" fill="#0078d4"/>
+          <text x="608" y="275" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="600">Próximo</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ Particionamento — disco de 60 GB não alocado selecionado. Clicar em <strong>Próximo</strong> para criação automática das partições.</div>
+    </div>
+  </div>
+
+  <!-- PASSO 10 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#0078d4;">P10</span>
+      <span class="step-title">Progresso da instalação e primeira reinicialização</span>
+      <span class="step-tag">COPIANDO ARQUIVOS</span>
+    </div>
+    <div class="step-body">
+      <div class="step-desc">O instalador exibirá 5 etapas de progresso. Ao final, a VM reiniciará automaticamente. <strong>Não pressione nenhuma tecla durante o segundo boot</strong> — deixe a VM carregar normalmente.</div>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <rect width="700" height="280" fill="#1a1a2e"/>
+          <rect x="14" y="12" width="10" height="10" fill="#00adef"/>
+          <rect x="26" y="12" width="10" height="10" fill="#00adef"/>
+          <rect x="14" y="24" width="10" height="10" fill="#00adef"/>
+          <rect x="26" y="24" width="10" height="10" fill="#00adef"/>
+          <text x="350" y="54" font-family="Segoe UI,sans-serif" font-size="14" fill="white" text-anchor="middle" font-weight="300">Instalando o Windows</text>
+          <!-- Progress items -->
+          <!-- Step 1 done -->
+          <circle cx="350" cy="90" r="14" fill="#16a34a"/>
+          <text x="350" y="95" font-family="sans-serif" font-size="13" fill="white" text-anchor="middle">✓</text>
+          <text x="350" y="114" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" text-anchor="middle">Copiando arquivos</text>
+          <!-- Connector lines -->
+          <rect x="100" y="86" width="216" height="8" rx="4" fill="#16a34a"/>
+          <rect x="364" y="86" width="220" height="8" rx="4" fill="#2a2a3e"/>
+          <!-- Step 2 done -->
+          <circle cx="100" cy="90" r="14" fill="#16a34a"/>
+          <text x="100" y="95" font-family="sans-serif" font-size="13" fill="white" text-anchor="middle">✓</text>
+          <text x="100" y="114" font-family="Segoe UI,sans-serif" font-size="10" fill="#aaa" text-anchor="middle">Expandindo arquivos</text>
+          <!-- Step 3 active -->
+          <circle cx="600" cy="90" r="14" fill="#0078d4" stroke="#60a5fa" stroke-width="2"/>
+          <text x="600" y="95" font-family="Segoe UI,sans-serif" font-size="12" fill="white" text-anchor="middle">3</text>
+          <text x="600" y="114" font-family="Segoe UI,sans-serif" font-size="10" fill="#60a5fa" text-anchor="middle" font-weight="600">Inst. recursos</text>
+          <!-- Progress bar -->
+          <rect x="40" y="136" width="620" height="16" rx="8" fill="#2a2a3e"/>
+          <rect x="40" y="136" width="370" height="16" rx="8" fill="#0078d4"/>
+          <text x="350" y="170" font-family="Segoe UI,sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="300">60% concluído</text>
+          <!-- Steps list -->
+          <text x="40" y="200" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">✓  Copiando arquivos do Windows</text>
+          <text x="40" y="218" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">✓  Expandindo arquivos do Windows</text>
+          <text x="40" y="236" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#60a5fa">⟳  Instalando recursos (60%)</text>
+          <text x="40" y="254" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#666">○  Instalando atualizações</text>
+          <text x="40" y="272" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#666">○  Concluindo (reinicializará)</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ Progresso da instalação — aguardar todas as 5 etapas. A VM reiniciará automaticamente ao final.</div>
+
+      <div class="tip-box amber">⚠️ <strong>Na reinicialização:</strong> Quando a tela ficar preta e aparecer novamente "Press any key to boot from CD...", <strong>NÃO pressione nada</strong>. Deixe passar o contador — a VM iniciará do disco instalado, não da ISO.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FASE 5 — CONFIGURAÇÃO OOBE (Out-of-Box Experience)
+═══════════════════════════════════════ -->
+<div class="phase">
+  <div class="phase-header phase-oobe">
+    <span class="phase-icon">🪟</span>
+    <div>
+      <div class="phase-title">FASE 5 — Configuração inicial (OOBE)</div>
+      <div class="phase-sub">Região, teclado, conta e personalização</div>
+    </div>
+    <span class="phase-badge">~10 min</span>
+  </div>
+
+  <!-- PASSO 11 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#0078d4;">P11</span>
+      <span class="step-title">Região, teclado e nome do computador</span>
+      <span class="step-tag">CONFIGURAÇÃO INICIAL</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Após a reinicialização, o Windows exibirá a tela <strong>"É este o país ou região certo?"</strong> — selecione <strong>Brasil</strong> e clique em <strong>Sim</strong>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Na tela de layout do teclado, selecione <strong>ABNT2</strong> e clique em <strong>Sim</strong>.</div></li>
+        <li><span class="action-n">3</span><div class="action-text">Quando perguntado sobre um segundo layout, clique em <strong>Ignorar</strong>.</div></li>
+        <li><span class="action-n">4</span><div class="action-text">Aguarde a tela de verificação de rede. Se aparecer <strong>"Não tenho internet"</strong>, clique nessa opção para criar uma conta local e continuar sem conta Microsoft.
+          <div class="action-info">💡 Para uso em laboratório/aula, uma conta local é suficiente. Se quiser conta Microsoft, conecte a rede antes de prosseguir.</div>
+        </div></li>
+        <li><span class="action-n">5</span><div class="action-text">Defina o nome do computador (ex: <code>WIN11-GSO</code>) e clique em <strong>Próximo</strong>.</div></li>
+      </ul>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <!-- OOBE screen - Windows 11 blue/white style -->
+          <rect width="700" height="300" fill="#0f172a"/>
+          <!-- Gradient bg like Win11 OOBE -->
+          <rect width="700" height="300" fill="url(#oobe-grad)"/>
+          <defs>
+            <linearGradient id="oobe-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#0f172a"/>
+              <stop offset="100%" stop-color="#0078d4" stop-opacity="0.3"/>
+            </linearGradient>
+          </defs>
+          <!-- Win logo center top -->
+          <rect x="330" y="24" width="18" height="18" fill="#00adef"/>
+          <rect x="352" y="24" width="18" height="18" fill="#00adef"/>
+          <rect x="330" y="46" width="18" height="18" fill="#00adef"/>
+          <rect x="352" y="46" width="18" height="18" fill="#00adef"/>
+          <!-- OOBE card -->
+          <rect x="150" y="74" width="400" height="200" rx="12" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <text x="350" y="108" font-family="Segoe UI,sans-serif" font-size="15" fill="white" text-anchor="middle" font-weight="300">É este o país ou região certo?</text>
+          <!-- Country list -->
+          <rect x="170" y="120" width="360" height="28" rx="4" fill="rgba(0,120,212,0.6)" stroke="#60a5fa" stroke-width="1.5"/>
+          <text x="190" y="138" font-family="Segoe UI,sans-serif" font-size="12" fill="white" font-weight="600">🇧🇷  Brasil</text>
+          <rect x="170" y="152" width="360" height="24" rx="4" fill="rgba(255,255,255,0.05)"/>
+          <text x="190" y="168" font-family="Segoe UI,sans-serif" font-size="11" fill="#aaa">Argentina</text>
+          <rect x="170" y="180" width="360" height="24" rx="4" fill="rgba(255,255,255,0.05)"/>
+          <text x="190" y="196" font-family="Segoe UI,sans-serif" font-size="11" fill="#aaa">Portugal</text>
+          <!-- Sim button -->
+          <rect x="500" y="244" width="40" height="22" rx="11" fill="#0078d4"/>
+          <text x="520" y="258" font-family="Segoe UI,sans-serif" font-size="10.5" fill="white" text-anchor="middle" font-weight="600">Sim</text>
+          <!-- Callout -->
+          <rect x="10" y="130" width="130" height="20" rx="4" fill="#16a34a"/>
+          <text x="75" y="143" font-family="Segoe UI,sans-serif" font-size="9.5" fill="white" text-anchor="middle" font-weight="700">✅ Selecionar Brasil</text>
+          <line x1="140" y1="140" x2="168" y2="134" stroke="#4ade80" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ OOBE — Tela "É este o país ou região certo?" — selecionar <strong>Brasil</strong> e clicar em <strong>Sim</strong></div>
+    </div>
+  </div>
+
+  <!-- PASSO 12 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#0078d4;">P12</span>
+      <span class="step-title">Criar conta de usuário local</span>
+      <span class="step-tag">CONTA DE USUÁRIO</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Na tela "Como você gostaria de configurar este dispositivo?", selecione <strong>"Configurar para uso pessoal"</strong> e clique em <strong>Próximo</strong>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Quando aparecer a tela de login da Microsoft, clique em <strong>"Opções de entrada"</strong> e depois em <strong>"Conta offline"</strong> para criar uma conta local.
+          <div class="action-warn">⚠️ O Windows 11 tenta forçar a criação de conta Microsoft. Se não aparecer "Conta offline", clique em "Opções de entrada" na parte inferior da tela.</div>
+        </div></li>
+        <li><span class="action-n">3</span><div class="action-text">Clique em <strong>"Experiência limitada"</strong> para confirmar a conta local.</div></li>
+        <li><span class="action-n">4</span><div class="action-text">Digite o nome de usuário (ex: <code>Aluno</code>) e clique em <strong>Próximo</strong>.</div></li>
+        <li><span class="action-n">5</span><div class="action-text">Defina uma senha (pode deixar em branco para laboratório) e clique em <strong>Próximo</strong>.</div></li>
+        <li><span class="action-n">6</span><div class="action-text">Responda às 3 perguntas de segurança (obrigatório para conta local com senha) e clique em <strong>Próximo</strong>.</div></li>
+      </ul>
+
+      <div class="screenshot-row">
+        <div>
+          <div class="screenshot-wrap">
+            <svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+              <rect width="340" height="280" fill="#0f172a"/>
+              <rect x="152" y="20" width="18" height="18" fill="#00adef"/>
+              <rect x="172" y="20" width="18" height="18" fill="#00adef"/>
+              <rect x="152" y="40" width="18" height="18" fill="#00adef"/>
+              <rect x="172" y="40" width="18" height="18" fill="#00adef"/>
+              <text x="170" y="80" font-family="Segoe UI,sans-serif" font-size="12" fill="white" text-anchor="middle" font-weight="300">Adicionar sua conta Microsoft</text>
+              <text x="170" y="96" font-family="Segoe UI,sans-serif" font-size="9.5" fill="#aaa" text-anchor="middle">Insira seu email ou telefone</text>
+              <rect x="30" y="104" width="280" height="24" rx="4" fill="rgba(255,255,255,0.08)" stroke="#444" stroke-width="1"/>
+              <text x="40" y="120" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#666">email@hotmail.com</text>
+              <rect x="30" y="138" width="280" height="28" rx="4" fill="#0078d4"/>
+              <text x="170" y="156" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="600">Próximo</text>
+              <!-- Options de entrada link -->
+              <text x="170" y="188" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#60a5fa" text-anchor="middle" text-decoration="underline">Opções de entrada</text>
+              <!-- callout -->
+              <rect x="10" y="182" width="110" height="16" rx="3" fill="#d97706"/>
+              <text x="65" y="193" font-family="Segoe UI,sans-serif" font-size="8.5" fill="white" text-anchor="middle" font-weight="700">← CLICAR AQUI</text>
+              <line x1="120" y1="190" x2="136" y2="190" stroke="#f97316" stroke-width="1.5"/>
+              <!-- Conta offline -->
+              <rect x="50" y="210" width="240" height="26" rx="4" fill="rgba(255,255,255,0.06)" stroke="#555" stroke-width="1"/>
+              <text x="170" y="227" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#aaa" text-anchor="middle">Conta offline</text>
+              <rect x="10" y="206" width="130" height="18" rx="3" fill="#16a34a"/>
+              <text x="75" y="218" font-family="Segoe UI,sans-serif" font-size="8.5" fill="white" text-anchor="middle" font-weight="700">✅ Depois clicar aqui</text>
+              <line x1="140" y1="215" x2="148" y2="220" stroke="#4ade80" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="screenshot-caption">Conta Microsoft — clicar em <strong>"Opções de entrada"</strong> → <strong>"Conta offline"</strong></div>
+        </div>
+        <div>
+          <div class="screenshot-wrap">
+            <svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+              <rect width="340" height="280" fill="#0f172a"/>
+              <rect x="152" y="16" width="18" height="18" fill="#00adef"/>
+              <rect x="172" y="16" width="18" height="18" fill="#00adef"/>
+              <rect x="152" y="36" width="18" height="18" fill="#00adef"/>
+              <rect x="172" y="36" width="18" height="18" fill="#00adef"/>
+              <text x="170" y="76" font-family="Segoe UI,sans-serif" font-size="13" fill="white" text-anchor="middle" font-weight="300">Quem vai usar este dispositivo?</text>
+              <text x="170" y="92" font-family="Segoe UI,sans-serif" font-size="9.5" fill="#aaa" text-anchor="middle">Digite o nome de usuário</text>
+              <rect x="30" y="100" width="280" height="28" rx="4" fill="rgba(255,255,255,0.1)" stroke="#0078d4" stroke-width="2"/>
+              <text x="42" y="118" font-family="Segoe UI,sans-serif" font-size="12" fill="white" font-weight="600">Aluno</text>
+              <rect x="30" y="140" width="280" height="28" rx="4" fill="#0078d4"/>
+              <text x="170" y="158" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="600">Próximo</text>
+              <text x="170" y="188" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#aaa" text-anchor="middle">Uma senha segura vai ser solicitada</text>
+              <text x="170" y="204" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#aaa" text-anchor="middle">na próxima tela (pode ficar em branco)</text>
+              <rect x="30" y="220" width="280" height="30" rx="4" fill="#0f2d12" stroke="#16a34a" stroke-width="1"/>
+              <text x="170" y="233" font-family="Segoe UI,sans-serif" font-size="10" fill="#4ade80" text-anchor="middle">✅ Nome de usuário: Aluno</text>
+              <text x="170" y="246" font-family="Segoe UI,sans-serif" font-size="9.5" fill="#166534" text-anchor="middle">Evite acentos/espaços no nome do usuário</text>
+            </svg>
+          </div>
+          <div class="screenshot-caption">Nome de usuário — digitar <strong>"Aluno"</strong> (sem acentos) e clicar em Próximo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASSO 13 -->
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#0078d4;">P13</span>
+      <span class="step-title">Configurações de privacidade e finalização</span>
+      <span class="step-tag">ÚLTIMOS AJUSTES</span>
+    </div>
+    <div class="step-body">
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Na tela de <strong>Configurações de Privacidade</strong>, desative as opções desnecessárias para uso em laboratório: Localização, Dados de Diagnóstico, Experiências Personalizadas. Clique em <strong>Aceitar</strong>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Aguarde a tela <strong>"Olá"</strong> com a animação de configuração final. Isso pode demorar entre 2 e 5 minutos.</div></li>
+        <li><span class="action-n">3</span><div class="action-text">O Windows 11 inicializará pela primeira vez e exibirá a área de trabalho. <strong>Parabéns — a instalação está concluída!</strong></div></li>
+      </ul>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <!-- Win11 Desktop! -->
+          <rect width="700" height="300" fill="#1a3a5c"/>
+          <!-- Desktop wallpaper gradient (Win11 style) -->
+          <defs>
+            <radialGradient id="wp" cx="50%" cy="60%">
+              <stop offset="0%" stop-color="#0078d4" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#0f172a"/>
+            </radialGradient>
+          </defs>
+          <rect width="700" height="272" fill="url(#wp)"/>
+          <!-- Windows 11 logo center -->
+          <rect x="322" y="86" width="28" height="28" fill="white" opacity="0.9"/>
+          <rect x="354" y="86" width="28" height="28" fill="white" opacity="0.9"/>
+          <rect x="322" y="118" width="28" height="28" fill="white" opacity="0.9"/>
+          <rect x="354" y="118" width="28" height="28" fill="white" opacity="0.9"/>
+          <!-- Desktop icons -->
+          <rect x="20" y="20" width="50" height="50" rx="4" fill="rgba(255,255,255,0.1)"/>
+          <text x="45" y="52" font-family="sans-serif" font-size="24" fill="white" text-anchor="middle">🗑️</text>
+          <text x="45" y="68" font-family="Segoe UI,sans-serif" font-size="9" fill="#ddd" text-anchor="middle">Lixeira</text>
+          <rect x="20" y="84" width="50" height="50" rx="4" fill="rgba(255,255,255,0.1)"/>
+          <text x="45" y="116" font-family="sans-serif" font-size="24" fill="white" text-anchor="middle">🖥️</text>
+          <text x="45" y="132" font-family="Segoe UI,sans-serif" font-size="9" fill="#ddd" text-anchor="middle">Este PC</text>
+          <!-- Taskbar -->
+          <rect y="272" width="700" height="28" fill="rgba(0,0,0,0.7)"/>
+          <!-- Win11 centered taskbar -->
+          <rect x="302" y="275" width="22" height="22" rx="3" fill="#0078d4"/>
+          <rect x="308" y="279" width="5" height="5" fill="rgba(255,255,255,.8)"/>
+          <rect x="315" y="279" width="5" height="5" fill="rgba(255,255,255,.8)"/>
+          <rect x="308" y="286" width="5" height="5" fill="rgba(255,255,255,.8)"/>
+          <rect x="315" y="286" width="5" height="5" fill="rgba(255,255,255,.8)"/>
+          <rect x="328" y="277" width="20" height="18" rx="2" fill="rgba(255,255,255,.15)"/>
+          <text x="338" y="290" font-family="sans-serif" font-size="12" fill="#aaa" text-anchor="middle">🔍</text>
+          <rect x="352" y="277" width="20" height="18" rx="2" fill="rgba(255,255,255,.15)"/>
+          <text x="362" y="290" font-family="sans-serif" font-size="12" fill="#aaa" text-anchor="middle">⧉</text>
+          <rect x="376" y="277" width="20" height="18" rx="2" fill="rgba(255,255,255,.15)"/>
+          <text x="386" y="290" font-family="sans-serif" font-size="12" fill="#aaa" text-anchor="middle">📁</text>
+          <!-- Time right side -->
+          <text x="630" y="284" font-family="Segoe UI,sans-serif" font-size="9.5" fill="#ccc">10:35</text>
+          <text x="630" y="295" font-family="Segoe UI,sans-serif" font-size="8.5" fill="#aaa">12/04/2026</text>
+          <!-- Success callout -->
+          <rect x="200" y="200" width="300" height="52" rx="8" fill="#16a34a" style="filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))"/>
+          <text x="350" y="220" font-family="Segoe UI,sans-serif" font-size="13" fill="white" text-anchor="middle" font-weight="700">🎉 Windows 11 instalado!</text>
+          <text x="350" y="238" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#bbf7d0" text-anchor="middle">Área de trabalho pronta no VirtualBox</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">🖥️ WIN 11 — Desktop pronto! Barra de tarefas centralizada, ícones da área de trabalho visíveis. <strong>Instalação concluída com sucesso!</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FASE 6 — PÓS-INSTALAÇÃO
+═══════════════════════════════════════ -->
+<div class="phase">
+  <div class="phase-header phase-done">
+    <span class="phase-icon">✅</span>
+    <div>
+      <div class="phase-title">FASE 6 — Pós-instalação e Guest Additions</div>
+      <div class="phase-sub">Instalar drivers virtuais para melhor desempenho</div>
+    </div>
+    <span class="phase-badge">~5 min</span>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <span class="step-num" style="background:#15803d;">P14</span>
+      <span class="step-title">Instalar VirtualBox Guest Additions</span>
+      <span class="step-tag">DRIVERS VIRTUAIS</span>
+    </div>
+    <div class="step-body">
+      <div class="step-desc">As <strong>Guest Additions</strong> são drivers especiais que melhoram drasticamente a integração entre a VM e o sistema host: resolução automática de tela, área de transferência compartilhada, arrastar e soltar arquivos, e melhor desempenho gráfico.</div>
+
+      <ul class="action-list">
+        <li><span class="action-n">1</span><div class="action-text">Com a VM em execução, no menu do VirtualBox clique em <strong>Dispositivos → Inserir imagem de CD das "Guest Additions"</strong>.</div></li>
+        <li><span class="action-n">2</span><div class="action-text">Dentro da VM, abra o Explorador de Arquivos. Você verá um novo CD (<strong>VirtualBox Guest Additions</strong>) em "Este Computador". Clique duas vezes nele.</div></li>
+        <li><span class="action-n">3</span><div class="action-text">Dentro do CD, clique duas vezes em <strong>VBoxWindowsAdditions-amd64.exe</strong>. Confirme o UAC com <strong>Sim</strong>.</div></li>
+        <li><span class="action-n">4</span><div class="action-text">Clique em <strong>Next → Next → Install</strong>. Aceite a instalação de drivers se solicitado.</div></li>
+        <li><span class="action-n">5</span><div class="action-text">Na última tela, selecione <strong>"Reboot now"</strong> e clique em <strong>Finish</strong>. A VM reiniciará.</div></li>
+        <li><span class="action-n">6</span><div class="action-text">Após reiniciar, a resolução da tela se adaptará automaticamente ao tamanho da janela do VirtualBox.
+          <div class="action-resp">✅ Você pode agora redimensionar a janela do VirtualBox e o Windows 11 ajustará a resolução automaticamente. A instalação está 100% completa!</div>
+        </div></li>
+      </ul>
+
+      <div class="screenshot-wrap">
+        <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
+          <rect width="700" height="200" fill="#0f172a"/>
+          <text x="350" y="22" font-family="Segoe UI,sans-serif" font-size="11" fill="#64748b" text-anchor="middle" font-weight="600" letter-spacing="1">ANTES E DEPOIS DAS GUEST ADDITIONS</text>
+          <!-- Before -->
+          <rect x="16" y="32" width="320" height="148" rx="6" fill="#2d1a1a" stroke="#dc2626" stroke-width="1.5"/>
+          <rect x="16" y="32" width="320" height="26" rx="6" fill="#dc2626"/>
+          <rect x="16" y="46" width="320" height="12" fill="#dc2626"/>
+          <text x="176" y="50" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="700">❌ Sem Guest Additions</text>
+          <text x="30" y="80" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#fca5a5">• Resolução fixa em 800×600 ou 1024×768</text>
+          <text x="30" y="98" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#fca5a5">• Área de transferência não compartilhada</text>
+          <text x="30" y="116" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#fca5a5">• Mouse trava dentro da janela da VM</text>
+          <text x="30" y="134" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#fca5a5">• Não é possível arrastar arquivos</text>
+          <text x="30" y="152" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#fca5a5">• Desempenho gráfico ruim</text>
+          <text x="30" y="170" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#f87171">• Tela não redimensiona com a janela</text>
+          <!-- After -->
+          <rect x="364" y="32" width="320" height="148" rx="6" fill="#0f2d12" stroke="#16a34a" stroke-width="1.5"/>
+          <rect x="364" y="32" width="320" height="26" rx="6" fill="#15803d"/>
+          <rect x="364" y="46" width="320" height="12" fill="#15803d"/>
+          <text x="524" y="50" font-family="Segoe UI,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="700">✅ Com Guest Additions</text>
+          <text x="378" y="80" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">• Resolução dinâmica (até 4K)</text>
+          <text x="378" y="98" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">• Ctrl+C / Ctrl+V entre host e VM</text>
+          <text x="378" y="116" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">• Mouse integrado (sem captura)</text>
+          <text x="378" y="134" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">• Drag & drop de arquivos</text>
+          <text x="378" y="152" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">• Aceleração 3D melhorada</text>
+          <text x="378" y="170" font-family="Segoe UI,sans-serif" font-size="10.5" fill="#4ade80">• Tela se ajusta automaticamente</text>
+        </svg>
+      </div>
+      <div class="screenshot-caption">📐 Diferença entre VM sem e com Guest Additions instaladas. As Guest Additions são essenciais para uma boa experiência.</div>
+
+      <!-- Final checklist -->
+      <div class="tip-box green" style="margin-top:20px;">
+        <strong>🎉 Instalação completa! Verifique a lista final:</strong>
+      </div>
+      <div class="checklist">
+        <div class="cl-item"><span class="cl-icon">✅</span>VirtualBox 7.x instalado no computador host</div>
+        <div class="cl-item"><span class="cl-icon">✅</span>VM criada com 4 GB RAM, 2 CPUs, 60 GB disco</div>
+        <div class="cl-item"><span class="cl-icon">✅</span>TPM 2.0 e Secure Boot habilitados na VM</div>
+        <div class="cl-item"><span class="cl-icon">✅</span>Windows 11 Pro instalado a partir da ISO oficial</div>
+        <div class="cl-item"><span class="cl-icon">✅</span>Conta de usuário local "Aluno" criada</div>
+        <div class="cl-item"><span class="cl-icon">✅</span>Guest Additions instaladas — tela responsiva</div>
+        <div class="cl-item"><span class="cl-icon">✅</span>Desktop do Windows 11 acessível e funcional</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESUMO VISUAL FINAL -->
+<div style="background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);padding:28px;margin-top:8px;">
+  <h3 style="font-size:1.05em;font-weight:700;color:var(--navy);margin-bottom:16px;">📊 Resumo do Processo</h3>
+  <div style="overflow-x:auto;">
+    <svg viewBox="0 0 900 80" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;min-width:600px;">
+      <!-- Timeline -->
+      <rect x="0" y="35" width="900" height="4" rx="2" fill="#e2e8f0"/>
+      <!-- Phase dots and labels -->
+      <!-- F0 Pré -->
+      <circle cx="60" cy="37" r="18" fill="#475569"/>
+      <text x="60" y="42" font-family="Segoe UI,sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="700">PRÉ</text>
+      <text x="60" y="66" font-family="Segoe UI,sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Pré-requisitos</text>
+      <text x="60" y="77" font-family="Segoe UI,sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">5 min</text>
+      <!-- F1 VirtualBox -->
+      <circle cx="200" cy="37" r="18" fill="#183153"/>
+      <text x="200" y="42" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">F1</text>
+      <text x="200" y="66" font-family="Segoe UI,sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Instalar VBox</text>
+      <text x="200" y="77" font-family="Segoe UI,sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">10 min</text>
+      <!-- F2 VM -->
+      <circle cx="340" cy="37" r="18" fill="#1e4080"/>
+      <text x="340" y="42" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">F2</text>
+      <text x="340" y="66" font-family="Segoe UI,sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Criar VM</text>
+      <text x="340" y="77" font-family="Segoe UI,sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">5 min</text>
+      <!-- F3 Config -->
+      <circle cx="480" cy="37" r="18" fill="#065f46"/>
+      <text x="480" y="42" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">F3</text>
+      <text x="480" y="66" font-family="Segoe UI,sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Config. VM</text>
+      <text x="480" y="77" font-family="Segoe UI,sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">5 min</text>
+      <!-- F4 Install -->
+      <circle cx="630" cy="37" r="18" fill="#0078d4"/>
+      <text x="630" y="42" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">F4</text>
+      <text x="630" y="66" font-family="Segoe UI,sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Instalar Win11</text>
+      <text x="630" y="77" font-family="Segoe UI,sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">30 min</text>
+      <!-- F5 OOBE -->
+      <circle cx="780" cy="37" r="18" fill="#0891b2"/>
+      <text x="780" y="42" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">F5</text>
+      <text x="780" y="66" font-family="Segoe UI,sans-serif" font-size="9" fill="#64748b" text-anchor="middle">OOBE</text>
+      <text x="780" y="77" font-family="Segoe UI,sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">10 min</text>
+      <!-- F6 Post -->
+      <circle cx="880" cy="37" r="18" fill="#15803d"/>
+      <text x="880" y="42" font-family="Segoe UI,sans-serif" font-size="9" fill="white" text-anchor="middle" font-weight="700">F6</text>
+      <text x="880" y="66" font-family="Segoe UI,sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Pós-inst.</text>
+      <text x="880" y="77" font-family="Segoe UI,sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">5 min</text>
+      <!-- Total label -->
+      <rect x="355" y="6" width="100" height="18" rx="9" fill="#0f172a"/>
+      <text x="405" y="18" font-family="Segoe UI,sans-serif" font-size="9.5" fill="white" text-anchor="middle" font-weight="700">Total: ~70 min</text>
+    </svg>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  <p><strong>GSO I 2026 · Gestão de Sistemas Operacionais I</strong></p>
+  <p style="margin-top:4px;">Guia de Instalação — Windows 11 no VirtualBox · Prof. Isaque Katahira</p>
+</footer>
+
+</body>
+</html>

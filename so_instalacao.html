@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🖥️ Instalação de SOs com VirtualBox | ARQ-001 · Semana 16</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050d1a;
+  --bg2: #091424;
+  --card: #0d1f35;
+  --card2: #0f2540;
+  --cyan: #00d4ff;
+  --cyan2: #00a8cc;
+  --purple: #b44aff;
+  --purple2: #8b2fe0;
+  --green: #00ff88;
+  --green2: #00cc6a;
+  --yellow: #ffcc00;
+  --orange: #ff8c00;
+  --red: #ff4466;
+  --blue: #4a90ff;
+  --text: #e0f0ff;
+  --muted: #5a7a99;
+  --border: rgba(0,212,255,0.15);
+  --glow-cyan: 0 0 20px rgba(0,212,255,0.4);
+  --glow-purple: 0 0 20px rgba(180,74,255,0.4);
+  --glow-green: 0 0 20px rgba(0,255,136,0.4);
+  --glow-orange: 0 0 20px rgba(255,140,0,0.4);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(0,212,255,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(180,74,255,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(0,255,136,0.02) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+
+/* HEADER */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(5,13,26,0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+}
+.header::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--orange), var(--cyan), var(--purple), transparent);
+}
+.header-inner {
+  max-width: 1300px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.header-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.72em; font-weight: 700;
+  color: var(--orange);
+  letter-spacing: 2px;
+  text-shadow: var(--glow-orange);
+}
+.header-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.95em; font-weight: 900;
+  color: var(--text);
+}
+.header-title span { color: var(--orange); }
+.back-btn {
+  background: rgba(255,140,0,0.1);
+  border: 1px solid rgba(255,140,0,0.25);
+  color: var(--orange); padding: 6px 14px; border-radius: 6px;
+  font-family: 'Exo 2', sans-serif; font-size: 0.8em; font-weight: 700;
+  cursor: pointer; text-decoration: none;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.back-btn:hover { background: rgba(255,140,0,0.2); box-shadow: var(--glow-orange); }
+.hud { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.hud-pill {
+  background: rgba(255,140,0,0.08);
+  border: 1px solid rgba(255,140,0,0.25);
+  border-radius: 8px; padding: 6px 14px;
+  text-align: center;
+}
+.hud-pill .v {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1em; font-weight: 700;
+  color: var(--orange); display: block; line-height: 1;
+}
+.hud-pill .l {
+  font-size: 0.58em; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px;
+  display: block; margin-top: 2px;
+}
+
+/* LAYOUT */
+.layout {
+  max-width: 1300px; margin: 0 auto; padding: 28px 24px;
+  display: grid; grid-template-columns: 260px 1fr; gap: 24px;
+  position: relative; z-index: 1;
+}
+.sidebar { display: flex; flex-direction: column; gap: 16px; }
+.scard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px;
+}
+.scard-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.72em; font-weight: 700;
+  color: var(--orange); letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  text-decoration: none; color: var(--muted);
+  font-size: 0.85em; font-weight: 600;
+  transition: all 0.2s; margin-bottom: 4px;
+  border: 1px solid transparent;
+}
+.nav-link:hover { color: var(--orange); background: rgba(255,140,0,0.07); border-color: rgba(255,140,0,0.2); }
+.nav-link.active { color: var(--orange); background: rgba(255,140,0,0.12); border-color: rgba(255,140,0,0.3); box-shadow: inset 3px 0 0 var(--orange); }
+.nav-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.nav-dot.ubuntu { background: #e95420; box-shadow: 0 0 8px #e95420; }
+.nav-dot.server { background: var(--purple); }
+.nav-dot.windows { background: var(--blue); }
+.nav-dot.vbox { background: var(--cyan); }
+
+/* info block on sidebar */
+.info-row { display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 0.82em; }
+.info-row .lbl { color: var(--muted); }
+.info-row .val { color: var(--text); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
+.info-row .val.g { color: var(--green); }
+.info-row .val.o { color: var(--orange); }
+.info-row .val.c { color: var(--cyan); }
+.info-row .val.p { color: var(--purple); }
+.info-row .val.b { color: var(--blue); }
+
+.req-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px; padding: 10px 12px;
+  margin-bottom: 8px; font-size: 0.82em;
+}
+.req-item .r-title { color: var(--text); font-weight: 700; margin-bottom: 3px; }
+.req-item .r-val { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
+
+/* MAIN */
+.main { display: flex; flex-direction: column; gap: 22px; }
+
+/* HERO */
+.hero {
+  background: var(--card);
+  border: 1px solid rgba(255,140,0,0.25);
+  border-radius: 16px; padding: 36px 40px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 0 50px rgba(255,140,0,0.07);
+}
+.hero::before {
+  content: '';
+  position: absolute; right: 0; top: 0; bottom: 0; width: 280px;
+  background: linear-gradient(135deg, rgba(255,140,0,0.04), rgba(0,212,255,0.04));
+  pointer-events: none;
+}
+.hero-os-icons {
+  position: absolute; right: 32px; top: 50%; transform: translateY(-50%);
+  display: flex; gap: 16px; opacity: 0.12; font-size: 3.6em;
+  pointer-events: none;
+}
+.hero-tag {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65em; letter-spacing: 3px; font-weight: 700;
+  color: var(--orange); text-transform: uppercase;
+  margin-bottom: 10px; opacity: 0.85;
+}
+.hero h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.85em; font-weight: 900;
+  color: var(--text); line-height: 1.2; margin-bottom: 8px;
+}
+.hero h1 span { color: var(--orange); text-shadow: var(--glow-orange); }
+.hero-sub { color: var(--muted); font-size: 0.95em; margin-bottom: 20px; line-height: 1.6; max-width: 680px; }
+.hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+.chip {
+  border-radius: 100px; padding: 5px 14px;
+  font-size: 0.78em; font-weight: 700;
+  display: flex; align-items: center; gap: 5px;
+  border: 1px solid;
+}
+.chip.orange { background: rgba(255,140,0,0.09); border-color: rgba(255,140,0,0.3); color: var(--orange); }
+.chip.cyan { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.25); color: var(--cyan); }
+.chip.purple { background: rgba(180,74,255,0.08); border-color: rgba(180,74,255,0.25); color: var(--purple); }
+.chip.blue { background: rgba(74,144,255,0.09); border-color: rgba(74,144,255,0.3); color: var(--blue); }
+.chip.green { background: rgba(0,255,136,0.08); border-color: rgba(0,255,136,0.25); color: var(--green); }
+
+/* CARD */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+}
+.card.ubuntu-card { border-color: rgba(233,84,32,0.3); }
+.card.server-card { border-color: rgba(180,74,255,0.3); }
+.card.windows-card { border-color: rgba(74,144,255,0.3); }
+
+.card-head {
+  padding: 16px 22px; display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.card-head.ubuntu-head { background: rgba(233,84,32,0.06); border-bottom-color: rgba(233,84,32,0.15); }
+.card-head.server-head { background: rgba(180,74,255,0.06); border-bottom-color: rgba(180,74,255,0.15); }
+.card-head.windows-head { background: rgba(74,144,255,0.06); border-bottom-color: rgba(74,144,255,0.15); }
+.card-head.vbox-head { background: rgba(0,212,255,0.04); border-bottom-color: rgba(0,212,255,0.15); }
+
+.card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3em; flex-shrink: 0;
+}
+.ci-ubuntu { background: rgba(233,84,32,0.2); border: 1px solid rgba(233,84,32,0.4); }
+.ci-server { background: rgba(180,74,255,0.15); border: 1px solid rgba(180,74,255,0.35); }
+.ci-windows { background: rgba(74,144,255,0.15); border: 1px solid rgba(74,144,255,0.35); }
+.ci-vbox { background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3); }
+.ci-generic { background: rgba(255,140,0,0.12); border: 1px solid rgba(255,140,0,0.3); }
+
+.card-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85em; font-weight: 700; color: var(--text);
+  letter-spacing: 1px;
+}
+.card-subtitle { font-size: 0.8em; color: var(--muted); margin-top: 2px; }
+.diff-tag {
+  margin-left: auto;
+  padding: 3px 12px; border-radius: 100px;
+  font-size: 0.7em; font-weight: 700;
+  font-family: 'Orbitron', monospace; border: 1px solid;
+}
+.diff-init { background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.35); color: var(--green); }
+.diff-med  { background: rgba(255,204,0,0.1); border-color: rgba(255,204,0,0.35); color: var(--yellow); }
+.diff-adv  { background: rgba(180,74,255,0.1); border-color: rgba(180,74,255,0.35); color: var(--purple); }
+
+.card-body { padding: 22px; }
+
+/* STEPS */
+.steps { display: flex; flex-direction: column; gap: 0; }
+.step {
+  display: flex; gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  position: relative;
+}
+.step:last-child { border-bottom: none; }
+.step-num-wrap { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.step-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Orbitron', monospace; font-size: 0.8em; font-weight: 700;
+  flex-shrink: 0; z-index: 1;
+}
+.sn-ubuntu { background: rgba(233,84,32,0.2); border: 2px solid rgba(233,84,32,0.5); color: #e95420; }
+.sn-server { background: rgba(180,74,255,0.15); border: 2px solid rgba(180,74,255,0.45); color: var(--purple); }
+.sn-windows { background: rgba(74,144,255,0.15); border: 2px solid rgba(74,144,255,0.4); color: var(--blue); }
+.sn-vbox { background: rgba(0,212,255,0.12); border: 2px solid rgba(0,212,255,0.35); color: var(--cyan); }
+
+.step-line {
+  width: 2px; flex: 1; margin-top: 4px;
+  background: rgba(255,255,255,0.06);
+  min-height: 20px;
+}
+.step-content { flex: 1; padding-top: 5px; }
+.step-title { font-weight: 700; font-size: 0.95em; color: var(--text); margin-bottom: 5px; }
+.step-desc { font-size: 0.85em; color: var(--muted); line-height: 1.65; }
+.step-tip {
+  margin-top: 8px;
+  background: rgba(255,204,0,0.07);
+  border: 1px solid rgba(255,204,0,0.2);
+  border-radius: 7px; padding: 8px 12px;
+  font-size: 0.8em; color: var(--yellow); line-height: 1.55;
+  display: flex; gap: 7px; align-items: flex-start;
+}
+.step-warn {
+  margin-top: 8px;
+  background: rgba(255,68,102,0.07);
+  border: 1px solid rgba(255,68,102,0.2);
+  border-radius: 7px; padding: 8px 12px;
+  font-size: 0.8em; color: var(--red); line-height: 1.55;
+  display: flex; gap: 7px; align-items: flex-start;
+}
+.step-cmd {
+  margin-top: 8px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,212,255,0.18);
+  border-radius: 7px; padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82em; color: var(--cyan);
+  line-height: 1.7;
+  position: relative;
+}
+.step-cmd .comment { color: #3a6a5a; }
+.step-cmd .prompt { color: var(--green); }
+.step-img-placeholder {
+  margin-top: 10px;
+  border: 1px dashed rgba(255,255,255,0.12);
+  border-radius: 8px; padding: 14px 16px;
+  font-size: 0.78em; color: var(--muted);
+  text-align: center; line-height: 1.5;
+  background: rgba(255,255,255,0.02);
+}
+
+/* TABS (OS Selector) */
+.os-tabs {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.os-tab {
+  padding: 10px 20px; border-radius: 9px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  color: var(--muted); font-family: 'Exo 2', sans-serif;
+  font-size: 0.88em; font-weight: 700; transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.os-tab:hover { background: rgba(255,255,255,0.06); }
+.os-tab.active-ubuntu { color: #e95420; background: rgba(233,84,32,0.12); border-color: rgba(233,84,32,0.4); box-shadow: 0 0 14px rgba(233,84,32,0.2); }
+.os-tab.active-server { color: var(--purple); background: rgba(180,74,255,0.12); border-color: rgba(180,74,255,0.4); box-shadow: 0 0 14px rgba(180,74,255,0.2); }
+.os-tab.active-windows { color: var(--blue); background: rgba(74,144,255,0.12); border-color: rgba(74,144,255,0.4); box-shadow: 0 0 14px rgba(74,144,255,0.2); }
+
+/* PANEL */
+.os-panel { display: none; }
+.os-panel.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* SPEC TABLE */
+.spec-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.spec-table th, .spec-table td { padding: 9px 14px; text-align: left; font-size: 0.83em; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.spec-table th { font-family: 'Orbitron', monospace; font-size: 0.7em; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
+.spec-table td:first-child { color: var(--muted); width: 38%; }
+.spec-table td:last-child { color: var(--text); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+.spec-table tr:last-child td { border-bottom: none; }
+
+/* COMPARISON */
+.compare-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 4px;
+}
+.cmp-card {
+  border-radius: 10px; padding: 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  border: 1px solid;
+}
+.cmp-card.ubuntu { background: rgba(233,84,32,0.07); border-color: rgba(233,84,32,0.25); }
+.cmp-card.server { background: rgba(180,74,255,0.07); border-color: rgba(180,74,255,0.25); }
+.cmp-card.windows { background: rgba(74,144,255,0.07); border-color: rgba(74,144,255,0.25); }
+.cmp-icon { font-size: 1.8em; }
+.cmp-name { font-family: 'Orbitron', monospace; font-size: 0.78em; font-weight: 700; }
+.cmp-name.ubuntu { color: #e95420; }
+.cmp-name.server { color: var(--purple); }
+.cmp-name.windows { color: var(--blue); }
+.cmp-row { font-size: 0.8em; color: var(--muted); display: flex; gap: 8px; align-items: flex-start; line-height: 1.5; }
+.cmp-row::before { content: '▸'; flex-shrink: 0; margin-top: 1px; }
+
+/* OBJECTIVES */
+.obj-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.obj-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 15px; border-radius: 9px;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer; transition: all 0.2s; font-size: 0.88em; font-weight: 600;
+  user-select: none;
+}
+.obj-item:hover { background: rgba(255,140,0,0.06); border-color: rgba(255,140,0,0.2); }
+.obj-item.checked { background: rgba(0,255,136,0.05); border-color: rgba(0,255,136,0.2); color: var(--muted); text-decoration: line-through; }
+.obj-circle {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75em; transition: all 0.3s;
+}
+.obj-item.checked .obj-circle { background: var(--green); border-color: var(--green); color: #000; box-shadow: 0 0 10px rgba(0,255,136,0.5); }
+
+/* NOTES PANEL */
+.notes-panel {
+  background: rgba(0,212,255,0.04);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 12px; padding: 20px 22px;
+}
+.notes-title {
+  font-family: 'Orbitron', monospace; font-size: 0.75em; font-weight: 700;
+  color: var(--cyan); letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.notes-item {
+  display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.86em;
+  color: var(--muted); line-height: 1.6; align-items: flex-start;
+}
+.notes-item .ni-icon { flex-shrink: 0; margin-top: 1px; }
+.notes-item .ni-text strong { color: var(--text); }
+
+/* PROGRESS BAR */
+.prog-wrap { background: rgba(255,255,255,0.06); border-radius: 100px; height: 6px; overflow: hidden; margin-top: 4px; }
+.prog-fill { height: 100%; border-radius: 100px; transition: width 0.8s ease; }
+.pf-ubuntu { background: linear-gradient(90deg, #c04010, #e95420); }
+.pf-server { background: linear-gradient(90deg, var(--purple2), var(--purple)); }
+.pf-windows { background: linear-gradient(90deg, #2860cc, var(--blue)); }
+
+.prog-label { display: flex; justify-content: space-between; font-size: 0.75em; color: var(--muted); font-weight: 600; margin-bottom: 5px; }
+.prog-label span:last-child { font-family: 'Orbitron', monospace; }
+.prog-label .pg-ubuntu { color: #e95420; }
+.prog-label .pg-server { color: var(--purple); }
+.prog-label .pg-windows { color: var(--blue); }
+
+/* QUICK LINKS */
+.qlinks { display: flex; flex-direction: column; gap: 8px; }
+.ql-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 8px;
+  text-decoration: none; font-size: 0.83em; font-weight: 700;
+  transition: all 0.2s; border: 1px solid;
+}
+.ql-ubuntu { color: #e95420; border-color: rgba(233,84,32,0.3); background: rgba(233,84,32,0.08); }
+.ql-ubuntu:hover { background: rgba(233,84,32,0.18); border-color: #e95420; }
+.ql-server { color: var(--purple); border-color: rgba(180,74,255,0.3); background: rgba(180,74,255,0.08); }
+.ql-server:hover { background: rgba(180,74,255,0.18); border-color: var(--purple); }
+.ql-windows { color: var(--blue); border-color: rgba(74,144,255,0.3); background: rgba(74,144,255,0.08); }
+.ql-windows:hover { background: rgba(74,144,255,0.18); border-color: var(--blue); }
+.ql-vbox { color: var(--cyan); border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.07); }
+.ql-vbox:hover { background: rgba(0,212,255,0.16); border-color: var(--cyan); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 24px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75em; color: var(--muted);
+  position: relative; z-index: 1;
+}
+footer span { color: var(--orange); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { order: 2; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 1.4em; }
+  .hero-os-icons { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- BG floating icons -->
+<div style="position:fixed;top:60px;right:-30px;font-size:14em;opacity:0.03;pointer-events:none;z-index:0;animation:float 8s ease-in-out infinite;">🖥️</div>
+<style>@keyframes float{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-18px) rotate(5deg);}}</style>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-logo">ARQ-001</div>
+    <div class="header-title">SO <span>Instalação</span> — Semana 16</div>
+    <a href="index.html" class="back-btn">← Índice</a>
+    <div class="hud">
+      <div class="hud-pill"><span class="v">03</span><span class="l">SOs</span></div>
+      <div class="hud-pill"><span class="v" style="color:var(--cyan)">VBox</span><span class="l">Hypervisor</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+
+    <div class="scard">
+      <div class="scard-title">🗂️ Navegação</div>
+      <a href="#intro" class="nav-link active"><span class="nav-dot vbox"></span>Introdução & VirtualBox</a>
+      <a href="#ubuntu-desktop" class="nav-link"><span class="nav-dot ubuntu"></span>Ubuntu Desktop</a>
+      <a href="#ubuntu-server" class="nav-link"><span class="nav-dot server"></span>Ubuntu Server</a>
+      <a href="#windows11" class="nav-link"><span class="nav-dot windows"></span>Windows 11</a>
+      <a href="#comparativo" class="nav-link"><span class="nav-dot vbox"></span>Comparativo</a>
+      <a href="#objetivos" class="nav-link"><span class="nav-dot ubuntu"></span>Objetivos da Aula</a>
+    </div>
+
+    <div class="scard">
+      <div class="scard-title">⚡ Downloads</div>
+      <div class="qlinks">
+        <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" class="ql-btn ql-vbox">🔗 VirtualBox Installer</a>
+        <a href="https://ubuntu.com/download/desktop" target="_blank" class="ql-btn ql-ubuntu">🔗 Ubuntu 24.04 Desktop ISO</a>
+        <a href="https://ubuntu.com/download/server" target="_blank" class="ql-btn ql-server">🔗 Ubuntu 24.04 Server ISO</a>
+        <a href="https://www.microsoft.com/pt-br/software-download/windows11" target="_blank" class="ql-btn ql-windows">🔗 Windows 11 ISO</a>
+      </div>
+    </div>
+
+    <div class="scard">
+      <div class="scard-title">📊 Progresso</div>
+      <div style="margin-bottom:14px;">
+        <div class="prog-label"><span>Ubuntu Desktop</span><span class="pg-ubuntu" id="pct-desktop">0%</span></div>
+        <div class="prog-wrap"><div class="prog-fill pf-ubuntu" id="bar-desktop" style="width:0%"></div></div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div class="prog-label"><span>Ubuntu Server</span><span class="pg-server" id="pct-server">0%</span></div>
+        <div class="prog-wrap"><div class="prog-fill pf-server" id="bar-server" style="width:0%"></div></div>
+      </div>
+      <div>
+        <div class="prog-label"><span>Windows 11</span><span class="pg-windows" id="pct-windows">0%</span></div>
+        <div class="prog-wrap"><div class="prog-fill pf-windows" id="bar-windows" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="scard">
+      <div class="scard-title">🖥️ Requisitos Mínimos</div>
+      <div class="req-item">
+        <div class="r-title">CPU</div>
+        <div class="r-val">Intel/AMD 64-bit com VT-x/AMD-V habilitado</div>
+      </div>
+      <div class="req-item">
+        <div class="r-title">RAM Host</div>
+        <div class="r-val">≥ 8 GB (recomendado 16 GB)</div>
+      </div>
+      <div class="req-item">
+        <div class="r-title">Disco Host</div>
+        <div class="r-val">≥ 80 GB livres (SSD preferencial)</div>
+      </div>
+      <div class="req-item">
+        <div class="r-title">VirtualBox</div>
+        <div class="r-val">v7.x ou superior + Extension Pack</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero" id="intro">
+      <div class="hero-os-icons">🐧🪟🖥️</div>
+      <div class="hero-tag">⚙️ ARQ-001 · Módulo 04 · Semana 16 — Lab Prático</div>
+      <h1>Instalação de <span>Sistemas Operacionais</span><br>com VirtualBox</h1>
+      <p class="hero-sub">
+        Aprenda a criar máquinas virtuais e instalar Ubuntu Desktop, Ubuntu Server e Windows 11 no Oracle VirtualBox — compreendendo na prática como o SO interage com o hardware virtualizado e gerencia recursos do sistema.
+      </p>
+      <div class="hero-chips">
+        <span class="chip orange">🖥️ VirtualBox 7.x</span>
+        <span class="chip orange">🐧 Ubuntu 24.04 LTS</span>
+        <span class="chip blue">🪟 Windows 11</span>
+        <span class="chip green">⏱ ~3–4h de lab</span>
+        <span class="chip cyan">🎯 Conceito: Hypervisor Tipo 2</span>
+      </div>
+    </section>
+
+    <!-- VIRTUALBOX INTRO -->
+    <section class="card" id="vbox-intro">
+      <div class="card-head vbox-head">
+        <div class="card-icon ci-vbox">🔷</div>
+        <div>
+          <div class="card-title">Por que VirtualBox? — Hypervisor Tipo 2</div>
+          <div class="card-subtitle">Virtualização sem hardware dedicado · Ideal para laboratório</div>
+        </div>
+        <div class="diff-tag diff-init">CONCEITO</div>
+      </div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;">
+          <div>
+            <div style="font-size:0.85em;font-weight:700;color:var(--cyan);margin-bottom:8px;font-family:'Orbitron',monospace;letter-spacing:1px;">O QUE É?</div>
+            <p style="font-size:0.85em;color:var(--muted);line-height:1.7;">O VirtualBox é um <strong style="color:var(--text)">hypervisor Tipo 2</strong> (hosted) — executa sobre um SO hospedeiro (host) e cria máquinas virtuais (guests) que compartilham o hardware físico. Diferente do Tipo 1 (bare-metal), ele não precisa de hardware dedicado, ideal para laboratórios e estudo.</p>
+          </div>
+          <div>
+            <div style="font-size:0.85em;font-weight:700;color:var(--cyan);margin-bottom:8px;font-family:'Orbitron',monospace;letter-spacing:1px;">COMO FUNCIONA?</div>
+            <p style="font-size:0.85em;color:var(--muted);line-height:1.7;">A CPU do host precisa ter <strong style="color:var(--text)">virtualização por hardware (VT-x / AMD-V)</strong> habilitada no BIOS/UEFI. O VirtualBox emula dispositivos como HD virtual (VDI), placa de rede e controlador USB, permitindo que o SO guest acredite estar em hardware real.</p>
+          </div>
+        </div>
+        <div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.18);border-radius:8px;padding:14px 18px;font-size:0.84em;color:var(--muted);line-height:1.7;">
+          <strong style="color:var(--cyan)">🏗️ Pilha de Camadas:</strong> Hardware Físico → BIOS/UEFI → SO Host (Windows/Linux) → VirtualBox (Hypervisor T2) → Máquina Virtual (SO Guest) → Aplicações do Guest
+        </div>
+        <div style="margin-top:16px;">
+          <div style="font-size:0.85em;font-weight:700;color:var(--orange);margin-bottom:10px;font-family:'Orbitron',monospace;letter-spacing:1px;">⚙️ PASSO INICIAL — Verificar Virtualização no BIOS</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num-wrap"><div class="step-num sn-vbox" style="background:rgba(0,212,255,0.15);border-color:rgba(0,212,255,0.45);color:var(--cyan)">1</div><div class="step-line"></div></div>
+              <div class="step-content">
+                <div class="step-title">Reiniciar e entrar no BIOS/UEFI</div>
+                <div class="step-desc">Ao ligar o computador, pressione <strong>Del</strong>, <strong>F2</strong> ou <strong>F10</strong> (depende do fabricante) para acessar o BIOS. Procure por <em>Virtualization Technology</em>, <em>VT-x</em> ou <em>AMD-V</em> e habilite se estiver desativado.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num-wrap"><div class="step-num sn-vbox" style="background:rgba(0,212,255,0.15);border-color:rgba(0,212,255,0.45);color:var(--cyan)">2</div><div class="step-line"></div></div>
+              <div class="step-content">
+                <div class="step-title">Instalar o VirtualBox 7.x + Extension Pack</div>
+                <div class="step-desc">Baixe o instalador em <strong>virtualbox.org</strong> e instale normalmente. Em seguida, baixe o <strong>VirtualBox Extension Pack</strong> (mesma página) e instale pelo menu <em>Arquivo → Preferências → Extensões</em> para habilitar suporte USB 3.0 e outros recursos.</div>
+                <div class="step-tip">💡 O Extension Pack é gratuito para uso pessoal/educacional, mas requer licença comercial para empresas.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num-wrap"><div class="step-num sn-vbox" style="background:rgba(0,212,255,0.15);border-color:rgba(0,212,255,0.45);color:var(--cyan)">3</div></div>
+              <div class="step-content">
+                <div class="step-title">Baixar as ISOs antes do lab</div>
+                <div class="step-desc">Use os links da sidebar para baixar: Ubuntu 24.04 Desktop (~5,5 GB), Ubuntu 24.04 Server (~2,5 GB) e o Media Creation Tool do Windows 11 (gera ISO ~6 GB). Isso deve ser feito com antecedência para não comprometer o tempo de lab.</div>
+                <div class="step-warn">⚠️ Verifique o hash SHA256 das ISOs após o download para garantir integridade do arquivo.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OS TABS -->
+    <section class="card" id="ubuntu-desktop">
+      <div class="card-head ubuntu-head">
+        <div class="card-icon ci-ubuntu">🐧</div>
+        <div>
+          <div class="card-title">Guia de Instalação — Ubuntu Desktop 24.04 LTS</div>
+          <div class="card-subtitle">Interface gráfica GNOME · Ideal para desktop e aprendizado</div>
+        </div>
+        <div class="diff-tag diff-init">INICIANTE</div>
+      </div>
+      <div class="card-body">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <div>
+            <div style="font-size:0.75em;font-family:'Orbitron',monospace;letter-spacing:1px;color:#e95420;margin-bottom:8px;">CONFIG. DA VM</div>
+            <table class="spec-table">
+              <tr><td>Nome</td><td>Ubuntu-Desktop-24.04</td></tr>
+              <tr><td>Tipo / Versão</td><td>Linux / Ubuntu 24.04 LTS (64-bit)</td></tr>
+              <tr><td>RAM</td><td>2048 MB (mín) — 4096 MB (rec)</td></tr>
+              <tr><td>CPU (vCores)</td><td>2 (mín) — 4 (rec)</td></tr>
+              <tr><td>HDD Virtual</td><td>VDI · Alocar dinâmico · 25 GB</td></tr>
+              <tr><td>Rede</td><td>NAT (padrão) ou Bridge</td></tr>
+              <tr><td>Video</td><td>128 MB · Aceleração 3D ativada</td></tr>
+            </table>
+          </div>
+          <div>
+            <div style="font-size:0.75em;font-family:'Orbitron',monospace;letter-spacing:1px;color:#e95420;margin-bottom:8px;">SOBRE O SO</div>
+            <p style="font-size:0.83em;color:var(--muted);line-height:1.7;">Ubuntu Desktop é a versão com interface gráfica GNOME, voltada ao uso cotidiano. Possui suporte LTS (Long Term Support) por 5 anos, kernel Linux 6.8+, gerenciador de pacotes APT e repositórios extensos. Ideal para o primeiro contato com Linux em ambiente gráfico.</p>
+          </div>
+        </div>
+
+        <div style="font-size:0.85em;font-weight:700;color:#e95420;margin-bottom:12px;font-family:'Orbitron',monospace;letter-spacing:1px;">📋 PASSO A PASSO — CRIAÇÃO E INSTALAÇÃO</div>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">1</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Criar nova VM no VirtualBox</div>
+              <div class="step-desc">Clique em <strong>Novo</strong> no VirtualBox Manager. No campo <em>ISO Image</em>, selecione a ISO do Ubuntu Desktop. O VirtualBox preencherá automaticamente tipo e versão. Marque <em>"Skip Unattended Installation"</em> para instalar manualmente e aprender o processo.</div>
+              <div class="step-img-placeholder">📸 [Captura: tela "Criar máquina virtual" com ISO selecionada]</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">2</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Configurar Hardware da VM</div>
+              <div class="step-desc">Defina RAM (≥ 2048 MB), número de vCPUs (≥ 2) e habilite a opção <strong>EFI (UEFI)</strong> na aba Sistema → Placa-mãe se quiser simular boot moderno. Na aba Exibição, aloque 128 MB de vídeo e habilite Aceleração 3D.</div>
+              <div class="step-tip">💡 O Ubuntu 24.04 suporta UEFI nativamente. Usar EFI é mais realista e prepara para o particionamento com GPT.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">3</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Criar Disco Virtual (VDI)</div>
+              <div class="step-desc">Selecione <strong>VDI (VirtualBox Disk Image)</strong>, alocação <strong>dinâmica</strong> e tamanho de <strong>25 GB</strong>. Alocação dinâmica só ocupa o espaço real usado no disco do host, crescendo conforme necessário até o limite.</div>
+              <div class="step-img-placeholder">📸 [Captura: configuração de disco virtual — tipo VDI, alocação dinâmica]</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">4</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Inicializar a VM e selecionar "Try or Install Ubuntu"</div>
+              <div class="step-desc">Inicie a VM. O GRUB mostrará a tela inicial — selecione <strong>"Try or Install Ubuntu"</strong>. O ambiente Live carregará o Ubuntu sem instalar, permitindo testar hardware e rede. Clique em <strong>"Install Ubuntu"</strong> na área de trabalho para iniciar a instalação.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">5</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Configurar idioma, teclado e tipo de instalação</div>
+              <div class="step-desc">Escolha <strong>Português (Brasil)</strong> como idioma. Na tela de tipo de instalação, selecione <strong>"Instalação Normal"</strong> (inclui apps de escritório) ou <strong>"Instalação Mínima"</strong> para apenas o sistema base. Marque <em>"Baixar atualizações durante a instalação"</em>.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">6</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Particionamento — "Apagar disco e instalar Ubuntu"</div>
+              <div class="step-desc">Como o disco virtual é exclusivo da VM, selecione <strong>"Apagar disco e instalar Ubuntu"</strong>. O instalador criará automaticamente as partições: <code>/boot/efi</code> (FAT32, ~512 MB), <code>/</code> (ext4, restante) e swap. Clique em <strong>Instalar Agora</strong>.</div>
+              <div class="step-warn">⚠️ Esta opção apagaria todo o disco em uma máquina real. Em VM é seguro pois o disco é virtual e isolado.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">7</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Definir fuso horário, usuário e senha</div>
+              <div class="step-desc">Selecione <strong>São Paulo</strong> como fuso horário. Crie um usuário com nome, nome de computador (hostname) e senha. Marque <em>"Exigir senha para entrar"</em>. Anote bem as credenciais — serão usadas em todos os labs com esse SO.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">8</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Aguardar instalação e reiniciar</div>
+              <div class="step-desc">O processo leva ~15 minutos. Ao concluir, clique em <strong>Reiniciar Agora</strong> e pressione <strong>Enter</strong> quando solicitado para ejetar a mídia. O VirtualBox faz isso automaticamente. Faça login com as credenciais criadas.</div>
+              <div class="step-img-placeholder">📸 [Captura: desktop GNOME do Ubuntu 24.04 após primeiro login]</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-ubuntu">9</div></div>
+            <div class="step-content">
+              <div class="step-title">Instalar Guest Additions (essencial!)</div>
+              <div class="step-desc">No menu VirtualBox, clique em <strong>Dispositivos → Inserir imagem de CD do Guest Additions</strong>. No Ubuntu, abra o terminal e execute:</div>
+              <div class="step-cmd">
+                <span class="comment"># Atualizar e instalar dependências</span><br>
+                <span class="prompt">$</span> sudo apt update &amp;&amp; sudo apt install build-essential dkms linux-headers-$(uname -r) -y<br>
+                <span class="comment"># Montar e executar o instalador</span><br>
+                <span class="prompt">$</span> sudo mount /dev/cdrom /mnt<br>
+                <span class="prompt">$</span> sudo /mnt/VBoxLinuxAdditions.run
+              </div>
+              <div class="step-tip">💡 Após reiniciar, você terá: resolução de tela automática, área de transferência compartilhada, arrastar &amp; soltar e pasta compartilhada com o host.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- UBUNTU SERVER -->
+    <section class="card server-card" id="ubuntu-server">
+      <div class="card-head server-head">
+        <div class="card-icon ci-server">🖧</div>
+        <div>
+          <div class="card-title">Guia de Instalação — Ubuntu Server 24.04 LTS</div>
+          <div class="card-subtitle">Sem interface gráfica · CLI puro · Modo servidor de produção</div>
+        </div>
+        <div class="diff-tag diff-med">INTERMEDIÁRIO</div>
+      </div>
+      <div class="card-body">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <div>
+            <div style="font-size:0.75em;font-family:'Orbitron',monospace;letter-spacing:1px;color:var(--purple);margin-bottom:8px;">CONFIG. DA VM</div>
+            <table class="spec-table">
+              <tr><td>Nome</td><td>Ubuntu-Server-24.04</td></tr>
+              <tr><td>Tipo / Versão</td><td>Linux / Ubuntu 24.04 LTS (64-bit)</td></tr>
+              <tr><td>RAM</td><td>1024 MB (mín) — 2048 MB (rec)</td></tr>
+              <tr><td>CPU (vCores)</td><td>1 (mín) — 2 (rec)</td></tr>
+              <tr><td>HDD Virtual</td><td>VDI · Alocar dinâmico · 20 GB</td></tr>
+              <tr><td>Rede</td><td>NAT + Host-Only Adapter</td></tr>
+              <tr><td>Exibição</td><td>Sem aceleração 3D (não há GUI)</td></tr>
+            </table>
+          </div>
+          <div>
+            <div style="font-size:0.75em;font-family:'Orbitron',monospace;letter-spacing:1px;color:var(--purple);margin-bottom:8px;">SOBRE O SO</div>
+            <p style="font-size:0.83em;color:var(--muted);line-height:1.7;">Ubuntu Server opera <strong style="color:var(--text)">sem interface gráfica</strong> — tudo via terminal (CLI). Consome muito menos RAM e CPU que o Desktop. É a base de infraestrutura de servidores web, bancos de dados e containers Docker. O processo de instalação usa um instalador textual interativo (Subiquity).</p>
+          </div>
+        </div>
+
+        <div style="font-size:0.85em;font-weight:700;color:var(--purple);margin-bottom:12px;font-family:'Orbitron',monospace;letter-spacing:1px;">📋 PASSO A PASSO — INSTALAÇÃO</div>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-server">1</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Criar a VM — Configurações para servidor</div>
+              <div class="step-desc">Crie a VM com a ISO do Ubuntu Server. <strong>Não habilite</strong> aceleração 3D nem áudio. Configure <strong>dois adaptadores de rede</strong>: Adaptador 1 = NAT (acesso à internet), Adaptador 2 = Host-Only Adapter (para acessar via SSH do host). Isso simula um servidor real em rede.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-server">2</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Boot e seleção de idioma no instalador textual</div>
+              <div class="step-desc">O instalador Subiquity é <strong>totalmente textual</strong> — use <kbd>↑↓</kbd> para navegar e <kbd>Enter</kbd> para confirmar. Selecione <strong>English</strong> (recomendado para servidores — evita caracteres especiais nos logs) e layout de teclado Português Brasil.</div>
+              <div class="step-img-placeholder">📸 [Captura: tela inicial do instalador Subiquity (textual)]</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-server">3</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Tipo de instalação — Ubuntu Server</div>
+              <div class="step-desc">Escolha <strong>"Ubuntu Server"</strong> (não "Ubuntu Server (minimized)"). A versão minimizada remove utilitários úteis para aprendizado. Confirme a detecção da interface de rede — o Subiquity configurará o DHCP automaticamente via NAT.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-server">4</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Configuração de disco — LVM</div>
+              <div class="step-desc">Selecione <strong>"Use an entire disk"</strong> e marque <strong>"Setup this disk as an LVM group"</strong>. O LVM (Logical Volume Manager) permite redimensionar volumes em produção sem reformatar. O instalador criará: partição EFI, /boot e um volume lógico raiz (/) no grupo VG.</div>
+              <div class="step-tip">💡 LVM é padrão em servidores Ubuntu — o aluno verá depois como expandir o volume com <code>lvextend</code> e <code>resize2fs</code>.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-server">5</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Criar perfil — usuário, hostname e senha</div>
+              <div class="step-desc">Defina: seu nome completo, nome do servidor (ex: <code>server-arq001</code>), nome de usuário (ex: <code>aluno</code>) e senha. Em servidores, o hostname é importante pois aparece nos logs e é usado pelo SSH e serviços de rede.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-server">6</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Habilitar OpenSSH Server (OBRIGATÓRIO)</div>
+              <div class="step-desc">Na tela de pacotes opcionais, marque <strong>"Install OpenSSH server"</strong>. Isso instala e habilita o serviço SSH automaticamente, permitindo acesso remoto à VM sem precisar usar o terminal do VirtualBox — simula acesso a servidor real.</div>
+              <div class="step-warn">⚠️ Sem o SSH habilitado, você precisará usar o console da VM — muito mais limitado. SSH é essencial para servidores.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-server">7</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Aguardar instalação e reiniciar</div>
+              <div class="step-desc">A instalação do servidor leva ~10 minutos (sem GUI). Ao finalizar, selecione <strong>"Reboot Now"</strong>. O sistema inicializará em modo texto. Faça login com seu usuário e senha.</div>
+              <div class="step-img-placeholder">📸 [Captura: prompt de login do Ubuntu Server após boot]</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-server">8</div></div>
+            <div class="step-content">
+              <div class="step-title">Primeiros comandos pós-instalação</div>
+              <div class="step-desc">Após o login, execute para confirmar que tudo está funcionando:</div>
+              <div class="step-cmd">
+                <span class="comment"># Atualizar o sistema</span><br>
+                <span class="prompt">$</span> sudo apt update &amp;&amp; sudo apt upgrade -y<br><br>
+                <span class="comment"># Verificar IP da interface Host-Only (para SSH)</span><br>
+                <span class="prompt">$</span> ip addr show<br><br>
+                <span class="comment"># Verificar status do SSH</span><br>
+                <span class="prompt">$</span> sudo systemctl status ssh<br><br>
+                <span class="comment"># No host: conectar via SSH (substituir &lt;IP&gt;)</span><br>
+                <span class="prompt">$</span> ssh aluno@&lt;IP-da-VM&gt;
+              </div>
+              <div class="step-tip">💡 Uma vez que o SSH estiver funcionando, você pode fechar a janela do VirtualBox e trabalhar 100% pelo terminal do seu SO host — exatamente como em servidores de produção.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- WINDOWS 11 -->
+    <section class="card windows-card" id="windows11">
+      <div class="card-head windows-head">
+        <div class="card-icon ci-windows">🪟</div>
+        <div>
+          <div class="card-title">Guia de Instalação — Windows 11 no VirtualBox</div>
+          <div class="card-subtitle">TPM 2.0 virtual · Secure Boot · Requisitos especiais de hardware</div>
+        </div>
+        <div class="diff-tag diff-adv">AVANÇADO</div>
+      </div>
+      <div class="card-body">
+
+        <div style="background:rgba(255,68,102,0.07);border:1px solid rgba(255,68,102,0.25);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:0.84em;color:var(--red);line-height:1.65;">
+          ⚠️ <strong>Atenção:</strong> O Windows 11 exige <strong>TPM 2.0</strong> e <strong>Secure Boot</strong> — recursos que o VirtualBox emula a partir da versão 6.1.34+. A configuração é mais complexa que no Linux. Siga os passos cuidadosamente.
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <div>
+            <div style="font-size:0.75em;font-family:'Orbitron',monospace;letter-spacing:1px;color:var(--blue);margin-bottom:8px;">CONFIG. DA VM</div>
+            <table class="spec-table">
+              <tr><td>Nome</td><td>Windows11-VM</td></tr>
+              <tr><td>Tipo / Versão</td><td>Microsoft Windows / Win 11 (64-bit)</td></tr>
+              <tr><td>RAM</td><td>4096 MB (mín) — 8192 MB (rec)</td></tr>
+              <tr><td>CPU (vCores)</td><td>2 (mín) — 4 (rec)</td></tr>
+              <tr><td>HDD Virtual</td><td>VDI · Alocar dinâmico · 64 GB</td></tr>
+              <tr><td>Rede</td><td>NAT</td></tr>
+              <tr><td>FIRMWARE</td><td>EFI (Secure Boot habilitado)</td></tr>
+            </table>
+          </div>
+          <div>
+            <div style="font-size:0.75em;font-family:'Orbitron',monospace;letter-spacing:1px;color:var(--blue);margin-bottom:8px;">POR QUE É MAIS COMPLEXO?</div>
+            <p style="font-size:0.83em;color:var(--muted);line-height:1.7;">O Windows 11 verifica na instalação: <strong style="color:var(--text)">TPM 2.0</strong> (chip de segurança), <strong style="color:var(--text)">Secure Boot</strong> (UEFI), CPU compatível e ≥4 GB RAM. O VirtualBox emula TPM virtualmente e suporta Secure Boot via EFI, mas a configuração requer passos adicionais não necessários no Linux.</p>
+          </div>
+        </div>
+
+        <div style="font-size:0.85em;font-weight:700;color:var(--blue);margin-bottom:12px;font-family:'Orbitron',monospace;letter-spacing:1px;">📋 PASSO A PASSO — INSTALAÇÃO</div>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">1</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Baixar a ISO do Windows 11 (Media Creation Tool)</div>
+              <div class="step-desc">Acesse <strong>microsoft.com/pt-br/software-download/windows11</strong> e baixe o <strong>Media Creation Tool</strong>. Execute-o, escolha <em>"Criar mídia de instalação"</em> e depois <em>"Arquivo ISO"</em>. Salve em local acessível (~6 GB). Você precisará de uma licença válida do Windows 11 ou pode usar em modo avaliação por 30 dias.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">2</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Criar VM com as configurações corretas</div>
+              <div class="step-desc">Ao criar a VM com a ISO do Win11, o VirtualBox detectará automaticamente e configurará EFI + TPM 2.0 virtual. Confirme que <strong>EFI</strong> está habilitado em <em>Sistema → Placa-mãe</em> e que o <strong>chip de segurança (TPM)</strong> está como <em>TPM 2.0</em> em <em>Sistema → Placa-mãe</em>.</div>
+              <div class="step-img-placeholder">📸 [Captura: configurações de Sistema → Placa-mãe com TPM 2.0 e EFI ativados]</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">3</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Habilitar Nested Paging e PAE/NX</div>
+              <div class="step-desc">Em <em>Sistema → Processador</em>, habilite <strong>PAE/NX</strong>. Em <em>Sistema → Aceleração</em>, habilite <strong>Nested Paging</strong> e <strong>VT-x/AMD-V</strong>. Essas opções são necessárias para melhor desempenho e compatibilidade com o Hyper-V do Windows.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">4</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Boot e iniciar instalação</div>
+              <div class="step-desc">Inicie a VM. Pressione qualquer tecla quando aparecer <em>"Press any key to boot from CD/DVD"</em>. O instalador do Windows carregará. Selecione idioma <strong>Português (Brasil)</strong>, formato de hora e teclado ABNT2. Clique em <strong>Instalar agora</strong>.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">5</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Chave do produto — pular ou inserir</div>
+              <div class="step-desc">Se não tiver licença, clique em <strong>"Não tenho uma chave de produto"</strong>. Selecione a edição <strong>Windows 11 Pro</strong> (mais recursos para lab). Aceite os termos de licença.</div>
+              <div class="step-tip">💡 Em ambiente educacional, o Windows 11 pode ser usado em modo avaliação por 30 dias sem ativação. Extensões adicionais são possíveis.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">6</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Tipo de instalação — Personalizada</div>
+              <div class="step-desc">Selecione <strong>"Personalizada: instalar somente o Windows"</strong>. Na tela de partições, o disco virtual aparece como não alocado. Clique em <strong>Novo</strong> → o instalador criará automaticamente partições: EFI, MSR (reservada) e a partição principal do Windows (NTFS).</div>
+              <div class="step-img-placeholder">📸 [Captura: tela de particionamento com disco não alocado e partições criadas automaticamente]</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">7</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Aguardar instalação (~30 min) e configuração OOBE</div>
+              <div class="step-desc">A instalação reiniciará algumas vezes. Após o boot final, o OOBE (Out-of-Box Experience) iniciará: selecione país, teclado ABNT2, conecte à rede (via NAT). <strong>Dica importante:</strong> se quiser criar conta local (sem Microsoft Account), clique <em>"Opções de entrada"</em> → <em>"Conta offline"</em> → <em>"Experiência limitada"</em>.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">8</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-title">Instalar Guest Additions para Windows</div>
+              <div class="step-desc">No menu VirtualBox, clique em <strong>Dispositivos → Inserir imagem de CD do Guest Additions</strong>. No Explorer da VM, abra o CD e execute <strong>VBoxWindowsAdditions-amd64.exe</strong>. Aceite tudo e reinicie. Após isso, a resolução se ajustará automaticamente e a integração de mouse melhorará.</div>
+              <div class="step-cmd">
+                <span class="comment">:: No CMD como Administrador — verificar drivers instalados</span><br>
+                C:\&gt; dxdiag<br>
+                C:\&gt; devmgmt.msc
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num-wrap"><div class="step-num sn-windows">9</div></div>
+            <div class="step-content">
+              <div class="step-title">Criar snapshot — Salvar estado limpo da VM</div>
+              <div class="step-desc">Com o sistema funcionando, crie um <strong>snapshot</strong> em <em>Máquina → Tirar instantâneo</em>. Nomeie como <em>"Instalação Limpa"</em>. Snapshots permitem reverter a VM a qualquer momento — essencial para laboratórios onde erros de configuração podem ocorrer.</div>
+              <div class="step-tip">💡 Snapshots são como pontos de restauração do sistema, mas no nível da máquina virtual inteira — incluindo RAM, disco e estado da CPU.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARATIVO -->
+    <section class="card" id="comparativo">
+      <div class="card-head vbox-head">
+        <div class="card-icon ci-generic">📊</div>
+        <div>
+          <div class="card-title">Comparativo — Ubuntu Desktop × Ubuntu Server × Windows 11</div>
+          <div class="card-subtitle">Análise sob a ótica de Sistemas Operacionais</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="compare-grid">
+          <div class="cmp-card ubuntu">
+            <div class="cmp-icon">🐧</div>
+            <div class="cmp-name ubuntu">Ubuntu Desktop 24.04</div>
+            <div class="cmp-row">Kernel Linux 6.8 + GNU userland</div>
+            <div class="cmp-row">Interface GNOME 46 (Wayland)</div>
+            <div class="cmp-row">Gerenciador APT (dpkg)</div>
+            <div class="cmp-row">Sistema de arquivos ext4 / XFS / Btrfs</div>
+            <div class="cmp-row">Escalonador CFS (Completely Fair Scheduler)</div>
+            <div class="cmp-row">RAM em uso típico: ~800 MB a 1,5 GB</div>
+            <div class="cmp-row">Ideal para: desktop, dev, estudo de CLI</div>
+          </div>
+          <div class="cmp-card server">
+            <div class="cmp-icon">🖧</div>
+            <div class="cmp-name server">Ubuntu Server 24.04</div>
+            <div class="cmp-row">Mesmo kernel — sem X.Org / Wayland</div>
+            <div class="cmp-row">CLI puro — terminal como interface</div>
+            <div class="cmp-row">SSH nativo para acesso remoto</div>
+            <div class="cmp-row">LVM + ext4 — volumes flexíveis</div>
+            <div class="cmp-row">systemd como init system</div>
+            <div class="cmp-row">RAM em uso típico: ~150 MB a 400 MB</div>
+            <div class="cmp-row">Ideal para: servidores, Docker, nuvem</div>
+          </div>
+          <div class="cmp-card windows">
+            <div class="cmp-icon">🪟</div>
+            <div class="cmp-name windows">Windows 11 Pro</div>
+            <div class="cmp-row">Kernel NT 10.0 (build 22H2+)</div>
+            <div class="cmp-row">Interface Win32/WinUI (Direct2D)</div>
+            <div class="cmp-row">Sistema de arquivos NTFS</div>
+            <div class="cmp-row">Escalonador MLFQ (multilevel)</div>
+            <div class="cmp-row">TPM 2.0 + Secure Boot obrigatórios</div>
+            <div class="cmp-row">RAM em uso típico: ~3 GB a 5 GB</div>
+            <div class="cmp-row">Ideal para: desktop, desenvolvimento, .NET</div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;background:rgba(0,255,136,0.04);border:1px solid rgba(0,255,136,0.15);border-radius:10px;padding:16px 18px;">
+          <div style="font-family:'Orbitron',monospace;font-size:0.75em;color:var(--green);letter-spacing:2px;margin-bottom:10px;">🔍 CONCEITOS-CHAVE OBSERVADOS NOS 3 SOs</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.83em;color:var(--muted);line-height:1.65;">
+            <div><strong style="color:var(--text)">Kernel e Espaço de Usuário:</strong> Todos os 3 separam modo kernel (privilegiado, acessa hardware) do modo usuário (aplicações). O Linux permite ver isso via <code>/proc</code> e <code>/sys</code>.</div>
+            <div><strong style="color:var(--text)">Gerenciamento de Processos:</strong> Linux usa <code>ps aux</code> e <code>top</code>; Windows usa Task Manager. Ambos mostram PID, estado, CPU e memória de cada processo.</div>
+            <div><strong style="color:var(--text)">Sistema de Arquivos:</strong> Linux usa ext4/LVM; Windows usa NTFS. Ambos têm journaling para recuperação de falhas — observável nos logs do SO.</div>
+            <div><strong style="color:var(--text)">Syscalls:</strong> Aplicações usam chamadas de sistema para acessar o kernel — rede, disco, memória. No Linux: <code>strace ls</code> mostra as syscalls em tempo real.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OBJETIVOS CHECKLIST -->
+    <section class="card" id="objetivos">
+      <div class="card-head" style="background:rgba(0,255,136,0.04);">
+        <div class="card-icon" style="background:rgba(0,255,136,0.12);border:1px solid rgba(0,255,136,0.3);">🎯</div>
+        <div>
+          <div class="card-title">Objetivos da Aula — Checklist Interativo</div>
+          <div class="card-subtitle">Marque os objetivos concluídos ao longo do lab</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="obj-list" id="obj-list">
+          <li class="obj-item" onclick="checkObj(this,'desktop')">
+            <div class="obj-circle">✓</div>
+            Compreender o conceito de hypervisor Tipo 2 e virtualização de hardware
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'desktop')">
+            <div class="obj-circle">✓</div>
+            Criar e configurar uma máquina virtual com VirtualBox (RAM, CPU, disco, rede)
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'desktop')">
+            <div class="obj-circle">✓</div>
+            Instalar o Ubuntu Desktop 24.04 com particionamento automático
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'server')">
+            <div class="obj-circle">✓</div>
+            Instalar o Ubuntu Server 24.04 em modo texto (CLI) com LVM e SSH habilitado
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'server')">
+            <div class="obj-circle">✓</div>
+            Acessar o Ubuntu Server via SSH a partir do host (simulando acesso remoto real)
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'windows')">
+            <div class="obj-circle">✓</div>
+            Instalar o Windows 11 com TPM 2.0 virtual e Secure Boot habilitados
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'desktop')">
+            <div class="obj-circle">✓</div>
+            Instalar o VirtualBox Guest Additions em ao menos uma VM
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'desktop')">
+            <div class="obj-circle">✓</div>
+            Comparar consumo de RAM e disco entre os 3 SOs instalados
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'desktop')">
+            <div class="obj-circle">✓</div>
+            Criar um snapshot da VM após a instalação limpa
+          </li>
+          <li class="obj-item" onclick="checkObj(this,'desktop')">
+            <div class="obj-circle">✓</div>
+            Identificar kernel, sistema de arquivos e escalonador de processos de cada SO
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- NOTAS PEDAGÓGICAS -->
+    <div class="notes-panel">
+      <div class="notes-title">📌 Conexão com a Ementa da Disciplina</div>
+      <div class="notes-item">
+        <span class="ni-icon">🔗</span>
+        <span class="ni-text"><strong>Sistemas Operacionais — Conceitos e Funções:</strong> A instalação prática materializa abstrações como kernel, modo usuário/kernel, chamadas de sistema, escalonamento e gerenciamento de memória. O aluno observa o SO real, não apenas diagramas.</span>
+      </div>
+      <div class="notes-item">
+        <span class="ni-icon">🏗️</span>
+        <span class="ni-text"><strong>Hierarquia de Hardware:</strong> A virtualização expõe toda a pilha: firmware BIOS/UEFI → bootloader (GRUB/EFI) → kernel → sistema de arquivos → processos. O VirtualBox torna essa hierarquia visível e manipulável.</span>
+      </div>
+      <div class="notes-item">
+        <span class="ni-icon">💡</span>
+        <span class="ni-text"><strong>Lab 12 — FreeRTOS:</strong> Após instalar os SOs, o aluno terá referência concreta para comparar o FreeRTOS (RTOS embarcado do ESP32) com SOs de propósito geral — escalonamento, gerenciamento de heap e tasks vs processos.</span>
+      </div>
+      <div class="notes-item">
+        <span class="ni-icon">📚</span>
+        <span class="ni-text"><strong>Referências:</strong> Silva cap. 8 · Tanenbaum cap. 6 (Sistemas operacionais, escalonamento, gerenciamento de memória, sistemas de arquivos)</span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <span>ARQ-001</span> · Arquitetura e Organização de Computadores · Semana 16 — Módulo 04<br>
+  CST em Análise e Desenvolvimento de Sistemas · FATEC · Centro Paula Souza
+</footer>
+
+<script>
+// Checklist interativo com progresso
+const counters = { desktop: 0, server: 0, windows: 0 };
+const totals   = { desktop: 8, server: 2, windows: 1 };
+
+function checkObj(el, category) {
+  el.classList.toggle('checked');
+  const checked = document.querySelectorAll('.obj-item.checked').length;
+  const total   = document.querySelectorAll('.obj-item').length;
+  updateBars();
+}
+
+function updateBars() {
+  // Count by data index
+  const items = document.querySelectorAll('.obj-item');
+  const cats  = ['desktop','desktop','desktop','server','server','windows','desktop','desktop','desktop','desktop'];
+  const catCounts = { desktop:0, server:0, windows:0 };
+  const catTotals = { desktop:0, server:0, windows:0 };
+
+  items.forEach((item, i) => {
+    const cat = cats[i];
+    catTotals[cat]++;
+    if (item.classList.contains('checked')) catCounts[cat]++;
+  });
+
+  ['desktop','server','windows'].forEach(cat => {
+    const pct = catTotals[cat] ? Math.round((catCounts[cat]/catTotals[cat])*100) : 0;
+    const bar = document.getElementById('bar-' + cat);
+    const lbl = document.getElementById('pct-' + cat);
+    if (bar) bar.style.width = pct + '%';
+    if (lbl) lbl.textContent = pct + '%';
+  });
+}
+
+// Nav links highlight on scroll
+const sections = ['intro','ubuntu-desktop','ubuntu-server','windows11','comparativo','objetivos'];
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 120) current = id;
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    const href = link.getAttribute('href').replace('#','');
+    if (href === current || (current === 'intro' && href === 'intro')) link.classList.add('active');
+  });
+});
+
+// Animate bars on load
+window.addEventListener('load', () => {
+  setTimeout(updateBars, 300);
+});
+</script>
+</body>
+</html>
