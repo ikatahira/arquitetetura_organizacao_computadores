@@ -1,0 +1,3125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Sistemas Operacionais | Prof. Isaque Katahira</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0d18;
+  --surface: #131520;
+  --surface2: #1a1d2e;
+  --surface3: #202338;
+  --border: #272b42;
+  --border2: #333755;
+  --accent: #5bf5c8;
+  --accent2: #8b7ff7;
+  --accent3: #f7b84a;
+  --accent4: #f75a7a;
+  --blue: #5ab8f7;
+  --text: #eaecf4;
+  --muted: #7880a0;
+  --muted2: #5a6080;
+  --code-bg: #080a14;
+  --green: #5bf5c8;
+  --yellow: #f7e85a;
+  --red: #f75a7a;
+  --purple: #8b7ff7;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════ */
+.progress-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  z-index: 200;
+  background: rgba(255,255,255,0.05);
+}
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 0.1s linear;
+}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(91,245,200,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 80% 100%, rgba(139,127,247,0.06) 0%, transparent 60%);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(91,245,200,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91,245,200,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(91,245,200,0.08);
+  border: 1px solid rgba(91,245,200,0.2);
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 32px;
+  animation: fd 0.8s ease both;
+  letter-spacing: 1px;
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(42px, 7vw, 88px);
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: -2px;
+  animation: fd 0.9s ease 0.1s both;
+}
+.hero h1 .hl { color: var(--accent); }
+.hero h1 .hl2 { color: var(--accent2); }
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--muted);
+  margin: 20px 0 40px;
+  max-width: 580px;
+  animation: fd 0.9s ease 0.2s both;
+  line-height: 1.6;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 48px;
+  animation: fd 0.9s ease 0.3s both;
+}
+
+.stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.stat-chip .ico { font-size: 18px; }
+.stat-chip strong { color: var(--text); }
+
+.module-map {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 640px;
+  animation: fd 0.9s ease 0.4s both;
+}
+
+.mod-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.mod-pill:hover { border-color: var(--accent); color: var(--accent); }
+.mod-pill .n {
+  background: var(--surface2);
+  color: var(--accent);
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted2);
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+  animation: bounce 2.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+@keyframes fd {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+.nav-bar {
+  position: sticky;
+  top: 3px;
+  z-index: 100;
+  background: rgba(11,13,24,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-bar::-webkit-scrollbar { display: none; }
+
+.nav-item {
+  flex-shrink: 0;
+  padding: 13px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+.nav-item:hover { color: var(--text); }
+.nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ═══════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════ */
+.container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+section {
+  padding: 80px 0 48px;
+  scroll-margin-top: 56px;
+}
+
+/* ═══════════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════════ */
+.sec-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  margin-bottom: 14px;
+  opacity: 0.9;
+}
+.sec-label::before { content: "//"; opacity: 0.4; }
+
+h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+h2 span { color: var(--accent); }
+h2 .sp2 { color: var(--accent2); }
+
+.lead {
+  color: var(--muted);
+  font-size: 17px;
+  margin-bottom: 48px;
+  max-width: 620px;
+  line-height: 1.65;
+}
+
+h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 36px 0 14px;
+}
+
+h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 24px 0 10px;
+}
+
+p { color: var(--muted); margin-bottom: 14px; }
+strong { color: var(--text); }
+em { color: var(--accent3); font-style: italic; }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+/* ═══════════════════════════════════════
+   MODULE HEADER BANNER
+═══════════════════════════════════════ */
+.mod-banner {
+  background: linear-gradient(135deg, var(--surface2), var(--surface3));
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 32px 36px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.mod-banner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.mod-banner-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--border2);
+  line-height: 1;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.mod-banner-content {}
+.mod-banner-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.mod-banner-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.mod-banner-desc { color: var(--muted); font-size: 14px; margin: 0; }
+
+/* ═══════════════════════════════════════
+   CARDS GRID
+═══════════════════════════════════════ */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  transition: all 0.2s;
+}
+.card:hover {
+  border-color: rgba(91,245,200,0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+}
+.card-icon { font-size: 30px; margin-bottom: 12px; display: block; }
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.card p { font-size: 13px; margin: 0; line-height: 1.5; }
+
+/* ═══════════════════════════════════════
+   DIAGRAM BOXES
+═══════════════════════════════════════ */
+.diagram {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  margin: 24px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.diagram-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.layers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.layer {
+  border-radius: 8px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.layer-app { background: rgba(91,245,200,0.08); border: 1px solid rgba(91,245,200,0.2); color: var(--accent); }
+.layer-sys { background: rgba(139,127,247,0.08); border: 1px solid rgba(139,127,247,0.2); color: var(--accent2); }
+.layer-ker { background: rgba(247,184,74,0.08); border: 1px solid rgba(247,184,74,0.2); color: var(--accent3); }
+.layer-hw  { background: rgba(247,90,122,0.08);  border: 1px solid rgba(247,90,122,0.2);  color: var(--accent4); }
+
+.layer-label { font-size: 11px; opacity: 0.65; font-weight: 400; }
+
+.arrow-down {
+  text-align: center;
+  color: var(--muted2);
+  font-size: 16px;
+  line-height: 1;
+  margin: 2px 0;
+}
+
+/* ═══════════════════════════════════════
+   TERMINAL
+═══════════════════════════════════════ */
+.terminal {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 24px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.terminal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 44px rgba(0,0,0,0.5), 0 0 0 1px rgba(91,245,200,0.12);
+}
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.dot-r { background: #f75a7a; }
+.dot-y { background: #f7e85a; }
+.dot-g { background: #5bf5c8; }
+.terminal-title {
+  flex: 1;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.copy-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.2s;
+}
+.copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+.copy-btn.copied { color: var(--green); border-color: var(--green); }
+.terminal-body {
+  padding: 20px 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.85;
+  overflow-x: auto;
+}
+.pr { color: var(--accent); user-select: none; }
+.cmd { color: var(--blue); }
+.param { color: var(--accent3); }
+.str { color: var(--yellow); }
+.comment { color: var(--muted); font-style: italic; }
+.out { color: #6aaa88; display: block; padding-left: 20px; font-size: 12.5px; }
+
+/* ═══════════════════════════════════════
+   STEPS
+═══════════════════════════════════════ */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: 36px;
+  margin: 24px 0;
+}
+.steps::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+  border-radius: 2px;
+}
+.step {
+  position: relative;
+  padding: 0 0 36px 32px;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.step.visible { opacity: 1; transform: translateX(0); }
+.step-num {
+  position: absolute;
+  left: -46px;
+  top: 0;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+  box-shadow: 0 0 18px rgba(91,245,200,0.25);
+}
+.step-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(91,245,200,0.1);
+  color: var(--accent);
+  border: 1px solid rgba(91,245,200,0.2);
+  font-weight: 400;
+}
+.step-badge.warn { background: rgba(247,184,74,0.1); color: var(--accent3); border-color: rgba(247,184,74,0.2); }
+.step p { font-size: 14px; margin-bottom: 8px; }
+
+/* ═══════════════════════════════════════
+   PRINT MOCKUP (simulated screenshots)
+═══════════════════════════════════════ */
+.screen-mock {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 20px 0;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+.screen-mock.win11 {}
+
+.win11-bar {
+  background: #1f1f1f;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #333;
+}
+
+.win11-title-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.win11-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.win11-btn {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+.w-close { background: #f75a7a; }
+.w-min { background: #f7e85a; }
+.w-max { background: #5bf5c8; }
+
+.win11-body {
+  background: #0a0a0a;
+  padding: 20px 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  min-height: 80px;
+  color: #ddd;
+}
+
+.win11-taskbar {
+  background: rgba(30,30,45,0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tb-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tb-icon:hover { background: rgba(255,255,255,0.12); }
+.tb-icon.active {
+  background: rgba(91,245,200,0.12);
+  border-bottom: 2px solid var(--accent);
+}
+
+.win11-explorer {
+  display: flex;
+  height: 300px;
+}
+
+.explorer-sidebar {
+  width: 160px;
+  background: rgba(255,255,255,0.03);
+  border-right: 1px solid var(--border);
+  padding: 16px 0;
+  flex-shrink: 0;
+}
+
+.exp-item {
+  padding: 7px 16px;
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.exp-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.exp-item.sel { background: rgba(91,245,200,0.07); color: var(--accent); }
+
+.explorer-main {
+  flex: 1;
+  padding: 20px;
+  overflow: auto;
+}
+
+.exp-toolbar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.exp-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.exp-btn:hover { color: var(--text); border-color: var(--border2); }
+
+.folder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.folder-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.folder-item:hover { background: rgba(255,255,255,0.06); }
+.folder-item.sel { background: rgba(91,245,200,0.1); }
+.folder-item .fi { font-size: 28px; }
+.folder-item .fn { font-size: 10px; color: var(--muted); text-align: center; word-break: break-all; }
+
+/* snap layout mock */
+.snap-preview {
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.snap-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.snap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  height: 120px;
+}
+
+.snap-grid.thirds {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.snap-grid.quad {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.snap-zone {
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: rgba(255,255,255,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--muted2);
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.snap-zone:hover { background: rgba(91,245,200,0.07); border-color: var(--accent); color: var(--accent); }
+.snap-zone.active { background: rgba(91,245,200,0.12); border-color: var(--accent); color: var(--accent); }
+
+/* task manager mock */
+.task-mock {
+  background: #141418;
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.task-header {
+  background: #1c1c22;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.task-title { font-size: 13px; color: var(--text); font-weight: 600; }
+.task-tabs {
+  display: flex;
+  gap: 2px;
+}
+.task-tab {
+  padding: 5px 12px;
+  font-size: 11px;
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.task-tab.act { background: rgba(91,245,200,0.1); color: var(--accent); }
+
+.task-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.task-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  padding: 10px 14px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.task-table td {
+  padding: 9px 14px;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.task-table tr:hover td { background: rgba(255,255,255,0.03); }
+.task-table td:first-child { color: var(--text); }
+.perf-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.bar-wrap {
+  width: 60px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+.bar-cpu { background: var(--accent); }
+.bar-mem { background: var(--accent2); }
+.bar-disk { background: var(--accent3); }
+
+/* ═══════════════════════════════════════
+   INFO BOXES
+═══════════════════════════════════════ */
+.tip, .warn, .danger, .info {
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 18px 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 14px;
+}
+.tip    { background: rgba(91,245,200,0.06);  border-left: 3px solid var(--accent);  }
+.warn   { background: rgba(247,184,74,0.06);  border-left: 3px solid var(--accent3); }
+.danger { background: rgba(247,90,122,0.06);  border-left: 3px solid var(--accent4); }
+.info   { background: rgba(90,184,247,0.06);  border-left: 3px solid var(--blue);    }
+
+.tip-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.tip p, .warn p, .danger p, .info p { margin: 0; color: var(--muted); line-height: 1.6; }
+.tip strong, .warn strong, .danger strong, .info strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+/* ═══════════════════════════════════════
+   COMPARE TABLE
+═══════════════════════════════════════ */
+.cmp-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  margin: 24px 0;
+}
+.cmp-table thead th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  padding: 0 16px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.cmp-table tbody tr {
+  background: var(--surface);
+  transition: all 0.15s;
+}
+.cmp-table tbody tr:hover { background: var(--surface2); }
+.cmp-table tbody td {
+  padding: 13px 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.cmp-table tbody td:first-child {
+  border-radius: 10px 0 0 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cmp-table tbody td:last-child { border-radius: 0 10px 10px 0; }
+.badge-yes { color: var(--accent); font-weight: 700; }
+.badge-no  { color: var(--accent4); }
+.badge-lim { color: var(--accent3); }
+
+/* ═══════════════════════════════════════
+   CHALLENGE
+═══════════════════════════════════════ */
+.challenge {
+  background: linear-gradient(135deg, rgba(139,127,247,0.1), rgba(91,245,200,0.05));
+  border: 1px solid rgba(139,127,247,0.3);
+  border-radius: 18px;
+  padding: 32px;
+  margin: 32px 0;
+  position: relative;
+  overflow: hidden;
+}
+.challenge::before {
+  content: attr(data-icon);
+  position: absolute;
+  right: 24px; top: 20px;
+  font-size: 52px;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.challenge-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--accent2);
+  margin-bottom: 10px;
+}
+.challenge h3 { margin-top: 0; color: #fff; }
+.challenge p { color: var(--muted); font-size: 14px; }
+.challenge ol {
+  color: var(--muted);
+  font-size: 14px;
+  padding-left: 20px;
+  line-height: 2;
+}
+.challenge ol li { margin: 0; }
+.challenge .pts {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(139,127,247,0.15);
+  border: 1px solid rgba(139,127,247,0.3);
+  border-radius: 100px;
+  padding: 4px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent2);
+  margin-top: 14px;
+}
+
+/* ═══════════════════════════════════════
+   QUIZ
+═══════════════════════════════════════ */
+.quiz-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin: 20px 0;
+}
+.quiz-q {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 22px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+.qnum {
+  flex-shrink: 0;
+  background: var(--accent2);
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.quiz-opt:hover { border-color: var(--accent2); color: #fff; }
+.quiz-opt.correct { background: rgba(91,245,200,0.08); border-color: var(--accent); color: var(--accent); }
+.quiz-opt.wrong { background: rgba(247,90,122,0.08); border-color: var(--red); color: var(--red); }
+.quiz-letter {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+.quiz-fb {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: none;
+  line-height: 1.5;
+}
+.quiz-fb.show { display: block; }
+.quiz-fb.ok { background: rgba(91,245,200,0.08); border: 1px solid var(--accent); color: var(--accent); }
+.quiz-fb.err { background: rgba(247,90,122,0.08); border: 1px solid var(--red); color: var(--red); }
+
+/* ═══════════════════════════════════════
+   CHECKLIST
+═══════════════════════════════════════ */
+.checklist {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  margin: 24px 0;
+}
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted);
+  transition: all 0.2s;
+  user-select: none;
+}
+.checklist li:hover { border-color: var(--border2); color: var(--text); }
+.checklist li.done {
+  background: rgba(91,245,200,0.05);
+  border-color: rgba(91,245,200,0.25);
+  color: var(--accent);
+}
+.check-box {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.done .check-box {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════
+   CMD REFERENCE TABLE
+═══════════════════════════════════════ */
+.ref-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+  margin: 24px 0;
+}
+.ref-table thead th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  padding: 0 14px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.ref-table tbody tr {
+  background: var(--surface);
+  transition: all 0.15s;
+}
+.ref-table tbody tr:hover { background: var(--surface2); transform: translateX(3px); }
+.ref-table tbody td {
+  padding: 11px 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.ref-table tbody td:first-child {
+  border-radius: 8px 0 0 8px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--blue);
+  font-weight: 700;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.ref-table tbody td:last-child {
+  border-radius: 0 8px 8px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--accent3);
+}
+
+/* ═══════════════════════════════════════
+   ATTRIBUTE TABLE
+═══════════════════════════════════════ */
+.attr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.attr-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+}
+.attr-letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent3);
+  margin-bottom: 6px;
+  display: block;
+}
+.attr-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.attr-desc { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+/* ═══════════════════════════════════════
+   FOLDER TREE
+═══════════════════════════════════════ */
+.ftree {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 2;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+.ft-drive { color: var(--accent); font-weight: 700; }
+.ft-folder { color: var(--accent3); }
+.ft-sys { color: var(--accent2); }
+.ft-user { color: var(--blue); }
+.ft-file { color: var(--muted); }
+.ft-desc { color: var(--muted2); font-size: 11px; padding-left: 8px; }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  text-align: center;
+  padding: 60px 24px 40px;
+  border-top: 1px solid var(--border);
+  color: var(--muted2);
+  font-size: 14px;
+}
+.ft-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.ft-logo span { color: var(--accent); }
+footer p { margin-bottom: 4px; }
+
+/* ═══════════════════════════════════════
+   XP BAR
+═══════════════════════════════════════ */
+.xp-bar-section {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 14px 18px;
+  z-index: 50;
+  min-width: 180px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.3s;
+}
+.xp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.xp-score {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.xp-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+.xp-msg {
+  font-size: 11px;
+  color: var(--muted2);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ═══════════════════════════════════════
+   KERNEL/USER MODE DIAGRAM
+═══════════════════════════════════════ */
+.mode-diagram {
+  margin: 24px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mode-box {
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.mode-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.mode-user {
+  background: rgba(91,245,200,0.06);
+  border: 1px solid rgba(91,245,200,0.2);
+}
+.mode-user::before { background: var(--accent); }
+
+.mode-kernel {
+  background: rgba(247,90,122,0.06);
+  border: 1px solid rgba(247,90,122,0.2);
+}
+.mode-kernel::before { background: var(--accent4); }
+
+.mode-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.mode-user .mode-title { color: var(--accent); }
+.mode-kernel .mode-title { color: var(--accent4); }
+
+.mode-badge {
+  display: inline-flex;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+}
+
+.mode-user .mode-badge { background: rgba(91,245,200,0.1); color: var(--accent); border: 1px solid rgba(91,245,200,0.2); }
+.mode-kernel .mode-badge { background: rgba(247,90,122,0.1); color: var(--accent4); border: 1px solid rgba(247,90,122,0.2); }
+
+.mode-list {
+  list-style: none;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: left;
+  line-height: 2;
+}
+.mode-list li::before { content: "▸ "; color: var(--muted2); }
+
+/* ═══════════════════════════════════════
+   PROCESS LIFECYCLE
+═══════════════════════════════════════ */
+.lifecycle {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+.lc-state {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  text-align: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  cursor: default;
+}
+.lc-state:hover { border-color: var(--accent); color: var(--accent); }
+.lc-state .ls-name { font-weight: 700; display: block; }
+.lc-state .ls-desc { font-size: 10px; color: var(--muted); }
+
+.lc-arrow {
+  color: var(--muted2);
+  font-size: 18px;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 640px) {
+  .mod-banner { flex-direction: column; gap: 12px; }
+  .mod-banner-num { font-size: 36px; }
+  .mode-diagram { grid-template-columns: 1fr; }
+  .lifecycle { flex-direction: column; align-items: flex-start; }
+  .lc-arrow { transform: rotate(90deg); }
+  .win11-explorer { flex-direction: column; height: auto; }
+  .explorer-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .xp-bar-section { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div id="progressBar"></div></div>
+
+<!-- ══════════════════════════════════════════
+     XP BAR (fixed)
+══════════════════════════════════════════ -->
+<div class="xp-bar-section">
+  <div class="xp-label">▸ XP Total</div>
+  <div class="xp-score" id="xpScore">0 XP</div>
+  <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+  <div class="xp-msg" id="xpMsg">Complete desafios!</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-badge">🖥️ Gestão de Sistemas Operacionais I</div>
+
+  <h1>Do <span class="hl">Kernel</span> ao<br><span class="hl2">PowerShell</span></h1>
+
+  <p class="hero-sub">Uma jornada completa pelo Windows 11 — das bases do SO, passando pela interface, explorador de arquivos e atributos, até a automação com PowerShell.</p>
+
+  <div class="hero-stats">
+    <div class="stat-chip"><span class="ico">📚</span><div><strong>7 Módulos</strong><br>do básico ao avançado</div></div>
+    <div class="stat-chip"><span class="ico">⚡</span><div><strong>Hands-on</strong><br>pratique no PC</div></div>
+    <div class="stat-chip"><span class="ico">🏆</span><div><strong>Sistema XP</strong><br>ganhe pontos</div></div>
+    <div class="stat-chip"><span class="ico">🎯</span><div><strong>Quiz Final</strong><br>teste seus conhecimentos</div></div>
+  </div>
+
+  <div class="module-map">
+    <div class="mod-pill"><span class="n">1</span> O que é um SO</div>
+    <div class="mod-pill"><span class="n">2</span> Kernel vs User Mode</div>
+    <div class="mod-pill"><span class="n">3</span> Processos</div>
+    <div class="mod-pill"><span class="n">4</span> Interface Windows 11</div>
+    <div class="mod-pill"><span class="n">5</span> Snap Layouts</div>
+    <div class="mod-pill"><span class="n">6</span> Explorador de Arquivos</div>
+    <div class="mod-pill"><span class="n">7</span> PowerShell</div>
+  </div>
+
+  <div class="scroll-cue">▼ SCROLL PARA COMEÇAR ▼</div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <a class="nav-item" data-section="mod1" href="#mod1">01 · O que é SO</a>
+  <a class="nav-item" data-section="mod2" href="#mod2">02 · Kernel/User Mode</a>
+  <a class="nav-item" data-section="mod3" href="#mod3">03 · Processos</a>
+  <a class="nav-item" data-section="mod4" href="#mod4">04 · Interface Win11</a>
+  <a class="nav-item" data-section="mod5" href="#mod5">05 · Snap Layouts</a>
+  <a class="nav-item" data-section="mod6" href="#mod6">06 · Explorador</a>
+  <a class="nav-item" data-section="mod6b" href="#mod6b">07 · Atributos</a>
+  <a class="nav-item" data-section="mod7" href="#mod7">08 · PowerShell</a>
+  <a class="nav-item" data-section="quiz" href="#quiz">Quiz</a>
+  <a class="nav-item" data-section="checklist" href="#checklist">Checklist</a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     MÓDULO 1 — O QUE É UM SO
+══════════════════════════════════════════ -->
+<section id="mod1">
+<div class="container">
+
+  <div class="mod-banner">
+    <div class="mod-banner-num">01</div>
+    <div class="mod-banner-content">
+      <div class="mod-banner-tag">// módulo 1</div>
+      <div class="mod-banner-title">O que é um Sistema Operacional?</div>
+      <p class="mod-banner-desc">Entenda o papel do SO como intermediário entre o hardware e os programas que você usa todo dia.</p>
+    </div>
+  </div>
+
+  <div class="sec-label">conceito fundamental</div>
+  <h2>O <span>Gerente</span> do Computador</h2>
+  <p class="lead">O Sistema Operacional (SO) é o software mais importante de um computador. Ele gerencia o hardware e fornece serviços para os programas rodarem. Sem ele, o computador seria apenas um monte de peças sem comunicação.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">// ARQUITETURA DE UM SISTEMA COMPUTACIONAL</div>
+    <div class="layers">
+      <div class="layer layer-app">
+        <span>🧑 Usuário / Aplicativos</span>
+        <span class="layer-label">Chrome, Word, Games...</span>
+      </div>
+      <div class="arrow-down">↕</div>
+      <div class="layer layer-sys">
+        <span>🖥️ Sistema Operacional</span>
+        <span class="layer-label">Windows, Linux, macOS</span>
+      </div>
+      <div class="arrow-down">↕</div>
+      <div class="layer layer-ker">
+        <span>⚙️ Kernel (Núcleo do SO)</span>
+        <span class="layer-label">Gerencia CPU, Memória, I/O</span>
+      </div>
+      <div class="arrow-down">↕</div>
+      <div class="layer layer-hw">
+        <span>🔩 Hardware</span>
+        <span class="layer-label">CPU · RAM · HD/SSD · Placa Mãe</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <span class="tip-ico">💡</span>
+    <div>
+      <strong>Analogia do dia a dia</strong>
+      <p>Imagine o SO como o <em>gerente de um restaurante</em>. Os clientes (aplicativos) fazem pedidos, e o gerente (SO) coordena a cozinha (CPU), o estoque (memória RAM) e os garçons (drivers de hardware) para atender a todos sem conflito.</p>
+    </div>
+  </div>
+
+  <h3>O que o SO faz?</h3>
+  <p>Um SO moderno como o Windows 11 realiza todas estas funções simultaneamente:</p>
+
+  <div class="cards">
+    <div class="card">
+      <span class="card-icon">🧠</span>
+      <div class="card-title">Gerenciamento de Processos</div>
+      <p>Controla quais programas estão rodando, distribui tempo de CPU entre eles e evita conflitos.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">💾</span>
+      <div class="card-title">Gerenciamento de Memória</div>
+      <p>Decide quanta RAM cada programa recebe. Quando falta RAM, usa o disco rígido como extensão (memória virtual).</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📁</span>
+      <div class="card-title">Sistema de Arquivos</div>
+      <p>Organiza os dados no disco em pastas e arquivos. No Windows usa NTFS; em Linux, ext4.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔌</span>
+      <div class="card-title">Gerenciamento de I/O</div>
+      <p>Comunica com teclado, mouse, impressoras e outros dispositivos via drivers.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔐</span>
+      <div class="card-title">Segurança e Permissões</div>
+      <p>Define o que cada usuário pode acessar. Protege processos de um programa interferir em outro.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌐</span>
+      <div class="card-title">Rede</div>
+      <p>Gerencia conexões de rede, protocolos TCP/IP e firewall.</p>
+    </div>
+  </div>
+
+  <h3>Exemplos de Sistemas Operacionais</h3>
+
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th>SO</th>
+        <th>Criador</th>
+        <th>Desktop</th>
+        <th>Servidor</th>
+        <th>Mobile</th>
+        <th>Gratuito</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Windows 11</td>
+        <td style="color:var(--muted)">Microsoft</td>
+        <td><span class="badge-yes">✓ Sim</span></td>
+        <td><span class="badge-lim">~ Versão própria</span></td>
+        <td><span class="badge-no">✗ Não</span></td>
+        <td><span class="badge-no">✗ Pago</span></td>
+      </tr>
+      <tr>
+        <td>Ubuntu Linux</td>
+        <td style="color:var(--muted)">Canonical</td>
+        <td><span class="badge-yes">✓ Sim</span></td>
+        <td><span class="badge-yes">✓ Sim</span></td>
+        <td><span class="badge-no">✗ Não</span></td>
+        <td><span class="badge-yes">✓ Gratuito</span></td>
+      </tr>
+      <tr>
+        <td>macOS Sequoia</td>
+        <td style="color:var(--muted)">Apple</td>
+        <td><span class="badge-yes">✓ Sim</span></td>
+        <td><span class="badge-lim">~ Limitado</span></td>
+        <td><span class="badge-no">✗ Não</span></td>
+        <td><span class="badge-yes">✓ Gratuito</span></td>
+      </tr>
+      <tr>
+        <td>Android</td>
+        <td style="color:var(--muted)">Google</td>
+        <td><span class="badge-no">✗ Não</span></td>
+        <td><span class="badge-no">✗ Não</span></td>
+        <td><span class="badge-yes">✓ Sim</span></td>
+        <td><span class="badge-yes">✓ Open Source</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="challenge" data-icon="🎮">
+    <div class="challenge-label">// desafio prático 1 — +50 XP</div>
+    <h3>Descubra seu SO</h3>
+    <p>Abra o computador da sua frente e descubra as informações do sistema operacional instalado.</p>
+    <ol>
+      <li>Pressione <strong>Win + Pause/Break</strong> (ou clique com botão direito em "Este Computador" → Propriedades)</li>
+      <li>Anote a versão do Windows (ex: Windows 11 Pro 23H2)</li>
+      <li>Verifique o processador, a RAM instalada e o tipo de sistema (32 ou 64 bits)</li>
+      <li>Tente descobrir a data de instalação do Windows (dica: está nas Configurações → Sistema → Sobre)</li>
+    </ol>
+    <div class="pts" onclick="addXP(50, this)">🎮 Clique aqui ao completar: +50 XP</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MÓDULO 2 — KERNEL vs USER MODE
+══════════════════════════════════════════ -->
+<section id="mod2">
+<div class="container">
+
+  <div class="mod-banner">
+    <div class="mod-banner-num">02</div>
+    <div class="mod-banner-content">
+      <div class="mod-banner-tag">// módulo 2</div>
+      <div class="mod-banner-title">Kernel Mode vs User Mode</div>
+      <p class="mod-banner-desc">Os dois modos de operação que protegem o sistema de programas maliciosos ou bugados.</p>
+    </div>
+  </div>
+
+  <div class="sec-label">arquitetura do SO</div>
+  <h2>Dois <span>Mundos</span> Separados</h2>
+  <p class="lead">Para proteger o hardware e a estabilidade do sistema, o processador opera em dois modos distintos. Cada modo tem privilégios diferentes — é como a diferença entre um funcionário comum e o administrador de TI.</p>
+
+  <div class="mode-diagram">
+    <div class="mode-box mode-user">
+      <div class="mode-title">User Mode</div>
+      <div class="mode-badge">🟢 Modo Usuário</div>
+      <ul class="mode-list">
+        <li>Chrome, Word, Notepad</li>
+        <li>Jogos e aplicativos</li>
+        <li>Scripts PowerShell normais</li>
+        <li>Acesso limitado ao hardware</li>
+        <li>Se travar: só o programa morre</li>
+        <li>Cada processo tem espaço isolado</li>
+      </ul>
+    </div>
+    <div class="mode-box mode-kernel">
+      <div class="mode-title">Kernel Mode</div>
+      <div class="mode-badge">🔴 Modo Kernel</div>
+      <ul class="mode-list">
+        <li>Núcleo do Windows (ntoskrnl)</li>
+        <li>Drivers de hardware</li>
+        <li>Gerenciador de memória</li>
+        <li>Acesso total ao hardware</li>
+        <li>Se travar: BSOD (Tela Azul!)</li>
+        <li>Execução privilegiada</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="warn">
+    <span class="tip-ico">⚠️</span>
+    <div>
+      <strong>Por que essa separação existe?</strong>
+      <p>Imagine se o Chrome pudesse acessar diretamente a memória do banco de dados do Windows. Um bug ou vírus no Chrome apagaria arquivos do sistema. A separação User/Kernel garante que programas comuns <em>nunca consigam fazer isso</em> sem permissão explícita.</p>
+    </div>
+  </div>
+
+  <h3>Syscalls — A Ponte Entre os Mundos</h3>
+  <p>Quando um programa no User Mode precisa de algo que só o Kernel pode fazer (como abrir um arquivo, alocar memória ou enviar dados pela rede), ele faz uma <strong>chamada de sistema (syscall)</strong>. É como tocar a campainha para pedir ajuda ao administrador.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">// FLUXO DE UMA SYSCALL</div>
+    <div class="layers">
+      <div class="layer layer-app">
+        <span>📝 Programa faz <code style="color:#fff">fopen("arquivo.txt")</code></span>
+        <span class="layer-label">User Mode</span>
+      </div>
+      <div class="arrow-down">↓ syscall</div>
+      <div class="layer layer-ker">
+        <span>⚙️ Kernel processa e verifica permissões</span>
+        <span class="layer-label">Kernel Mode</span>
+      </div>
+      <div class="arrow-down">↓ resultado</div>
+      <div class="layer layer-hw">
+        <span>🖴 Disco lê os bytes do arquivo</span>
+        <span class="layer-label">Hardware</span>
+      </div>
+      <div class="arrow-down">↑ retorno</div>
+      <div class="layer layer-app">
+        <span>📝 Programa recebe o conteúdo do arquivo</span>
+        <span class="layer-label">User Mode</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>O Famoso BSOD</h3>
+  <p>A <strong>Tela Azul da Morte (Blue Screen of Death)</strong> acontece quando um código no Kernel Mode encontra um erro que não consegue recuperar. Como o Kernel controla tudo, não tem como "fechar a janela" — o sistema trava completamente. Causas comuns:</p>
+
+  <div class="cards">
+    <div class="card">
+      <span class="card-icon">🔌</span>
+      <div class="card-title">Driver com Bug</div>
+      <p>Driver de placa de vídeo, áudio ou USB com código defeituoso rodando em Kernel Mode.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">💾</span>
+      <div class="card-title">Memória RAM com Defeito</div>
+      <p>Bit flip em endereço crítico do Kernel causa corrupção de dados internos.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔥</span>
+      <div class="card-title">Superaquecimento</div>
+      <p>CPU ou RAM aquecendo demais causa erros de cálculo que travam o Kernel.</p>
+    </div>
+  </div>
+
+  <div class="challenge" data-icon="🔍">
+    <div class="challenge-label">// desafio prático 2 — +50 XP</div>
+    <h3>Inspecione o Kernel do Seu Windows</h3>
+    <ol>
+      <li>Pressione <strong>Win + R</strong> e digite <code style="color:var(--accent)">winver</code>, pressione Enter</li>
+      <li>Anote o número da build do Windows (ex: 22631.xxxx)</li>
+      <li>Abra o <strong>Gerenciador de Dispositivos</strong> (Win + X → Gerenciador de Dispositivos)</li>
+      <li>Encontre um driver e clique com botão direito → Propriedades → veja a versão do driver</li>
+      <li>No PowerShell, rode: <code style="color:var(--accent)">[System.Environment]::OSVersion</code> e veja a versão do Kernel</li>
+    </ol>
+    <div class="pts" onclick="addXP(50, this)">🎮 Clique aqui ao completar: +50 XP</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MÓDULO 3 — PROCESSOS
+══════════════════════════════════════════ -->
+<section id="mod3">
+<div class="container">
+
+  <div class="mod-banner">
+    <div class="mod-banner-num">03</div>
+    <div class="mod-banner-content">
+      <div class="mod-banner-tag">// módulo 3</div>
+      <div class="mod-banner-title">Processos e o Gerenciador de Tarefas</div>
+      <p class="mod-banner-desc">Entenda o que é um processo, seu ciclo de vida, e aprenda a gerenciar tudo visualmente no Windows 11.</p>
+    </div>
+  </div>
+
+  <div class="sec-label">gerenciamento de processos</div>
+  <h2>Processo: Um <span>Programa Vivo</span></h2>
+  <p class="lead">Um <strong>programa</strong> é um arquivo no disco (como o <code style="font-family:monospace;color:var(--accent)">chrome.exe</code>). Quando você o abre, ele se torna um <strong>processo</strong> — uma instância em execução com memória própria, estado e identificador único (PID).</p>
+
+  <div class="tip">
+    <span class="tip-ico">💡</span>
+    <div>
+      <strong>Programa vs Processo vs Thread</strong>
+      <p><strong>Programa</strong> = receita escrita num livro (arquivo no disco).<br>
+      <strong>Processo</strong> = cozinheiro seguindo a receita (em execução, na RAM).<br>
+      <strong>Thread</strong> = tarefas paralelas dentro do processo (o cozinheiro cortando e cozinhando ao mesmo tempo).</p>
+    </div>
+  </div>
+
+  <h3>Ciclo de Vida de um Processo</h3>
+
+  <div class="lifecycle">
+    <div class="lc-state">
+      <span class="ls-name">Novo</span>
+      <span class="ls-desc">Sendo criado</span>
+    </div>
+    <div class="lc-arrow">→</div>
+    <div class="lc-state">
+      <span class="ls-name">Pronto</span>
+      <span class="ls-desc">Aguardando CPU</span>
+    </div>
+    <div class="lc-arrow">→</div>
+    <div class="lc-state" style="border-color:rgba(91,245,200,0.4);color:var(--accent)">
+      <span class="ls-name">Executando</span>
+      <span class="ls-desc">Na CPU agora</span>
+    </div>
+    <div class="lc-arrow">→</div>
+    <div class="lc-state">
+      <span class="ls-name">Bloqueado</span>
+      <span class="ls-desc">Esperando I/O</span>
+    </div>
+    <div class="lc-arrow">→</div>
+    <div class="lc-state" style="border-color:rgba(247,90,122,0.4);color:var(--accent4)">
+      <span class="ls-name">Terminado</span>
+      <span class="ls-desc">Processo morto</span>
+    </div>
+  </div>
+
+  <h3>O Gerenciador de Tarefas do Windows 11</h3>
+  <p>O <strong>Gerenciador de Tarefas</strong> é a janela que exibe todos os processos em execução em tempo real. No Windows 11 foi completamente redesenhado — ficou mais bonito e mais informativo.</p>
+
+  <h4>Como abrir</h4>
+  <div class="steps">
+    <div class="step visible">
+      <div class="step-num">1</div>
+      <div class="step-title">Pelo Atalho de Teclado <span class="step-badge">MAIS RÁPIDO</span></div>
+      <p>Pressione <strong>Ctrl + Shift + Esc</strong> — abre o Gerenciador de Tarefas direto, sem passar pelo menu de segurança.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">2</div>
+      <div class="step-title">Pelo Menu de Contexto da Barra de Tarefas</div>
+      <p>Clique com o botão direito do mouse na <strong>Barra de Tarefas</strong> (área inferior da tela) → clique em <em>"Gerenciador de Tarefas"</em>.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">3</div>
+      <div class="step-title">Pelo Ctrl + Alt + Del</div>
+      <p>Pressione <strong>Ctrl + Alt + Del</strong> → selecione <em>"Gerenciador de Tarefas"</em> na tela azul que aparecer. Útil quando o sistema está lento.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">4</div>
+      <div class="step-title">Pelo Executar (Win + R)</div>
+      <p>Pressione <strong>Win + R</strong>, digite <code style="color:var(--accent)">taskmgr</code> e pressione Enter.</p>
+    </div>
+  </div>
+
+  <!-- Task Manager Mock -->
+  <div class="task-mock">
+    <div class="task-header">
+      <div class="task-title">⚙️ Gerenciador de Tarefas</div>
+      <div class="task-tabs">
+        <div class="task-tab act">Processos</div>
+        <div class="task-tab">Desempenho</div>
+        <div class="task-tab">Inicialização</div>
+        <div class="task-tab">Detalhes</div>
+      </div>
+    </div>
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>CPU</th>
+          <th>Memória</th>
+          <th>Disco</th>
+          <th>PID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🌐 Microsoft Edge</td>
+          <td>
+            <div class="perf-bar">
+              <div class="bar-wrap"><div class="bar-fill bar-cpu" style="width:45%"></div></div>
+              2.3%
+            </div>
+          </td>
+          <td>
+            <div class="perf-bar">
+              <div class="bar-wrap"><div class="bar-fill bar-mem" style="width:60%"></div></div>
+              342 MB
+            </div>
+          </td>
+          <td>0.1 MB/s</td>
+          <td style="font-family:monospace;font-size:11px">4892</td>
+        </tr>
+        <tr>
+          <td>🎮 Discord</td>
+          <td>
+            <div class="perf-bar">
+              <div class="bar-wrap"><div class="bar-fill bar-cpu" style="width:15%"></div></div>
+              0.8%
+            </div>
+          </td>
+          <td>
+            <div class="perf-bar">
+              <div class="bar-wrap"><div class="bar-fill bar-mem" style="width:30%"></div></div>
+              175 MB
+            </div>
+          </td>
+          <td>0.0 MB/s</td>
+          <td style="font-family:monospace;font-size:11px">7124</td>
+        </tr>
+        <tr>
+          <td>⚙️ Sistema</td>
+          <td>
+            <div class="perf-bar">
+              <div class="bar-wrap"><div class="bar-fill bar-cpu" style="width:5%"></div></div>
+              0.3%
+            </div>
+          </td>
+          <td>
+            <div class="perf-bar">
+              <div class="bar-wrap"><div class="bar-fill bar-mem" style="width:10%"></div></div>
+              48 MB
+            </div>
+          </td>
+          <td>0.4 MB/s</td>
+          <td style="font-family:monospace;font-size:11px">4</td>
+        </tr>
+        <tr>
+          <td>📝 Notepad</td>
+          <td>
+            <div class="perf-bar">
+              <div class="bar-wrap"><div class="bar-fill bar-cpu" style="width:2%"></div></div>
+              0.0%
+            </div>
+          </td>
+          <td>
+            <div class="perf-bar">
+              <div class="bar-wrap"><div class="bar-fill bar-mem" style="width:3%"></div></div>
+              12 MB
+            </div>
+          </td>
+          <td>0.0 MB/s</td>
+          <td style="font-family:monospace;font-size:11px">9832</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    <span class="tip-ico">📌</span>
+    <div>
+      <strong>O que é o PID?</strong>
+      <p>O <strong>PID (Process Identifier)</strong> é o número único dado pelo SO a cada processo. É como o CPF do processo. O Sistema sempre tem PID = 4. Processos novos recebem PIDs maiores (geralmente incrementais).</p>
+    </div>
+  </div>
+
+  <h3>Encerrando Processos Travados</h3>
+  <div class="steps">
+    <div class="step visible">
+      <div class="step-num">1</div>
+      <div class="step-title">Encontre o processo travado</div>
+      <p>Processos que não respondem aparecem em <strong>itálico</strong> ou com a indicação <em>"Não está respondendo"</em> em vermelho claro.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">2</div>
+      <div class="step-title">Clique com botão direito no processo</div>
+      <p>Selecione <strong>"Finalizar tarefa"</strong>. Isso envia um sinal de encerramento ao processo.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">3</div>
+      <div class="step-title">Confirme se necessário <span class="step-badge warn">⚠️ Cuidado</span></div>
+      <p>O Windows pode pedir confirmação para processos críticos. <strong>Nunca encerre processos do Sistema, LSASS ou csrss.exe</strong> — isso pode causar instabilidade ou reinicialização forçada.</p>
+    </div>
+  </div>
+
+  <div class="challenge" data-icon="⚙️">
+    <div class="challenge-label">// desafio prático 3 — +75 XP</div>
+    <h3>Explore o Gerenciador de Tarefas</h3>
+    <ol>
+      <li>Abra o Gerenciador de Tarefas com <strong>Ctrl + Shift + Esc</strong></li>
+      <li>Vá para a aba <strong>"Desempenho"</strong> e observe CPU, Memória e Disco em tempo real</li>
+      <li>Abra o Bloco de Notas (Notepad) — observe ele aparecer na aba Processos</li>
+      <li>Identifique o PID do Notepad na aba <strong>"Detalhes"</strong></li>
+      <li>Feche o Notepad normalmente e observe ele sumir da lista</li>
+      <li>Abra o Notepad novamente — o PID será diferente!</li>
+    </ol>
+    <div class="pts" onclick="addXP(75, this)">🎮 Clique aqui ao completar: +75 XP</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MÓDULO 4 — INTERFACE WINDOWS 11
+══════════════════════════════════════════ -->
+<section id="mod4">
+<div class="container">
+
+  <div class="mod-banner">
+    <div class="mod-banner-num">04</div>
+    <div class="mod-banner-content">
+      <div class="mod-banner-tag">// módulo 4</div>
+      <div class="mod-banner-title">Interface do Windows 11</div>
+      <p class="mod-banner-desc">Conheça cada elemento da interface modernizada do Windows 11 — da barra de tarefas ao Menu Iniciar redesenhado.</p>
+    </div>
+  </div>
+
+  <div class="sec-label">interface do usuário</div>
+  <h2>A Face do <span>Windows 11</span></h2>
+  <p class="lead">O Windows 11 trouxe a maior reformulação visual desde o Windows 10. Interface mais limpa, cantos arredondados, centralização do Menu Iniciar e integração com o Microsoft Teams. Vamos conhecer cada peça.</p>
+
+  <!-- Simulação da Área de Trabalho -->
+  <div class="screen-mock win11">
+    <div style="background:#1a1a2e; min-height:200px; padding:24px; position:relative; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:11px;font-family:monospace;color:rgba(255,255,255,0.3);position:absolute;top:16px;right:20px;">11:24 &nbsp; 28/04/2026</div>
+      <!-- Desktop icons -->
+      <div style="position:absolute;top:20px;left:20px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:8px;border-radius:6px;width:70px;" onmouseenter="this.style.background='rgba(255,255,255,0.07)'" onmouseleave="this.style.background='transparent'">
+          <span style="font-size:28px">📁</span>
+          <span style="font-size:9px;color:#ccc;text-align:center">Este PC</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:8px;border-radius:6px;width:70px;" onmouseenter="this.style.background='rgba(255,255,255,0.07)'" onmouseleave="this.style.background='transparent'">
+          <span style="font-size:28px">🗑️</span>
+          <span style="font-size:9px;color:#ccc;text-align:center">Lixeira</span>
+        </div>
+      </div>
+      <div style="height:100px;"></div>
+    </div>
+    <!-- Barra de Tarefas -->
+    <div class="win11-taskbar">
+      <div class="tb-icon" title="Menu Iniciar">⊞</div>
+      <div class="tb-icon" title="Pesquisa">🔍</div>
+      <div class="tb-icon active" title="Explorador">📁</div>
+      <div class="tb-icon" title="Microsoft Edge">🌐</div>
+      <div class="tb-icon" title="Word">📝</div>
+      <div class="tb-icon" title="Teams">👥</div>
+    </div>
+  </div>
+
+  <h3>Elementos da Interface</h3>
+
+  <div class="cards">
+    <div class="card">
+      <span class="card-icon">⊞</span>
+      <div class="card-title">Menu Iniciar Centralizado</div>
+      <p>No Win 11, o botão Iniciar está no centro da barra de tarefas. Exibe apps fixados e recomendações. Atalho: <strong>tecla Win</strong>.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔍</span>
+      <div class="card-title">Barra de Pesquisa</div>
+      <p>Pesquisa apps, arquivos, configurações e a web. Atalho: <strong>Win + S</strong>. Integrado com Bing e IA Copilot.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📌</span>
+      <div class="card-title">Barra de Tarefas</div>
+      <p>Mostra apps abertos e fixados. No Win 11 está sempre centralizada. Clique direito → Configurações da barra.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔔</span>
+      <div class="card-title">Central de Notificações</div>
+      <p>Canto inferior direito. Clique no relógio para ver notificações. <strong>Win + N</strong> abre o painel rapidamente.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">⚙️</span>
+      <div class="card-title">Configurações Rápidas</div>
+      <p>Ícones de Wi-Fi/Som/Bateria no canto direito. Clique para acessar WiFi, Bluetooth, modo avião, brilho, volume.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🖥️</span>
+      <div class="card-title">Área de Trabalho Virtual</div>
+      <p>Múltiplos desktops virtuais. Atalho: <strong>Win + Ctrl + D</strong> (cria), <strong>Win + Tab</strong> (alterna). Ideal para organizar trabalho.</p>
+    </div>
+  </div>
+
+  <h3>Atalhos Essenciais do Windows 11</h3>
+
+  <table class="cmp-table">
+    <thead>
+      <tr><th>Atalho</th><th>Ação</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Win</td><td style="color:var(--text)">Abre/fecha o Menu Iniciar</td></tr>
+      <tr><td>Win + D</td><td style="color:var(--text)">Mostrar/ocultar área de trabalho</td></tr>
+      <tr><td>Win + E</td><td style="color:var(--text)">Abre o Explorador de Arquivos</td></tr>
+      <tr><td>Win + L</td><td style="color:var(--text)">Bloquear o computador</td></tr>
+      <tr><td>Win + I</td><td style="color:var(--text)">Abre as Configurações do Windows</td></tr>
+      <tr><td>Win + X</td><td style="color:var(--text)">Menu de ferramentas de administrador</td></tr>
+      <tr><td>Win + Shift + S</td><td style="color:var(--text)">Captura de tela (recorte)</td></tr>
+      <tr><td>Alt + F4</td><td style="color:var(--text)">Fecha o aplicativo ativo</td></tr>
+      <tr><td>Alt + Tab</td><td style="color:var(--text)">Alterna entre janelas abertas</td></tr>
+      <tr><td>Win + Tab</td><td style="color:var(--text)">Visão geral (Task View)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="challenge" data-icon="🖥️">
+    <div class="challenge-label">// desafio prático 4 — +75 XP</div>
+    <h3>Domine a Interface do Windows 11</h3>
+    <ol>
+      <li>Use <strong>Win + D</strong> para minimizar tudo e ver a área de trabalho — depois repita para restaurar</li>
+      <li>Crie um <strong>Desktop Virtual</strong> com Win + Ctrl + D e abra um programa nele</li>
+      <li>Alterne entre os desktops com <strong>Win + Ctrl + Seta Esquerda/Direita</strong></li>
+      <li>Faça uma captura de tela de uma área específica com <strong>Win + Shift + S</strong></li>
+      <li>Explore as <strong>Configurações Rápidas</strong> — ative o modo não perturbe</li>
+    </ol>
+    <div class="pts" onclick="addXP(75, this)">🎮 Clique aqui ao completar: +75 XP</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MÓDULO 5 — SNAP LAYOUTS
+══════════════════════════════════════════ -->
+<section id="mod5">
+<div class="container">
+
+  <div class="mod-banner">
+    <div class="mod-banner-num">05</div>
+    <div class="mod-banner-content">
+      <div class="mod-banner-tag">// módulo 5</div>
+      <div class="mod-banner-title">Snap Layouts — Janelas Inteligentes</div>
+      <p class="mod-banner-desc">O recurso mais produtivo do Windows 11: organize múltiplas janelas na tela sem esforço.</p>
+    </div>
+  </div>
+
+  <div class="sec-label">produtividade</div>
+  <h2>Organize com <span>Snap Layouts</span></h2>
+  <p class="lead">O Snap Layouts é um recurso exclusivo do Windows 11 que permite organizar múltiplas janelas lado a lado em layouts predefinidos. Chega de arrastar janelas manualmente!</p>
+
+  <h3>Como Ativar o Snap Layout</h3>
+  <div class="steps">
+    <div class="step visible">
+      <div class="step-num">1</div>
+      <div class="step-title">Passe o mouse sobre o botão Maximizar</div>
+      <p>Passe o cursor do mouse sobre o botão <strong>☐ (maximizar)</strong> no canto superior direito de qualquer janela. Aguarde 1 segundo.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">2</div>
+      <div class="step-title">O menu de Snap Layouts aparece</div>
+      <p>Um painel flutuante mostra 6 layouts disponíveis — metades, terços, quatro quadrantes etc. Clique no layout desejado e na zona onde quer posicionar a janela atual.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">3</div>
+      <div class="step-title">Snap Assist preenche o restante</div>
+      <p>O Windows mostra as outras janelas abertas para você escolher como preencher as zonas vazias. Clique em cada janela para posicioná-la.</p>
+    </div>
+  </div>
+
+  <!-- Snap layouts visual -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:24px 0;">
+
+    <div class="snap-preview">
+      <div class="snap-title">// 50/50 horizontal</div>
+      <div class="snap-grid">
+        <div class="snap-zone active">App 1</div>
+        <div class="snap-zone">App 2</div>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0;font-family:monospace">Win + ← / Win + →</p>
+    </div>
+
+    <div class="snap-preview">
+      <div class="snap-title">// 3 colunas iguais</div>
+      <div class="snap-grid thirds">
+        <div class="snap-zone">App 1</div>
+        <div class="snap-zone active">App 2</div>
+        <div class="snap-zone">App 3</div>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0;font-family:monospace">Mouse sobre ☐</p>
+    </div>
+
+    <div class="snap-preview">
+      <div class="snap-title">// 4 quadrantes</div>
+      <div class="snap-grid quad">
+        <div class="snap-zone">App 1</div>
+        <div class="snap-zone active">App 2</div>
+        <div class="snap-zone">App 3</div>
+        <div class="snap-zone">App 4</div>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0;font-family:monospace">4 janelas simultâneas</p>
+    </div>
+
+  </div>
+
+  <h3>Atalhos de Snap pelo Teclado</h3>
+
+  <table class="cmp-table">
+    <thead>
+      <tr><th>Atalho</th><th>Ação</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Win + ←</td><td style="color:var(--text)">Encaixa a janela na metade esquerda</td></tr>
+      <tr><td>Win + →</td><td style="color:var(--text)">Encaixa a janela na metade direita</td></tr>
+      <tr><td>Win + ↑</td><td style="color:var(--text)">Maximiza a janela</td></tr>
+      <tr><td>Win + ↓</td><td style="color:var(--text)">Minimiza a janela</td></tr>
+      <tr><td>Win + ← depois Win + ↑</td><td style="color:var(--text)">Encaixa no quadrante superior esquerdo</td></tr>
+      <tr><td>Win + ← depois Win + ↓</td><td style="color:var(--text)">Encaixa no quadrante inferior esquerdo</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info">
+    <span class="tip-ico">ℹ️</span>
+    <div>
+      <strong>Snap Groups — O Bônus do Win 11</strong>
+      <p>Quando você organiza janelas em Snap Layout, o Windows 11 cria um <strong>Snap Group</strong> — um grupo de janelas. Ao passar o mouse sobre um dos apps fixados na barra de tarefas, você vê o grupo inteiro e pode restaurá-lo de uma vez, mantendo exatamente a organização anterior.</p>
+    </div>
+  </div>
+
+  <div class="challenge" data-icon="📐">
+    <div class="challenge-label">// desafio prático 5 — +75 XP</div>
+    <h3>Organize sua Tela como um Pro</h3>
+    <ol>
+      <li>Abra <strong>3 janelas</strong> diferentes (ex: Edge, Bloco de Notas, Explorador de Arquivos)</li>
+      <li>Use o Snap Layout (passe o mouse sobre o ☐) para organizá-las em <strong>3 colunas</strong></li>
+      <li>Agora use <strong>Win + ←</strong> e <strong>Win + →</strong> para trocar as posições das janelas pelo teclado</li>
+      <li>Feche todas as janelas. Reabra apenas uma — observe que o Windows oferece restaurar o Snap Group!</li>
+    </ol>
+    <div class="pts" onclick="addXP(75, this)">🎮 Clique aqui ao completar: +75 XP</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MÓDULO 6 — EXPLORADOR DE ARQUIVOS
+══════════════════════════════════════════ -->
+<section id="mod6">
+<div class="container">
+
+  <div class="mod-banner">
+    <div class="mod-banner-num">06</div>
+    <div class="mod-banner-content">
+      <div class="mod-banner-tag">// módulo 6</div>
+      <div class="mod-banner-title">Explorador de Arquivos</div>
+      <p class="mod-banner-desc">Navegue, organize e gerencie seus arquivos como um profissional no Windows 11.</p>
+    </div>
+  </div>
+
+  <div class="sec-label">sistema de arquivos</div>
+  <h2>O <span>Explorador</span> de Arquivos</h2>
+  <p class="lead">O Explorador de Arquivos (File Explorer) é o gerenciador de arquivos do Windows. No Windows 11 foi redesenhado com uma barra de ferramentas simplificada e aba de "Início" renovada.</p>
+
+  <!-- Explorador Mockup -->
+  <div class="screen-mock">
+    <div style="background:#1a1a2e;padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+      <div style="display:flex;gap:4px;">
+        <div class="win11-btn w-close"></div>
+        <div class="win11-btn w-min"></div>
+        <div class="win11-btn w-max"></div>
+      </div>
+      <span style="font-size:12px;color:#aaa;flex:1;text-align:center">📁 Explorador de Arquivos</span>
+    </div>
+    <!-- toolbar -->
+    <div style="background:#161620;padding:8px 14px;border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center;">
+      <div class="exp-btn">← Voltar</div>
+      <div class="exp-btn">→ Avançar</div>
+      <div class="exp-btn">↑ Acima</div>
+      <div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-family:monospace;font-size:11px;color:var(--muted)">C:\Usuários\Aluno\Documentos</div>
+      <div class="exp-btn">🔍 Pesquisar</div>
+    </div>
+    <div class="win11-explorer">
+      <div class="explorer-sidebar">
+        <div class="exp-item">⭐ Fixados</div>
+        <div class="exp-item sel">🏠 Início</div>
+        <div class="exp-item">📂 OneDrive</div>
+        <div class="exp-item">💻 Este Computador</div>
+        <div class="exp-item" style="padding-left:28px">💽 Windows (C:)</div>
+        <div class="exp-item" style="padding-left:28px">💾 Dados (D:)</div>
+        <div class="exp-item">🌐 Rede</div>
+      </div>
+      <div class="explorer-main">
+        <div class="exp-toolbar">
+          <div class="exp-btn">📄 Novo</div>
+          <div class="exp-btn">✂️ Recortar</div>
+          <div class="exp-btn">📋 Copiar</div>
+          <div class="exp-btn">📌 Colar</div>
+          <div class="exp-btn">🗑️ Excluir</div>
+          <div class="exp-btn">✏️ Renomear</div>
+          <div class="exp-btn">⋯ Ver</div>
+        </div>
+        <div class="folder-grid">
+          <div class="folder-item sel"><span class="fi">📁</span><span class="fn">Projeto SO</span></div>
+          <div class="folder-item"><span class="fi">📁</span><span class="fn">Fotos</span></div>
+          <div class="folder-item"><span class="fi">📁</span><span class="fn">Downloads</span></div>
+          <div class="folder-item"><span class="fi">📄</span><span class="fn">relatorio.docx</span></div>
+          <div class="folder-item"><span class="fi">📊</span><span class="fn">dados.xlsx</span></div>
+          <div class="folder-item"><span class="fi">📝</span><span class="fn">notas.txt</span></div>
+          <div class="folder-item"><span class="fi">🖼️</span><span class="fn">foto.jpg</span></div>
+          <div class="folder-item"><span class="fi">⚙️</span><span class="fn">script.ps1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Estrutura de Pastas do Windows</h3>
+  <p>O Windows organiza o disco em uma hierarquia de pastas. Conhecer essa estrutura é essencial para qualquer técnico de TI:</p>
+
+  <div class="ftree">
+<span class="ft-drive">C:\</span>  <span class="ft-desc">Disco principal do Windows</span>
+├── <span class="ft-sys">Windows\</span>  <span class="ft-desc">Arquivos do sistema operacional</span>
+│   ├── <span class="ft-file">System32\</span>  <span class="ft-desc">DLLs e executáveis do sistema</span>
+│   ├── <span class="ft-file">SysWOW64\</span>  <span class="ft-desc">Apps 32 bits rodando no Win 64</span>
+│   └── <span class="ft-file">Temp\</span>  <span class="ft-desc">Arquivos temporários do sistema</span>
+├── <span class="ft-sys">Program Files\</span>  <span class="ft-desc">Aplicativos instalados (64 bits)</span>
+├── <span class="ft-sys">Program Files (x86)\</span>  <span class="ft-desc">Aplicativos instalados (32 bits)</span>
+├── <span class="ft-user">Users\</span>  <span class="ft-desc">Pasta de usuários</span>
+│   └── <span class="ft-user">NomeDoUsuário\</span>
+│       ├── <span class="ft-folder">Desktop\</span>  <span class="ft-desc">Área de trabalho</span>
+│       ├── <span class="ft-folder">Documents\</span>  <span class="ft-desc">Documentos</span>
+│       ├── <span class="ft-folder">Downloads\</span>  <span class="ft-desc">Arquivos baixados</span>
+│       ├── <span class="ft-folder">Pictures\</span>  <span class="ft-desc">Imagens</span>
+│       ├── <span class="ft-folder">AppData\</span>  <span class="ft-desc">Dados de apps (oculta)</span>
+│       └── <span class="ft-folder">Temp\</span>  <span class="ft-desc">Temporários do usuário</span>
+└── <span class="ft-sys">ProgramData\</span>  <span class="ft-desc">Dados compartilhados de apps (oculta)</span>
+  </div>
+
+  <div class="warn">
+    <span class="tip-ico">⚠️</span>
+    <div>
+      <strong>Pastas Ocultas por Padrão</strong>
+      <p>As pastas <code style="color:var(--accent)">AppData</code> e <code style="color:var(--accent)">ProgramData</code> ficam ocultas por padrão. Para ver arquivos ocultos: Explorador → <strong>Ver → Mostrar → Itens ocultos</strong>. Útil para solução de problemas e configurações avançadas.</p>
+    </div>
+  </div>
+
+  <h3>Modos de Visualização</h3>
+  <div class="cards">
+    <div class="card"><span class="card-icon">🔲</span><div class="card-title">Ícones Grandes</div><p>Miniaturas grandes. Ideal para fotos e imagens.</p></div>
+    <div class="card"><span class="card-icon">📋</span><div class="card-title">Detalhes</div><p>Lista com nome, data, tipo, tamanho. O mais útil para técnicos.</p></div>
+    <div class="card"><span class="card-icon">⊞</span><div class="card-title">Lado a Lado (Tiles)</div><p>Ícones médios com informações básicas. Equilíbrio visual.</p></div>
+    <div class="card"><span class="card-icon">☰</span><div class="card-title">Lista</div><p>Visualização compacta. Muitos arquivos na tela ao mesmo tempo.</p></div>
+  </div>
+
+  <div class="challenge" data-icon="📁">
+    <div class="challenge-label">// desafio prático 6 — +75 XP</div>
+    <h3>Navegue como um Técnico</h3>
+    <ol>
+      <li>Abra o Explorador com <strong>Win + E</strong></li>
+      <li>Navegue até <strong>C:\Windows\System32</strong> e conte quantos arquivos .exe existem (use o modo Detalhes e ordene por Tipo)</li>
+      <li>Ative a visualização de <strong>arquivos ocultos</strong> (Ver → Mostrar → Itens ocultos)</li>
+      <li>Navegue até <strong>C:\Usuários\[seu nome]\AppData</strong> — ela estava invisível antes!</li>
+      <li>Crie uma nova pasta em Documentos chamada <strong>"Aula_SO"</strong> (botão direito → Novo → Pasta)</li>
+      <li>Dentro dela, crie um arquivo de texto chamado <strong>"meu_primeiro_arquivo.txt"</strong></li>
+    </ol>
+    <div class="pts" onclick="addXP(75, this)">🎮 Clique aqui ao completar: +75 XP</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MÓDULO 6B — ATRIBUTOS DE ARQUIVOS
+══════════════════════════════════════════ -->
+<section id="mod6b">
+<div class="container">
+
+  <div class="mod-banner">
+    <div class="mod-banner-num">6B</div>
+    <div class="mod-banner-content">
+      <div class="mod-banner-tag">// módulo 6B</div>
+      <div class="mod-banner-title">Atributos de Arquivos</div>
+      <p class="mod-banner-desc">Cada arquivo tem propriedades especiais que controlam seu comportamento — oculto, somente leitura, comprimido e mais.</p>
+    </div>
+  </div>
+
+  <div class="sec-label">metadados de arquivos</div>
+  <h2>Atributos: a <span>Identidade</span> do Arquivo</h2>
+  <p class="lead">Todo arquivo no Windows possui <strong>atributos</strong> — flags que controlam como o arquivo se comporta, quem pode modificá-lo e como o sistema o trata. São parte dos metadados armazenados no sistema de arquivos NTFS.</p>
+
+  <div class="attr-grid">
+    <div class="attr-card">
+      <span class="attr-letter">R</span>
+      <div class="attr-name">Read-Only (Somente Leitura)</div>
+      <p class="attr-desc">O arquivo pode ser lido mas não modificado. Protege contra alterações acidentais. Documentos oficiais costumam ter esse atributo.</p>
+    </div>
+    <div class="attr-card">
+      <span class="attr-letter">H</span>
+      <div class="attr-name">Hidden (Oculto)</div>
+      <p class="attr-desc">O arquivo não aparece no Explorador nem no terminal sem o flag especial. Usado por arquivos de sistema e configuração sensível.</p>
+    </div>
+    <div class="attr-card">
+      <span class="attr-letter">S</span>
+      <div class="attr-name">System (Sistema)</div>
+      <p class="attr-desc">Arquivo pertence ao sistema operacional. Geralmente combinado com Hidden. O Windows protege fortemente esses arquivos.</p>
+    </div>
+    <div class="attr-card">
+      <span class="attr-letter">A</span>
+      <div class="attr-name">Archive (Arquivo)</div>
+      <p class="attr-desc">Indica que o arquivo foi modificado desde o último backup. Softwares de backup leem esse flag para saber o que copiar.</p>
+    </div>
+    <div class="attr-card">
+      <span class="attr-letter">C</span>
+      <div class="attr-name">Compressed (Comprimido)</div>
+      <p class="attr-desc">O NTFS comprime o arquivo automaticamente para economizar espaço em disco. Transparente para o usuário.</p>
+    </div>
+    <div class="attr-card">
+      <span class="attr-letter">E</span>
+      <div class="attr-name">Encrypted (Criptografado)</div>
+      <p class="attr-desc">O EFS (Encrypting File System) do NTFS criptografa o conteúdo. Só o usuário proprietário consegue ler.</p>
+    </div>
+  </div>
+
+  <h3>Ver e Modificar Atributos pela Interface</h3>
+  <div class="steps">
+    <div class="step visible">
+      <div class="step-num">1</div>
+      <div class="step-title">Clique com botão direito no arquivo</div>
+      <p>Selecione <strong>"Propriedades"</strong> no menu de contexto. A janela de Propriedades abre.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">2</div>
+      <div class="step-title">Aba "Geral"</div>
+      <p>Na parte inferior, veja as caixas <strong>"Somente leitura"</strong> e <strong>"Oculto"</strong>. Marque/desmarque para alterar o atributo.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">3</div>
+      <div class="step-title">Botão "Avançado…"</div>
+      <p>Clique em <strong>"Avançado"</strong> para acessar os atributos de Arquivo/Compressão/Criptografia. Aqui você pode ativar a criptografia EFS e a compressão NTFS.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">4</div>
+      <div class="step-title">Clique OK e aplique</div>
+      <p>Confirme com OK. Se for uma pasta, o Windows perguntará se aplica a todos os arquivos dentro dela também.</p>
+    </div>
+  </div>
+
+  <h3>Atributos pelo Terminal (Comando ATTRIB)</h3>
+  <p>O comando clássico <code style="font-family:monospace;color:var(--accent)">attrib</code> existe no CMD e no PowerShell. Sintaxe:</p>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="terminal-title">Prompt de Comando (CMD)</div>
+      <button class="copy-btn" onclick="copyCode(this, 'attrib +H +R arquivo_secreto.txt\nattrib -H arquivo_secreto.txt\nattrib C:\\pasta\\* /S /D')">copiar</button>
+    </div>
+    <div class="terminal-body">
+<span class="comment"># Ver atributos de um arquivo</span>
+<span class="pr">C:\Documentos></span> <span class="cmd">attrib</span> arquivo.txt
+<span class="out">A                    C:\Documentos\arquivo.txt</span>
+
+<span class="comment"># Adicionar atributo Oculto (+H) e Somente Leitura (+R)</span>
+<span class="pr">C:\Documentos></span> <span class="cmd">attrib</span> +H +R arquivo_secreto.txt
+
+<span class="comment"># Remover atributo Oculto (-H)</span>
+<span class="pr">C:\Documentos></span> <span class="cmd">attrib</span> -H arquivo_secreto.txt
+
+<span class="comment"># Listar atributos de todos os arquivos e subpastas</span>
+<span class="pr">C:\Documentos></span> <span class="cmd">attrib</span> C:\pasta\* /S /D
+    </div>
+  </div>
+
+  <h3>Atributos pelo PowerShell</h3>
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="terminal-title">Windows PowerShell</div>
+      <button class="copy-btn" onclick="copyCode(this, '# Ver atributos\n(Get-Item arquivo.txt).Attributes\n\n# Definir oculto + somente leitura\n$file = Get-Item \"arquivo.txt\"\n$file.Attributes = \"Hidden,ReadOnly\"\n\n# Remover oculto\n$file.Attributes = $file.Attributes -bxor [System.IO.FileAttributes]::Hidden')">copiar</button>
+    </div>
+    <div class="terminal-body">
+<span class="comment"># Ver atributos de um arquivo</span>
+<span class="pr">PS></span> <span class="cmd">(Get-Item</span> <span class="str">arquivo.txt</span><span class="cmd">).Attributes</span>
+<span class="out">Archive</span>
+
+<span class="comment"># Definir atributo Oculto + Somente Leitura</span>
+<span class="pr">PS></span> <span class="param">$file</span> = <span class="cmd">Get-Item</span> <span class="str">"arquivo.txt"</span>
+<span class="pr">PS></span> <span class="param">$file</span>.Attributes = <span class="str">"Hidden,ReadOnly"</span>
+
+<span class="comment"># Remover apenas o atributo Oculto (XOR bit a bit)</span>
+<span class="pr">PS></span> <span class="param">$file</span>.Attributes = <span class="param">$file</span>.Attributes <span class="cmd">-bxor</span> [System.IO.FileAttributes]::Hidden
+
+<span class="comment"># Listar todos arquivos ocultos em uma pasta</span>
+<span class="pr">PS></span> <span class="cmd">Get-ChildItem</span> <span class="param">-Force</span> | <span class="cmd">Where-Object</span> { <span class="param">$_</span>.Attributes <span class="param">-match</span> <span class="str">"Hidden"</span> }
+    </div>
+  </div>
+
+  <div class="challenge" data-icon="🔐">
+    <div class="challenge-label">// desafio prático 7 — +100 XP</div>
+    <h3>Atributos na Prática</h3>
+    <ol>
+      <li>Crie um arquivo chamado <code style="color:var(--accent)">secreto.txt</code> na pasta Aula_SO que criamos antes</li>
+      <li>Pelas Propriedades (botão direito), marque o atributo <strong>Oculto</strong> e aplique</li>
+      <li>Verifique que ele sumiu do Explorador — desative a opção "Itens ocultos" para confirmar</li>
+      <li>Reative "Itens ocultos" e note que o arquivo aparece em <em>itálico/cinza</em></li>
+      <li>Abra o PowerShell e rode: <code style="color:var(--accent)">(Get-Item C:\Users\$env:USERNAME\Documents\Aula_SO\secreto.txt).Attributes</code></li>
+      <li>Remova o atributo Hidden pelo PowerShell como mostrado acima</li>
+    </ol>
+    <div class="pts" onclick="addXP(100, this)">🎮 Clique aqui ao completar: +100 XP</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MÓDULO 7 — POWERSHELL
+══════════════════════════════════════════ -->
+<section id="mod7">
+<div class="container">
+
+  <div class="mod-banner">
+    <div class="mod-banner-num">07</div>
+    <div class="mod-banner-content">
+      <div class="mod-banner-tag">// módulo 7 — avançado</div>
+      <div class="mod-banner-title">PowerShell — Automação Total</div>
+      <p class="mod-banner-desc">Chegamos ao nível mais avançado: aprenda a controlar o Windows por linha de comando com um dos shells mais poderosos do mundo.</p>
+    </div>
+  </div>
+
+  <div class="sec-label">automação e scripting</div>
+  <h2><span>PowerShell</span> — Além do Clique</h2>
+  <p class="lead">O PowerShell é um shell de linha de comando e linguagem de script da Microsoft. Ao contrário do CMD antigo, tudo no PowerShell são <strong>objetos</strong> — não apenas texto. Isso o torna incrivelmente poderoso para automatizar tarefas de TI.</p>
+
+  <div class="tip">
+    <span class="tip-ico">💡</span>
+    <div>
+      <strong>CMD vs PowerShell — Qual a diferença?</strong>
+      <p><strong>CMD</strong>: legado, trabalha com texto puro, comandos simples como <code style="color:var(--accent)">dir</code>, <code style="color:var(--accent)">copy</code>.<br>
+      <strong>PowerShell</strong>: moderno, trabalha com objetos .NET, pode acessar APIs do Windows, registros, serviços, rede, Active Directory e muito mais.</p>
+    </div>
+  </div>
+
+  <h3>Abrindo o PowerShell</h3>
+  <div class="steps">
+    <div class="step visible">
+      <div class="step-num">1</div>
+      <div class="step-title">Como Usuário Normal</div>
+      <p>Pressione <strong>Win + S</strong>, digite <em>"PowerShell"</em> e pressione Enter. Ou: <strong>Win + R</strong> → <code style="color:var(--accent)">powershell</code> → Enter.</p>
+    </div>
+    <div class="step visible">
+      <div class="step-num">2</div>
+      <div class="step-title">Como Administrador <span class="step-badge warn">⚡ Necessário para muitos comandos</span></div>
+      <p>Pressione <strong>Win + X</strong> → <em>"Terminal Windows (Admin)"</em>. Ou: pesquise PowerShell → <strong>Clique direito → Executar como Administrador</strong>. O título da janela mostrará "Administrador:".</p>
+    </div>
+  </div>
+
+  <!-- PS Window Mock -->
+  <div class="screen-mock">
+    <div style="background:#0a0a16;padding:8px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;">
+      <div class="win11-btn w-close"></div>
+      <div class="win11-btn w-min"></div>
+      <div class="win11-btn w-max"></div>
+      <span style="font-size:11px;color:#888;flex:1;text-align:center;font-family:monospace">Administrador: Windows PowerShell</span>
+    </div>
+    <div class="win11-body">
+      <span style="color:#5bf5c8">Windows PowerShell</span><br>
+      <span style="color:#888">Copyright (C) Microsoft Corporation. Todos os direitos reservados.</span><br><br>
+      <span style="color:#f7e85a">PS C:\Windows\system32></span> <span style="color:#5ab8f7">Get-Host</span><br><br>
+      <span style="color:#888">Name             : ConsoleHost</span><br>
+      <span style="color:#888">Version          : 5.1.22621.1</span><br>
+      <span style="color:#888">InstanceId       : 8a3f2b1c-...</span><br><br>
+      <span style="color:#f7e85a">PS C:\Windows\system32></span> <span style="color:#888">█</span>
+    </div>
+  </div>
+
+  <h3>Anatomia de um Comando PowerShell</h3>
+  <p>Os comandos do PowerShell seguem o padrão <strong>Verbo-Substantivo</strong> (Verb-Noun). Isso torna os nomes intuitivos:</p>
+
+  <div class="diagram">
+    <div class="diagram-title">// ESTRUTURA DE UM CMDLET</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:14px;line-height:2;text-align:center;padding:10px 0;">
+      <span style="color:var(--accent);background:rgba(91,245,200,0.1);padding:6px 12px;border-radius:6px;border:1px solid rgba(91,245,200,0.2)">Get</span>
+      <span style="color:var(--muted);padding:0 8px">-</span>
+      <span style="color:var(--blue);background:rgba(90,184,247,0.1);padding:6px 12px;border-radius:6px;border:1px solid rgba(90,184,247,0.2)">Process</span>
+      <span style="color:var(--muted);padding:0 16px">|</span>
+      <span style="color:var(--accent3);background:rgba(247,184,74,0.1);padding:6px 12px;border-radius:6px;border:1px solid rgba(247,184,74,0.2)">-Name</span>
+      <span style="color:var(--yellow);background:rgba(247,232,90,0.08);padding:6px 12px;border-radius:6px;border:1px solid rgba(247,232,90,0.15)">"chrome"</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:16px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;">
+      <div style="color:var(--accent)">VERBO<br><span style="color:var(--muted2);font-size:10px">Get, Set, New, Remove...</span></div>
+      <div style="color:var(--blue)">SUBSTANTIVO<br><span style="color:var(--muted2);font-size:10px">Process, Service, Item...</span></div>
+      <div style="color:var(--accent3)">PARÂMETRO<br><span style="color:var(--muted2);font-size:10px">Modificadores</span></div>
+      <div style="color:var(--yellow)">ARGUMENTO<br><span style="color:var(--muted2);font-size:10px">O valor do parâmetro</span></div>
+    </div>
+  </div>
+
+  <h3>🗂️ Navegação e Arquivos</h3>
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="terminal-title">PowerShell — Navegação</div>
+      <button class="copy-btn" onclick="copyCode(this, 'Get-Location\nSet-Location C:\\Users\\Aluno\\Documents\nGet-ChildItem\nGet-ChildItem -Recurse -Filter *.txt\nNew-Item -Path \"C:\\AulaSO\" -ItemType Directory\nNew-Item -Path \"C:\\AulaSO\\teste.txt\" -ItemType File\nSet-Content -Path \"C:\\AulaSO\\teste.txt\" -Value \"Olá, SO!\"\nGet-Content -Path \"C:\\AulaSO\\teste.txt\"\nCopy-Item \"teste.txt\" -Destination \"backup.txt\"\nRename-Item \"backup.txt\" \"renamed.txt\"\nRemove-Item \"renamed.txt\"')">copiar</button>
+    </div>
+    <div class="terminal-body">
+<span class="comment"># Onde estou agora?</span>
+<span class="pr">PS></span> <span class="cmd">Get-Location</span>
+<span class="out">Path: C:\Users\Aluno</span>
+
+<span class="comment"># Ir para outra pasta</span>
+<span class="pr">PS></span> <span class="cmd">Set-Location</span> C:\Users\Aluno\Documents
+<span class="pr">PS></span> <span class="cmd">cd</span> Documents    <span class="comment"># Alias: cd funciona aqui também!</span>
+
+<span class="comment"># Listar conteúdo da pasta</span>
+<span class="pr">PS></span> <span class="cmd">Get-ChildItem</span>
+<span class="pr">PS></span> <span class="cmd">ls</span>              <span class="comment"># Alias para Get-ChildItem</span>
+<span class="pr">PS></span> <span class="cmd">Get-ChildItem</span> <span class="param">-Recurse</span> <span class="param">-Filter</span> <span class="str">*.txt</span>   <span class="comment"># Arquivos .txt em subpastas</span>
+
+<span class="comment"># Criar pasta</span>
+<span class="pr">PS></span> <span class="cmd">New-Item</span> <span class="param">-Path</span> <span class="str">"C:\AulaSO"</span> <span class="param">-ItemType</span> Directory
+
+<span class="comment"># Criar arquivo e escrever conteúdo</span>
+<span class="pr">PS></span> <span class="cmd">New-Item</span> <span class="param">-Path</span> <span class="str">"C:\AulaSO\teste.txt"</span> <span class="param">-ItemType</span> File
+<span class="pr">PS></span> <span class="cmd">Set-Content</span> <span class="param">-Path</span> <span class="str">"C:\AulaSO\teste.txt"</span> <span class="param">-Value</span> <span class="str">"Olá, Gestão de SO!"</span>
+
+<span class="comment"># Ler arquivo</span>
+<span class="pr">PS></span> <span class="cmd">Get-Content</span> <span class="param">-Path</span> <span class="str">"C:\AulaSO\teste.txt"</span>
+<span class="out">Olá, Gestão de SO!</span>
+
+<span class="comment"># Copiar, renomear, deletar</span>
+<span class="pr">PS></span> <span class="cmd">Copy-Item</span> <span class="str">"teste.txt"</span> <span class="param">-Destination</span> <span class="str">"backup.txt"</span>
+<span class="pr">PS></span> <span class="cmd">Rename-Item</span> <span class="str">"backup.txt"</span> <span class="str">"renamed.txt"</span>
+<span class="pr">PS></span> <span class="cmd">Remove-Item</span> <span class="str">"renamed.txt"</span>
+    </div>
+  </div>
+
+  <h3>⚙️ Processos e Serviços</h3>
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="terminal-title">PowerShell — Processos e Serviços</div>
+      <button class="copy-btn" onclick="copyCode(this, 'Get-Process\nGet-Process | Sort-Object CPU -Descending | Select-Object -First 10\nGet-Process -Name \"notepad\"\nStop-Process -Name \"notepad\" -Force\n\nGet-Service\nGet-Service | Where-Object {$_.Status -eq \"Running\"}\nStart-Service -Name \"Spooler\"\nStop-Service -Name \"Spooler\"')">copiar</button>
+    </div>
+    <div class="terminal-body">
+<span class="comment"># Listar todos os processos</span>
+<span class="pr">PS></span> <span class="cmd">Get-Process</span>
+
+<span class="comment"># Top 10 processos que mais consomem CPU</span>
+<span class="pr">PS></span> <span class="cmd">Get-Process</span> | <span class="cmd">Sort-Object</span> CPU <span class="param">-Descending</span> | <span class="cmd">Select-Object</span> <span class="param">-First</span> 10
+
+<span class="comment"># Encontrar um processo específico</span>
+<span class="pr">PS></span> <span class="cmd">Get-Process</span> <span class="param">-Name</span> <span class="str">"notepad"</span>
+
+<span class="comment"># Matar processo pelo nome</span>
+<span class="pr">PS></span> <span class="cmd">Stop-Process</span> <span class="param">-Name</span> <span class="str">"notepad"</span> <span class="param">-Force</span>
+
+<span class="comment"># Matar processo pelo PID</span>
+<span class="pr">PS></span> <span class="cmd">Stop-Process</span> <span class="param">-Id</span> 4892 <span class="param">-Force</span>
+
+<span class="comment"># ─────────────────────────────────────────</span>
+<span class="comment"># SERVIÇOS</span>
+<span class="pr">PS></span> <span class="cmd">Get-Service</span>   <span class="comment"># Lista todos</span>
+
+<span class="comment"># Serviços que estão rodando</span>
+<span class="pr">PS></span> <span class="cmd">Get-Service</span> | <span class="cmd">Where-Object</span> {<span class="param">$_</span>.Status <span class="param">-eq</span> <span class="str">"Running"</span>}
+
+<span class="comment"># Iniciar / parar serviço (requer Admin)</span>
+<span class="pr">PS [Admin]></span> <span class="cmd">Start-Service</span> <span class="param">-Name</span> <span class="str">"Spooler"</span>
+<span class="pr">PS [Admin]></span> <span class="cmd">Stop-Service</span> <span class="param">-Name</span> <span class="str">"Spooler"</span>
+    </div>
+  </div>
+
+  <h3>🌐 Rede e Diagnóstico</h3>
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="terminal-title">PowerShell — Rede</div>
+      <button class="copy-btn" onclick="copyCode(this, 'Test-Connection 8.8.8.8 -Count 4\nTest-Connection google.com -Count 4\nGet-NetIPAddress\nGet-NetIPConfiguration\nTest-NetConnection google.com -Port 443')">copiar</button>
+    </div>
+    <div class="terminal-body">
+<span class="comment"># Ping (equivalente ao ping clássico)</span>
+<span class="pr">PS></span> <span class="cmd">Test-Connection</span> <span class="str">8.8.8.8</span> <span class="param">-Count</span> 4
+<span class="out">Source  Destination IPV4Address  Bytes  Time(ms)</span>
+<span class="out">PC      8.8.8.8     8.8.8.8       32     14</span>
+
+<span class="comment"># Ping para domínio</span>
+<span class="pr">PS></span> <span class="cmd">Test-Connection</span> <span class="str">google.com</span> <span class="param">-Count</span> 4
+
+<span class="comment"># Ver endereços IP de todos os adaptadores</span>
+<span class="pr">PS></span> <span class="cmd">Get-NetIPAddress</span>
+
+<span class="comment"># Informações completas da rede</span>
+<span class="pr">PS></span> <span class="cmd">Get-NetIPConfiguration</span>
+
+<span class="comment"># Testar se porta está aberta (ex: HTTPS 443)</span>
+<span class="pr">PS></span> <span class="cmd">Test-NetConnection</span> <span class="str">google.com</span> <span class="param">-Port</span> 443
+<span class="out">TcpTestSucceeded : True</span>
+    </div>
+  </div>
+
+  <h3>🔀 Pipeline — O Superpoder do PowerShell</h3>
+  <p>O operador <strong>| (pipe)</strong> encadeia comandos: a saída de um vira a entrada do próximo. Como uma esteira de fábrica onde cada etapa transforma o produto.</p>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="terminal-title">PowerShell — Pipeline Avançado</div>
+      <button class="copy-btn" onclick="copyCode(this, 'Get-Process | Where-Object {$_.CPU -gt 10} | Select-Object Name, CPU, Id\nGet-Service | Where-Object {$_.Status -eq \"Stopped\"} | Sort-Object Name\nGet-ChildItem C:\\Windows\\System32 -Filter *.exe | Sort-Object Length -Descending | Select-Object -First 5\nGet-Process | Export-Csv \"C:\\AulaSO\\processos.csv\" -NoTypeInformation\nGet-Service | Where-Object {$_.Status -eq \"Running\"} | Measure-Object | Select-Object Count')">copiar</button>
+    </div>
+    <div class="terminal-body">
+<span class="comment"># Processos com CPU acima de 10 → mostrar só nome, CPU, PID</span>
+<span class="pr">PS></span> <span class="cmd">Get-Process</span> | <span class="cmd">Where-Object</span> {<span class="param">$_</span>.CPU <span class="param">-gt</span> 10} | <span class="cmd">Select-Object</span> Name, CPU, Id
+
+<span class="comment"># Serviços parados, em ordem alfabética</span>
+<span class="pr">PS></span> <span class="cmd">Get-Service</span> | <span class="cmd">Where-Object</span> {<span class="param">$_</span>.Status <span class="param">-eq</span> <span class="str">"Stopped"</span>} | <span class="cmd">Sort-Object</span> Name
+
+<span class="comment"># 5 maiores executáveis no System32</span>
+<span class="pr">PS></span> <span class="cmd">Get-ChildItem</span> C:\Windows\System32 <span class="param">-Filter</span> <span class="str">*.exe</span> | <span class="cmd">Sort-Object</span> Length <span class="param">-Descending</span> | <span class="cmd">Select-Object</span> <span class="param">-First</span> 5
+
+<span class="comment"># Exportar lista de processos para planilha Excel!</span>
+<span class="pr">PS></span> <span class="cmd">Get-Process</span> | <span class="cmd">Export-Csv</span> <span class="str">"C:\AulaSO\processos.csv"</span> <span class="param">-NoTypeInformation</span>
+
+<span class="comment"># Contar quantos serviços estão rodando</span>
+<span class="pr">PS></span> <span class="cmd">Get-Service</span> | <span class="cmd">Where-Object</span> {<span class="param">$_</span>.Status <span class="param">-eq</span> <span class="str">"Running"</span>} | <span class="cmd">Measure-Object</span> | <span class="cmd">Select-Object</span> Count
+<span class="out">Count: 187</span>
+    </div>
+  </div>
+
+  <h3>📜 Seu Primeiro Script .ps1</h3>
+  <p>Um script PowerShell é um arquivo de texto com extensão <code style="font-family:monospace;color:var(--accent)">.ps1</code> contendo uma sequência de comandos. Para rodar scripts, é necessário ajustar a política de execução.</p>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="terminal-title">relatorio_sistema.ps1</div>
+      <button class="copy-btn" onclick="copyCode(this, '# Configurar política de execução (Admin)\nSet-ExecutionPolicy RemoteSigned -Scope CurrentUser\n\n# ── relatorio_sistema.ps1 ──\n$data = Get-Date -Format \"dd/MM/yyyy HH:mm\"\n$hostname = $env:COMPUTERNAME\n$usuario = $env:USERNAME\n$os = (Get-CimInstance Win32_OperatingSystem).Caption\n$ram = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 2)\n$cpu = (Get-CimInstance Win32_Processor).Name\n\nWrite-Host \"═══════════════════════════\" -ForegroundColor Cyan\nWrite-Host \" RELATÓRIO DO SISTEMA\" -ForegroundColor White\nWrite-Host \"═══════════════════════════\" -ForegroundColor Cyan\nWrite-Host \"Data/Hora : $data\"\nWrite-Host \"Hostname  : $hostname\"\nWrite-Host \"Usuário   : $usuario\"\nWrite-Host \"SO        : $os\"\nWrite-Host \"RAM       : $ram GB\"\nWrite-Host \"CPU       : $cpu\"\nWrite-Host \"═══════════════════════════\" -ForegroundColor Cyan')">copiar</button>
+    </div>
+    <div class="terminal-body">
+<span class="comment"># PASSO 1: Permitir scripts (rodar como Admin, só uma vez)</span>
+<span class="pr">PS [Admin]></span> <span class="cmd">Set-ExecutionPolicy</span> RemoteSigned <span class="param">-Scope</span> CurrentUser
+
+<span class="comment"># ── CONTEÚDO DO SCRIPT: relatorio_sistema.ps1 ──</span>
+
+<span class="param">$data</span>     = <span class="cmd">Get-Date</span> <span class="param">-Format</span> <span class="str">"dd/MM/yyyy HH:mm"</span>
+<span class="param">$hostname</span> = <span class="param">$env</span>:COMPUTERNAME
+<span class="param">$usuario</span>  = <span class="param">$env</span>:USERNAME
+<span class="param">$os</span>       = (<span class="cmd">Get-CimInstance</span> Win32_OperatingSystem).Caption
+<span class="param">$ram</span>      = [math]::Round((<span class="cmd">Get-CimInstance</span> Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 2)
+<span class="param">$cpu</span>      = (<span class="cmd">Get-CimInstance</span> Win32_Processor).Name
+
+<span class="cmd">Write-Host</span> <span class="str">"═══════════════════════════"</span> <span class="param">-ForegroundColor</span> Cyan
+<span class="cmd">Write-Host</span> <span class="str">" RELATÓRIO DO SISTEMA"</span> <span class="param">-ForegroundColor</span> White
+<span class="cmd">Write-Host</span> <span class="str">"═══════════════════════════"</span> <span class="param">-ForegroundColor</span> Cyan
+<span class="cmd">Write-Host</span> <span class="str">"Data/Hora : <span class="param">$data</span>"</span>
+<span class="cmd">Write-Host</span> <span class="str">"Hostname  : <span class="param">$hostname</span>"</span>
+<span class="cmd">Write-Host</span> <span class="str">"Usuário   : <span class="param">$usuario</span>"</span>
+<span class="cmd">Write-Host</span> <span class="str">"SO        : <span class="param">$os</span>"</span>
+<span class="cmd">Write-Host</span> <span class="str">"RAM       : <span class="param">$ram</span> GB"</span>
+<span class="cmd">Write-Host</span> <span class="str">"CPU       : <span class="param">$cpu</span>"</span>
+<span class="cmd">Write-Host</span> <span class="str">"═══════════════════════════"</span> <span class="param">-ForegroundColor</span> Cyan
+
+<span class="comment"># PASSO 2: Salvar como relatorio_sistema.ps1 em C:\AulaSO</span>
+<span class="comment"># PASSO 3: Executar no PowerShell:</span>
+<span class="pr">PS></span> <span class="cmd">.\relatorio_sistema.ps1</span>
+<span class="out">═══════════════════════════</span>
+<span class="out"> RELATÓRIO DO SISTEMA</span>
+<span class="out">═══════════════════════════</span>
+<span class="out">Data/Hora : 28/04/2026 11:24</span>
+<span class="out">Hostname  : PC-ALUNO-01</span>
+<span class="out">Usuário   : Aluno</span>
+<span class="out">SO        : Microsoft Windows 11 Pro</span>
+<span class="out">RAM       : 16 GB</span>
+<span class="out">CPU       : Intel Core i7-12700</span>
+    </div>
+  </div>
+
+  <h3>Tabela Rápida de Operadores</h3>
+  <table class="ref-table">
+    <thead>
+      <tr><th>Operador</th><th>Significado</th><th>Exemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>-eq</td><td>Igual a</td><td>Where {$_.Status -eq "Running"}</td></tr>
+      <tr><td>-ne</td><td>Diferente de</td><td>Where {$_.Name -ne "svchost"}</td></tr>
+      <tr><td>-gt</td><td>Maior que</td><td>Where {$_.CPU -gt 100}</td></tr>
+      <tr><td>-lt</td><td>Menor que</td><td>Where {$_.WorkingSet -lt 50MB}</td></tr>
+      <tr><td>-like</td><td>Parecido com (* wildcard)</td><td>Where {$_.Name -like "s*"}</td></tr>
+      <tr><td>-match</td><td>Regex match</td><td>Where {$_.Name -match "^win"}</td></tr>
+      <tr><td>-and</td><td>E lógico</td><td>Where {$_.CPU -gt 5 -and $_.Id -gt 1000}</td></tr>
+      <tr><td>-or</td><td>Ou lógico</td><td>Where {$_.Status -eq "Running" -or $_.Status -eq "Paused"}</td></tr>
+    </tbody>
+  </table>
+
+  <div class="challenge" data-icon="⚡">
+    <div class="challenge-label">// desafio final — +150 XP</div>
+    <h3>Script de Inventário do Laboratório</h3>
+    <p>Você é o técnico de TI responsável pelo laboratório. Precisa gerar um relatório automático de cada máquina.</p>
+    <ol>
+      <li>Abra o PowerShell como <strong>Administrador</strong></li>
+      <li>Execute o comando <code style="color:var(--accent)">Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code> para permitir scripts</li>
+      <li>Crie o arquivo <strong>relatorio_sistema.ps1</strong> em <code style="color:var(--accent)">C:\AulaSO\</code> com o código acima</li>
+      <li>Execute o script com <code style="color:var(--accent)">.\relatorio_sistema.ps1</code></li>
+      <li><strong>Bônus:</strong> Modifique o script para também exibir os 3 processos que mais consomem CPU no momento</li>
+      <li><strong>Bônus 2:</strong> Exporte o resultado para um arquivo <code style="color:var(--accent)">relatorio.txt</code> usando <code style="color:var(--accent)">.\relatorio_sistema.ps1 | Out-File relatorio.txt</code></li>
+    </ol>
+    <div class="pts" onclick="addXP(150, this)">🎮 Clique aqui ao completar: +150 XP</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     QUIZ
+══════════════════════════════════════════ -->
+<section id="quiz">
+<div class="container">
+  <div class="sec-label">avaliação</div>
+  <h2>Quiz — Teste seu <span>Conhecimento</span></h2>
+  <p class="lead">10 questões cobrindo toda a jornada do módulo — do SO básico até o PowerShell. Cada acerto conta!</p>
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q1</span> Qual é a função principal de um Sistema Operacional?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q1')"><span class="quiz-letter">A</span> Criar documentos e planilhas</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q1')"><span class="quiz-letter">B</span> Gerenciar hardware, memória, processos e fornecer serviços para apps</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q1')"><span class="quiz-letter">C</span> Conectar o computador à internet</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q1')"><span class="quiz-letter">D</span> Armazenar arquivos no disco rígido</div>
+    </div>
+    <div class="quiz-fb" id="q1">✅ Correto! O SO é o intermediário entre hardware e software, gerenciando todos os recursos do sistema.</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q2</span> O que é o Kernel Mode e por que ele é diferente do User Mode?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q2')"><span class="quiz-letter">A</span> É o modo para jogos — tem acesso total ao hardware para melhor desempenho</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q2')"><span class="quiz-letter">B</span> É onde rodam os aplicativos do usuário, com acesso restrito</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q2')"><span class="quiz-letter">C</span> É o modo privilegiado onde roda o núcleo do SO e drivers, com acesso total ao hardware</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q2')"><span class="quiz-letter">D</span> É uma área de memória reservada para senhas e dados sensíveis</div>
+    </div>
+    <div class="quiz-fb" id="q2">✅ Correto! Kernel Mode tem acesso total ao hardware. Um crash aqui causa a famosa Tela Azul (BSOD).</div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q3</span> Qual é a diferença entre um Programa e um Processo?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q3')"><span class="quiz-letter">A</span> São a mesma coisa, apenas palavras diferentes</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q3')"><span class="quiz-letter">B</span> Processo é o arquivo no disco; Programa é a instância em execução na RAM</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q3')"><span class="quiz-letter">C</span> Programa é o arquivo no disco; Processo é a instância em execução na RAM com PID próprio</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q3')"><span class="quiz-letter">D</span> Processo roda em Kernel Mode; Programa roda em User Mode</div>
+    </div>
+    <div class="quiz-fb" id="q3">✅ Correto! O programa (ex: chrome.exe) é estático no disco. O processo é a execução viva na memória, com PID único.</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q4</span> Qual atalho abre o Gerenciador de Tarefas diretamente (sem menu intermediário)?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q4')"><span class="quiz-letter">A</span> Ctrl + Alt + Del</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q4')"><span class="quiz-letter">B</span> Ctrl + Shift + Esc</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q4')"><span class="quiz-letter">C</span> Win + T</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q4')"><span class="quiz-letter">D</span> Win + X</div>
+    </div>
+    <div class="quiz-fb" id="q4">✅ Correto! Ctrl + Shift + Esc vai direto para o Gerenciador de Tarefas. Ctrl + Alt + Del mostra um menu intermediário.</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q5</span> No Windows 11, onde o Menu Iniciar está posicionado por padrão na barra de tarefas?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q5')"><span class="quiz-letter">A</span> Canto inferior esquerdo (como no Windows 10)</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q5')"><span class="quiz-letter">B</span> Centro da barra de tarefas</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q5')"><span class="quiz-letter">C</span> Canto superior esquerdo</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q5')"><span class="quiz-letter">D</span> Canto inferior direito</div>
+    </div>
+    <div class="quiz-fb" id="q5">✅ Correto! O Win 11 centralizou o Menu Iniciar — uma das mudanças mais polêmicas. Mas pode ser movido para a esquerda nas configurações.</div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q6</span> O que o atributo "H" (Hidden) faz em um arquivo do Windows?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q6')"><span class="quiz-letter">A</span> Criptografa o arquivo com senha</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q6')"><span class="quiz-letter">B</span> Impede que o arquivo seja deletado</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q6')"><span class="quiz-letter">C</span> Faz o arquivo não aparecer no Explorador sem ativar "Exibir itens ocultos"</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q6')"><span class="quiz-letter">D</span> Comprime o arquivo para economizar espaço</div>
+    </div>
+    <div class="quiz-fb" id="q6">✅ Correto! O atributo H oculta o arquivo da visualização normal. É diferente de criptografia — o arquivo ainda pode ser acessado por quem souber onde ele está.</div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q7</span> Qual pasta do Windows guarda os arquivos de configuração de apps do usuário (geralmente oculta)?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q7')"><span class="quiz-letter">A</span> C:\Windows\System32</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q7')"><span class="quiz-letter">B</span> C:\Program Files</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q7')"><span class="quiz-letter">C</span> C:\Users\[nome]\AppData</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q7')"><span class="quiz-letter">D</span> C:\ProgramData</div>
+    </div>
+    <div class="quiz-fb" id="q7">✅ Correto! AppData é onde apps armazenam configurações por usuário (favoritos, preferências, caches). Fica oculta por padrão.</div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q8</span> Qual recurso do Windows 11 permite organizar múltiplas janelas em layouts predefinidos (metades, terços, quadrantes)?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q8')"><span class="quiz-letter">A</span> Task View</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q8')"><span class="quiz-letter">B</span> Virtual Desktop</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q8')"><span class="quiz-letter">C</span> Snap Layouts</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q8')"><span class="quiz-letter">D</span> Window Groups</div>
+    </div>
+    <div class="quiz-fb" id="q8">✅ Correto! Snap Layouts é ativado passando o mouse sobre o botão Maximizar. É exclusivo do Windows 11.</div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q9</span> No PowerShell, qual comando lista todos os processos e os ordena pelo consumo de CPU do maior para o menor?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q9')"><span class="quiz-letter">A</span> List-Process | Order-By CPU</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q9')"><span class="quiz-letter">B</span> Get-Process | Sort-Object CPU -Descending</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q9')"><span class="quiz-letter">C</span> tasklist /sort:cpu</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q9')"><span class="quiz-letter">D</span> Get-Task | Sort CPU -Desc</div>
+    </div>
+    <div class="quiz-fb" id="q9">✅ Correto! Get-Process | Sort-Object CPU -Descending. O pipeline (|) passa a lista de processos para Sort-Object ordenar.</div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="quiz-card">
+    <div class="quiz-q"><span class="qnum">Q10</span> O que é o PID em um processo do sistema operacional?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="ans(this,false,'q10')"><span class="quiz-letter">A</span> Process Input Data — os dados de entrada do processo</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q10')"><span class="quiz-letter">B</span> Priority Index Device — a prioridade do processo na fila da CPU</div>
+      <div class="quiz-opt" onclick="ans(this,true,'q10')"><span class="quiz-letter">C</span> Process Identifier — o número único que identifica cada processo em execução</div>
+      <div class="quiz-opt" onclick="ans(this,false,'q10')"><span class="quiz-letter">D</span> Primary Instance Driver — o driver principal do processo</div>
+    </div>
+    <div class="quiz-fb" id="q10">✅ Correto! O PID é o identificador único do processo. O Sistema sempre tem PID=4. Ao fechar e reabrir um programa, ele ganha um novo PID.</div>
+  </div>
+
+  <div id="quiz-result" style="display:none;margin-top:32px;background:var(--surface2);border:1px solid var(--border2);border-radius:16px;padding:28px;text-align:center;">
+    <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;margin-bottom:8px;" id="quiz-score"></div>
+    <div style="color:var(--muted);font-size:14px;" id="quiz-msg"></div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CHECKLIST
+══════════════════════════════════════════ -->
+<section id="checklist">
+<div class="container">
+  <div class="sec-label">revisão final</div>
+  <h2>Checklist do <span>Aprendizado</span></h2>
+  <p class="lead">Clique em cada item à medida que você completa. Acompanhe seu progresso na aula!</p>
+
+  <ul class="checklist" id="checklistItems">
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Identifiquei o SO e versão do PC da aula</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Entendi o papel do SO como gerente dos recursos</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Expliquei a diferença entre Kernel Mode e User Mode</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Sei por que o BSOD acontece</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Abri o Gerenciador de Tarefas com Ctrl+Shift+Esc</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Identifiquei um PID na aba Detalhes</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Usei os atalhos Win+D, Win+E, Win+L</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Criei um Desktop Virtual (Win+Ctrl+D)</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Organizei 3 janelas com Snap Layouts</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Naveguei até C:\Windows\System32</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Ativei e desativei a exibição de arquivos ocultos</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Criei a pasta Aula_SO em Documentos</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Apliquei o atributo Hidden em um arquivo</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Removi o atributo Hidden pelo PowerShell</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Abri o PowerShell como Administrador</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Usei Get-Process, Get-Service e Get-ChildItem</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Usei o pipeline (|) para filtrar resultados</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Criei e executei um script .ps1</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Completei pelo menos 4 dos 7 desafios práticos</li>
+    <li onclick="toggleCheck(this)"><div class="check-box"></div> Acertei 7+ questões no quiz</li>
+  </ul>
+
+  <div id="progressMsg" style="margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);"></div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     REFERÊNCIA RÁPIDA
+══════════════════════════════════════════ -->
+<section id="ref">
+<div class="container">
+  <div class="sec-label">referência</div>
+  <h2>Tabela de <span class="sp2">Referência</span> Rápida</h2>
+  <p class="lead">Os comandos PowerShell essenciais da aula em uma tabela de consulta.</p>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>Comando</th><th>Função</th><th>Exemplo prático</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Get-Process</td><td>Lista processos em execução</td><td>Get-Process | Sort-Object CPU -Desc</td></tr>
+      <tr><td>Stop-Process</td><td>Encerra um processo</td><td>Stop-Process -Name "notepad" -Force</td></tr>
+      <tr><td>Get-Service</td><td>Lista serviços do Windows</td><td>Get-Service | Where {$_.Status -eq "Running"}</td></tr>
+      <tr><td>Start/Stop-Service</td><td>Inicia ou para serviço</td><td>Start-Service -Name "Spooler"</td></tr>
+      <tr><td>Get-ChildItem</td><td>Lista arquivos/pastas</td><td>Get-ChildItem -Recurse -Filter *.log</td></tr>
+      <tr><td>Set-Location</td><td>Muda de diretório</td><td>Set-Location C:\Windows\System32</td></tr>
+      <tr><td>New-Item</td><td>Cria arquivo ou pasta</td><td>New-Item -Path "C:\pasta" -ItemType Directory</td></tr>
+      <tr><td>Set-Content</td><td>Escreve em arquivo</td><td>Set-Content "arq.txt" -Value "Texto"</td></tr>
+      <tr><td>Get-Content</td><td>Lê conteúdo de arquivo</td><td>Get-Content "log.txt" -Tail 20</td></tr>
+      <tr><td>Copy-Item</td><td>Copia arquivos</td><td>Copy-Item "orig.txt" -Destination "copia.txt"</td></tr>
+      <tr><td>Remove-Item</td><td>Exclui arquivos/pastas</td><td>Remove-Item ".\temp" -Recurse -Force</td></tr>
+      <tr><td>Test-Connection</td><td>Ping avançado</td><td>Test-Connection 8.8.8.8 -Count 4</td></tr>
+      <tr><td>Get-NetIPAddress</td><td>Endereços IP do sistema</td><td>Get-NetIPAddress -AddressFamily IPv4</td></tr>
+      <tr><td>Export-Csv</td><td>Exporta para planilha</td><td>Get-Process | Export-Csv "procs.csv"</td></tr>
+      <tr><td>Where-Object</td><td>Filtra pipeline</td><td>Where-Object {$_.CPU -gt 10}</td></tr>
+      <tr><td>Sort-Object</td><td>Ordena resultados</td><td>Sort-Object CPU -Descending</td></tr>
+      <tr><td>Select-Object</td><td>Seleciona colunas</td><td>Select-Object Name, CPU, Id</td></tr>
+      <tr><td>Measure-Object</td><td>Conta / soma / média</td><td>Get-ChildItem | Measure-Object Length -Sum</td></tr>
+      <tr><td>Write-Host</td><td>Imprime na tela</td><td>Write-Host "Olá!" -ForegroundColor Green</td></tr>
+      <tr><td>Get-Help</td><td>Documentação do comando</td><td>Get-Help Get-Process -Full</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-logo">Gestão de <span>SO</span></div>
+  <p>Gestão de Sistemas Operacionais I &nbsp;·&nbsp; Prof. Isaque Katahira</p>
+  <p style="margin-top:6px;font-size:12px;opacity:0.4;">Do Kernel ao PowerShell — material completo para a aula prática.</p>
+</footer>
+
+<script>
+// ── Progress bar ──
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+});
+
+// ── Active nav ──
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-item[data-section]');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const active = document.querySelector(`.nav-item[data-section="${e.target.id}"]`);
+      if (active) {
+        active.classList.add('active');
+        active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+// ── Step reveal ──
+const stepObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.step').forEach(s => stepObs.observe(s));
+
+// ── Copy buttons ──
+function copyCode(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── XP System ──
+let xp = 0;
+const XP_MAX = 650;
+
+function addXP(amount, el) {
+  if (el.classList.contains('claimed')) return;
+  el.classList.add('claimed');
+  el.textContent = '✅ +' + amount + ' XP conquistados!';
+  el.style.background = 'rgba(91,245,200,0.15)';
+  el.style.borderColor = 'rgba(91,245,200,0.4)';
+  el.style.color = 'var(--accent)';
+  el.style.cursor = 'default';
+  xp += amount;
+  updateXP();
+}
+
+function updateXP() {
+  document.getElementById('xpScore').textContent = xp + ' XP';
+  const pct = Math.min(xp / XP_MAX * 100, 100);
+  document.getElementById('xpFill').style.width = pct + '%';
+  
+  const msgs = [
+    [0,   'Complete desafios!'],
+    [100, '🔰 Iniciante do SO!'],
+    [250, '⚡ Técnico em formação'],
+    [400, '🔥 Quase lá!'],
+    [550, '💎 Expert em SO!'],
+    [650, '🏆 MESTRE DO SISTEMA!'],
+  ];
+  
+  let msg = msgs[0][1];
+  for (const [threshold, label] of msgs) {
+    if (xp >= threshold) msg = label;
+  }
+  document.getElementById('xpMsg').textContent = msg;
+}
+
+// ── Quiz ──
+const quizAnswered = {};
+let quizScore = 0;
+const quizTotal = 10;
+
+function ans(el, correct, qid) {
+  if (quizAnswered[qid]) return;
+  quizAnswered[qid] = true;
+
+  const opts = el.closest('.quiz-opts').querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.style.pointerEvents = 'none');
+
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) {
+    opts.forEach(o => {
+      if (o.onclick && o.getAttribute('onclick') && o.getAttribute('onclick').includes('true')) {
+        o.classList.add('correct');
+      }
+    });
+  }
+
+  const fb = document.getElementById(qid);
+  fb.classList.add('show');
+  if (correct) {
+    fb.className = 'quiz-fb show ok';
+    quizScore++;
+    addXPQuiet(20);
+  } else {
+    fb.className = 'quiz-fb show err';
+    fb.textContent = '❌ Não era essa. A resposta correta está marcada em verde acima.';
+  }
+
+  if (Object.keys(quizAnswered).length === quizTotal) {
+    showQuizResult();
+  }
+}
+
+function addXPQuiet(amount) {
+  xp += amount;
+  updateXP();
+}
+
+function showQuizResult() {
+  const result = document.getElementById('quiz-result');
+  const scoreEl = document.getElementById('quiz-score');
+  const msgEl = document.getElementById('quiz-msg');
+  result.style.display = 'block';
+  const pct = Math.round(quizScore / quizTotal * 100);
+  const emoji = pct >= 90 ? '🏆' : pct >= 70 ? '🔥' : pct >= 50 ? '💪' : '📚';
+  scoreEl.textContent = `${emoji} ${quizScore}/${quizTotal} — ${pct}%`;
+  const msgs = {100: 'PERFEITO! Você dominou tudo!', 90: 'Excelente! Quase perfeito!', 70: 'Muito bom! Pequenas lacunas.', 50: 'Razoável. Revise os módulos anteriores.', 0: 'Hora de reler a aula com atenção!'};
+  let msgKey = 0;
+  for (const k of [50, 70, 90, 100]) { if (pct >= k) msgKey = k; }
+  msgEl.textContent = msgs[msgKey];
+  result.style.borderColor = pct >= 70 ? 'rgba(91,245,200,0.4)' : 'rgba(247,90,122,0.4)';
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── Checklist ──
+function toggleCheck(li) {
+  li.classList.toggle('done');
+  li.querySelector('.check-box').textContent = li.classList.contains('done') ? '✓' : '';
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = document.querySelectorAll('#checklistItems li').length;
+  const done  = document.querySelectorAll('#checklistItems li.done').length;
+  const pct   = Math.round((done / total) * 100);
+  const emoji = pct === 100 ? '🏆' : pct >= 75 ? '🔥' : pct >= 50 ? '💪' : pct >= 25 ? '🚀' : '⌨️';
+  const msg   = document.getElementById('progressMsg');
+  msg.textContent = `${emoji}  ${done}/${total} concluídos — ${pct}% da aula dominada`;
+  msg.style.color = pct === 100 ? 'var(--accent)' : pct >= 50 ? 'var(--text)' : 'var(--muted)';
+}
+
+updateProgress();
+updateXP();
+</script>
+
+</body>
+</html>
