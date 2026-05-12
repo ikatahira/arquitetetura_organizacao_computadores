@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROVA — Arquitetura de Computadores | ARQ-001 · 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f8fa;
+  --white:#ffffff;
+  --navy:#0f2340;
+  --blue:#1a4a8a;
+  --blue2:#2563eb;
+  --green:#16a34a;
+  --red:#dc2626;
+  --amber:#b45309;
+  --purple:#7c3aed;
+  --gray-100:#f1f5f9;
+  --gray-200:#e2e8f0;
+  --gray-300:#cbd5e1;
+  --gray-400:#94a3b8;
+  --gray-500:#64748b;
+  --gray-600:#475569;
+  --gray-700:#334155;
+  --gray-800:#1e293b;
+  --text:#1e293b;
+  --border:#cbd5e1;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+}
+html{font-size:36px}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  padding:0;
+  margin:0;
+}
+.screen-wrap{max-width:860px;margin:0 auto;padding:32px 24px 80px}
+
+/* ── AVISO DESTAQUE ── */
+.aviso-box{
+  background:#fff7ed;
+  border:2px solid #f97316;
+  border-radius:4px;
+  padding:14px 18px;
+  margin-bottom:18px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.aviso-icon{font-size:1.3em;flex-shrink:0;margin-top:1px}
+.aviso-text{font-size:.84em;color:#7c2d12;line-height:1.5}
+.aviso-text strong{color:#c2410c}
+
+/* ── EMENTA/OBJETIVO BOX ── */
+.ementa-box{
+  background:var(--white);
+  border:1.5px solid var(--gray-200);
+  border-left:5px solid var(--blue2);
+  border-radius:3px;
+  padding:14px 18px;
+  margin-bottom:18px;
+}
+.ementa-title{
+  font-family:var(--mono);font-size:.62em;font-weight:700;
+  color:var(--blue2);letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.ementa-text{font-size:.8em;color:var(--gray-700);line-height:1.6;}
+.ementa-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.etag{
+  font-family:var(--mono);font-size:.58em;font-weight:600;
+  padding:2px 8px;border-radius:2px;border:1px solid #bfdbfe;
+  background:#eff6ff;color:var(--blue2);
+}
+
+/* QUESTÃO CARD */
+.q-card{
+  background:var(--white);
+  border:1.5px solid var(--gray-200);
+  border-radius:3px;
+  padding:18px 20px 16px;
+  margin-bottom:12px;
+  position:relative;
+}
+.q-card::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:var(--gray-300);border-radius:3px 0 0 3px;
+}
+.q-card.q-blue::before{background:var(--blue2)}
+.q-card.q-green::before{background:var(--green)}
+.q-card.q-amber::before{background:var(--amber)}
+.q-card.q-purple::before{background:var(--purple)}
+
+.q-header{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:10px;flex-wrap:wrap;
+}
+.q-num{
+  font-family:var(--mono);font-size:.68em;font-weight:700;
+  color:var(--gray-400);letter-spacing:.1em;
+}
+.q-tag{
+  font-family:var(--mono);font-size:.62em;font-weight:600;
+  padding:2px 8px;border-radius:2px;border:1px solid;
+}
+.qt-mc{color:var(--blue2);border-color:#bfdbfe;background:#eff6ff}
+.qt-vf{color:#0891b2;border-color:#a5f3fc;background:#ecfeff}
+.qt-open{color:var(--green);border-color:#bbf7d0;background:#f0fdf4}
+.qt-match{color:#7c3aed;border-color:#ddd6fe;background:#f5f3ff}
+.qt-fill{color:var(--amber);border-color:#fde68a;background:#fffbeb}
+.q-pts{
+  margin-left:auto;
+  font-family:var(--mono);font-size:.65em;
+  color:var(--gray-400);
+}
+
+.q-text{
+  font-size:.88em;color:var(--gray-800);line-height:1.65;
+  margin-bottom:14px;
+}
+.q-text strong{color:var(--navy)}
+.q-text code{
+  font-family:var(--mono);font-size:.9em;
+  background:var(--gray-100);
+  border:1px solid var(--gray-200);
+  padding:1px 6px;border-radius:2px;color:var(--blue2);
+}
+.q-text em{color:var(--amber);font-style:normal;font-weight:600}
+
+.opts{display:flex;flex-direction:column;gap:5px}
+.opt-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:7px 10px;
+  border:1px solid var(--gray-200);
+  border-radius:2px;
+  font-size:.84em;color:var(--gray-700);
+  line-height:1.4;
+}
+.opt-circle{
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--gray-300);
+  flex-shrink:0;margin-top:1px;
+}
+.opt-letter{
+  font-family:var(--mono);font-size:.72em;font-weight:700;
+  color:var(--gray-400);flex-shrink:0;margin-top:2px;min-width:14px;
+}
+
+.vf-rows{display:flex;flex-direction:column;gap:5px}
+.vf-row{
+  display:flex;align-items:flex-start;gap:0;
+  border:1px solid var(--gray-200);
+  border-radius:2px;overflow:hidden;
+}
+.vf-stmt{
+  flex:1;padding:7px 12px;
+  font-size:.84em;color:var(--gray-700);line-height:1.4;
+  border-right:1px solid var(--gray-200);
+}
+
+.fill-row{
+  display:flex;align-items:center;flex-wrap:wrap;gap:4px;
+  font-size:.84em;color:var(--gray-700);line-height:2;margin-bottom:4px;
+}
+.fill-blank{
+  display:inline-block;
+  border-bottom:1.5px solid var(--gray-400);
+  min-width:100px;height:22px;
+  margin:0 4px;
+}
+
+.answer-lines{
+  margin-top:8px;
+  display:flex;flex-direction:column;gap:0;
+}
+.answer-line{
+  border-bottom:1px solid var(--gray-200);
+  height:26px;width:100%;
+}
+
+.draw-box{
+  margin-top:12px;
+  border:1.5px solid var(--gray-300);
+  border-radius:3px;
+  width:100%;
+  height:300px;
+  background:var(--gray-100);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gray-400);
+  font-family:var(--mono);
+  font-size:.72em;
+  letter-spacing:.05em;
+}
+.draw-box-large{height:900px}
+
+.match-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.match-col-title{
+  font-family:var(--mono);font-size:.65em;
+  color:var(--gray-400);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.match-items{display:flex;flex-direction:column;gap:4px}
+.match-item{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:7px 10px;border:1px solid var(--gray-200);
+  border-radius:2px;font-size:.82em;color:var(--gray-700);line-height:1.4;
+}
+.match-letter{
+  font-family:var(--mono);font-weight:700;font-size:.8em;
+  color:var(--navy);flex-shrink:0;min-width:14px;
+}
+.match-answer-box{
+  width:30px;height:26px;
+  border:1.5px solid var(--gray-400);
+  border-radius:2px;display:inline-block;
+  flex-shrink:0;
+}
+
+.sec-divider{
+  display:flex;align-items:stretch;gap:0;
+  margin:28px 0 14px;
+}
+.sec-bar{width:6px;border-radius:2px 0 0 2px;flex-shrink:0}
+.sec-bar-b{background:var(--blue2)}
+.sec-bar-g{background:var(--green)}
+.sec-bar-a{background:var(--amber)}
+.sec-bar-p{background:var(--purple)}
+.sec-content{
+  flex:1;
+  background:var(--white);
+  border:1.5px solid var(--gray-200);
+  border-left:none;
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:6px;
+}
+.sec-tag{
+  font-family:var(--mono);font-size:.6em;font-weight:700;
+  color:var(--gray-400);letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:2px;
+}
+.sec-name{
+  font-family:var(--mono);font-size:.92em;font-weight:700;
+  color:var(--navy);
+}
+.sec-desc{font-size:.8em;color:var(--gray-500);margin-top:2px}
+.sec-pts-badge{
+  font-family:var(--mono);font-size:.72em;font-weight:700;
+  padding:5px 14px;border-radius:2px;
+  color:white;
+  white-space:nowrap;
+}
+.sec-pts-b{background:var(--blue2)}
+.sec-pts-g{background:var(--green)}
+.sec-pts-a{background:var(--amber)}
+.sec-pts-p{background:var(--purple)}
+
+/* Identificação */
+.id-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.id-field{
+  border:1.5px solid var(--gray-300);
+  border-radius:3px;padding:8px 12px;
+}
+.id-field label{
+  display:block;font-family:var(--mono);font-size:.58em;
+  color:var(--gray-400);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;
+}
+.id-field .line{
+  display:block;height:24px;border-bottom:1.5px solid var(--gray-300);
+}
+.id-field-full{grid-column:1 / -1}
+
+/* Chips */
+.cover-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{
+  font-family:var(--mono);font-size:.65em;font-weight:600;
+  padding:4px 12px;border-radius:2px;border:1px solid;
+  letter-spacing:.04em;
+}
+.chip-b{color:var(--blue2);border-color:#bfdbfe;background:#eff6ff}
+.chip-g{color:var(--green);border-color:#bbf7d0;background:#f0fdf4}
+.chip-r{color:var(--red);border-color:#fecaca;background:#fef2f2}
+.chip-a{color:var(--amber);border-color:#fde68a;background:#fffbeb}
+.chip-n{color:var(--navy);border-color:#cbd5e1;background:#f8fafc}
+.chip-p{color:var(--purple);border-color:#ddd6fe;background:#f5f3ff}
+
+.id-block{
+  background:var(--white);
+  border:1.5px solid var(--gray-200);
+  border-radius:3px;
+  padding:16px 20px;
+  margin-bottom:20px;
+}
+
+.score-footer{
+  background:var(--white);
+  border:1.5px solid var(--gray-200);
+  border-radius:3px;
+  padding:16px 20px;
+  margin-top:24px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.score-section{
+  flex:1;min-width:120px;
+  border:1px solid var(--gray-200);
+  padding:10px 14px;text-align:center;
+  border-radius:2px;
+}
+.score-section .lbl{
+  font-family:var(--mono);font-size:.6em;color:var(--gray-400);
+  letter-spacing:.1em;text-transform:uppercase;
+  display:block;margin-bottom:4px;
+}
+.score-section .val{
+  font-family:var(--mono);font-size:1.3em;font-weight:700;color:var(--navy);
+}
+
+/* PRINT */
+@media print {
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:white;font-size:9.5px;line-height:1.55}
+  .screen-wrap{max-width:100%;padding:0;margin:0}
+  .id-block{margin-bottom:10px;padding:10px 14px}
+  .id-grid{gap:8px}
+  .id-field{padding:6px 10px}
+  .id-field .line{height:22px}
+  .cover-chips{margin-bottom:10px;gap:6px}
+  .chip{padding:3px 9px;font-size:.7em}
+  .ementa-box{padding:10px 14px;margin-bottom:12px}
+  .ementa-text{font-size:.82em}
+  .aviso-box{padding:10px 14px;margin-bottom:12px}
+  .aviso-text{font-size:.84em}
+  .sec-divider{margin:12px 0 8px}
+  .sec-content{padding:8px 14px}
+  .sec-name{font-size:.9em}
+  .sec-desc{font-size:.78em;margin-top:2px}
+  .sec-pts-badge{padding:4px 10px;font-size:.7em}
+  .q-card{margin-bottom:10px;padding:12px 14px 10px;page-break-inside:avoid}
+  .q-header{margin-bottom:7px;gap:8px}
+  .q-text{font-size:.88em;margin-bottom:9px;line-height:1.55}
+  .opts{gap:5px}
+  .opt-row{padding:5px 9px;font-size:.84em;gap:8px;line-height:1.45}
+  .opt-circle{width:17px;height:17px;margin-top:1px}
+  .opt-letter{font-size:.75em}
+  .vf-rows{gap:5px}
+  .vf-stmt{padding:5px 10px;font-size:.84em;line-height:1.45}
+  .fill-row{font-size:.84em;line-height:1.8}
+  .fill-blank{height:20px;min-width:90px!important}
+  .answer-line{height:22px}
+  .match-items{gap:5px}
+  .match-item{padding:5px 9px;font-size:.82em;line-height:1.4}
+  .match-grid{gap:6px;margin-top:8px}
+  .draw-box{height:200px;font-size:.72em}
+  .draw-box-large{height:520px}
+  .score-footer{margin-top:12px;padding:10px 14px;gap:10px}
+  .score-section{padding:7px 10px;min-width:100px}
+  .no-print{display:none!important}
+  a{text-decoration:none}
+}
+@page{size:A4;margin:10mm 13mm 10mm 13mm}
+
+.print-btn-bar{
+  position:fixed;bottom:24px;right:24px;z-index:100;
+  display:flex;gap:8px;
+}
+.print-btn{
+  background:var(--navy);color:white;
+  font-family:var(--mono);font-size:.78em;font-weight:700;
+  padding:12px 24px;border:none;cursor:pointer;
+  border-radius:3px;letter-spacing:.06em;
+  box-shadow:0 4px 20px rgba(15,35,64,.35);
+  transition:all .2s;
+}
+.print-btn:hover{background:#1a3a6a;transform:translateY(-1px)}
+</style>
+</head>
+<body>
+
+<div class="screen-wrap">
+
+<!-- IDENTIFICAÇÃO -->
+<div class="id-block">
+  <div style="font-family:var(--mono);font-size:.72em;font-weight:700;color:var(--navy);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">
+    FATEC Ourinhos &nbsp;·&nbsp; Disciplina: Arquitetura e Organização de Computadores &nbsp;·&nbsp; Prof.: Isaque Katahira &nbsp;·&nbsp; 2026 · 1º Semestre
+  </div>
+  <div style="font-family:var(--mono);font-size:1.1em;font-weight:700;color:var(--navy);margin-bottom:14px">AVALIAÇÃO FORMAL — Placa-Mãe, Sistemas Operacionais e Gestão Windows 11</div>
+  <div class="cover-chips">
+    <span class="chip chip-n">20 Questões</span>
+    <span class="chip chip-r">Permanência: 22h20 – 22h50</span>
+    <span class="chip chip-b">Seção A — Placa-Mãe</span>
+    <span class="chip chip-p">Seção B — Sistemas Operacionais</span>
+    <span class="chip chip-a">Seção C — Windows 11</span>
+  </div>
+  <div class="id-grid">
+    <div class="id-field id-field-full">
+      <label>Nome completo do aluno</label>
+      <span class="line"></span>
+    </div>
+    <div class="id-field">
+      <label>Data &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+      <span class="line"></span>
+    </div>
+    <div class="id-field">
+      <label>Turma / Período</label>
+      <span class="line"></span>
+    </div>
+    <div class="id-field">
+      <label>Assinatura do aluno</label>
+      <span class="line"></span>
+    </div>
+  </div>
+</div>
+
+<!-- AVISO DE HORÁRIO -->
+<div class="aviso-box">
+  <div class="aviso-icon">⏰</div>
+  <div class="aviso-text">
+    <strong>Instrução de permanência:</strong> A permanência mínima em sala é até as <strong>22h20</strong> — saídas antes desse horário não são permitidas. A saída máxima é às <strong>22h50</strong>. Utilize o tempo restante para revisar suas respostas — questões em branco valem zero.
+    Boa prova!
+  </div>
+</div>
+
+<!-- EMENTA E OBJETIVO -->
+<div class="ementa-box">
+  <div class="ementa-title">Ementa &amp; Objetivo contemplados nesta prova</div>
+  <div class="ementa-text">
+    <strong>Ementa:</strong> Bases numéricas e codificação de dados · Introdução à lógica digital · Conceitos básicos de arquitetura computacional incluindo gerações de computadores, níveis de computação, processadores, canais, periféricos, modo de endereçamento, tipos de dados, conjunto de instruções e interrupções · Sistemas paralelos · Microarquitetura, interrupções e sistemas de E/S · Hierarquias e gerenciamento de memória · Sistemas paralelos e distribuídos, interconexão de componentes (buses e interfaces de comunicação) · <strong>Sistemas operacionais — conceitos e funções</strong> · Linguagens e ferramentas · Organização de arquivos · Arquiteturas RISC e CISC.
+  </div>
+  <div class="ementa-text" style="margin-top:8px">
+    <strong>Objetivo:</strong> Fornecer visão geral de organização de computadores nos seus diversos níveis — lógica digital, microarquitetura, conjunto de instruções, sistema operacional, linguagem de programação e tecnologias — compreendendo a estrutura, operação e organização de computadores, incluindo a interação hardware/software e como os componentes se integram para formar um sistema computacional eficiente.
+  </div>
+  <div class="ementa-tags">
+    <span class="etag">Placa-Mãe &amp; Hardware</span>
+    <span class="etag">Sistemas Operacionais</span>
+    <span class="etag">Kernel / User Mode</span>
+    <span class="etag">Processos &amp; Gerenciamento</span>
+    <span class="etag">Hierarquia de Memória</span>
+    <span class="etag">Virtualização</span>
+    <span class="etag">PowerShell</span>
+    <span class="etag">Arquiteturas RISC/CISC</span>
+    <span class="etag">Buses &amp; Interfaces</span>
+    <span class="etag">Sistema de Arquivos</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SEÇÃO A — COMPONENTES DA PLACA-MÃE
+══════════════════════════════════════ -->
+<div class="sec-divider">
+  <div class="sec-bar sec-bar-b"></div>
+  <div class="sec-content">
+    <div>
+      <div class="sec-tag">SEÇÃO A</div>
+      <div class="sec-name">Componentes da Placa-Mãe</div>
+      <div class="sec-desc">Questões 01 a 07 · Identificação, funções e conceitos de hardware</div>
+    </div>
+    <span class="sec-pts-badge sec-pts-b">pontos</span>
+  </div>
+</div>
+
+<!-- Q01 -->
+<div class="q-card q-blue">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 01</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    O <strong>Socket da CPU</strong> em uma placa-mãe do padrão Intel LGA1150/1700 é responsável por:
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> Armazenar dados permanentes do sistema operacional, mesmo com o computador desligado.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> Conectar o processador à placa-mãe, fornecendo alimentação elétrica e comunicação com os demais componentes via barramentos.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> Gerenciar exclusivamente a comunicação entre o disco rígido SATA e a memória RAM.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> Controlar o fornecimento de energia da fonte ATX para todos os componentes do gabinete.</div>
+  </div>
+</div>
+
+<!-- Q02 -->
+<div class="q-card q-blue">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 02</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Sobre o <strong>Chipset</strong> da placa-mãe, analise as afirmações e marque a alternativa <em>correta</em>:
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> O Chipset é um componente opcional que melhora o desempenho gráfico da placa-mãe, sendo equivalente a uma GPU integrada.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> O Chipset gerencia a comunicação entre a CPU, a RAM, os slots de expansão (PCIe), as portas SATA, USB e outros periféricos da placa-mãe.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> O Chipset é responsável exclusivamente por fornecer energia regulada para o processador durante operação de alta carga.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> O Chipset armazena as configurações de BIOS/UEFI e o relógio do sistema, substituindo a bateria CMOS.</div>
+  </div>
+</div>
+
+<!-- Q03 -->
+<div class="q-card q-blue">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 03</span>
+    <span class="q-tag qt-vf">Verdadeiro / Falso</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Analise cada afirmação sobre componentes da placa-mãe. Marque <strong>V</strong> para verdadeiro e <strong>F</strong> para falso:
+  </div>
+  <div class="vf-rows">
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; A <strong>Bateria CMOS (CR2032)</strong> mantém as configurações do BIOS/UEFI (data, hora, ordem de boot) mesmo quando o computador está desligado e desconectado da tomada.</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; O <strong>Slot PCIe x16</strong> é utilizado exclusivamente para a instalação de placas de captura de áudio profissional.</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; O <strong>Conector ATX 24 pinos</strong> é a principal conexão de energia da placa-mãe, oriunda da fonte de alimentação.</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; Um <strong>SSD M.2 NVMe</strong> se conecta via barramento PCIe, podendo atingir velocidades superiores a 3.500 MB/s, muito acima dos SSDs SATA (limite de ~600 MB/s).</div>
+    </div>
+  </div>
+</div>
+
+<!-- Q04 -->
+<div class="q-card q-blue">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 04</span>
+    <span class="q-tag qt-match">Correspondência</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Relacione cada componente da placa-mãe (Coluna I) com sua função principal (Coluna II). Escreva a letra correspondente na caixa ao lado de cada número.
+  </div>
+  <div class="match-grid">
+    <div>
+      <div class="match-col-title">Coluna I — Componente</div>
+      <div class="match-items">
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">1.</span> Portas SATA</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">2.</span> Painel I/O Traseiro</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">3.</span> Slot M.2</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">4.</span> Conector EPS 8 pinos</div>
+      </div>
+    </div>
+    <div>
+      <div class="match-col-title">Coluna II — Função</div>
+      <div class="match-items">
+        <div class="match-item"><span class="match-letter">A.</span> Alimentação de energia exclusiva para o processador (VRM).</div>
+        <div class="match-item"><span class="match-letter">B.</span> Conexão de SSDs NVMe de alta velocidade via PCIe.</div>
+        <div class="match-item"><span class="match-letter">C.</span> Portas externas de comunicação: USB, Ethernet, HDMI, áudio.</div>
+        <div class="match-item"><span class="match-letter">D.</span> Conexão de HDs e SSDs do tipo SATA (até 6 Gbps).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q05 -->
+<div class="q-card q-blue">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 05</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Utilizando a <em>analogia da cidade</em> para compreender a placa-mãe, qual alternativa apresenta a correspondência <strong>correta</strong>?
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> CPU = Arquivo Central (armazena todos os documentos permanentemente); SSD = Prefeitura (toma todas as decisões).</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> CPU = Prefeitura (processa todas as decisões); RAM = Balcão de Trabalho (espaço imediato de trabalho, temporário); SSD = Arquivo Central (armazenamento permanente).</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> RAM = Usina Elétrica (fornece energia ao sistema); Chipset = Relógio da Cidade (marca o tempo de operação).</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> Placa de Vídeo = Prefeitura (coordena todos os processamentos); Chipset = Balcão de Trabalho (área temporária de dados).</div>
+  </div>
+</div>
+
+<!-- Q06 -->
+<div class="q-card q-blue">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 06</span>
+    <span class="q-tag qt-open">Desenho / Identificação</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    <strong>Desenhe uma placa-mãe</strong> e identifique seus principais componentes, indicando ao menos os seguintes elementos com legenda clara:
+    <br><br>
+    <strong>RAM</strong> (soquete de memória) &nbsp;·&nbsp;
+    <strong>CPU</strong> (soquete do processador) &nbsp;·&nbsp;
+    <strong>Chipset Norte</strong> &nbsp;·&nbsp;
+    <strong>Chipset Sul</strong> &nbsp;·&nbsp;
+    <strong>Conector SATA</strong> &nbsp;·&nbsp;
+    <strong>Conector de alimentação 24 pinos</strong> &nbsp;·&nbsp;
+    <strong>Bateria CMOS</strong> &nbsp;·&nbsp;
+    <strong>Slots PCIe</strong>
+  </div>
+  <div class="draw-box draw-box-large">[ Espaço para desenho ]</div>
+</div>
+
+<!-- Q07 -->
+<div class="q-card q-blue">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 07</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    O <strong>Oracle VirtualBox</strong> é classificado como um <em>Hypervisor Tipo 2</em>. O que isso significa na prática?
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> O VirtualBox é instalado diretamente no hardware do computador (bare-metal), sem necessidade de um sistema operacional hospedeiro.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> O VirtualBox é executado como um aplicativo sobre um sistema operacional hospedeiro (Windows, Linux, macOS), que por sua vez acessa o hardware físico.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> O VirtualBox utiliza dois processadores físicos simultaneamente para criar máquinas virtuais de alto desempenho.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> O VirtualBox é uma solução exclusiva para servidores corporativos, não sendo adequado para uso em computadores pessoais.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SEÇÃO B — SISTEMAS OPERACIONAIS
+══════════════════════════════════════ -->
+<div class="sec-divider">
+  <div class="sec-bar sec-bar-p"></div>
+  <div class="sec-content">
+    <div>
+      <div class="sec-tag">SEÇÃO B</div>
+      <div class="sec-name">Sistemas Operacionais — Conceitos e Funcionamento</div>
+      <div class="sec-desc">Questões 08 a 13 · Kernel, processos, memória, hierarquia e virtualização</div>
+    </div>
+    <span class="sec-pts-badge sec-pts-p">pontos</span>
+  </div>
+</div>
+
+<!-- Q08 -->
+<div class="q-card q-purple">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 08</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Qual das alternativas descreve com maior precisão a <strong>função principal de um Sistema Operacional</strong> em relação ao hardware e aos aplicativos?
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> O SO é responsável apenas por gerenciar o disco rígido e organizar pastas e arquivos do usuário.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> O SO atua como intermediário entre o hardware e os aplicativos, gerenciando CPU, memória, dispositivos de I/O e fornecendo uma interface padronizada para programas.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> O SO é um programa de segurança que protege o computador contra vírus e ameaças externas.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> O SO substitui os drivers de hardware, comunicando-se diretamente com os circuitos integrados sem qualquer camada intermediária.</div>
+  </div>
+</div>
+
+<!-- Q09 -->
+<div class="q-card q-purple">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 09</span>
+    <span class="q-tag qt-vf">Verdadeiro / Falso</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Analise as afirmações sobre <strong>Kernel Mode vs User Mode</strong>. Marque <strong>V</strong> para verdadeiro e <strong>F</strong> para falso:
+  </div>
+  <div class="vf-rows">
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; O <strong>Kernel Mode</strong> (modo privilegiado) possui acesso total ao hardware, enquanto o <strong>User Mode</strong> tem acesso restrito — se um processo em Kernel Mode travar, pode ocorrer a Tela Azul da Morte (BSOD).</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; Aplicativos como navegadores (Chrome, Edge) e editores de texto executam em <strong>Kernel Mode</strong>, pois precisam de acesso direto ao hardware para desempenho máximo.</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; Uma <strong>syscall (chamada de sistema)</strong> é o mecanismo pelo qual um programa em User Mode solicita serviços do Kernel, como abrir arquivos ou alocar memória.</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; Drivers de hardware (ex: driver de placa de vídeo) executam em <strong>User Mode</strong>, por isso um bug em um driver nunca pode causar instabilidade do sistema.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card q-purple">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 10</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Sobre o conceito de <strong>Processo</strong> em sistemas operacionais, assinale a alternativa <em>correta</em>:
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> Um processo é o mesmo que um programa — ambos os termos se referem ao arquivo executável armazenado no disco.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> Um processo é uma instância em execução de um programa, com espaço de memória próprio, estado e um identificador único chamado PID (Process Identifier).</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> Processos diferentes podem compartilhar o mesmo PID sem conflitos, pois o sistema operacional gerencia colisões automaticamente.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> Quando um programa é fechado, seu PID é preservado e reatribuído ao mesmo programa na próxima execução.</div>
+  </div>
+</div>
+
+<!-- Q11 -->
+<div class="q-card q-purple">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 11</span>
+    <span class="q-tag qt-match">Correspondência</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Relacione o <strong>estado do processo</strong> (Coluna I) com sua descrição correta (Coluna II):
+  </div>
+  <div class="match-grid">
+    <div>
+      <div class="match-col-title">Coluna I — Estado</div>
+      <div class="match-items">
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">1.</span> Novo (New)</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">2.</span> Pronto (Ready)</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">3.</span> Bloqueado (Waiting)</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">4.</span> Terminado (Terminated)</div>
+      </div>
+    </div>
+    <div>
+      <div class="match-col-title">Coluna II — Descrição</div>
+      <div class="match-items">
+        <div class="match-item"><span class="match-letter">A.</span> O processo concluiu sua execução ou foi encerrado pelo SO/usuário. Recursos são liberados.</div>
+        <div class="match-item"><span class="match-letter">B.</span> O processo está sendo criado — recursos iniciais sendo alocados pelo SO.</div>
+        <div class="match-item"><span class="match-letter">C.</span> O processo está aguardando a conclusão de uma operação de I/O (ex: leitura de disco) antes de continuar.</div>
+        <div class="match-item"><span class="match-letter">D.</span> O processo está na fila aguardando o escalonador atribuir tempo de CPU para ele executar.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="q-card q-purple">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 12</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    A <strong>hierarquia de memória</strong> em sistemas computacionais é organizada para equilibrar velocidade e custo. Qual alternativa apresenta a ordem <em>correta</em>, da memória <strong>mais rápida e cara</strong> para a <strong>mais lenta e barata</strong>?
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> HD/SSD → RAM → Cache L2 → Cache L1 → Registradores da CPU</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> Registradores da CPU → Cache L1 → Cache L2 → RAM → HD/SSD</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> RAM → Cache L1 → Registradores → Cache L2 → HD/SSD</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> Cache L1 → RAM → Registradores da CPU → Cache L2 → HD</div>
+  </div>
+</div>
+
+<!-- Q13 -->
+<div class="q-card q-purple">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 13</span>
+    <span class="q-tag qt-fill">Complete as lacunas</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">Complete as afirmações sobre <strong>sistemas operacionais e memória</strong> usando as palavras do banco abaixo. <em>Atenção: nem todas as palavras serão utilizadas.</em></div>
+
+  <!-- BANCO DE PALAVRAS -->
+  <div style="
+    border:1.5px dashed var(--purple);
+    border-radius:3px;
+    padding:10px 14px;
+    margin-bottom:14px;
+    background:#f5f3ff;
+  ">
+    <div style="font-family:var(--mono);font-size:.6em;font-weight:700;color:var(--purple);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;">Banco de Palavras</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">Memória Virtual</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">NTFS</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">PID</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">Tela Azul (BSOD)</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">Kernel</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">FAT32</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">Swap</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">Thread</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">Cache</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #ddd6fe;background:white;color:#4c1d95;">Driver</span>
+    </div>
+  </div>
+
+  <div class="fill-row">1. Quando a RAM está cheia, o sistema operacional utiliza parte do disco como extensão temporária de memória — esse recurso é chamado de <span class="fill-blank" style="min-width:130px"></span>.</div>
+  <div class="fill-row">2. O sistema de arquivos usado pelo Windows (desde o NT) que suporta permissões, criptografia e compressão é chamado de <span class="fill-blank" style="min-width:80px"></span>.</div>
+  <div class="fill-row">3. O identificador numérico único atribuído pelo SO a cada processo em execução é denominado <span class="fill-blank" style="min-width:80px"></span>.</div>
+  <div class="fill-row">4. A <span class="fill-blank" style="min-width:150px"></span> ocorre quando um código em Kernel Mode encontra um erro irrecuperável, causando a travagem total do sistema Windows.</div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SEÇÃO C — GESTÃO DO WINDOWS 11
+══════════════════════════════════════ -->
+<div class="sec-divider">
+  <div class="sec-bar sec-bar-a"></div>
+  <div class="sec-content">
+    <div>
+      <div class="sec-tag">SEÇÃO C</div>
+      <div class="sec-name">Gestão do Sistema Operacional Windows 11</div>
+      <div class="sec-desc">Questões 14 a 20 · Interface, processos, atributos, PowerShell e administração</div>
+    </div>
+    <span class="sec-pts-badge sec-pts-a">pontos</span>
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="q-card q-amber">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 14</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    No <strong>Gerenciador de Tarefas do Windows 11</strong>, um técnico observa que o processo <em>svchost.exe</em> está consumindo 85% da CPU. Qual alternativa descreve a ação <em>mais adequada</em> para investigar e resolver o problema?
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> Finalizar imediatamente todos os processos <em>svchost.exe</em>, pois é um processo desnecessário que pode ser removido com segurança.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> Expandir o processo no Gerenciador de Tarefas para identificar qual serviço específico está dentro do <em>svchost.exe</em>, verificar sua necessidade e, se necessário, reiniciar o serviço via <code>services.msc</code>.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> Reiniciar o computador imediatamente sem nenhuma investigação, pois o problema se resolverá automaticamente.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> Desinstalar o Windows Defender, pois o <em>svchost.exe</em> está sempre associado ao antivírus e ao alto uso de CPU.</div>
+  </div>
+</div>
+
+<!-- Q15 -->
+<div class="q-card q-amber">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 15</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    A funcionalidade <strong>Snap Layouts</strong> do Windows 11 tem como principal objetivo:
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> Criar snapshots (fotos) do estado atual do sistema para recuperação em caso de falha.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> Organizar janelas de aplicativos de forma eficiente na tela, dividindo o espaço em layouts predefinidos para multitarefa.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> Capturar screenshots automáticos do desktop a intervalos regulares de tempo.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> Gerenciar a memória virtual do sistema, alocando espaço em disco como RAM adicional.</div>
+  </div>
+  <div style="margin-top:14px;font-size:.84em;color:var(--gray-700);">
+    <strong>Ilustração:</strong> No espaço abaixo, <strong>desenhe um exemplo de layout de tela</strong> utilizando o Snap Layouts do Windows 11, mostrando como as janelas poderiam ser organizadas. Indique ao menos dois aplicativos posicionados lado a lado.
+  </div>
+  <div class="draw-box">[ Espaço para desenho ]</div>
+</div>
+
+<!-- Q16 -->
+<div class="q-card q-amber">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 16</span>
+    <span class="q-tag qt-vf">Verdadeiro / Falso</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Analise as afirmações sobre a interface e recursos do <strong>Windows 11</strong>. Marque <strong>V</strong> ou <strong>F</strong>:
+  </div>
+  <div class="vf-rows">
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; O atalho <strong>Win + D</strong> minimiza todas as janelas abertas e exibe a área de trabalho imediatamente.</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; No Windows 11, o Explorador de Arquivos não permite visualizar arquivos ocultos ou de sistema; essa funcionalidade foi removida na versão 11.</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; A pasta <strong>C:\Windows\System32</strong> contém arquivos críticos do sistema operacional e não deve ser modificada por usuários sem privilégios de administrador.</div>
+    </div>
+    <div class="vf-row">
+      <div class="vf-stmt">( &nbsp; ) &nbsp; A pasta <strong>AppData</strong> (dentro do perfil do usuário) fica oculta por padrão e armazena configurações e dados de aplicativos instalados por aquele usuário.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Q17 -->
+<div class="q-card q-amber">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 17</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Um administrador de sistemas precisa <strong>listar todos os serviços em execução</strong> no Windows 11 usando o PowerShell. Qual cmdlet é o mais adequado para essa tarefa?
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> <code>Show-Process -All</code></div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> <code>List-Services -Status Running</code></div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> <code>Get-Service | Where-Object {$_.Status -eq 'Running'}</code></div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> <code>ps aux | grep running</code></div>
+  </div>
+</div>
+
+<!-- Q18 -->
+<div class="q-card q-amber">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 18</span>
+    <span class="q-tag qt-match">Correspondência</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Relacione cada atalho de teclado do Windows 11 (Coluna I) com sua função (Coluna II):
+  </div>
+  <div class="match-grid">
+    <div>
+      <div class="match-col-title">Coluna I — Atalho</div>
+      <div class="match-items">
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">1.</span> Win + E</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">2.</span> Win + I</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">3.</span> Ctrl + Shift + Esc</div>
+        <div class="match-item"><div class="match-answer-box"></div><span class="match-letter">4.</span> Win + X</div>
+      </div>
+    </div>
+    <div>
+      <div class="match-col-title">Coluna II — Função</div>
+      <div class="match-items">
+        <div class="match-item"><span class="match-letter">A.</span> Abre o menu de atalho do botão Iniciar (Gerenciador de Dispositivos, Terminal, etc.).</div>
+        <div class="match-item"><span class="match-letter">B.</span> Abre o Gerenciador de Tarefas diretamente.</div>
+        <div class="match-item"><span class="match-letter">C.</span> Abre o Explorador de Arquivos (File Explorer).</div>
+        <div class="match-item"><span class="match-letter">D.</span> Abre o aplicativo Configurações do Windows.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q19 -->
+<div class="q-card q-amber">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 19</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">
+    Sobre os <strong>atributos de arquivos no Windows</strong> (gerenciados via comando <code>attrib</code> ou pelas Propriedades do arquivo), analise as alternativas e marque a <em>correta</em>:
+  </div>
+  <div class="opts">
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">A</span> O atributo <strong>H (Hidden)</strong> criptografa o arquivo com senha, impedindo qualquer acesso não autorizado ao seu conteúdo.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">B</span> O atributo <strong>R (Read-Only)</strong> permite que o arquivo seja lido, mas impede modificações. O atributo <strong>H (Hidden)</strong> oculta o arquivo da visualização padrão do Explorador.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">C</span> O atributo <strong>A (Archive)</strong> deleta automaticamente o arquivo após o próximo backup ser realizado.</div>
+    <div class="opt-row"><div class="opt-circle"></div><span class="opt-letter">D</span> O atributo <strong>S (System)</strong> indica que o arquivo está comprimido pelo NTFS para economizar espaço em disco.</div>
+  </div>
+</div>
+
+<!-- Q20 -->
+<div class="q-card q-amber">
+  <div class="q-header">
+    <span class="q-num">QUESTÃO 20</span>
+    <span class="q-tag qt-fill">Complete as lacunas</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-text">Complete as afirmações sobre a gestão do Windows 11 e PowerShell usando as palavras do banco abaixo. <em>Atenção: nem todas as palavras serão utilizadas.</em></div>
+
+  <!-- BANCO DE PALAVRAS -->
+  <div style="
+    border:1.5px dashed var(--amber);
+    border-radius:3px;
+    padding:10px 14px;
+    margin-bottom:14px;
+    background:#fffbeb;
+  ">
+    <div style="font-family:var(--mono);font-size:.6em;font-weight:700;color:var(--amber);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;">Banco de Palavras</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">Modo Kernel</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">Serviços</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">Get-ComputerInfo</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">|</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">-Force</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">Modo Usuário</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">Get-Process</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">Processos</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">&amp;</span>
+      <span style="font-family:var(--mono);font-size:.75em;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid #fde68a;background:white;color:#92400e;">-Hidden</span>
+    </div>
+  </div>
+
+  <div class="fill-row">1. No Windows 11, o modo de operação privilegiado onde o kernel executa com acesso total ao hardware é chamado de <span class="fill-blank" style="min-width:120px"></span>.</div>
+  <div class="fill-row">2. O processo <strong>svchost.exe</strong> é responsável por hospedar múltiplos <span class="fill-blank" style="min-width:100px"></span> do Windows que compartilham o mesmo processo para economizar memória.</div>
+  <div class="fill-row">3. O cmdlet do PowerShell para obter informações sobre o sistema operacional instalado é <span class="fill-blank" style="min-width:150px"></span>.</div>
+  <div class="fill-row">4. No PowerShell, o operador <span class="fill-blank" style="min-width:40px"></span> (pipe) permite encadear comandos, passando a saída de um como entrada para o próximo.</div>
+  <div class="fill-row">5. Para listar arquivos incluindo os <strong>ocultos</strong> com <code>Get-ChildItem</code>, deve-se adicionar o parâmetro <span class="fill-blank" style="min-width:90px"></span> ao comando.</div>
+</div>
+
+
+<!-- GABARITO -->
+<div class="no-print" style="
+  background:var(--navy);
+  border-radius:3px;
+  padding:20px 24px;
+  margin-top:32px;
+  margin-bottom:12px;
+">
+  <div style="font-family:var(--mono);font-size:.72em;font-weight:700;color:#94a3b8;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px;">
+    GABARITO — USO EXCLUSIVO DO PROFESSOR
+  </div>
+
+  <div style="font-family:var(--mono);font-size:.65em;font-weight:700;color:#60a5fa;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;margin-top:4px;">Seção A — Componentes da Placa-Mãe</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q01</span> <span style="color:white;font-weight:700;">B</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q02</span> <span style="color:white;font-weight:700;">B</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q03</span> <span style="color:white;font-weight:700;">V · F · V · V</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q04</span> <span style="color:white;font-weight:700;">1-D · 2-C · 3-B · 4-A</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q05</span> <span style="color:white;font-weight:700;">B</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q06</span> <span style="color:white;font-weight:700;">Desenho avaliado pelo prof.</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q07</span> <span style="color:white;font-weight:700;">B</span></div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:.65em;font-weight:700;color:#c4b5fd;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;">Seção B — Sistemas Operacionais</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q08</span> <span style="color:white;font-weight:700;">B</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q09</span> <span style="color:white;font-weight:700;">V · F · V · F</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q10</span> <span style="color:white;font-weight:700;">B</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q11</span> <span style="color:white;font-weight:700;">1-B · 2-D · 3-C · 4-A</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q12</span> <span style="color:white;font-weight:700;">B</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q13</span> <span style="color:white;font-weight:700;">1-Memória Virtual · 2-NTFS · 3-PID · 4-Tela Azul (BSOD)</span></div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:.65em;font-weight:700;color:#fbbf24;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;">Seção C — Gestão do Windows 11</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q14</span> <span style="color:white;font-weight:700;">B</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q15</span> <span style="color:white;font-weight:700;">B</span> <span style="color:#94a3b8;font-size:.85em;">+ Desenho avaliado pelo prof.</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q16</span> <span style="color:white;font-weight:700;">V · F · V · V</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q17</span> <span style="color:white;font-weight:700;">C</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q18</span> <span style="color:white;font-weight:700;">1-C · 2-D · 3-B · 4-A</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q19</span> <span style="color:white;font-weight:700;">B</span></div>
+    <div style="background:#1e3a5f;border-radius:2px;padding:6px 12px;font-family:var(--mono);font-size:.75em;"><span style="color:#94a3b8;">Q20</span> <span style="color:white;font-weight:700;">1-Modo Kernel · 2-Serviços · 3-Get-ComputerInfo · 4-| · 5--Force</span></div>
+  </div>
+</div>
+
+<!-- PONTUAÇÃO FINAL -->
+<div class="score-footer">
+  <div class="score-section">
+    <span class="lbl">Seção A · Placa-Mãe</span>
+    <span class="val">&nbsp;&nbsp;/</span>
+  </div>
+  <div class="score-section">
+    <span class="lbl">Seção B · Sist. Operacionais</span>
+    <span class="val">&nbsp;&nbsp;/</span>
+  </div>
+  <div class="score-section">
+    <span class="lbl">Seção C · Windows 11</span>
+    <span class="val">&nbsp;&nbsp;/</span>
+  </div>
+  <div class="score-section" style="background:var(--navy);border-color:var(--navy)">
+    <span class="lbl" style="color:#94a3b8">Total de Pontos</span>
+    <span class="val" style="color:white;font-size:1.6em">&nbsp;&nbsp;&nbsp;&nbsp;/ 100</span>
+  </div>
+  <div class="score-section" style="background:var(--navy);border-color:var(--navy)">
+    <span class="lbl" style="color:#94a3b8">Nota Final (÷10)</span>
+    <span class="val" style="color:white;font-size:1.6em">&nbsp;&nbsp;&nbsp;/ 10,0</span>
+  </div>
+</div>
+
+</div><!-- /screen-wrap -->
+
+<div class="print-btn-bar no-print">
+  <button class="print-btn" onclick="window.print()">🖨️ Imprimir Prova</button>
+</div>
+
+</body>
+</html>
