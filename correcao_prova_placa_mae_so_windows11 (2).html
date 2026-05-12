@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GABARITO COMENTADO — Placa-Mãe, SO e Windows 11 | ADS 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a0a;--bg2:#0a0f0f;--bg3:#0f1a14;--card:#0d1a12;
+  --border:#1a3320;--green:#00ff88;--green2:#00cc66;--green3:#00ff88;
+  --amber:#f59e0b;--red:#ef4444;--blue:#38bdf8;--purple:#a78bfa;--cyan:#22d3ee;
+  --text:#c8ffd4;--text2:#6b9e78;
+  --glow:0 0 20px rgba(0,255,136,.25);--glow2:0 0 35px rgba(0,255,136,.45);
+  --scanline:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;position:relative}
+body::before{content:'';position:fixed;inset:0;background:var(--scanline);pointer-events:none;z-index:0;opacity:.3}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+.header{background:var(--bg2);border-bottom:2px solid var(--green2);box-shadow:0 0 40px rgba(0,255,136,.15);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1040px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.exam-badge{font-family:'IBM Plex Mono',monospace;background:var(--green2);color:var(--bg);border-radius:3px;padding:4px 12px;font-size:.72em;font-weight:700;letter-spacing:.1em;white-space:nowrap;animation:badgePulse 2s ease-in-out infinite}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 8px rgba(0,204,102,.4)}50%{box-shadow:0 0 20px rgba(0,204,102,.9)}}
+.header-text{flex:1}
+.header-text h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(.85em,2vw,1.15em);font-weight:700;color:var(--green3);text-shadow:0 0 14px rgba(0,255,136,.4)}
+.header-text p{color:var(--text2);font-size:.72em;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+.hud{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hud-pill{font-family:'IBM Plex Mono',monospace;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);border-radius:3px;padding:5px 12px;text-align:center;min-width:72px}
+.hud-pill .v{font-size:1.1em;font-weight:700;color:var(--green);display:block;line-height:1}
+.hud-pill .l{font-size:.52em;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-top:2px}
+
+.container{max-width:1040px;margin:0 auto;padding:28px 28px 60px;position:relative;z-index:1}
+
+.hero{background:var(--card);border:1px solid var(--green2);padding:32px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--glow)}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.hero::after{content:'[GABARITO OFICIAL]';position:absolute;right:24px;top:18px;font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);letter-spacing:.15em}
+.hero-tag{font-family:'IBM Plex Mono',monospace;font-size:.68em;color:var(--green2);letter-spacing:.15em;margin-bottom:8px}
+.hero h2{font-family:'IBM Plex Mono',monospace;font-size:clamp(1.1em,2.5vw,1.7em);color:var(--green3);margin-bottom:6px;text-shadow:0 0 16px rgba(0,255,136,.35)}
+.hero p{color:var(--text2);font-size:.88em;max-width:680px;line-height:1.7}
+.hero-meta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.meta-chip{font-family:'IBM Plex Mono',monospace;font-size:.72em;font-weight:600;padding:4px 12px;border:1px solid;border-radius:3px}
+.mc-r{color:var(--red);border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.07)}
+.mc-g{color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.06)}
+.mc-b{color:var(--blue);border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}
+.mc-a{color:var(--amber);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.06)}
+.mc-p{color:var(--purple);border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+
+.section-divider{display:flex;align-items:center;gap:14px;margin:32px 0 16px;position:relative}
+.section-divider::before{content:'';flex:0 0 3px;height:32px;background:var(--amber)}
+.sec-info{flex:1}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:.62em;color:var(--amber);letter-spacing:.2em;text-transform:uppercase}
+.sec-title{font-family:'IBM Plex Mono',monospace;font-size:1.05em;color:var(--text);font-weight:700;margin-top:2px}
+.sec-pts{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--amber);background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);padding:3px 10px;border-radius:2px}
+
+/* QUESTION CARD */
+.q-card{background:var(--card);border:1px solid var(--border);padding:26px;margin-bottom:16px;position:relative;overflow:hidden}
+.q-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green2)}
+.q-num-row{font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.q-tag{font-size:.75em;padding:2px 8px;border-radius:2px;font-family:'IBM Plex Mono',monospace}
+.qt-mc{color:var(--blue);border:1px solid rgba(56,189,248,.25);background:rgba(56,189,248,.07)}
+.qt-vf{color:var(--cyan);border:1px solid rgba(34,211,238,.25);background:rgba(34,211,238,.07)}
+.qt-fill{color:var(--purple);border:1px solid rgba(167,139,250,.25);background:rgba(167,139,250,.07)}
+.qt-corr{color:var(--amber);border:1px solid rgba(245,158,11,.25);background:rgba(245,158,11,.07)}
+.qt-draw{color:var(--green);border:1px solid rgba(0,255,136,.25);background:rgba(0,255,136,.07)}
+.q-pts{margin-left:auto;font-size:.72em;color:var(--amber);font-family:'IBM Plex Mono',monospace}
+
+.q-enunciado{font-size:.93em;color:var(--text);line-height:1.7;margin-bottom:18px;font-weight:500}
+.q-enunciado code{font-family:'IBM Plex Mono',monospace;color:var(--green3);background:rgba(0,255,136,.07);padding:2px 7px;font-size:.9em;border-radius:2px}
+.q-enunciado strong{color:var(--amber)}
+
+/* GABARITO BLOCK */
+.gab-block{border:1px solid rgba(0,255,136,.2);background:rgba(0,255,136,.04);padding:16px 18px;margin-bottom:12px;border-radius:2px}
+.gab-label{font-family:'IBM Plex Mono',monospace;font-size:.6em;color:var(--green2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px}
+.gab-answer{font-family:'IBM Plex Mono',monospace;font-size:.92em;color:var(--green3);font-weight:700}
+
+/* EXPLANATION BLOCK */
+.exp-block{border:1px solid rgba(56,189,248,.18);background:rgba(56,189,248,.04);padding:16px 18px;margin-bottom:12px;border-radius:2px}
+.exp-label{font-family:'IBM Plex Mono',monospace;font-size:.6em;color:var(--blue);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px}
+.exp-text{font-size:.86em;color:var(--text);line-height:1.75}
+.exp-text code{font-family:'IBM Plex Mono',monospace;color:var(--green3);background:rgba(0,255,136,.07);padding:1px 6px;font-size:.92em;border-radius:2px}
+.exp-text strong{color:var(--amber)}
+
+/* WRONG OPTIONS BLOCK */
+.wrong-block{border:1px solid rgba(239,68,68,.15);background:rgba(239,68,68,.04);padding:14px 18px;border-radius:2px}
+.wrong-label{font-family:'IBM Plex Mono',monospace;font-size:.6em;color:var(--red);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px}
+.wrong-item{font-size:.83em;color:var(--text2);line-height:1.7;padding:4px 0;border-bottom:1px solid rgba(239,68,68,.08)}
+.wrong-item:last-child{border-bottom:none}
+.wrong-item code{font-family:'IBM Plex Mono',monospace;color:var(--red);background:rgba(239,68,68,.07);padding:1px 5px;font-size:.92em;border-radius:2px}
+.wrong-item strong{color:var(--red)}
+
+/* VF GRID */
+.vf-grid{display:flex;flex-direction:column;gap:8px;margin:4px 0}
+.vf-item{display:flex;gap:12px;align-items:flex-start;font-size:.85em;line-height:1.6}
+.vf-badge{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.8em;padding:3px 10px;border-radius:2px;flex-shrink:0;margin-top:1px}
+.vf-v{color:var(--green);border:1px solid rgba(0,255,136,.35);background:rgba(0,255,136,.09)}
+.vf-f{color:var(--red);border:1px solid rgba(239,68,68,.35);background:rgba(239,68,68,.09)}
+.vf-text{color:var(--text2);flex:1}
+.vf-text strong{color:var(--text)}
+
+/* FILL TABLE */
+.fill-table{border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.82em;margin:8px 0;width:100%}
+.fill-table th{background:rgba(0,255,136,.1);color:var(--green);padding:8px 14px;border:1px solid var(--border);text-align:left}
+.fill-table td{padding:8px 14px;border:1px solid var(--border);color:var(--text2);line-height:1.5}
+.fill-table td.answer{color:var(--green3);font-weight:700}
+
+/* CORR TABLE */
+.corr-table{border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.82em;margin:8px 0}
+.corr-table th{background:rgba(167,139,250,.1);color:var(--purple);padding:7px 14px;border:1px solid var(--border);text-align:left}
+.corr-table td{padding:7px 14px;border:1px solid var(--border);color:var(--text2)}
+.corr-table td.ans{color:var(--green3);font-weight:700}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:20px 0}
+.sum-card{background:var(--bg3);border:1px solid var(--border);padding:18px;text-align:center}
+.sum-val{font-family:'IBM Plex Mono',monospace;font-size:2em;font-weight:700;display:block;line-height:1}
+.sum-lbl{font-size:.65em;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;font-family:'IBM Plex Mono',monospace;margin-top:5px}
+
+code{font-family:'IBM Plex Mono',monospace;color:var(--green3);background:rgba(0,255,136,.07);padding:1px 5px;font-size:.92em}
+
+@media(max-width:640px){
+  .container{padding:16px 14px 50px}
+  .header-inner{padding:12px 14px}
+  .fill-table,.corr-table{font-size:.75em}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="exam-badge">GABARITO</div>
+    <div class="header-text">
+      <h1>Placa-Mãe · Sistemas Operacionais · Windows 11</h1>
+      <p>ADS 2026 · Arquitetura e Organização de Computadores · Prof. Isaque Katahira · 1º Semestre</p>
+    </div>
+    <div class="hud">
+      <div class="hud-pill">
+        <span class="v">20</span>
+        <span class="l">Questões</span>
+      </div>
+      <div class="hud-pill">
+        <span class="v">100</span>
+        <span class="l">Pontos</span>
+      </div>
+      <div class="hud-pill">
+        <span class="v">10,0</span>
+        <span class="l">Nota Max</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">▶ GABARITO COMENTADO — AVALIAÇÃO FORMAL 2026</div>
+  <h2>Correção Completa &amp; Comentada</h2>
+  <p>Cada questão apresenta o gabarito oficial seguido de uma explicação detalhada do conceito cobrado, justificativa da resposta correta e análise das alternativas incorretas. Use este material para revisar os pontos de dificuldade.</p>
+  <div class="hero-meta">
+    <span class="meta-chip mc-g">Seção A — Placa-Mãe (Q01–Q07)</span>
+    <span class="meta-chip mc-b">Seção B — Sistemas Operacionais (Q08–Q13)</span>
+    <span class="meta-chip mc-p">Seção C — Windows 11 (Q14–Q20)</span>
+    <span class="meta-chip mc-a">100 Pontos · Nota ÷ 10</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SEÇÃO A ═══════════════════════ -->
+<div class="section-divider">
+  <div class="sec-info">
+    <div class="sec-num">SEÇÃO A</div>
+    <div class="sec-title">Componentes da Placa-Mãe</div>
+  </div>
+  <span class="sec-pts">Questões 01 a 07</span>
+</div>
+
+<!-- Q01 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 01</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">O <strong>Socket da CPU</strong> em uma placa-mãe do padrão Intel LGA1150/1700 é responsável por:</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — Conectar o processador à placa-mãe, fornecendo alimentação elétrica e comunicação com os demais componentes via barramentos.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      O <strong>socket</strong> (ou soquete) é o conector mecânico e elétrico que aloja fisicamente o processador na placa-mãe. Ele cumpre duas funções essenciais: <strong>(1) fixar mecanicamente o chip</strong> para garantir contato perfeito com os pinos/contatos, e <strong>(2) fornecer o caminho elétrico</strong> que leva energia ao processador e conecta seus pinos de dados/controle ao chipset, à RAM e aos demais barramentos do sistema.<br><br>
+      No padrão <code>LGA</code> (Land Grid Array) — usado pela Intel nos soquetes 1150, 1200, 1700 etc. — os pinos estão na <em>placa-mãe</em> e os contatos planos (lands) estão no processador. Já no padrão <code>AM4/AM5</code> da AMD (<code>PGA/LGA</code>), os pinos ficam no chip. Em ambos os casos a função do soquete é a mesma.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> "Armazenar dados permanentes do SO, mesmo desligado" — isso é função do <code>HD/SSD</code> (armazenamento não volátil), nunca do socket.</div>
+    <div class="wrong-item"><strong>C)</strong> "Gerenciar comunicação exclusivamente entre HD SATA e RAM" — essa comunicação é mediada pelo <code>chipset</code> (controlador SATA) e pelo controlador de memória integrado na CPU, não pelo socket.</div>
+    <div class="wrong-item"><strong>D)</strong> "Controlar o fornecimento de energia da fonte ATX para os componentes" — essa função pertence ao <code>VRM</code> (Voltage Regulator Module) e aos conectores ATX da placa-mãe, não ao socket.</div>
+  </div>
+</div>
+
+<!-- Q02 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 02</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Sobre o <strong>Chipset</strong> da placa-mãe, analise as afirmações e marque a alternativa <strong>correta</strong>:</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — O Chipset gerencia a comunicação entre a CPU, a RAM, os slots de expansão (PCIe), as portas SATA, USB e outros periféricos da placa-mãe.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      O <strong>chipset</strong> é o "hub de comunicação" da placa-mãe. Nas arquiteturas modernas ele é composto principalmente pelo <strong>PCH</strong> (Platform Controller Hub) da Intel ou pelo equivalente AMD. Suas responsabilidades incluem:<br><br>
+      • Controlar as lanes de <code>PCIe</code> (slots de expansão para GPU, NVMe etc.)<br>
+      • Gerenciar portas <code>SATA</code> para HDs e SSDs<br>
+      • Controlar interfaces <code>USB</code>, <code>Ethernet</code>, <code>áudio</code> HD e outros periféricos onboard<br>
+      • Fazer a ponte entre a CPU e os dispositivos de I/O de menor velocidade<br><br>
+      Nos processadores modernos, o controlador de memória RAM já está <em>integrado na própria CPU</em>, de modo que o chipset não controla diretamente a RAM, mas ainda coordena toda a comunicação periférica do sistema.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> O chipset <strong>não é opcional</strong> e não tem relação com GPU integrada — ele é um componente obrigatório que gerencia I/O, não desempenho gráfico.</div>
+    <div class="wrong-item"><strong>C)</strong> Fornecer energia regulada ao processador é função do <code>VRM</code> (módulos reguladores de tensão), não do chipset.</div>
+    <div class="wrong-item"><strong>D)</strong> As configurações de BIOS/UEFI ficam em um chip de <code>memória flash</code> (SPI Flash ROM) separado; o relógio do sistema é mantido pelo <code>RTC</code> alimentado pela bateria CMOS — ambos são componentes distintos do chipset.</div>
+  </div>
+</div>
+
+<!-- Q03 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 03</span>
+    <span class="q-tag qt-vf">Verdadeiro / Falso</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Analise cada afirmação sobre componentes da placa-mãe. Marque <strong>V</strong> para verdadeiro e <strong>F</strong> para falso:</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="vf-grid" style="margin-top:8px">
+      <div class="vf-item">
+        <span class="vf-badge vf-v">V</span>
+        <span class="vf-text"><strong>Bateria CMOS (CR2032)</strong> mantém as configurações do BIOS/UEFI (data, hora, ordem de boot) mesmo com o computador desligado e desconectado da tomada.</span>
+      </div>
+      <div class="vf-item">
+        <span class="vf-badge vf-f">F</span>
+        <span class="vf-text"><strong>Slot PCIe x16</strong> é utilizado exclusivamente para instalação de placas de captura de áudio profissional.</span>
+      </div>
+      <div class="vf-item">
+        <span class="vf-badge vf-v">V</span>
+        <span class="vf-text"><strong>Conector ATX 24 pinos</strong> é a principal conexão de energia da placa-mãe, oriunda da fonte de alimentação.</span>
+      </div>
+      <div class="vf-item">
+        <span class="vf-badge vf-v">V</span>
+        <span class="vf-text"><strong>SSD M.2 NVMe</strong> se conecta via barramento PCIe, podendo atingir velocidades superiores a 3.500 MB/s, muito acima dos SSDs SATA (limite ~600 MB/s).</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação detalhada</div>
+    <div class="exp-text">
+      <strong>Item 1 (V):</strong> A bateria CMOS (<code>CR2032</code>, 3V) alimenta continuamente o chip <code>RTC</code> (Real-Time Clock) e a CMOS RAM que guarda configurações do UEFI. Sem ela, ao desligar o computador da tomada, o relógio zera e as configurações de boot são perdidas.<br><br>
+      <strong>Item 2 (F):</strong> O slot <code>PCIe x16</code> é o slot de maior largura de banda da placa-mãe. Sua principal aplicação é a <strong>GPU (placa de vídeo)</strong>. Pode também hospedar placas de rede, captura, SSDs via adaptador etc. Afirmar uso "exclusivo" para áudio é incorreto.<br><br>
+      <strong>Item 3 (V):</strong> O conector <code>ATX 24 pinos</code> fornece os 24 pinos de alimentação que suprem a placa-mãe com tensões +12V, +5V, +3,3V e seus respectivos retornos. Há também o conector auxiliar <code>EPS 4/8 pinos</code> exclusivo para a CPU.<br><br>
+      <strong>Item 4 (V):</strong> SSDs <code>NVMe</code> no slot M.2 usam lanes <code>PCIe 3.0 x4</code> (3.500 MB/s) ou <code>PCIe 4.0 x4</code> (7.000 MB/s), contra os ~600 MB/s máximos do protocolo <code>SATA III</code>.
+    </div>
+  </div>
+</div>
+
+<!-- Q04 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 04</span>
+    <span class="q-tag qt-corr">Correspondência</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Relacione os componentes da Coluna I com suas funções na Coluna II:</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO — CORRESPONDÊNCIA</div>
+    <table class="corr-table" style="margin-top:8px">
+      <tr><th>Componente</th><th>Função</th></tr>
+      <tr><td>1. Slot DIMM</td><td class="ans">D — Encaixar os módulos de memória RAM no sistema.</td></tr>
+      <tr><td>2. Conector SATA</td><td class="ans">B — Conectar HDs e SSDs SATA à placa-mãe.</td></tr>
+      <tr><td>3. BIOS/UEFI</td><td class="ans">A — Firmware responsável pela inicialização e configuração do hardware antes do SO.</td></tr>
+      <tr><td>4. Slot PCIe x1</td><td class="ans">C — Instalar placas de expansão de menor largura de banda (rede, áudio, captura).</td></tr>
+    </table>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      <strong>Slot DIMM:</strong> <em>Dual Inline Memory Module</em> — os slots onde encaixamos pentes de RAM (DDR4, DDR5). A placa-mãe tipicamente tem 2 ou 4 slots DIMM.<br><br>
+      <strong>Conector SATA:</strong> <em>Serial ATA</em> — interface padrão para HDs mecânicos e SSDs 2.5". Oferece até 600 MB/s (SATA III). A placa-mãe costuma ter 4–8 conectores SATA.<br><br>
+      <strong>BIOS/UEFI:</strong> <em>Basic Input/Output System / Unified Extensible Firmware Interface</em> — firmware gravado em chip flash que executa o <code>POST</code> (Power-On Self Test), detecta hardware e carrega o bootloader do SO.<br><br>
+      <strong>Slot PCIe x1:</strong> Com apenas 1 lane PCIe, oferece banda suficiente para placas de som, rede Gigabit, captura de vídeo etc. — componentes que não precisam da largura máxima do x16.
+    </div>
+  </div>
+</div>
+
+<!-- Q05 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 05</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Sobre a memória <strong>RAM</strong> instalada em uma placa-mãe, qual afirmação é <strong>correta</strong>?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — A RAM é uma memória volátil de acesso aleatório usada pelo processador para armazenar temporariamente dados e instruções dos programas em execução.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      A <strong>RAM</strong> (<em>Random Access Memory</em>) é a memória <strong>de trabalho</strong> do sistema:<br><br>
+      • <strong>Volátil</strong> — perde todos os dados ao ser desligada (sem energia). Por isso arquivos precisam ser salvos em disco.<br>
+      • <strong>Acesso aleatório</strong> — qualquer célula de memória pode ser acessada diretamente em tempo constante, independente da posição (diferente de fitas magnéticas, que eram sequenciais).<br>
+      • <strong>Temporária</strong> — mantém dados somente enquanto o computador está ligado: SO, programas abertos, dados em uso.<br><br>
+      A RAM atual é do tipo <code>DRAM</code> (<em>Dynamic RAM</em>), especificamente <code>DDR4</code> ou <code>DDR5</code> nos sistemas modernos, operando em dual/quad channel para maximizar a largura de banda disponível para o processador.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> RAM <strong>não é não-volátil</strong> — ela é volátil por definição. Memória não-volátil é ROM, Flash (SSD), HD etc.</div>
+    <div class="wrong-item"><strong>C)</strong> RAM <strong>não se conecta via SATA</strong> — ela ocupa slots DIMM na placa-mãe com barramento DDR dedicado de alta velocidade.</div>
+    <div class="wrong-item"><strong>D)</strong> RAM <strong>não armazena dados permanentes</strong> — dados permanentes ficam no HD/SSD. Afirmar que RAM substitui o HD é errado.</div>
+  </div>
+</div>
+
+<!-- Q06 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 06</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Qual das alternativas descreve corretamente a função do <strong>BIOS/UEFI</strong> no processo de inicialização do computador?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">C — O BIOS/UEFI realiza o POST (Power-On Self Test), identifica os dispositivos de hardware instalados e carrega o bootloader do sistema operacional a partir do dispositivo de boot configurado.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      O processo de boot segue esta sequência:<br><br>
+      <strong>1. Power ON →</strong> a fonte fornece energia estável à placa-mãe.<br>
+      <strong>2. CPU executa o UEFI/BIOS</strong> a partir do chip flash (endereço fixo).<br>
+      <strong>3. POST</strong> (<em>Power-On Self Test</em>) — testa CPU, RAM, chipset; erros geram beep codes ou mensagens.<br>
+      <strong>4. Detecção de hardware</strong> — UEFI identifica discos, periféricos, configura tabelas de hardware para o SO.<br>
+      <strong>5. Seleção do dispositivo de boot</strong> — conforme a ordem configurada (SSD, HD, USB...).<br>
+      <strong>6. Carrega o bootloader</strong> — <code>GRUB</code> (Linux), <code>Windows Boot Manager</code> etc.<br>
+      <strong>7. SO assume o controle</strong> do hardware.<br><br>
+      O <strong>UEFI</strong> é a evolução do BIOS legado: suporta discos >2TB (GPT), interface gráfica, Secure Boot, inicialização mais rápida e drivers de 64 bits nativos.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> O BIOS <strong>não gerencia memória virtual</strong> — isso é responsabilidade do Sistema Operacional (gerenciador de memória do kernel).</div>
+    <div class="wrong-item"><strong>B)</strong> O BIOS <strong>não compila drivers</strong> — ele inicializa o hardware em nível baixo e entrega o controle ao SO, que carrega os drivers adequados.</div>
+    <div class="wrong-item"><strong>D)</strong> O BIOS <strong>não criptografa</strong> o disco. O Secure Boot valida assinaturas de bootloaders, mas criptografia de disco é função do SO (BitLocker, VeraCrypt etc.).</div>
+  </div>
+</div>
+
+<!-- Q07 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 07</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Em relação aos <strong>barramentos</strong> de uma placa-mãe, qual alternativa está <strong>correta</strong>?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — O barramento PCIe (Peripheral Component Interconnect Express) é o principal barramento de expansão moderno, oferecendo alta largura de banda ponto a ponto para GPUs, SSDs NVMe e outras placas de expansão.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      Um <strong>barramento</strong> é o conjunto de trilhas condutoras que transportam dados, endereços e sinais de controle entre os componentes. Os principais barramentos de uma placa-mãe moderna são:<br><br>
+      • <code>PCIe</code> (PCI Express) — barramento serial de alta velocidade, ponto a ponto, em versões x1, x4, x8, x16. PCIe 4.0 x16 oferece ~64 GB/s de largura de banda.<br>
+      • <code>DMI / Infinity Fabric</code> — liga a CPU ao chipset/PCH.<br>
+      • <code>DDR Bus</code> — barramento paralelo exclusivo da RAM, integrado na CPU.<br>
+      • <code>USB / SATA</code> — interfaces de I/O de menor largura de banda.<br><br>
+      O <code>PCIe</code> substituiu o antigo barramento PCI e AGP por ser <strong>serial, full-duplex e escalável em lanes</strong>, permitindo muito maior largura de banda sem os problemas elétricos dos barramentos paralelos.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> O barramento ISA é <strong>obsoleto</strong> (anos 80-90) e completamente ausente em placas-mãe modernas.</div>
+    <div class="wrong-item"><strong>C)</strong> O barramento de dados entre CPU e RAM <strong>não é SATA</strong> — é o barramento DDR (memória) dedicado, muito mais rápido (>50 GB/s em dual channel DDR5).</div>
+    <div class="wrong-item"><strong>D)</strong> O USB <strong>não é</strong> o barramento principal de comunicação interna da placa-mãe — é uma interface de periféricos externos (teclado, mouse, pendrive).</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SEÇÃO B ═══════════════════════ -->
+<div class="section-divider">
+  <div class="sec-info">
+    <div class="sec-num">SEÇÃO B</div>
+    <div class="sec-title">Sistemas Operacionais</div>
+  </div>
+  <span class="sec-pts">Questões 08 a 13</span>
+</div>
+
+<!-- Q08 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 08</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Sobre os <strong>modos de operação</strong> de um sistema operacional (Kernel Mode e User Mode), qual afirmação é <strong>correta</strong>?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — No Kernel Mode, o código tem acesso irrestrito ao hardware e à memória do sistema; já no User Mode, os programas operam com privilégios limitados e acessam o hardware somente através de chamadas de sistema (syscalls).</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      A divisão em dois modos de operação é um mecanismo fundamental de proteção:<br><br>
+      <strong>Kernel Mode (Ring 0):</strong><br>
+      • Acesso total à CPU, memória RAM e dispositivos de hardware.<br>
+      • Executa drivers, gerenciador de memória, escalonador, sistema de arquivos do kernel.<br>
+      • Um erro aqui pode travar o sistema inteiro (<code>BSOD</code> / Kernel Panic).<br><br>
+      <strong>User Mode (Ring 3):</strong><br>
+      • Aplicações comuns (Word, Chrome, jogos) rodam aqui, isoladas.<br>
+      • Acesso ao hardware é <strong>indireto</strong> — o app faz uma <code>syscall</code>, que "sobe" para o kernel temporariamente.<br>
+      • Um crash aqui afeta apenas o processo, não o sistema inteiro.<br><br>
+      Essa separação impede que um programa malicioso ou com bug acesse/corrompa diretamente o hardware ou a memória de outros processos.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> User Mode <strong>não tem acesso irrestrito</strong> — acesso irrestrito é exclusivo do Kernel Mode. Inverter os conceitos é o erro clássico.</div>
+    <div class="wrong-item"><strong>C)</strong> Nem todo programa roda em Kernel Mode — somente o núcleo do SO e drivers. Aplicações comuns ficam no User Mode.</div>
+    <div class="wrong-item"><strong>D)</strong> Syscalls (chamadas de sistema) são a interface <strong>entre</strong> User Mode e Kernel Mode, não uma forma de "bypassar" a separação — elas são o mecanismo controlado de transição.</div>
+  </div>
+</div>
+
+<!-- Q09 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 09</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Em relação ao <strong>gerenciamento de processos</strong>, qual das alternativas descreve corretamente a diferença entre <strong>processo</strong> e <strong>thread</strong>?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">C — Um processo é um programa em execução com seu próprio espaço de endereçamento e recursos isolados; uma thread é uma unidade de execução dentro de um processo, compartilhando memória e recursos com outras threads do mesmo processo.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      <strong>Processo:</strong><br>
+      • Instância de um programa em execução (ex: <code>chrome.exe</code>, <code>notepad.exe</code>).<br>
+      • Possui seu próprio espaço de endereçamento virtual (memória isolada).<br>
+      • Tem recursos próprios: handles de arquivo, sockets, PID.<br>
+      • Comunicação entre processos (IPC) é cara: pipes, sockets, memória compartilhada.<br><br>
+      <strong>Thread:</strong><br>
+      • Unidade mínima de execução <em>dentro</em> de um processo.<br>
+      • Todas as threads de um processo <strong>compartilham</strong> memória (heap, código, dados globais).<br>
+      • Cada thread tem sua própria pilha (<em>stack</em>) e registradores.<br>
+      • Comunicação entre threads é rápida (memória compartilhada), mas exige sincronização (mutex, semáforo).<br><br>
+      Exemplo: o Chrome cria um processo por aba (isolamento) e múltiplas threads por processo (renderização, JS, rede).
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> Thread e processo <strong>não são sinônimos</strong> — thread é uma subunidade leve dentro de um processo.</div>
+    <div class="wrong-item"><strong>B)</strong> Processos <strong>não compartilham</strong> espaço de endereçamento entre si por padrão — o isolamento é a principal característica do processo.</div>
+    <div class="wrong-item"><strong>D)</strong> Threads <strong>não têm</strong> espaço de memória totalmente independente — elas compartilham a memória do processo (exceto cada stack individual).</div>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 10</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Sobre a <strong>hierarquia de memória</strong>, ordene do mais rápido/menor para o mais lento/maior e identifique a alternativa correta:</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">A — Registradores → Cache L1/L2/L3 → RAM → SSD/HD → Armazenamento em nuvem/fita.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      A hierarquia de memória organiza os níveis de armazenamento pelo <strong>trade-off entre velocidade, capacidade e custo</strong>:<br><br>
+      <table class="fill-table">
+        <tr><th>Nível</th><th>Velocidade</th><th>Capacidade típica</th><th>Custo/GB</th></tr>
+        <tr><td>Registradores</td><td class="answer">~1 ciclo (&lt;1 ns)</td><td>Dezenas de bytes</td><td>Altíssimo</td></tr>
+        <tr><td>Cache L1</td><td class="answer">~1–4 ns</td><td>32–64 KB por core</td><td>Muito alto</td></tr>
+        <tr><td>Cache L2</td><td class="answer">~4–12 ns</td><td>256 KB–1 MB por core</td><td>Alto</td></tr>
+        <tr><td>Cache L3</td><td class="answer">~12–40 ns</td><td>4–64 MB (shared)</td><td>Moderado</td></tr>
+        <tr><td>RAM (DRAM)</td><td class="answer">~50–100 ns</td><td>8–128 GB</td><td>Baixo</td></tr>
+        <tr><td>SSD NVMe</td><td class="answer">~100 µs</td><td>256 GB–4 TB</td><td>Muito baixo</td></tr>
+        <tr><td>HD mecânico</td><td class="answer">~5–10 ms</td><td>1–20 TB</td><td>Mínimo</td></tr>
+      </table>
+      <br>Quanto mais alto na hierarquia, menor, mais rápido e mais caro por bit.
+    </div>
+  </div>
+</div>
+
+<!-- Q11 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 11</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Sobre <strong>virtualização</strong>, qual afirmação é <strong>correta</strong>?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — Um hypervisor (como VMware ou Hyper-V) permite executar múltiplos sistemas operacionais simultaneamente no mesmo hardware físico, isolando cada VM em seu próprio ambiente virtualizado.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      A <strong>virtualização</strong> cria ambientes computacionais abstratos sobre o hardware físico:<br><br>
+      <strong>Hypervisor Tipo 1 (bare-metal):</strong> roda diretamente no hardware, sem SO host. Ex: <code>VMware ESXi</code>, <code>Hyper-V</code> (Windows Server), <code>Xen</code>. Mais eficiente, usado em servidores.<br><br>
+      <strong>Hypervisor Tipo 2 (hosted):</strong> roda como aplicação sobre um SO host. Ex: <code>VMware Workstation</code>, <code>VirtualBox</code>, <code>Parallels</code>. Mais simples, usado em desktops.<br><br>
+      Benefícios: isolamento de ambientes, consolidação de servidores, snapshots (fotografia do estado da VM), migração ao vivo, testes de software em múltiplos SOs sem múltiplas máquinas físicas.<br><br>
+      Cada VM possui CPU virtual, RAM alocada, disco virtual e interfaces de rede virtuais, completamente isoladas das demais VMs no mesmo host.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> Virtualização <strong>não exige hardware dedicado exclusivo</strong> por VM — o ponto central é compartilhar o hardware entre múltiplas VMs.</div>
+    <div class="wrong-item"><strong>C)</strong> Containerização (Docker) é diferente de virtualização de VM — containers compartilham o kernel do host, enquanto VMs têm kernel próprio.</div>
+    <div class="wrong-item"><strong>D)</strong> VMs não são mais lentas por definição em todas as tarefas — com suporte de hardware (Intel VT-x, AMD-V), o overhead de virtualização é mínimo para cargas de trabalho comuns.</div>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 12</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Sobre <strong>sistemas de arquivos</strong>, qual afirmação é <strong>correta</strong>?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">C — O NTFS (New Technology File System) suporta permissões de segurança por arquivo/pasta, criptografia (EFS), compressão, journaling e arquivos de até 16 TB, sendo o sistema de arquivos padrão do Windows desde o NT.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      Comparativo dos principais sistemas de arquivos:<br><br>
+      <table class="fill-table">
+        <tr><th>Sistema</th><th>Journaling</th><th>Permissões</th><th>Arq. máx.</th><th>Uso típico</th></tr>
+        <tr><td>FAT32</td><td>Não</td><td>Não</td><td class="answer">4 GB</td><td>Pendrives/legado</td></tr>
+        <tr><td>exFAT</td><td>Não</td><td>Não</td><td class="answer">128 PB</td><td>Cartões SD/Flash</td></tr>
+        <tr><td>NTFS</td><td class="answer">Sim</td><td class="answer">Sim (ACL)</td><td class="answer">16 TB</td><td>Windows</td></tr>
+        <tr><td>ext4</td><td class="answer">Sim</td><td class="answer">Sim (Unix)</td><td class="answer">16 TB</td><td>Linux</td></tr>
+        <tr><td>APFS</td><td class="answer">Sim</td><td class="answer">Sim</td><td class="answer">8 EB</td><td>macOS/iOS</td></tr>
+      </table>
+      <br>O <strong>journaling</strong> é crucial: antes de gravar dados, o FS registra a intenção em um "diário". Se ocorrer falha de energia durante a gravação, o sistema pode se recuperar relendo o journal, evitando corrupção.
+    </div>
+  </div>
+</div>
+
+<!-- Q13 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 13</span>
+    <span class="q-tag qt-fill">Complete as Lacunas</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Complete as afirmações sobre <strong>sistemas operacionais e memória</strong> usando as palavras do banco: <em>Memória Virtual, NTFS, PID, Tela Azul (BSOD), Kernel, FAT32, Swap, Thread, Cache, Driver</em>. <strong>Atenção: nem todas as palavras serão utilizadas.</strong></div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO — LACUNAS</div>
+    <table class="fill-table" style="margin-top:8px">
+      <tr><th>#</th><th>Afirmação</th><th>Resposta</th></tr>
+      <tr>
+        <td>1</td>
+        <td>Quando a RAM está cheia, o SO utiliza parte do disco como extensão temporária de memória — esse recurso é chamado de ___.</td>
+        <td class="answer">Memória Virtual <em>(ou Swap)</em></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>O sistema de arquivos usado pelo Windows (desde o NT) que suporta permissões, criptografia e compressão é chamado de ___.</td>
+        <td class="answer">NTFS</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>O identificador numérico único atribuído pelo SO a cada processo em execução é denominado ___.</td>
+        <td class="answer">PID</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>A ___ ocorre quando um código em Kernel Mode encontra um erro irrecuperável, causando a travagem total do sistema Windows.</td>
+        <td class="answer">Tela Azul (BSOD)</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação detalhada</div>
+    <div class="exp-text">
+      <strong>1 — Memória Virtual / Swap:</strong> O SO usa uma região do disco (arquivo de paginação no Windows: <code>pagefile.sys</code>; partição swap no Linux) para "estender" a RAM. Páginas de memória pouco usadas são movidas para o disco (<em>paging out</em>) e trazidas de volta quando necessárias (<em>paging in</em>). Isso permite executar mais programas que a RAM física comportaria, com custo de latência.<br><br>
+      <strong>2 — NTFS:</strong> <em>New Technology File System</em>, introduzido com o Windows NT 3.1 (1993). Suporta: permissões ACL por arquivo, criptografia via EFS, compressão transparente, journaling (recuperação de erros), arquivos esparsos, links simbólicos e hard links.<br><br>
+      <strong>3 — PID:</strong> <em>Process Identifier</em> — número inteiro único atribuído pelo kernel a cada processo ao ser criado. Pode ser visto no Gerenciador de Tarefas (aba Detalhes) ou via <code>Get-Process</code> no PowerShell.<br><br>
+      <strong>4 — BSOD:</strong> <em>Blue Screen of Death</em> — tela de parada do Windows causada por erro irrecuperável no kernel ou em um driver de kernel mode. Exibe um código de erro (stop code) como <code>IRQL_NOT_LESS_OR_EQUAL</code> ou <code>MEMORY_MANAGEMENT</code>.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SEÇÃO C ═══════════════════════ -->
+<div class="section-divider">
+  <div class="sec-info">
+    <div class="sec-num">SEÇÃO C</div>
+    <div class="sec-title">Gestão do Sistema Operacional Windows 11</div>
+  </div>
+  <span class="sec-pts">Questões 14 a 20</span>
+</div>
+
+<!-- Q14 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 14</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">No <strong>Gerenciador de Tarefas do Windows 11</strong>, um técnico observa que o processo <code>svchost.exe</code> está consumindo 85% da CPU. Qual alternativa descreve a ação <strong>mais adequada</strong> para investigar e resolver o problema?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — Expandir o processo no Gerenciador de Tarefas para identificar qual serviço específico está dentro do svchost.exe, verificar sua necessidade e, se necessário, reiniciar o serviço via services.msc.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      O <code>svchost.exe</code> (<em>Service Host</em>) é um processo <strong>legítimo e essencial</strong> do Windows responsável por hospedar múltiplos serviços do sistema dentro do mesmo processo. Por isso, um único <code>svchost.exe</code> pode aparecer dezenas de vezes no Gerenciador de Tarefas, cada instância agrupando diferentes serviços.<br><br>
+      <strong>Como investigar corretamente:</strong><br>
+      1. No Gerenciador de Tarefas → aba <em>Detalhes</em> ou <em>Processos</em>, clique na seta ao lado do <code>svchost.exe</code> problemático para <strong>expandir e ver os serviços hospedados</strong>.<br>
+      2. Identifique o serviço com alto consumo (ex: Windows Update, Superfetch/SysMain, BITS).<br>
+      3. Abra <code>services.msc</code> → localize o serviço → <em>Reiniciar</em> ou <em>Parar temporariamente</em> para diagnóstico.<br>
+      4. Se for Windows Update em segundo plano, aguardar a conclusão normalmente resolve.<br><br>
+      <strong>Nunca encerre o svchost.exe diretamente</strong> sem identificar o serviço — você pode derrubar serviços críticos do sistema.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> "Finalizar imediatamente todos os svchost.exe" — ERRADO. svchost.exe é um processo <strong>crítico do sistema</strong>; encerrá-lo pode causar instabilidade ou BSOD. Além disso, o enunciado diz "identificar e resolver", não simplesmente terminar.</div>
+    <div class="wrong-item"><strong>C)</strong> "Reiniciar sem investigar" — ERRADO. Resolve temporariamente mas não identifica a causa raiz. Boas práticas de TI exigem diagnóstico antes de ação.</div>
+    <div class="wrong-item"><strong>D)</strong> "Desinstalar o Windows Defender" — ERRADO. O svchost.exe não está "sempre" associado ao Defender. Remover o antivírus sem diagnóstico é uma ação prejudicial à segurança.</div>
+  </div>
+</div>
+
+<!-- Q15 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 15</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">A funcionalidade <strong>Snap Layouts</strong> do Windows 11 tem como principal objetivo:</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — Organizar janelas de aplicativos de forma eficiente na tela, dividindo o espaço em layouts predefinidos para multitarefa.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      O <strong>Snap Layouts</strong> é uma funcionalidade de produtividade do Windows 11 que permite organizar janelas em <strong>grades predefinidas</strong> na tela. Para acessar:<br><br>
+      • Passe o mouse sobre o botão <strong>maximizar</strong> (⊟) de qualquer janela → aparece um menu com os layouts disponíveis.<br>
+      • Ou use o atalho <code>Win + Z</code>.<br><br>
+      <strong>Layouts disponíveis incluem:</strong><br>
+      • 2 janelas lado a lado (50/50)<br>
+      • 3 janelas (uma maior + duas menores)<br>
+      • 4 janelas em grade 2×2<br>
+      • Layouts verticais e assimétricos<br><br>
+      Após escolher o layout, o Windows sugere automaticamente quais outros aplicativos abertos devem preencher os espaços restantes (<em>Snap Groups</em>). Os grupos de snap são lembrados ao retornar da barra de tarefas.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> "Criar snapshots para recuperação" — isso é função de pontos de restauração do sistema (<em>System Restore</em>) ou do Histórico de Arquivos, não do Snap Layouts.</div>
+    <div class="wrong-item"><strong>C)</strong> "Capturar screenshots automáticos" — isso seria uma funcionalidade de <em>Steps Recorder</em> ou de ferramentas de screencast, não Snap Layouts.</div>
+    <div class="wrong-item"><strong>D)</strong> "Gerenciar memória virtual" — isso é responsabilidade do gerenciador de memória do kernel, configurável em Propriedades do Sistema → Desempenho.</div>
+  </div>
+</div>
+
+<!-- Q16 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 16</span>
+    <span class="q-tag qt-vf">Verdadeiro / Falso</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Analise as afirmações sobre a interface e recursos do <strong>Windows 11</strong>. Marque <strong>V</strong> ou <strong>F</strong>:</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="vf-grid" style="margin-top:8px">
+      <div class="vf-item">
+        <span class="vf-badge vf-v">V</span>
+        <span class="vf-text"><strong>Win + D</strong> minimiza todas as janelas abertas e exibe a área de trabalho imediatamente.</span>
+      </div>
+      <div class="vf-item">
+        <span class="vf-badge vf-f">F</span>
+        <span class="vf-text">No Windows 11, o Explorador de Arquivos <strong>não</strong> permite visualizar arquivos ocultos ou de sistema; essa funcionalidade foi removida na versão 11.</span>
+      </div>
+      <div class="vf-item">
+        <span class="vf-badge vf-v">V</span>
+        <span class="vf-text">A pasta <strong>C:\Windows\System32</strong> contém arquivos críticos do SO e não deve ser modificada por usuários sem privilégios de administrador.</span>
+      </div>
+      <div class="vf-item">
+        <span class="vf-badge vf-v">V</span>
+        <span class="vf-text">A pasta <strong>AppData</strong> (dentro do perfil do usuário) fica oculta por padrão e armazena configurações e dados de aplicativos instalados por aquele usuário.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação detalhada</div>
+    <div class="exp-text">
+      <strong>Item 1 (V) — Win + D:</strong> Este atalho é o "mostrar área de trabalho" do Windows. Pressionar novamente restaura todas as janelas minimizadas. Diferente de <code>Win + M</code> (minimiza tudo, mas não restaura ao pressionar novamente).<br><br>
+      <strong>Item 2 (F):</strong> A funcionalidade de exibir arquivos ocultos e de sistema <strong>ainda existe</strong> no Windows 11. Acesse: Explorador de Arquivos → aba <em>Exibir</em> → <em>Mostrar</em> → "Itens ocultos" e "Extensões de nome de arquivo". A afirmação de que foi removida é completamente falsa.<br><br>
+      <strong>Item 3 (V) — System32:</strong> Esta pasta contém DLLs, executáveis e drivers essenciais do Windows (<code>ntdll.dll</code>, <code>kernel32.dll</code>, <code>cmd.exe</code> etc.). Modificações sem critério causam instabilidade grave ou impossibilitam a inicialização do sistema. O UAC (Controle de Conta de Usuário) protege esta pasta.<br><br>
+      <strong>Item 4 (V) — AppData:</strong> Localizada em <code>C:\Users\[Usuário]\AppData\</code>, possui três subpastas: <code>Local</code> (dados grandes locais), <code>LocalLow</code> (dados de baixa integridade) e <code>Roaming</code> (configurações sincronizadas em rede corporativa). É oculta por padrão para evitar que usuários leigos modifiquem dados de configuração.
+    </div>
+  </div>
+</div>
+
+<!-- Q17 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 17</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Um administrador de sistemas precisa <strong>listar todos os serviços em execução</strong> no Windows 11 usando o PowerShell. Qual cmdlet é o mais adequado para essa tarefa?</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">C — <code>Get-Service | Where-Object {$_.Status -eq 'Running'}</code></div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação</div>
+    <div class="exp-text">
+      A sintaxe correta em PowerShell combina dois cmdlets via <strong>pipe</strong> (<code>|</code>):<br><br>
+      <code>Get-Service</code> — lista <strong>todos</strong> os serviços (Running, Stopped, Paused).<br>
+      <code>|</code> — passa a saída como entrada para o próximo comando.<br>
+      <code>Where-Object {$_.Status -eq 'Running'}</code> — filtra apenas os serviços cujo <code>Status</code> é igual a <code>Running</code>.<br><br>
+      <strong>Equivalente simplificado:</strong><br>
+      <code>Get-Service | Where-Object Status -eq Running</code><br><br>
+      Também é possível usar o alias:<br>
+      <code>gsv | ? {$_.Status -eq 'Running'}</code><br><br>
+      A alternativa <strong>B</strong> (<code>List-Services -Status Running</code>) parece razoável mas <strong>não existe</strong> — não é um cmdlet válido do PowerShell. A opção <strong>A</strong> (<code>Show-Process -All</code>) lista <em>processos</em>, não serviços. A <strong>D</strong> (<code>ps aux | grep running</code>) é sintaxe de <strong>Linux/Bash</strong>, não do PowerShell.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Análise de cada alternativa</div>
+    <div class="wrong-item"><strong>A) <code>Show-Process -All</code></strong> — cmdlet inexistente; <code>Get-Process</code> lista processos (não serviços).</div>
+    <div class="wrong-item"><strong>B) <code>List-Services -Status Running</code></strong> — cmdlet inventado; não existe no PowerShell.</div>
+    <div class="wrong-item"><strong>D) <code>ps aux | grep running</code></strong> — sintaxe Bash/Linux, não válida no PowerShell nativo do Windows 11.</div>
+  </div>
+</div>
+
+<!-- Q18 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 18</span>
+    <span class="q-tag qt-corr">Correspondência</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Relacione cada atalho de teclado do Windows 11 (Coluna I) com sua função (Coluna II):</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO — CORRESPONDÊNCIA</div>
+    <table class="corr-table" style="margin-top:8px">
+      <tr><th>Atalho</th><th>Função</th></tr>
+      <tr><td>1. Win + E</td><td class="ans">C — Abre o Explorador de Arquivos (File Explorer).</td></tr>
+      <tr><td>2. Win + I</td><td class="ans">D — Abre o aplicativo Configurações do Windows.</td></tr>
+      <tr><td>3. Ctrl + Shift + Esc</td><td class="ans">B — Abre o Gerenciador de Tarefas diretamente.</td></tr>
+      <tr><td>4. Win + X</td><td class="ans">A — Abre o menu de atalho do botão Iniciar (Gerenciador de Dispositivos, Terminal, etc.).</td></tr>
+    </table>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação — Atalhos importantes do Windows 11</div>
+    <div class="exp-text">
+      <strong>Win + E</strong> → File Explorer — o "E" de <em>Explorer</em>. Abre diretamente no local padrão configurado (Acesso Rápido ou Este Computador).<br><br>
+      <strong>Win + I</strong> → Configurações — o "I" de <em>settings</em>. Acesso direto ao painel de Configurações do Windows (substitui o Painel de Controle clássico para configurações modernas).<br><br>
+      <strong>Ctrl + Shift + Esc</strong> → Gerenciador de Tarefas diretamente. Diferente de <code>Ctrl+Alt+Del</code> que abre uma tela intermediária com múltiplas opções.<br><br>
+      <strong>Win + X</strong> → Menu de Link Rápido (Power User Menu) — clique direito no botão Iniciar. Dá acesso rápido a: Terminal (Admin), Gerenciador de Dispositivos, Gerenciamento de Disco, Desligar/Reiniciar, etc. Essencial para técnicos e administradores.<br><br>
+      <strong>Outros atalhos úteis para memorizar:</strong> <code>Win+D</code> (Área de trabalho), <code>Win+L</code> (Bloquear), <code>Win+R</code> (Executar), <code>Win+Tab</code> (Visualização de Tarefas), <code>Win+Z</code> (Snap Layouts).
+    </div>
+  </div>
+</div>
+
+<!-- Q19 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 19</span>
+    <span class="q-tag qt-mc">Múltipla Escolha</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Sobre os <strong>atributos de arquivos no Windows</strong> (gerenciados via comando <code>attrib</code> ou pelas Propriedades do arquivo), analise as alternativas e marque a <strong>correta</strong>:</div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO</div>
+    <div class="gab-answer">B — O atributo R (Read-Only) permite que o arquivo seja lido, mas impede modificações. O atributo H (Hidden) oculta o arquivo da visualização padrão do Explorador.</div>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação — Atributos de arquivo no Windows</div>
+    <div class="exp-text">
+      O comando <code>attrib</code> gerencia quatro atributos clássicos:<br><br>
+      <table class="fill-table">
+        <tr><th>Atributo</th><th>Flag</th><th>Função real</th></tr>
+        <tr><td>Read-Only</td><td class="answer">R</td><td>Impede modificação/exclusão acidental. Leitura permitida.</td></tr>
+        <tr><td>Hidden</td><td class="answer">H</td><td>Oculta o arquivo no Explorador (padrão). Não é criptografia.</td></tr>
+        <tr><td>System</td><td class="answer">S</td><td>Marca arquivos de sistema (ex: boot.ini, ntldr). Ocultos e protegidos.</td></tr>
+        <tr><td>Archive</td><td class="answer">A</td><td>Indica que o arquivo foi modificado desde o último backup. Ferramentas de backup usam esse bit.</td></tr>
+      </table>
+      <br>
+      Exemplo de uso: <code>attrib +H +S arquivo.txt</code> oculta e marca como sistema. <code>attrib -R arquivo.txt</code> remove somente-leitura.<br><br>
+      <strong>Importante:</strong> o atributo <code>H</code> (Hidden) <strong>não criptografa</strong> — apenas oculta. Para criptografia, use o atributo <code>E</code> (Encrypted via EFS) no NTFS, ou o BitLocker.
+    </div>
+  </div>
+
+  <div class="wrong-block">
+    <div class="wrong-label">✗ Por que as outras estão erradas</div>
+    <div class="wrong-item"><strong>A)</strong> H (Hidden) <strong>não criptografa</strong> com senha — apenas oculta da visualização padrão. Qualquer pessoa com "mostrar arquivos ocultos" ativado o vê.</div>
+    <div class="wrong-item"><strong>C)</strong> A (Archive) <strong>não deleta</strong> o arquivo após backup — apenas <strong>desmarca</strong> o bit de archive após o backup realizado, indicando que está "limpo" (sem alterações pendentes de backup).</div>
+    <div class="wrong-item"><strong>D)</strong> S (System) indica arquivo de sistema, <strong>não compressão</strong>. A compressão no NTFS é um atributo separado configurável nas propriedades avançadas do arquivo.</div>
+  </div>
+</div>
+
+<!-- Q20 -->
+<div class="q-card">
+  <div class="q-num-row">
+    <span>Questão 20</span>
+    <span class="q-tag qt-fill">Complete as Lacunas</span>
+    <span class="q-pts">pts</span>
+  </div>
+  <div class="q-enunciado">Complete as afirmações sobre a gestão do Windows 11 e PowerShell. Banco de palavras: <em>Modo Kernel, Serviços, Get-ComputerInfo, |, -Force, Modo Usuário, Get-Process, Processos, &amp;, -Hidden</em>. <strong>Atenção: nem todas as palavras serão utilizadas.</strong></div>
+
+  <div class="gab-block">
+    <div class="gab-label">▶ GABARITO — LACUNAS</div>
+    <table class="fill-table" style="margin-top:8px">
+      <tr><th>#</th><th>Afirmação</th><th>Resposta</th></tr>
+      <tr>
+        <td>1</td>
+        <td>No Windows 11, o modo de operação privilegiado onde o kernel executa com acesso total ao hardware é chamado de ___.</td>
+        <td class="answer">Modo Kernel</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>O processo svchost.exe é responsável por hospedar múltiplos ___ do Windows que compartilham o mesmo processo para economizar memória.</td>
+        <td class="answer">Serviços</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>O cmdlet do PowerShell para obter informações sobre o sistema operacional instalado é ___.</td>
+        <td class="answer">Get-ComputerInfo</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>No PowerShell, o operador ___ (pipe) permite encadear comandos, passando a saída de um como entrada para o próximo.</td>
+        <td class="answer">| (pipe)</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Para listar arquivos incluindo os ocultos com Get-ChildItem, deve-se adicionar o parâmetro ___ ao comando.</td>
+        <td class="answer">-Hidden</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="exp-block">
+    <div class="exp-label">✦ Explicação detalhada</div>
+    <div class="exp-text">
+      <strong>1 — Modo Kernel:</strong> Nível de privilégio mais alto do Windows, onde o kernel e os drivers executam com acesso irrestrito ao hardware. Qualquer erro aqui pode resultar em BSOD.<br><br>
+      <strong>2 — Serviços:</strong> O <code>svchost.exe</code> é um contêiner de serviços. Em vez de cada serviço ter seu próprio processo, vários serviços relacionados são agrupados em um único svchost.exe para economizar recursos. No Gerenciador de Tarefas, expandindo o svchost.exe, você vê os serviços hospedados.<br><br>
+      <strong>3 — Get-ComputerInfo:</strong> Cmdlet que retorna informações detalhadas sobre o SO, hardware e BIOS: versão do Windows, nome do computador, fabricante, modelo, processador, RAM total, versão do UEFI etc. Mais completo que o antigo <code>systeminfo</code>.<br><br>
+      <strong>4 — | (pipe):</strong> O operador pipe é fundamental na filosofia do PowerShell. Encadeia comandos passando <strong>objetos</strong> (não apenas texto) de um cmdlet para o próximo. Ex: <code>Get-Process | Sort-Object CPU -Descending | Select-Object -First 5</code>.<br><br>
+      <strong>5 — -Hidden:</strong> No PowerShell, <code>Get-ChildItem -Hidden</code> lista somente arquivos/pastas ocultos. Para listar <em>tudo</em> incluindo ocultos, use <code>Get-ChildItem -Force</code>. Para combinar: <code>Get-ChildItem -Force -Recurse</code>.
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="section-divider" style="margin-top:40px">
+  <div class="sec-info">
+    <div class="sec-num">RESUMO</div>
+    <div class="sec-title">Gabarito Consolidado</div>
+  </div>
+</div>
+
+<div class="gab-block" style="margin-bottom:16px">
+  <div class="gab-label">▶ GABARITO RÁPIDO — TODAS AS QUESTÕES</div>
+  <table class="fill-table" style="margin-top:10px">
+    <tr><th>Q</th><th>Tipo</th><th>Gabarito</th><th>Conceito-Chave</th></tr>
+    <tr><td>01</td><td>M.E.</td><td class="answer">B</td><td>Socket da CPU — conexão mecânica/elétrica do processador</td></tr>
+    <tr><td>02</td><td>M.E.</td><td class="answer">B</td><td>Chipset — hub de comunicação PCIe/SATA/USB</td></tr>
+    <tr><td>03</td><td>V/F</td><td class="answer">V, F, V, V</td><td>CMOS, PCIe x16 uso, ATX 24 pinos, NVMe velocidade</td></tr>
+    <tr><td>04</td><td>Corr.</td><td class="answer">1-D, 2-B, 3-A, 4-C</td><td>Componentes e funções da placa-mãe</td></tr>
+    <tr><td>05</td><td>M.E.</td><td class="answer">B</td><td>RAM — volátil, temporária, acesso aleatório</td></tr>
+    <tr><td>06</td><td>M.E.</td><td class="answer">C</td><td>BIOS/UEFI — POST, detecção de hardware, bootloader</td></tr>
+    <tr><td>07</td><td>M.E.</td><td class="answer">B</td><td>PCIe — barramento de expansão moderno, ponto a ponto</td></tr>
+    <tr><td>08</td><td>M.E.</td><td class="answer">B</td><td>Kernel Mode vs User Mode — syscalls e isolamento</td></tr>
+    <tr><td>09</td><td>M.E.</td><td class="answer">C</td><td>Processo vs Thread — espaço de endereçamento e isolamento</td></tr>
+    <tr><td>10</td><td>M.E.</td><td class="answer">A</td><td>Hierarquia de memória — velocidade vs capacidade</td></tr>
+    <tr><td>11</td><td>M.E.</td><td class="answer">B</td><td>Virtualização — hypervisor, VMs isoladas</td></tr>
+    <tr><td>12</td><td>M.E.</td><td class="answer">C</td><td>NTFS — journaling, permissões ACL, criptografia</td></tr>
+    <tr><td>13</td><td>Lacuna</td><td class="answer">Mem.Virtual, NTFS, PID, BSOD</td><td>Swap, sistemas de arquivos, identificadores de processo</td></tr>
+    <tr><td>14</td><td>M.E.</td><td class="answer">B</td><td>svchost.exe — expandir para identificar serviço</td></tr>
+    <tr><td>15</td><td>M.E.</td><td class="answer">B</td><td>Snap Layouts — organização de janelas multitarefa</td></tr>
+    <tr><td>16</td><td>V/F</td><td class="answer">V, F, V, V</td><td>Win+D, arquivos ocultos no Explorer, System32, AppData</td></tr>
+    <tr><td>17</td><td>M.E.</td><td class="answer">C</td><td>Get-Service | Where-Object — filtrar serviços Running</td></tr>
+    <tr><td>18</td><td>Corr.</td><td class="answer">1-C, 2-D, 3-B, 4-A</td><td>Atalhos Win+E, Win+I, Ctrl+Shift+Esc, Win+X</td></tr>
+    <tr><td>19</td><td>M.E.</td><td class="answer">B</td><td>Atributos R (Read-Only) e H (Hidden) do attrib</td></tr>
+    <tr><td>20</td><td>Lacuna</td><td class="answer">Modo Kernel, Serviços, Get-ComputerInfo, |, -Hidden</td><td>PowerShell cmdlets e modos de operação Windows</td></tr>
+  </table>
+</div>
+
+<div class="exp-block" style="text-align:center;padding:22px">
+  <div class="exp-label">✦ NOTA FINAL</div>
+  <div class="exp-text" style="font-family:'IBM Plex Mono',monospace;font-size:.85em;color:var(--text2)">
+    Total: <strong style="color:var(--green3)">100 pontos</strong> → Nota: <strong style="color:var(--green3)">10,0</strong> &nbsp;|&nbsp;
+    Seção A (Q01–07) + Seção B (Q08–13) + Seção C (Q14–20)<br>
+    Cada questão vale pontos proporcionais definidos pelo professor.
+  </div>
+</div>
+
+</div><!-- /container -->
+</body>
+</html>
