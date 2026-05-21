@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S11 – PowerShell Remoting e Cmdlets Avançados | GSO I 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--border:#21262d;
+  --green:#39d353;--green-dim:#1a4731;--blue:#58a6ff;--blue-dim:#0d2139;
+  --cyan:#22d3ee;--cyan-dim:#0c2830;
+  --purple:#bc8cff;--purple-dim:#2a1f42;--amber:#f0b429;--amber-dim:#3d2c00;
+  --red:#f85149;--red-dim:#3d0f0d;--teal:#2dd4bf;--teal-dim:#0f2927;
+  --text:#e6edf3;--text-muted:#8b949e;--text-dim:#484f58;
+  --xp:#ffd700;--r:12px;--r-sm:8px;
+  --glow-cyan:0 0 20px rgba(34,211,238,.25);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.hud{position:sticky;top:0;z-index:200;background:rgba(13,17,23,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:10px 24px;}
+.hud-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.hud-week{font-family:'DM Mono',monospace;font-size:.78em;background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(34,211,238,.3);border-radius:50px;padding:4px 12px;white-space:nowrap;}
+.hud-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1em;color:var(--text);flex:1;}.hud-title span{color:var(--cyan);}
+.hud-xp{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:5px 12px;}
+.hud-xp .xp-val{font-family:'DM Mono',monospace;font-size:.82em;font-weight:500;color:var(--xp);}
+.hud-xp .xp-label{font-size:.72em;color:var(--text-muted);}
+.progress-bar-outer{height:6px;background:var(--surface2);border-radius:3px;flex:1;min-width:80px;}
+.progress-bar-inner{height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));border-radius:3px;transition:width .5s ease;width:0%;}
+.hero{position:relative;overflow:hidden;padding:60px 24px 48px;text-align:center;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(34,211,238,.06),transparent 70%);pointer-events:none;}
+.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(34,211,238,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.hero-inner{position:relative;max-width:700px;margin:0 auto;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--cyan-dim);border:1px solid rgba(34,211,238,.3);border-radius:50px;padding:5px 14px;font-size:.8em;font-weight:600;color:var(--cyan);margin-bottom:18px;}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2em,5vw,3.2em);line-height:1.1;letter-spacing:-.03em;margin-bottom:14px;}
+.hero h1 .accent{color:var(--cyan);}
+.hero-sub{color:var(--text-muted);font-size:1em;margin-bottom:28px;}
+.hero-pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
+.pill{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:6px 14px;font-size:.82em;}
+.pill.cyan{border-color:rgba(34,211,238,.3);color:var(--cyan);}
+.pill.blue{border-color:rgba(88,166,255,.3);color:var(--blue);}
+.pill.red{border-color:rgba(248,81,73,.3);color:var(--red);}
+
+.terminal-hero{background:#080d14;border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:600px;margin:0 auto 32px;text-align:left;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.term-bar{background:#111820;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.term-dots{display:flex;gap:5px;}.term-dot{width:10px;height:10px;border-radius:50%;}
+.term-dot.r{background:#f85149;}.term-dot.y{background:#f0b429;}.term-dot.g{background:#39d353;}
+.term-label{font-family:'DM Mono',monospace;font-size:.72em;color:var(--text-dim);margin-left:6px;}
+.term-body{padding:14px 18px;font-family:'DM Mono',monospace;font-size:.8em;line-height:1.9;}
+.term-cursor{display:inline-block;width:8px;height:14px;background:var(--cyan);animation:blink 1s step-end infinite;vertical-align:text-bottom;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+.container{max-width:900px;margin:0 auto;padding:0 24px 60px;}
+.section-header{display:flex;align-items:center;gap:10px;margin:40px 0 16px;}
+.section-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1em;flex-shrink:0;}
+.section-icon.cyan{background:var(--cyan-dim);border:1px solid rgba(34,211,238,.3);}
+.section-icon.blue{background:var(--blue-dim);border:1px solid rgba(88,166,255,.3);}
+.section-icon.amber{background:var(--amber-dim);border:1px solid rgba(240,180,41,.3);}
+.section-icon.green{background:var(--green-dim);border:1px solid rgba(57,211,83,.3);}
+.section-icon.purple{background:var(--purple-dim);border:1px solid rgba(188,140,255,.3);}
+.section-icon.red{background:var(--red-dim);border:1px solid rgba(248,81,73,.3);}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.25em;}
+.section-xp{margin-left:auto;font-family:'DM Mono',monospace;font-size:.78em;color:var(--xp);background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:50px;padding:3px 10px;}
+
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:24px;}
+.obj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;display:flex;gap:10px;align-items:flex-start;transition:all .2s;cursor:pointer;}
+.obj-card:hover{border-color:rgba(34,211,238,.3);box-shadow:var(--glow-cyan);}
+.obj-card.done{border-color:rgba(34,211,238,.4);background:var(--cyan-dim);}
+.obj-num{width:26px;height:26px;background:var(--cyan-dim);border:1px solid rgba(34,211,238,.3);color:var(--cyan);border-radius:8px;font-size:.75em;font-weight:700;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;}
+.obj-text{font-size:.88em;color:var(--text);line-height:1.4;}
+
+.content-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;transition:box-shadow .2s;}
+.content-card:hover{box-shadow:0 4px 24px rgba(0,0,0,.3);}
+.cc-header{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;user-select:none;background:var(--surface2);}
+.cc-icon{font-size:1.3em;}.cc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;color:var(--text);flex:1;}
+.cc-xp{font-family:'DM Mono',monospace;font-size:.73em;color:var(--xp);background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:50px;padding:2px 9px;}
+.cc-chevron{color:var(--text-dim);transition:transform .3s;font-size:.85em;}
+.cc-header.open .cc-chevron{transform:rotate(180deg);}
+.cc-body{padding:0 20px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;}
+.cc-body.open{max-height:6000px;padding:20px;}
+
+.key-point{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.key-point:last-of-type{border:none;}
+.kp-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:7px;}
+.kp-dot.purple{background:var(--purple);}
+.kp-dot.green{background:var(--green);}
+.kp-dot.amber{background:var(--amber);}
+.kp-text{font-size:.9em;color:var(--text-muted);line-height:1.5;}
+.kp-text strong{color:var(--text);}
+.kp-text code{background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);color:var(--cyan);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.88em;}
+
+/* BLOCO COMANDO + RESULTADO — igual semana 10 */
+.cmd-block{margin:16px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);position:relative;}
+.cmd-block-label{background:#111820;padding:8px 14px;font-family:'DM Mono',monospace;font-size:.72em;color:var(--text-dim);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.cmd-block-label span{background:var(--cyan-dim);color:var(--cyan);border-radius:4px;padding:1px 6px;font-size:.9em;}
+.cmd-input{background:#080d14;padding:14px 18px;font-family:'DM Mono',monospace;font-size:.82em;line-height:1.8;overflow-x:auto;}
+.cmd-input .ps{color:var(--cyan);}
+.cmd-input .kw{color:var(--purple);}
+.cmd-input .param{color:var(--blue);}
+.cmd-input .str{color:#98c379;}
+.cmd-input .var{color:var(--amber);}
+.cmd-input .op{color:var(--teal);}
+.cmd-input .cm{color:var(--text-dim);font-style:italic;}
+.cmd-output{background:#050a10;border-top:1px solid rgba(57,211,83,.15);padding:14px 18px;font-family:'DM Mono',monospace;font-size:.8em;line-height:1.9;}
+.cmd-output-label{display:flex;align-items:center;gap:6px;font-size:.72em;color:var(--green);margin-bottom:8px;opacity:.8;}
+.cmd-output-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;}
+.out-success{color:var(--green);}
+.out-info{color:var(--cyan);}
+.out-warn{color:var(--amber);}
+.out-val{color:var(--text-muted);}
+.out-val.red{color:var(--red);}
+.out-header{color:var(--blue);font-weight:500;}
+.out-sep{color:var(--text-dim);}
+
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin:14px 0;display:flex;gap:10px;align-items:flex-start;}
+.callout.cyan{background:var(--cyan-dim);border:1px solid rgba(34,211,238,.25);}
+.callout.blue{background:var(--blue-dim);border:1px solid rgba(88,166,255,.25);}
+.callout.green{background:var(--green-dim);border:1px solid rgba(57,211,83,.25);}
+.callout.amber{background:var(--amber-dim);border:1px solid rgba(240,180,41,.25);}
+.callout.red{background:var(--red-dim);border:1px solid rgba(248,81,73,.25);}
+.callout-icon{font-size:1.1em;flex-shrink:0;margin-top:1px;}
+.callout-text{font-size:.88em;color:var(--text-muted);line-height:1.5;}
+.callout-text strong{color:var(--text);}
+.callout-text code{background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);color:var(--cyan);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.88em;}
+
+.importance-box{background:rgba(57,211,83,.05);border:1px solid rgba(57,211,83,.2);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:10px 14px;margin:10px 0 0 0;font-size:.83em;color:var(--text-muted);line-height:1.5;}
+.importance-box strong{color:var(--green);font-size:.85em;letter-spacing:.04em;text-transform:uppercase;}
+
+.copy-btn{position:absolute;top:8px;right:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);border-radius:6px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:.7em;cursor:pointer;transition:all .2s;z-index:10;display:flex;align-items:center;gap:5px;}
+.copy-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+
+.mission-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;transition:all .2s;}
+.mission-card:hover{border-color:rgba(34,211,238,.25);box-shadow:0 0 16px rgba(34,211,238,.1);}
+.mission-card.completed{border-color:rgba(57,211,83,.4);background:rgba(57,211,83,.04);}
+.mission-icon{font-size:1.6em;flex-shrink:0;}
+.mission-content{flex:1;}
+.mission-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;color:var(--text);margin-bottom:4px;}
+.mission-desc{color:var(--text-muted);font-size:.87em;line-height:1.5;}
+.mission-meta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.mission-tag{background:var(--surface2);border:1px solid var(--border);border-radius:50px;padding:2px 9px;font-size:.74em;color:var(--text-muted);}
+.mission-tag.xp{background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.2);color:var(--xp);}
+.mission-check{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1em;color:var(--text-dim);flex-shrink:0;transition:all .2s;}
+.mission-check:hover{border-color:var(--cyan);color:var(--cyan);}
+.mission-check.done{background:var(--green);border-color:var(--green);color:#0d1117;}
+
+/* GABARITO */
+.gabarito-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.gabarito-header{display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:background .2s;}
+.gabarito-header:hover{background:var(--surface2);}
+.gabarito-header.open{border-bottom-color:var(--border);}
+.gabarito-header-icon{width:36px;height:36px;border-radius:8px;background:rgba(57,211,83,.12);border:1px solid rgba(57,211,83,.25);display:flex;align-items:center;justify-content:center;font-size:1.1em;flex-shrink:0;}
+.gabarito-header-text{flex:1;}
+.gabarito-header-text h3{font-family:'Syne',sans-serif;font-size:.95em;font-weight:700;color:var(--green);}
+.gabarito-header-text p{font-size:.78em;color:var(--text-muted);margin-top:2px;}
+.gabarito-warn{font-size:.72em;background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.25);border-radius:50px;padding:3px 10px;color:var(--amber);white-space:nowrap;}
+.gabarito-chevron{color:var(--text-muted);font-size:.9em;transition:transform .3s;}
+.gabarito-body{display:none;padding:20px;}
+.gabarito-body.open{display:block;}
+.gab-item{margin-bottom:20px;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;}
+.gab-item:last-child{margin-bottom:0;}
+.gab-item-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface2);}
+.gab-item-num{width:28px;height:28px;border-radius:6px;background:var(--green-dim);border:1px solid rgba(57,211,83,.3);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.8em;font-weight:700;color:var(--green);flex-shrink:0;}
+.gab-item-title{font-family:'Syne',sans-serif;font-size:.88em;font-weight:700;color:var(--text);}
+.gab-item-body{padding:14px 16px;}
+.gab-note{font-size:.83em;color:var(--text-muted);margin-bottom:12px;line-height:1.6;background:rgba(88,166,255,.06);border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:8px 12px;}
+.gab-note strong{color:var(--blue);}
+.gab-cmd{background:#0a0f16;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'DM Mono',monospace;font-size:.82em;line-height:1.7;white-space:pre-wrap;overflow-x:auto;}
+.gab-cmd .cm{color:var(--text-dim);}
+.gab-cmd .kw{color:var(--blue);}
+.gab-cmd .param{color:var(--purple);}
+.gab-cmd .str{color:var(--amber);}
+.gab-cmd .var{color:var(--green);}
+.gab-tip{margin-top:10px;font-size:.8em;color:var(--text-muted);line-height:1.5;background:rgba(57,211,83,.06);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:8px 12px;}
+.gab-tip strong{color:var(--green);}
+
+/* QUIZ */
+.quiz-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.quiz-topbar{background:linear-gradient(135deg,var(--cyan-dim),var(--blue-dim));padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.quiz-topbar-icon{font-size:1.5em;}
+.quiz-topbar-text h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;}
+.quiz-topbar-text p{font-size:.78em;color:var(--text-muted);margin-top:2px;}
+.quiz-topbar-xp{margin-left:auto;text-align:right;}
+.quiz-topbar-xp .xp-big{font-family:'DM Mono',monospace;font-size:1.3em;font-weight:700;color:var(--xp);}
+.quiz-topbar-xp .xp-lbl{font-size:.72em;color:var(--text-muted);}
+.quiz-dots{display:flex;gap:5px;}
+.quiz-dot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:all .3s;}
+.quiz-dot.current{background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.quiz-dot.done{background:var(--green);}
+.quiz-counter{font-family:'DM Mono',monospace;font-size:.78em;color:var(--text-muted);margin-left:auto;}
+.quiz-body{padding:20px;}
+.question-text{font-weight:600;font-size:.97em;line-height:1.5;margin-bottom:18px;}
+.question-text code{background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);color:var(--cyan);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.88em;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;text-align:left;cursor:pointer;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9em;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.option-btn:hover:not(:disabled){border-color:var(--cyan);background:var(--cyan-dim);transform:translateX(4px);}
+.option-letter{width:24px;height:24px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.75em;font-weight:700;flex-shrink:0;}
+.option-btn.correct{border-color:rgba(57,211,83,.5);background:rgba(57,211,83,.08);color:var(--green);}
+.option-btn.correct .option-letter{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.option-btn.wrong{border-color:rgba(248,81,73,.5);background:rgba(248,81,73,.08);color:var(--red);}
+.option-btn.wrong .option-letter{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.quiz-feedback{margin-top:14px;padding:12px 16px;border-radius:var(--r-sm);font-size:.87em;line-height:1.5;display:none;}
+.quiz-feedback.show.ok{display:block;background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.25);color:var(--green);}
+.quiz-feedback.show.err{display:block;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:var(--red);}
+.quiz-next{margin-top:14px;background:var(--cyan);color:#0d1117;border:none;border-radius:var(--r-sm);padding:10px 22px;font-family:'Syne',sans-serif;font-weight:700;font-size:.85em;cursor:pointer;display:none;transition:all .2s;}
+.quiz-next:hover{background:#67e8f9;transform:translateY(-1px);}
+.quiz-result{text-align:center;padding:20px 0;}
+.quiz-result .score{font-family:'Syne',sans-serif;font-size:3.5em;font-weight:800;color:var(--cyan);}
+.quiz-result .score-label{color:var(--text-muted);font-size:.9em;margin-bottom:16px;}
+.quiz-result .xp-earn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.25);border-radius:50px;padding:6px 16px;color:var(--xp);font-weight:700;font-size:.95em;margin-bottom:20px;}
+.quiz-restart{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--r-sm);padding:9px 20px;font-family:'DM Sans',sans-serif;cursor:pointer;font-size:.88em;transition:all .2s;}
+.quiz-restart:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* FILL IN THE BLANKS */
+.fitb-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px;}
+.fitb-topbar{background:linear-gradient(135deg,var(--purple-dim),var(--cyan-dim));padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.fitb-topbar-icon{font-size:1.5em;}
+.fitb-topbar-text h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;}
+.fitb-topbar-text p{font-size:.78em;color:var(--text-muted);margin-top:2px;}
+.fitb-topbar-xp{margin-left:auto;text-align:right;}
+.fitb-topbar-xp .xp-big{font-family:'DM Mono',monospace;font-size:1.3em;font-weight:700;color:var(--xp);}
+.fitb-topbar-xp .xp-lbl{font-size:.72em;color:var(--text-muted);}
+.fitb-body{padding:20px;}
+.fitb-word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}
+.fitb-word-bank-label{width:100%;font-size:.76em;color:var(--text-dim);font-family:'DM Mono',monospace;margin-bottom:4px;}
+.fitb-chip{background:var(--bg);border:1.5px solid var(--cyan);color:var(--cyan);border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:.8em;cursor:pointer;transition:all .2s;user-select:none;}
+.fitb-chip:hover:not(.used){background:var(--cyan-dim);transform:translateY(-1px);}
+.fitb-chip.used{opacity:.3;cursor:default;pointer-events:none;}
+.fitb-lines{display:flex;flex-direction:column;gap:14px;}
+.fitb-line{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Mono',monospace;font-size:.82em;line-height:2;display:flex;flex-wrap:wrap;align-items:center;gap:4px;}
+.fitb-blank{display:inline-flex;align-items:center;justify-content:center;min-width:110px;height:26px;background:rgba(34,211,238,.06);border:1.5px dashed rgba(34,211,238,.4);border-radius:5px;padding:0 10px;font-family:'DM Mono',monospace;font-size:.85em;color:var(--text-dim);cursor:pointer;transition:all .2s;vertical-align:middle;}
+.fitb-blank:hover:not(.filled):not(.locked){border-color:var(--cyan);background:var(--cyan-dim);color:var(--cyan);}
+.fitb-blank.filled{background:rgba(34,211,238,.12);border-style:solid;border-color:var(--cyan);color:var(--text);}
+.fitb-blank.correct{background:rgba(57,211,83,.1);border-color:var(--green);color:var(--green);border-style:solid;}
+.fitb-blank.wrong{background:rgba(248,81,73,.1);border-color:var(--red);color:var(--red);border-style:solid;animation:shake .3s ease;}
+.fitb-blank.locked{pointer-events:none;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.fitb-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.fitb-btn{background:var(--cyan);color:#0d1117;border:none;border-radius:8px;padding:9px 20px;font-family:'Syne',sans-serif;font-weight:700;font-size:.85em;cursor:pointer;transition:all .2s;}
+.fitb-btn:hover{background:#67e8f9;transform:translateY(-1px);}
+.fitb-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.fitb-btn.secondary:hover{border-color:var(--cyan);color:var(--cyan);}
+.fitb-result{margin-top:14px;padding:12px 16px;border-radius:8px;font-size:.87em;display:none;}
+.fitb-result.show{display:block;}
+.fitb-result.ok{background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.25);color:var(--green);}
+.fitb-result.partial{background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.25);color:var(--amber);}
+
+/* DRAG AND DROP */
+.dnd-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px;}
+.dnd-topbar{background:linear-gradient(135deg,var(--amber-dim),var(--green-dim));padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.dnd-topbar-icon{font-size:1.5em;}
+.dnd-topbar-text h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;}
+.dnd-topbar-text p{font-size:.78em;color:var(--text-muted);margin-top:2px;}
+.dnd-topbar-xp{margin-left:auto;text-align:right;}
+.dnd-body{padding:20px;}
+.dnd-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.dnd-layout{grid-template-columns:1fr;}}
+.dnd-col-title{font-family:'DM Mono',monospace;font-size:.72em;color:var(--text-dim);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase;}
+.dnd-items{display:flex;flex-direction:column;gap:6px;}
+.dnd-card{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:.82em;color:var(--text);cursor:grab;transition:all .2s;user-select:none;display:flex;align-items:center;gap:8px;}
+.dnd-card:active{cursor:grabbing;}
+.dnd-card:hover:not(.placed):not(.dnd-card-static){border-color:var(--amber);color:var(--amber);transform:translateX(3px);}
+.dnd-card.dragging{opacity:.4;transform:scale(.95);}
+.dnd-card.dnd-correct{border-color:var(--green);color:var(--green);background:rgba(57,211,83,.06);cursor:default;}
+.dnd-card.dnd-wrong{border-color:var(--red);color:var(--red);background:rgba(248,81,73,.06);animation:shake .3s ease;}
+.dnd-card .dnd-handle{color:var(--text-dim);font-size:.85em;}
+.dnd-targets{display:flex;flex-direction:column;gap:6px;}
+.dnd-target{background:rgba(34,211,238,.03);border:1.5px dashed rgba(34,211,238,.25);border-radius:8px;padding:10px 14px;min-height:44px;display:flex;align-items:center;gap:8px;transition:all .2s;}
+.dnd-target:hover:not(.locked){border-color:var(--cyan);background:rgba(34,211,238,.07);}
+.dnd-target.drag-over{border-color:var(--amber);background:rgba(240,180,41,.07);border-style:solid;}
+.dnd-target.correct{border-color:var(--green);background:rgba(57,211,83,.06);border-style:solid;}
+.dnd-target.wrong{border-color:var(--red);border-style:solid;}
+.dnd-target-def{font-family:'DM Sans',sans-serif;font-size:.83em;color:var(--text-muted);flex:1;}
+.dnd-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.dnd-result{margin-top:14px;padding:12px 16px;border-radius:8px;font-size:.87em;display:none;}
+.dnd-result.show{display:block;}
+.dnd-result.ok{background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.25);color:var(--green);}
+.dnd-result.partial{background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.25);color:var(--amber);}
+
+.checkpoint{background:linear-gradient(135deg,var(--cyan-dim),var(--blue-dim));border:1px solid rgba(34,211,238,.2);border-radius:var(--r);padding:24px;text-align:center;margin:28px 0;}
+.checkpoint h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1em;margin-bottom:6px;}
+.checkpoint p{color:var(--text-muted);font-size:.88em;}
+.xp-total-display{margin-top:12px;font-family:'DM Mono',monospace;font-size:1.1em;color:var(--xp);}
+
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+.res-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-decoration:none;color:var(--text);transition:all .2s;display:flex;flex-direction:column;gap:6px;}
+.res-card:hover{border-color:rgba(34,211,238,.3);box-shadow:0 0 20px rgba(34,211,238,.1);}
+.res-icon{font-size:1.4em;}
+.res-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.88em;}
+.res-desc{font-size:.78em;color:var(--text-muted);}
+
+.nav-bar{border-top:1px solid var(--border);padding:20px 24px;margin-top:20px;}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);text-decoration:none;border-radius:var(--r-sm);padding:10px 18px;font-size:.88em;transition:all .2s;}
+.nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.nav-btn.primary{background:var(--cyan);border-color:var(--cyan);color:#0d1117;font-weight:700;}
+.nav-btn.primary:hover{background:#67e8f9;border-color:#67e8f9;}
+.nav-home{font-family:'DM Mono',monospace;font-size:.8em;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+.nav-home:hover{color:var(--cyan);}
+
+.ach-toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--cyan-dim),var(--blue-dim));border:1px solid rgba(34,211,238,.4);border-radius:14px;padding:14px 20px;display:flex;gap:12px;align-items:center;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);z-index:999;max-width:300px;}
+.ach-toast.show{transform:translateY(0);opacity:1;}
+.ach-icon{font-size:1.8em;}
+.ach-text strong{font-family:'Syne',sans-serif;font-size:.95em;color:var(--text);}
+.ach-text p{font-size:.8em;color:var(--text-muted);margin-top:2px;}
+.star{position:fixed;pointer-events:none;font-size:1.4em;animation:flyUp 1.5s ease forwards;z-index:998;}
+@keyframes flyUp{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-150px) scale(1.5);opacity:0;}}
+footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:.8em;color:var(--text-dim);}
+</style>
+</head>
+<body>
+
+<div class="ach-toast" id="achToast">
+  <div class="ach-icon" id="achIcon">🏆</div>
+  <div class="ach-text"><strong id="achTitle">Conquista!</strong><p id="achDesc">Desbloqueada!</p></div>
+</div>
+
+<nav class="hud">
+  <div class="hud-inner">
+    <span class="hud-week">S11/20</span>
+    <span class="hud-title">PowerShell — <span>Remoting e Cmdlets Avançados</span></span>
+    <div class="hud-xp"><span class="xp-val" id="xpDisplay">0</span><span class="xp-label">/ 420 XP</span></div>
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="mainProgress"></div></div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">🌐 Semana 11 de 20</div>
+    <h1>Remoting &amp;<br><span class="accent">Cmdlets Avançados</span></h1>
+    <p class="hero-sub">Gerencie computadores remotos como se estivesse fisicamente presente — o superpoder do administrador de redes.</p>
+    <div class="hero-pills">
+      <span class="pill cyan">🌐 WinRM / WSMan</span>
+      <span class="pill blue">💻 Invoke-Command</span>
+      <span class="pill red">🔒 Segurança Remoting</span>
+    </div>
+    <div class="terminal-hero">
+      <div class="term-bar">
+        <div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div>
+        <span class="term-label">auditoria_remota.ps1 — executando em 3 PCs</span>
+      </div>
+      <div class="term-body">
+        <div style="color:var(--text-dim)"># coletando dados remotamente...</div>
+        <div style="color:var(--cyan)">Computador  : PC-LAB01  | OS: Win11 Pro | RAM: 16GB</div>
+        <div style="color:var(--cyan)">Computador  : PC-LAB02  | OS: Win11 Pro | RAM: 8GB</div>
+        <div style="color:var(--amber)">Computador  : PC-LAB03  | ⚠ WinRM não responde</div>
+        <div style="color:var(--green)">✓ Relatório salvo em C:\Auditoria\resultado.csv</div>
+        <div style="margin-top:4px"><span style="color:var(--cyan)">PS C:\> </span><span class="term-cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="section-header">
+    <div class="section-icon cyan">🎯</div>
+    <h2 class="section-title">Objetivos de Aprendizagem</h2>
+    <span class="section-xp">+40 XP</span>
+  </div>
+  <div class="obj-grid">
+    <div class="obj-card" onclick="markObj(this,10)"><div class="obj-num">1</div><div class="obj-text">Configurar e usar o <strong>PowerShell Remoting</strong> via WinRM</div></div>
+    <div class="obj-card" onclick="markObj(this,10)"><div class="obj-num">2</div><div class="obj-text">Executar comandos em <strong>múltiplos PCs remotos</strong> simultaneamente</div></div>
+    <div class="obj-card" onclick="markObj(this,10)"><div class="obj-num">3</div><div class="obj-text">Usar <strong>sessões persistentes</strong> para tarefas repetidas</div></div>
+    <div class="obj-card" onclick="markObj(this,10)"><div class="obj-num">4</div><div class="obj-text">Entender as <strong>políticas de segurança</strong> do Remoting</div></div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon blue">📖</div>
+    <h2 class="section-title">Conteúdo da Aula</h2>
+    <span class="section-xp">+80 XP</span>
+  </div>
+
+  <!-- CARD 1: O QUE É REMOTING -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">🌐</span>
+      <span class="cc-title">O que é PowerShell Remoting?</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text">PowerShell Remoting permite executar comandos em computadores remotos como se estivesse localmente. Usa o protocolo <strong>WSMan (WS-Management)</strong> via HTTP (porta 5985) ou HTTPS (5986).</div></div>
+      <div class="key-point"><div class="kp-dot purple"></div><div class="kp-text">Em domínios Windows pode ser habilitado via <strong>Política de Grupo (GPO)</strong> para todos os computadores de uma só vez — sem precisar ir máquina por máquina.</div></div>
+      <div class="key-point"><div class="kp-dot green"></div><div class="kp-text">O serviço que habilita o Remoting é o <strong>WinRM</strong> (Windows Remote Management). Você precisa habilitá-lo tanto no PC que envia quanto no que recebe.</div></div>
+      <div class="callout cyan">
+        <span class="callout-icon">💡</span>
+        <div class="callout-text"><strong>Analogia para fixar:</strong> é como ter um controle remoto universal para todos os computadores da rede — você digita aqui, executa lá. Sem precisar abrir Remote Desktop, sem precisar sentar na frente de cada máquina.</div>
+      </div>
+      <div class="importance-box"><strong>🔧 Por que isso importa para o técnico?</strong> Imagine uma escola com 40 computadores no laboratório. Sem Remoting, você precisa caminhar até cada um para verificar se o Windows Update está ativo, se o antivírus está rodando, ou para instalar um programa. Com Remoting, você faz tudo em segundos do seu próprio computador. É a diferença entre trabalhar como técnico júnior e trabalhar como administrador de sistemas.</div>
+    </div>
+  </div>
+
+  <!-- CARD 2: HABILITANDO WINRM -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">⚙️</span>
+      <span class="cc-title">Habilitando o WinRM — Passo a Passo</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text"><code>Enable-PSRemoting -Force</code> configura tudo automaticamente: inicia o serviço WinRM, cria regras de firewall e define as permissões. Execute como Administrador.</div></div>
+      <div class="key-point"><div class="kp-dot purple"></div><div class="kp-text">Fora de domínio, você precisa adicionar os IPs dos PCs remotos na lista de <strong>TrustedHosts</strong> — caso contrário o Windows recusa a conexão por segurança.</div></div>
+      <div class="key-point"><div class="kp-dot green"></div><div class="kp-text"><code>Test-WSMan</code> verifica se o WinRM está respondendo em um computador — use para testar antes de tentar executar comandos remotos.</div></div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>PASSO 1</span> Habilitar o Remoting (executar como Administrador)</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\> </span><span class="kw">Enable-PSRemoting</span> <span class="param">-Force</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — configuração automática</div>
+<span class="out-info">WinRM has been updated to receive requests.</span><br>
+<span class="out-info">WinRM service type changed successfully.</span><br>
+<span class="out-info">WinRM service started.</span><br>
+<span class="out-success">WinRM is already set up for remote management on this computer.</span>
+        </div>
+      </div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>PASSO 2</span> Verificar se o serviço está ativo</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\> </span><span class="kw">Get-Service</span> WinRM
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída esperada — deve mostrar Running</div>
+<span class="out-header">Status   Name               DisplayName</span><br>
+<span class="out-sep">------   ----               -----------</span><br>
+<span class="out-success">Running  WinRM              Windows Remote Management (WS-Managem...</span>
+        </div>
+      </div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>PASSO 3</span> Testar conectividade local</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\> </span><span class="kw">Test-WSMan</span> localhost
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — resposta do serviço WinRM</div>
+<span class="out-header">wsmid           : </span><span class="out-val">http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd</span><br>
+<span class="out-header">ProtocolVersion : </span><span class="out-val">http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd</span><br>
+<span class="out-header">ProductVendor   : </span><span class="out-val">Microsoft Corporation</span><br>
+<span class="out-header">ProductVersion  : </span><span class="out-success">OS: 0.0.0 SP: 0.0 Stack: 3.0</span>
+        </div>
+      </div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>PASSO 4</span> Adicionar hosts confiáveis (fora de domínio)</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\> </span><span class="kw">Set-Item</span> WSMan:\localhost\Client\TrustedHosts <span class="param">-Value</span> <span class="str">"192.168.1.*"</span> <span class="param">-Force</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — sem mensagem = sucesso</div>
+<span class="out-val" style="color:var(--text-dim)">(nenhuma saída = configuração aplicada com sucesso)</span><br><br>
+<span class="out-val"># Para verificar o que foi configurado:</span><br>
+<span class="out-success">Get-Item WSMan:\localhost\Client\TrustedHosts</span><br>
+<span class="out-info">Value: 192.168.1.*</span>
+        </div>
+      </div>
+
+      <div class="callout amber">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-text"><strong>Atenção em ambiente de laboratório:</strong> use <code>TrustedHosts = "*"</code> apenas em redes controladas de lab. Em produção, sempre especifique os IPs exatos ou use autenticação por certificado.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: SESSÕES REMOTAS -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">💻</span>
+      <span class="cc-title">Sessões Remotas na Prática</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text"><code>Invoke-Command</code> — executa bloco de script em 1 ou vários PCs remotos de uma vez. Ideal para automação em lote: você passa uma lista e ele executa em todos simultaneamente.</div></div>
+      <div class="key-point"><div class="kp-dot purple"></div><div class="kp-text"><code>Enter-PSSession</code> — abre sessão interativa (como SSH). O prompt muda para <code>[PC-01]: PS C:\></code> mostrando que você está "dentro" do computador remoto.</div></div>
+      <div class="key-point"><div class="kp-dot green"></div><div class="kp-text"><code>New-PSSession</code> cria sessão persistente reutilizável — você autentica uma vez e usa várias vezes. Sempre feche com <code>Remove-PSSession</code> ao terminar.</div></div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>EXEMPLO</span> Invoke-Command — executar em PC remoto</div>
+        <div class="cmd-input">
+<span class="cm"># Executar comando pontual em PC remoto</span><br>
+<span class="kw">Invoke-Command</span> <span class="param">-ComputerName</span> <span class="str">'PC-LAB01'</span> <span class="param">-ScriptBlock</span> {<br>
+&nbsp;&nbsp;<span class="kw">Get-Process</span> | <span class="kw">Sort-Object</span> CPU <span class="param">-Descending</span> | <span class="kw">Select-Object</span> Name, CPU <span class="param">-First</span> 5<br>
+}
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — processos do PC-LAB01 mais consumidores de CPU</div>
+<span class="out-header">Name           CPU   PSComputerName</span><br>
+<span class="out-sep">----           ---   --------------</span><br>
+<span class="out-val">chrome         84.2  PC-LAB01</span><br>
+<span class="out-val">Teams          41.7  PC-LAB01</span><br>
+<span class="out-val">svchost        12.3  PC-LAB01</span><br>
+<span class="out-val">msedge          8.1  PC-LAB01</span><br>
+<span class="out-val">explorer        2.4  PC-LAB01</span>
+        </div>
+      </div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>EXEMPLO</span> Invoke-Command — múltiplos PCs ao mesmo tempo</div>
+        <div class="cmd-input">
+<span class="cm"># Verificar espaço em disco em 3 PCs simultaneamente</span><br>
+<span class="var">$pcs</span> = @(<span class="str">'PC-LAB01'</span>, <span class="str">'PC-LAB02'</span>, <span class="str">'PC-LAB03'</span>)<br><br>
+<span class="kw">Invoke-Command</span> <span class="param">-ComputerName</span> <span class="var">$pcs</span> <span class="param">-ScriptBlock</span> {<br>
+&nbsp;&nbsp;<span class="var">$livreGB</span> = [math]::Round((<span class="kw">Get-PSDrive</span> C).Free / 1GB, 1)<br>
+&nbsp;&nbsp;"$env:COMPUTERNAME — Disco C: $livreGB GB livre"<br>
+}
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — resultado dos 3 PCs em paralelo</div>
+<span class="out-success">PC-LAB01 — Disco C: 45.2 GB livre</span><br>
+<span class="out-warn">PC-LAB02 — Disco C: 6.8 GB livre</span><br>
+<span class="out-success">PC-LAB03 — Disco C: 112.0 GB livre</span>
+        </div>
+      </div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>EXEMPLO</span> Enter-PSSession — sessão interativa</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\> </span><span class="kw">Enter-PSSession</span> <span class="param">-ComputerName</span> localhost<br><br>
+<span class="cm"># O prompt muda — você está "dentro" do PC remoto:</span><br>
+<span class="ps">[localhost]: PS C:\> </span><span class="kw">Get-Service</span> Spooler<br><br>
+<span class="ps">[localhost]: PS C:\> </span><span class="kw">Exit-PSSession</span><br>
+<span class="ps">PS C:\> </span><span class="cm"># voltou ao PC local</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — dentro da sessão remota</div>
+<span class="out-header">Status   Name       DisplayName</span><br>
+<span class="out-sep">------   ----       -----------</span><br>
+<span class="out-success">Running  Spooler    Print Spooler</span>
+        </div>
+      </div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>EXEMPLO</span> New-PSSession — sessão persistente e reutilizável</div>
+        <div class="cmd-input">
+<span class="cm"># Criar sessão persistente (autentica uma vez)</span><br>
+<span class="var">$sessao</span> = <span class="kw">New-PSSession</span> <span class="param">-ComputerName</span> <span class="str">'PC-LAB01'</span><br><br>
+<span class="cm"># Usar a sessão várias vezes sem reautenticar</span><br>
+<span class="kw">Invoke-Command</span> <span class="param">-Session</span> <span class="var">$sessao</span> <span class="param">-ScriptBlock</span> { <span class="var">$env:COMPUTERNAME</span> }<br>
+<span class="kw">Invoke-Command</span> <span class="param">-Session</span> <span class="var">$sessao</span> <span class="param">-ScriptBlock</span> { <span class="kw">Get-Date</span> }<br><br>
+<span class="cm"># SEMPRE feche ao terminar — libera recursos do servidor remoto</span><br>
+<span class="kw">Remove-PSSession</span> <span class="var">$sessao</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída das duas chamadas</div>
+<span class="out-success">PC-LAB01</span><br><br>
+<span class="out-info">segunda-feira, 15 de maio de 2026 14:32:08</span><br><br>
+<span class="out-val" style="color:var(--text-dim)">(sessão encerrada — recursos liberados no servidor remoto)</span>
+        </div>
+      </div>
+
+      <div class="importance-box"><strong>🔧 Por que isso importa para o técnico?</strong> Com <code>Invoke-Command</code> e uma lista de 40 IPs, você verifica o status de todos os PCs do laboratório em segundos. Sem Remoting, isso levaria o dia inteiro. Scripts de auditoria remota são uma das habilidades mais valorizadas em ambientes corporativos e educacionais — e é exatamente o que a Avaliação 2 vai exigir.</div>
+    </div>
+  </div>
+
+  <!-- CARD 4: SEGURANÇA -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">🔒</span>
+      <span class="cc-title">Segurança no Remoting</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text"><strong>Princípio do menor privilégio:</strong> use contas dedicadas para gerenciamento remoto com apenas as permissões necessárias. Nunca use a conta de Administrador de Domínio para scripts automatizados.</div></div>
+      <div class="key-point"><div class="kp-dot purple"></div><div class="kp-text">Use <strong>HTTPS (porta 5986)</strong> em vez de HTTP para criptografar o tráfego em redes não confiáveis. Em HTTP, credenciais e comandos trafegam em texto claro na rede local.</div></div>
+      <div class="key-point"><div class="kp-dot amber"></div><div class="kp-text">Audite conexões remotas nos logs de eventos — isso é obrigatório em empresas reguladas (bancos, saúde, governo) e importante para investigar incidentes de segurança.</div></div>
+
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>SEGURANÇA</span> Auditar conexões remotas via logs de eventos</div>
+        <div class="cmd-input">
+<span class="cm"># Verificar quem se conectou remotamente</span><br>
+<span class="kw">Get-WinEvent</span> <span class="param">-LogName</span> <span class="str">'Microsoft-Windows-WinRM/Operational'</span> <span class="param">-MaxEvents</span> 10 |<br>
+&nbsp;&nbsp;<span class="kw">Select-Object</span> TimeCreated, Message |<br>
+&nbsp;&nbsp;<span class="kw">Format-List</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — histórico de conexões WinRM</div>
+<span class="out-header">TimeCreated : </span><span class="out-val">15/05/2026 14:30:12</span><br>
+<span class="out-header">Message     : </span><span class="out-success">Creating WSMan Session. The connection string is: localhost</span><br><br>
+<span class="out-header">TimeCreated : </span><span class="out-val">15/05/2026 14:28:55</span><br>
+<span class="out-header">Message     : </span><span class="out-info">WSMan operation ShellCommand completed successfully</span>
+        </div>
+      </div>
+
+      <div class="callout red">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-text"><strong>Nunca faça:</strong> não use credenciais de Administrador de Domínio para tarefas rotineiras. Não salve senhas dentro de scripts (.ps1). Não habilite TrustedHosts = "*" em redes corporativas — cria risco de ataques man-in-the-middle.</div>
+      </div>
+      <div class="importance-box"><strong>🔧 Por que isso importa para o técnico?</strong> Segurança no Remoting não é opcional — é responsabilidade profissional. Um técnico que habilita o WinRM sem configurar corretamente abre uma porta para atacantes na rede. Em empresas, configurações inseguras de WinRM são um vetor comum de movimentação lateral em ataques. Conhecer os riscos faz parte do kit básico de todo técnico em informática.</div>
+    </div>
+  </div>
+
+  <!-- MISSÕES -->
+  <div class="section-header">
+    <div class="section-icon green">🔬</div>
+    <h2 class="section-title">Missões do Lab</h2>
+    <span class="section-xp">+90 XP</span>
+  </div>
+
+  <div class="mission-card" id="m1card">
+    <div class="mission-icon">🔧</div>
+    <div class="mission-content">
+      <div class="mission-title">Habilitando e Testando o WinRM</div>
+      <div class="mission-desc">Configure o WinRM, verifique o status com <code>Get-Service WinRM</code>, teste com <code>Test-WSMan localhost</code> e documente cada etapa com prints de tela no caderno/documento.</div>
+      <div class="mission-meta"><span class="mission-tag">⏱ 30 min</span><span class="mission-tag">🔬 Laboratório</span><span class="mission-tag xp">+30 XP</span></div>
+    </div>
+    <div class="mission-check" id="m1" onclick="completeMission('m1','m1card',30)">○</div>
+  </div>
+
+  <div class="mission-card" id="m2card">
+    <div class="mission-icon">🌐</div>
+    <div class="mission-content">
+      <div class="mission-title">Gerenciamento Remoto de Serviços</div>
+      <div class="mission-desc">Use <code>Invoke-Command</code> para listar serviços, pare e inicie o Spooler remotamente via localhost. Crie uma sessão persistente com <code>New-PSSession</code> e execute 3 comandos diferentes nela.</div>
+      <div class="mission-meta"><span class="mission-tag">⏱ 35 min</span><span class="mission-tag">🔬 Laboratório</span><span class="mission-tag xp">+35 XP</span></div>
+    </div>
+    <div class="mission-check" id="m2" onclick="completeMission('m2','m2card',35)">○</div>
+  </div>
+
+  <div class="mission-card" id="m3card">
+    <div class="mission-icon">📊</div>
+    <div class="mission-content">
+      <div class="mission-title">Script de Auditoria Remota com CSV</div>
+      <div class="mission-desc">Crie um script que coleta SO, último boot e nº de processos via <code>Invoke-Command</code>, trata erros com try/catch para PCs offline e exporta o resultado para CSV com <code>Export-Csv</code>.</div>
+      <div class="mission-meta"><span class="mission-tag">⏱ 25 min</span><span class="mission-tag">🔬 Laboratório</span><span class="mission-tag xp">+25 XP</span></div>
+    </div>
+    <div class="mission-check" id="m3" onclick="completeMission('m3','m3card',25)">○</div>
+  </div>
+
+  <!-- GABARITO DAS MISSÕES -->
+  <div class="gabarito-shell">
+    <div class="gabarito-header" onclick="toggleGabarito(this)">
+      <div class="gabarito-header-icon">✅</div>
+      <div class="gabarito-header-text">
+        <h3>Gabarito das Missões</h3>
+        <p>Tente fazer antes de abrir — o esforço é o que aprende!</p>
+      </div>
+      <span class="gabarito-warn">⚠️ Tente primeiro!</span>
+      <span class="gabarito-chevron">▾</span>
+    </div>
+    <div class="gabarito-body">
+
+      <!-- MISSÃO 1 -->
+      <div class="gab-item">
+        <div class="gab-item-header">
+          <div class="gab-item-num">M1</div>
+          <div class="gab-item-title">Habilitando e Testando o WinRM</div>
+        </div>
+        <div class="gab-item-body">
+          <div class="gab-note"><strong>Estratégia:</strong> Execute cada comando em sequência. Enable-PSRemoting só funciona como Administrador — clique com botão direito no ícone do PowerShell e escolha "Executar como Administrador". Confirme com Y quando perguntado.</div>
+          <div class="gab-cmd"><span class="cm"># Passo 1 — Abrir PowerShell como Administrador, depois:</span>
+<span class="kw">Enable-PSRemoting</span> <span class="param">-Force</span>
+
+<span class="cm"># Passo 2 — Verificar se o serviço WinRM está rodando</span>
+<span class="kw">Get-Service</span> WinRM
+
+<span class="cm"># Resultado esperado:</span>
+<span class="cm"># Status   Name   DisplayName</span>
+<span class="cm"># Running  WinRM  Windows Remote Management (WS-Management)</span>
+
+<span class="cm"># Passo 3 — Testar conectividade com o próprio PC (localhost)</span>
+<span class="kw">Test-WSMan</span> localhost
+
+<span class="cm"># Resultado esperado: bloco com versão do protocolo WinRM</span>
+<span class="cm"># wsmid          : http://schemas.dmtf.org/wbem/wsman/1/...</span>
+<span class="cm"># ProtocolVersion: http://schemas.dmtf.org/wbem/wsman/1/...</span></div>
+          <div class="gab-tip"><strong>Se Test-WSMan não responder:</strong> verifique o Firewall do Windows — Enable-PSRemoting cria a regra automaticamente, mas políticas de grupo em ambientes de domínio podem bloqueá-la. Tente <code>netsh advfirewall firewall show rule name="Windows Remote Management (HTTP-In)"</code> para confirmar.</div>
+        </div>
+      </div>
+
+      <!-- MISSÃO 2 -->
+      <div class="gab-item">
+        <div class="gab-item-header">
+          <div class="gab-item-num">M2</div>
+          <div class="gab-item-title">Gerenciamento Remoto de Serviços via localhost</div>
+        </div>
+        <div class="gab-item-body">
+          <div class="gab-note"><strong>Estratégia:</strong> Em laboratório sem outro PC, usamos <code>localhost</code> como destino remoto — funciona perfeitamente para testar Remoting. A sessão persistente com New-PSSession economiza autenticação repetida.</div>
+          <div class="gab-cmd"><span class="cm"># Missão 2 — Parte A: Listar serviços remotamente</span>
+<span class="kw">Invoke-Command</span> <span class="param">-ComputerName</span> localhost <span class="param">-ScriptBlock</span> {
+    <span class="kw">Get-Service</span> | <span class="kw">Where-Object</span> Status <span class="param">-eq</span> <span class="str">'Running'</span> | <span class="kw">Select-Object</span> <span class="param">-First</span> 5
+}
+
+<span class="cm"># Parte B: Parar e iniciar o Spooler remotamente</span>
+<span class="kw">Invoke-Command</span> <span class="param">-ComputerName</span> localhost <span class="param">-ScriptBlock</span> { <span class="kw">Stop-Service</span> Spooler <span class="param">-Force</span> }
+<span class="kw">Invoke-Command</span> <span class="param">-ComputerName</span> localhost <span class="param">-ScriptBlock</span> { <span class="kw">Start-Service</span> Spooler }
+<span class="kw">Invoke-Command</span> <span class="param">-ComputerName</span> localhost <span class="param">-ScriptBlock</span> { (<span class="kw">Get-Service</span> Spooler).Status }
+
+<span class="cm"># Parte C: Sessão persistente — autentica uma vez, usa várias</span>
+<span class="var">$s</span> = <span class="kw">New-PSSession</span> <span class="param">-ComputerName</span> localhost
+
+<span class="kw">Invoke-Command</span> <span class="param">-Session</span> <span class="var">$s</span> <span class="param">-ScriptBlock</span> { <span class="var">$env:COMPUTERNAME</span> }
+<span class="kw">Invoke-Command</span> <span class="param">-Session</span> <span class="var">$s</span> <span class="param">-ScriptBlock</span> { <span class="kw">Get-Date</span> }
+<span class="kw">Invoke-Command</span> <span class="param">-Session</span> <span class="var">$s</span> <span class="param">-ScriptBlock</span> { (<span class="kw">Get-Process</span>).Count }
+
+<span class="cm"># Sempre feche a sessão ao terminar!</span>
+<span class="kw">Remove-PSSession</span> <span class="var">$s</span></div>
+          <div class="gab-tip"><strong>Por que usar localhost?</strong> O WinRM funciona igualmente para conexões locais — você exercita exatamente o mesmo código que usaria em PCs remotos reais, só mudando <code>localhost</code> pelo IP ou nome do PC de destino.</div>
+        </div>
+      </div>
+
+      <!-- MISSÃO 3 -->
+      <div class="gab-item">
+        <div class="gab-item-header">
+          <div class="gab-item-num">M3</div>
+          <div class="gab-item-title">Script de Auditoria Remota com Export-Csv</div>
+        </div>
+        <div class="gab-item-body">
+          <div class="gab-note"><strong>Estratégia:</strong> Invoke-Command com uma lista de computadores executa o bloco em paralelo. O try/catch dentro do ScriptBlock trata PCs offline — o parâmetro -ErrorAction Stop é obrigatório para que o catch funcione. Export-Csv salva o resultado.</div>
+          <div class="gab-cmd"><span class="cm"># Missão 3 — Script de auditoria remota com CSV</span>
+<span class="var">$computadores</span> = @(<span class="str">'localhost'</span>)  <span class="cm"># adicione mais nomes/IPs aqui</span>
+
+<span class="var">$resultado</span> = <span class="kw">Invoke-Command</span> <span class="param">-ComputerName</span> <span class="var">$computadores</span> <span class="param">-ScriptBlock</span> {
+    <span class="kw">try</span> {
+        <span class="var">$os</span> = <span class="kw">Get-CimInstance</span> Win32_OperatingSystem <span class="param">-ErrorAction</span> Stop
+        [<span class="kw">pscustomobject</span>]@{
+            PC         = <span class="var">$env:COMPUTERNAME</span>
+            SO         = <span class="var">$os</span>.Caption
+            UltimoBoot = <span class="var">$os</span>.LastBootUpTime
+            Processos  = (<span class="kw">Get-Process</span>).Count
+            Status     = <span class="str">'OK'</span>
+        }
+    } <span class="kw">catch</span> {
+        [<span class="kw">pscustomobject</span>]@{
+            PC         = <span class="var">$env:COMPUTERNAME</span>
+            SO         = <span class="str">'-'</span>
+            UltimoBoot = <span class="str">'-'</span>
+            Processos  = 0
+            Status     = <span class="str">"ERRO: $($_.Exception.Message)"</span>
+        }
+    }
+} <span class="param">-ErrorAction</span> SilentlyContinue
+
+<span class="var">$resultado</span> | <span class="kw">Select-Object</span> PC, SO, UltimoBoot, Processos, Status |
+    <span class="kw">Export-Csv</span> <span class="param">-Path</span> <span class="str">'.\auditoria.csv'</span> <span class="param">-NoTypeInformation</span> <span class="param">-Encoding</span> UTF8
+
+<span class="kw">Write-Host</span> <span class="str">"Auditoria salva em auditoria.csv — $($resultado.Count) PC(s) verificado(s)"</span>
+<span class="var">$resultado</span> | <span class="kw">Format-Table</span> <span class="param">-AutoSize</span></div>
+          <div class="gab-tip"><strong>Para testar com PC offline:</strong> adicione um nome inexistente à lista, como <code>'PC-INEXISTENTE'</code>. O <code>-ErrorAction SilentlyContinue</code> no Invoke-Command evita que PCs inacessíveis parem o script — e o CSV registrará o erro para cada um.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section-header">
+    <div class="section-icon amber">🧠</div>
+    <h2 class="section-title">Quiz da Semana 11</h2>
+    <span class="section-xp">+80 XP</span>
+  </div>
+
+  <div class="quiz-shell">
+    <div class="quiz-topbar">
+      <div class="quiz-topbar-icon">🧠</div>
+      <div class="quiz-topbar-text"><h3>Teste seu conhecimento!</h3><p>4 perguntas sobre Remoting e sessões</p></div>
+      <div class="quiz-topbar-xp"><div class="xp-big">+80</div><div class="xp-lbl">XP possível</div></div>
+    </div>
+    <div style="padding:14px 20px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--border);">
+      <div class="quiz-dots" id="quizDots"></div>
+      <span class="quiz-counter" id="quizCounter">1 / 4</span>
+    </div>
+    <div class="quiz-body" id="quizBody"></div>
+  </div>
+
+  <div class="checkpoint">
+    <div style="font-size:1.8em;margin-bottom:8px;" id="checkpointStars">⭐⭐⭐</div>
+    <h3>Progresso da Semana 11</h3>
+    <p>Complete as missões e o quiz para acumular XP!</p>
+    <div class="xp-total-display">⚡ <span id="xpFinal">0</span> / 420 XP</div>
+  </div>
+
+  <!-- FILL IN THE BLANKS -->
+  <div class="section-header">
+    <div class="section-icon purple">✏️</div>
+    <h2 class="section-title">Complete o Código</h2>
+    <span class="section-xp">+60 XP</span>
+  </div>
+
+  <div class="fitb-shell">
+    <div class="fitb-topbar">
+      <div class="fitb-topbar-icon">✏️</div>
+      <div class="fitb-topbar-text"><h3>Preencha as lacunas!</h3><p>Clique na palavra correta e depois na lacuna para completar</p></div>
+      <div class="fitb-topbar-xp"><div class="xp-big">+60</div><div class="xp-lbl">XP possível</div></div>
+    </div>
+    <div class="fitb-body">
+      <div class="fitb-word-bank" id="fitbBank">
+        <div class="fitb-word-bank-label">🗂 Banco de palavras — clique para selecionar, depois clique na lacuna:</div>
+        <div class="fitb-chip" data-word="Enable-PSRemoting" onclick="selectChip(this)">Enable-PSRemoting</div>
+        <div class="fitb-chip" data-word="Invoke-Command" onclick="selectChip(this)">Invoke-Command</div>
+        <div class="fitb-chip" data-word="Enter-PSSession" onclick="selectChip(this)">Enter-PSSession</div>
+        <div class="fitb-chip" data-word="Remove-PSSession" onclick="selectChip(this)">Remove-PSSession</div>
+        <div class="fitb-chip" data-word="New-PSSession" onclick="selectChip(this)">New-PSSession</div>
+        <div class="fitb-chip" data-word="-ScriptBlock" onclick="selectChip(this)">-ScriptBlock</div>
+        <div class="fitb-chip" data-word="Test-WSMan" onclick="selectChip(this)">Test-WSMan</div>
+        <div class="fitb-chip" data-word="-ComputerName" onclick="selectChip(this)">-ComputerName</div>
+        <div class="fitb-chip" data-word="WinRM" onclick="selectChip(this)">WinRM</div>
+        <div class="fitb-chip" data-word="Exit-PSSession" onclick="selectChip(this)">Exit-PSSession</div>
+      </div>
+      <div class="fitb-lines" id="fitbLines">
+
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">Para habilitar o Remoting no Windows, execute como admin:</span>
+          <span class="fitb-blank" data-answer="Enable-PSRemoting" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--purple)">-Force</span>
+        </div>
+
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">O serviço que controla o Remoting chama-se</span>
+          <span class="fitb-blank" data-answer="WinRM" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">e pode ser verificado com <span style="color:var(--purple)">Get-Service</span></span>
+        </div>
+
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">Para testar se um PC aceita conexões remotas use:</span>
+          <span class="fitb-blank" data-answer="Test-WSMan" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">NomePC</span>
+        </div>
+
+        <div class="fitb-line">
+          <span class="fitb-blank" data-answer="Invoke-Command" onclick="fillBlank(this)">___</span>
+          <span class="fitb-blank" data-answer="-ComputerName" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--amber)">'PC-01'</span>
+          <span class="fitb-blank" data-answer="-ScriptBlock" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">{ Get-Service Spooler }</span>
+        </div>
+
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">Para abrir sessão interativa (como SSH):</span>
+          <span class="fitb-blank" data-answer="Enter-PSSession" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">e para sair:</span>
+          <span class="fitb-blank" data-answer="Exit-PSSession" onclick="fillBlank(this)">___</span>
+        </div>
+
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">Sessão persistente:</span>
+          <span style="color:var(--amber)">$s =</span>
+          <span class="fitb-blank" data-answer="New-PSSession" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">-ComputerName 'PC-01' → use → depois sempre</span>
+          <span class="fitb-blank" data-answer="Remove-PSSession" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--amber)">$s</span>
+        </div>
+
+      </div>
+      <div class="fitb-actions">
+        <button class="fitb-btn" onclick="checkFitb()">✓ Verificar Respostas</button>
+        <button class="fitb-btn secondary" onclick="resetFitb()">↺ Recomeçar</button>
+      </div>
+      <div class="fitb-result" id="fitbResult"></div>
+    </div>
+  </div>
+
+  <!-- DRAG AND DROP -->
+  <div class="section-header">
+    <div class="section-icon amber">🎯</div>
+    <h2 class="section-title">Arraste — Conecte o Conceito</h2>
+    <span class="section-xp">+50 XP</span>
+  </div>
+
+  <div class="dnd-shell">
+    <div class="dnd-topbar">
+      <div class="dnd-topbar-icon">🎯</div>
+      <div class="dnd-topbar-text"><h3>Arraste cada cmdlet para sua função!</h3><p>Associe o comando PowerShell à descrição correta</p></div>
+      <div class="dnd-topbar-xp"><div class="xp-big" style="color:var(--xp)">+50</div><div class="xp-lbl" style="color:var(--text-muted)">XP possível</div></div>
+    </div>
+    <div class="dnd-body">
+      <div class="dnd-layout">
+        <div>
+          <div class="dnd-col-title">📦 Cmdlets — arraste</div>
+          <div class="dnd-items" id="dndItems">
+            <div class="dnd-card" draggable="true" data-id="epsremoting" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Enable-PSRemoting</div>
+            <div class="dnd-card" draggable="true" data-id="invokecommand" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Invoke-Command</div>
+            <div class="dnd-card" draggable="true" data-id="enterpssession" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Enter-PSSession</div>
+            <div class="dnd-card" draggable="true" data-id="newpssession" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> New-PSSession</div>
+            <div class="dnd-card" draggable="true" data-id="removepssession" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Remove-PSSession</div>
+            <div class="dnd-card" draggable="true" data-id="testwsman" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Test-WSMan</div>
+          </div>
+        </div>
+        <div>
+          <div class="dnd-col-title">📋 Definições — solte aqui</div>
+          <div class="dnd-targets" id="dndTargets">
+            <div class="dnd-target" data-accepts="epsremoting" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Configura o WinRM, cria regras de firewall e habilita conexões remotas de uma vez só.</div>
+            </div>
+            <div class="dnd-target" data-accepts="invokecommand" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Executa um bloco de script em um ou vários PCs remotos simultaneamente. Ideal para automação em lote.</div>
+            </div>
+            <div class="dnd-target" data-accepts="enterpssession" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Abre sessão interativa — o prompt muda para mostrar que você está "dentro" do PC remoto.</div>
+            </div>
+            <div class="dnd-target" data-accepts="newpssession" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Cria uma sessão persistente e reutilizável — autentica uma vez, usa várias vezes.</div>
+            </div>
+            <div class="dnd-target" data-accepts="removepssession" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Fecha e libera uma sessão — obrigatório ao terminar para não esgotar conexões no servidor.</div>
+            </div>
+            <div class="dnd-target" data-accepts="testwsman" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Verifica se um computador está aceitando conexões WinRM antes de tentar executar comandos remotos.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dnd-actions">
+        <button class="fitb-btn" onclick="checkDnd()">✓ Verificar</button>
+        <button class="fitb-btn secondary" onclick="resetDnd()">↺ Recomeçar</button>
+      </div>
+      <div class="dnd-result" id="dndResult"></div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon blue">🔗</div>
+    <h2 class="section-title">Recursos para Ir Além</h2>
+  </div>
+  <div class="resources-grid">
+    <a class="res-card" href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/running-remote-commands" target="_blank"><div class="res-icon">📄</div><div class="res-title">MS Docs — Remoting</div><div class="res-desc">Documentação oficial completa</div></a>
+    <a class="res-card" href="https://learn.microsoft.com" target="_blank"><div class="res-icon">🎓</div><div class="res-title">Microsoft Learn</div><div class="res-desc">Cursos gratuitos online</div></a>
+    <a class="res-card" href="https://youtube.com" target="_blank"><div class="res-icon">▶️</div><div class="res-title">YouTube</div><div class="res-desc">Pesquise: "PowerShell Remoting"</div></a>
+
+  <!-- ══════════════════════════════════════════════════
+       FICHAS PRÁTICAS — METODOLOGIA ATIVA
+       S11: PowerShell Remoting e Cmdlets Avançados
+  ══════════════════════════════════════════════════ -->
+  <div class="section-header" style="margin-top:56px;">
+    <div class="section-icon" style="background:rgba(240,180,41,.12);border:1px solid rgba(240,180,41,.3);">✏️</div>
+    <h2 class="section-title">Fichas Práticas — Lápis de Cor + Sulfite</h2>
+    <span class="section-xp">+60 XP</span>
+  </div>
+  <p style="color:var(--text-muted);font-size:.9em;margin-bottom:20px;line-height:1.6;">
+    Abra cada ficha, copie o mapa no sulfite e teste o comando no computador. O desenho à mão reforça o que você digitou.
+  </p>
+
+  <style>
+    .fp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+    .fp-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;background:var(--surface2);}
+    .fp-icon{font-size:1.1em;}
+    .fp-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.92em;color:var(--text);flex:1;}
+    .fp-badge{font-family:'DM Mono',monospace;font-size:.7em;padding:2px 10px;border-radius:50px;border:1px solid;}
+    .fp-badge.amber{color:var(--amber);border-color:rgba(240,180,41,.4);background:rgba(240,180,41,.08);}
+    .fp-badge.blue{color:var(--blue);border-color:rgba(88,166,255,.4);background:rgba(88,166,255,.08);}
+    .fp-badge.green{color:var(--green);border-color:rgba(57,211,83,.4);background:rgba(57,211,83,.08);}
+    .fp-badge.red{color:var(--red);border-color:rgba(248,81,73,.4);background:rgba(248,81,73,.08);}
+    .fp-chevron{color:var(--text-dim);transition:transform .3s;font-size:.85em;}
+    .fp-body{display:none;padding:20px 22px;border-top:1px solid var(--border);}
+    .fp-body.open{display:block;}
+    .fp-instruction{background:rgba(88,166,255,.07);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;font-size:.85em;color:var(--text-muted);line-height:1.6;}
+    .fp-instruction strong{color:var(--blue);}
+    .fp-color-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);}
+    .fp-swatch{display:flex;align-items:center;gap:6px;font-size:.78em;color:var(--text-muted);}
+    .fp-dot{width:14px;height:14px;border-radius:4px;border:1px solid rgba(255,255,255,.1);flex-shrink:0;}
+    .fp-sulfite{border:2px dashed #3a3f4a;border-radius:10px;padding:14px 16px;background:#0a0f16;margin:12px 0;position:relative;}
+    .fp-sulfite::before{content:'✏️ COPIAR NO SULFITE';font-size:.65em;font-family:'DM Mono',monospace;color:var(--amber);letter-spacing:.1em;font-weight:700;display:block;margin-bottom:12px;}
+    .fp-tip{background:rgba(57,211,83,.07);border-left:3px solid var(--green);border-radius:0 7px 7px 0;padding:9px 13px;margin-top:12px;font-size:.83em;color:var(--text-muted);line-height:1.5;}
+    .fp-tip strong{color:var(--green);}
+    .fp-tip code{background:rgba(57,211,83,.1);color:var(--green);padding:1px 5px;border-radius:3px;font-family:'DM Mono',monospace;font-size:.9em;}
+    .fp-mission{background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.82em;color:var(--text-muted);line-height:1.5;}
+    .fp-mission strong{color:var(--amber);}
+    .fp-flow-svg{width:100%;max-width:460px;display:block;margin:0 auto;}
+    .fp-checklist{display:flex;flex-direction:column;gap:8px;margin:8px 0;}
+    .fp-check-item{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--border);border-radius:8px;padding:10px 12px;background:var(--surface2);}
+    .fp-check-box{width:20px;height:20px;border:2px solid #3a4555;border-radius:4px;flex-shrink:0;margin-top:1px;}
+    .fp-check-label{font-size:.84em;color:var(--text);font-weight:500;}
+    .fp-check-sub{font-size:.76em;color:var(--text-muted);margin-top:2px;font-family:'DM Mono',monospace;}
+  </style>
+
+  <!-- FICHA 7 -->
+  <div class="fp-card">
+    <div class="fp-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.fp-chevron').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(180deg)':''">
+      <span class="fp-icon">🌐</span>
+      <span class="fp-title">Ficha 7 — Mapa de Rede do Laboratório (desenhar no sulfite)</span>
+      <span class="fp-badge amber">Sulfite + Lápis</span>
+      <span class="fp-chevron">▾</span>
+    </div>
+    <div class="fp-body">
+      <div class="fp-instruction"><strong>O que fazer:</strong> Copie o mapa no sulfite como se fosse o laboratório real. Coloque o número de PCs da sua escola. Use setas para mostrar quem manda o comando e quem recebe. Escreva o protocolo (WinRM / porta 5985) nas setas.</div>
+      <div class="fp-color-legend">
+        <div class="fp-swatch"><div class="fp-dot" style="background:#0d2139;"></div>Azul = PC administrador (você)</div>
+        <div class="fp-swatch"><div class="fp-dot" style="background:#1a4731;"></div>Verde = PC remoto que responde</div>
+        <div class="fp-swatch"><div class="fp-dot" style="background:#3d0f0d;"></div>Vermelho = PC sem WinRM (bloqueado)</div>
+        <div class="fp-swatch"><div class="fp-dot" style="background:#3d2c00;"></div>Amarelo = seta do comando / protocolo</div>
+      </div>
+      <div class="fp-sulfite">
+        <svg class="fp-flow-svg" viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="fc" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#f0b429"/></marker>
+            <marker id="fd" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#f85149"/></marker>
+          </defs>
+          <!-- PC ADM -->
+          <rect x="8" y="62" width="110" height="72" rx="9" fill="#0d2139" stroke="#58a6ff" stroke-width="2"/>
+          <text x="63" y="90" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#58a6ff" font-weight="700">PC-ADM</text>
+          <text x="63" y="105" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#8b949e">WinRM habilitado</text>
+          <text x="63" y="118" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#8b949e">Invoke-Command</text>
+          <text x="63" y="131" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#58a6ff">← você está aqui</text>
+          <!-- setas WinRM -->
+          <line x1="118" y1="87" x2="218" y2="68" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="5,2" marker-end="url(#fc)"/>
+          <text x="168" y="64" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#f0b429">WinRM :5985</text>
+          <line x1="118" y1="98" x2="218" y2="110" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="5,2" marker-end="url(#fc)"/>
+          <text x="168" y="122" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#f0b429">WinRM :5985</text>
+          <line x1="118" y1="114" x2="218" y2="155" stroke="#f85149" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#fd)"/>
+          <text x="148" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#f85149">bloqueado ✗</text>
+          <!-- PC-LAB01 -->
+          <rect x="226" y="38" width="100" height="54" rx="8" fill="#1a4731" stroke="#39d353" stroke-width="1.5"/>
+          <text x="276" y="60" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#39d353" font-weight="700">PC-LAB01</text>
+          <text x="276" y="74" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#8b949e">Win11 Pro — 16GB</text>
+          <text x="276" y="86" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#39d353">✓ responde</text>
+          <!-- PC-LAB02 -->
+          <rect x="226" y="104" width="100" height="54" rx="8" fill="#1a4731" stroke="#39d353" stroke-width="1.5"/>
+          <text x="276" y="126" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#39d353" font-weight="700">PC-LAB02</text>
+          <text x="276" y="140" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#8b949e">Win11 Pro — 8GB</text>
+          <text x="276" y="152" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#39d353">✓ responde</text>
+          <!-- PC-LAB03 bloqueado -->
+          <rect x="226" y="168" width="100" height="38" rx="8" fill="#3d0f0d" stroke="#f85149" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="276" y="188" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#f85149" font-weight="700">PC-LAB03</text>
+          <text x="276" y="200" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#f85149">✗ WinRM desligado</text>
+          <!-- Resultado -->
+          <rect x="342" y="52" width="112" height="95" rx="8" fill="#3d2c00" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="398" y="72" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#f0b429" font-weight="700">RESULTADO.CSV</text>
+          <text x="398" y="87" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#39d353">LAB01 ✓ ok</text>
+          <text x="398" y="101" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#39d353">LAB02 ✓ ok</text>
+          <text x="398" y="115" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#f85149">LAB03 ✗ erro</text>
+          <line x1="326" y1="82" x2="342" y2="88" stroke="#f0b429" stroke-width="1" marker-end="url(#fc)"/>
+          <line x1="326" y1="128" x2="342" y2="110" stroke="#f0b429" stroke-width="1" marker-end="url(#fc)"/>
+          <!-- espaço sulfite -->
+          <rect x="8" y="188" width="210" height="26" rx="7" fill="none" stroke="#3a3f4a" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="113" y="205" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#484f58">✏️ Adicione aqui os PCs do seu laboratório real</text>
+        </svg>
+        <div class="fp-mission"><strong>Missão:</strong> Substituindo os nomes, quantos PCs existem no seu laboratório? Quantos você conseguiria administrar de uma vez com Remoting? Escreva os nomes nos retângulos do desenho.</div>
+      </div>
+      <div class="fp-tip"><strong>Comando para testar:</strong><br><code>Invoke-Command -ComputerName PC-LAB01,PC-LAB02 -ScriptBlock { hostname; (Get-WmiObject Win32_OperatingSystem).FreePhysicalMemory }</code></div>
+    </div>
+  </div>
+
+  <!-- FICHA 8 -->
+  <div class="fp-card">
+    <div class="fp-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.fp-chevron').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(180deg)':''">
+      <span class="fp-icon">🔒</span>
+      <span class="fp-title">Ficha 8 — Checklist de Segurança do Remoting (marcar no sulfite)</span>
+      <span class="fp-badge red">Sulfite + Computador</span>
+      <span class="fp-chevron">▾</span>
+    </div>
+    <div class="fp-body">
+      <div class="fp-instruction"><strong>O que fazer:</strong> Copie a checklist no sulfite. Marque cada item com <strong style="color:var(--green);">verde</strong> quando concluído e <strong style="color:var(--red);">vermelho</strong> quando ainda não foi feito. Execute os comandos no computador um por vez.</div>
+      <div class="fp-sulfite">
+        <div class="fp-checklist">
+          <div class="fp-check-item">
+            <div class="fp-check-box"></div>
+            <div>
+              <div class="fp-check-label">Enable-PSRemoting -Force executado como Administrador</div>
+              <div class="fp-check-sub">Inicia WinRM + cria regras de firewall automaticamente</div>
+            </div>
+          </div>
+          <div class="fp-check-item">
+            <div class="fp-check-box"></div>
+            <div>
+              <div class="fp-check-label">TrustedHosts configurado (ambiente fora de domínio)</div>
+              <div class="fp-check-sub">Set-Item WSMan:\localhost\Client\TrustedHosts -Value "IP-do-PC"</div>
+            </div>
+          </div>
+          <div class="fp-check-item">
+            <div class="fp-check-box"></div>
+            <div>
+              <div class="fp-check-label">Test-WSMan respondeu com sucesso</div>
+              <div class="fp-check-sub">Test-WSMan -ComputerName PC-LAB01 — deve retornar dados do WinRM</div>
+            </div>
+          </div>
+          <div class="fp-check-item">
+            <div class="fp-check-box"></div>
+            <div>
+              <div class="fp-check-label">Invoke-Command executado em pelo menos 1 PC remoto</div>
+              <div class="fp-check-sub">Invoke-Command -ComputerName PC-LAB01 -ScriptBlock { hostname }</div>
+            </div>
+          </div>
+          <div class="fp-check-item">
+            <div class="fp-check-box"></div>
+            <div>
+              <div class="fp-check-label">Relatório CSV gerado com dados de múltiplos PCs</div>
+              <div class="fp-check-sub">Invoke-Command + Export-Csv salvando resultado em auditoria.csv</div>
+            </div>
+          </div>
+          <div class="fp-check-item">
+            <div class="fp-check-box"></div>
+            <div>
+              <div class="fp-check-label">Sessão persistente criada com New-PSSession</div>
+              <div class="fp-check-sub">$s = New-PSSession -ComputerName PC-LAB01 — reutilizar sem autenticar de novo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fp-mission"><strong>Reflexão no sulfite:</strong> Escreva ao lado de cada item: <em>"Por que isso é importante para a segurança da rede?"</em>. Discuta com o colega ao lado antes de responder.</div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a class="nav-btn" href="semana10_aula.html">← Semana 10</a>
+    <a class="nav-home" href="#">🏠 Índice</a>
+    <a class="nav-btn primary" href="semana12_aula.html">Semana 12 →</a>
+  </div>
+</nav>
+
+<footer>Gestão de Sistemas Operacionais I · GSO I 2026 · Prof. Isaque Katahira · ETEC — Centro Paula Souza</footer>
+
+<script>
+function toggleGabarito(h){const b=h.nextElementSibling,o=b.classList.contains('open');b.classList.toggle('open');h.classList.toggle('open');h.querySelector('.gabarito-chevron').style.transform=o?'':'rotate(180deg)';}
+
+let xp=0,objDone=new Set(),missionDone=new Set(),cardXpDone=new Set();
+const totalXP=420;
+
+function addXP(a){
+  xp+=a;
+  document.getElementById('xpDisplay').textContent=xp;
+  document.getElementById('xpFinal').textContent=xp;
+  const p=Math.min(100,(xp/totalXP)*100);
+  document.getElementById('mainProgress').style.width=p+'%';
+  const s=document.getElementById('checkpointStars');
+  if(p>=80)s.textContent='🌟🌟🌟';else if(p>=50)s.textContent='⭐🌟⭐';
+  spawnStars();checkAch();
+}
+function spawnStars(){for(let i=0;i<3;i++)setTimeout(()=>{const e=document.createElement('div');e.className='star';e.textContent=['⭐','✨','💫','⚡'][Math.floor(Math.random()*4)];e.style.left=(Math.random()*80+10)+'%';e.style.top=(window.scrollY+window.innerHeight*.5)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1500);},i*150);}
+function markObj(el,pts){if(el.classList.contains('done'))return;el.classList.add('done');el.querySelector('.obj-num').style.background='var(--cyan)';el.querySelector('.obj-num').style.color='#0d1117';addXP(pts);if([...document.querySelectorAll('.obj-card.done')].length===4)showAch('🎯','Objetivos Marcados!','Você leu todos os objetivos!');}
+function toggleCard(h){const b=h.nextElementSibling,o=b.classList.contains('open');document.querySelectorAll('.cc-body.open').forEach(x=>{x.classList.remove('open');x.previousElementSibling.classList.remove('open');});if(!o){b.classList.add('open');h.classList.add('open');const t=h.querySelector('.cc-title').textContent;if(!cardXpDone.has(t)){cardXpDone.add(t);addXP(20);}setTimeout(addCopyButtons,450);}}
+function completeMission(id,cardId,pts){if(missionDone.has(id))return;missionDone.add(id);const e=document.getElementById(id);e.classList.add('done');e.textContent='✓';document.getElementById(cardId).classList.add('completed');addXP(pts);if(missionDone.size===3)showAch('🔬','Lab Completo!','Todas as missões concluídas!');}
+function showAch(icon,title,desc){const t=document.getElementById('achToast');document.getElementById('achIcon').textContent=icon;document.getElementById('achTitle').textContent=title;document.getElementById('achDesc').textContent=desc;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+function checkAch(){if((xp/totalXP)*100>=100)showAch('🏆','100% Completo!','Semana 11 dominada!');}
+
+const questions=[
+  {q:"Qual cmdlet habilita o PowerShell Remoting em um computador?",opts:["Start-Remoting","Enable-PSRemoting -Force","Set-PSRemoting","Install-WinRM"],ans:1,exp:"✅ <strong>Enable-PSRemoting -Force</strong> configura tudo automaticamente: inicia o serviço WinRM, cria regras de firewall e define as permissões. Execute como Administrador e responda Y na confirmação."},
+  {q:"O que <code>Invoke-Command -ComputerName @('PC-01','PC-02') -ScriptBlock {...}</code> faz?",opts:["Abre uma sessão interativa em cada PC","Executa o bloco de script nos dois PCs simultaneamente","Copia arquivos para os dois PCs","Instala o PowerShell nos dois PCs"],ans:1,exp:"✅ <strong>Invoke-Command</strong> executa o ScriptBlock em todos os computadores da lista <em>ao mesmo tempo</em> — em paralelo! Os resultados chegam com a coluna <code>PSComputerName</code> indicando de qual PC veio cada linha."},
+  {q:"Qual é a diferença entre <code>Invoke-Command</code> e <code>Enter-PSSession</code>?",opts:["Não há diferença","Invoke-Command é para 1 PC; Enter-PSSession para vários","Invoke-Command executa scripts; Enter-PSSession é sessão interativa","Enter-PSSession usa SSH; Invoke-Command usa HTTP"],ans:2,exp:"✅ <strong>Invoke-Command</strong> executa código e retorna resultado — ótimo para automação. <strong>Enter-PSSession</strong> abre sessão interativa onde você digita comandos um a um, como estar fisicamente no computador."},
+  {q:"Por que é importante fechar sessões com <code>Remove-PSSession</code>?",opts:["É apenas uma boa prática estética","Libera recursos do servidor remoto e evita esgotamento de conexões","Remove o PowerShell do PC remoto","Apaga os logs de conexão"],ans:1,exp:"✅ Cada sessão aberta consome memória e CPU no servidor remoto. O Windows tem limite de conexões simultâneas. Sessões não fechadas ficam abertas até o timeout — use <code>Get-PSSession | Remove-PSSession</code> para limpar todas de uma vez!"}
+];
+
+let cur=0,quizXP=0,answered=false;
+function buildQuiz(){const dots=document.getElementById('quizDots');dots.innerHTML=questions.map((_,i)=>`<div class="quiz-dot${i===0?' current':''}" id="qd${i}"></div>`).join('');renderQ();}
+function renderQ(){answered=false;const q=questions[cur];document.getElementById('quizCounter').textContent=`${cur+1} / ${questions.length}`;document.getElementById('quizBody').innerHTML=`<div class="question-text">${q.q}</div><div class="options">${q.opts.map((o,i)=>`<button class="option-btn" onclick="answer(this,${i})"><div class="option-letter">${'ABCD'[i]}</div>${o}</button>`).join('')}</div><div class="quiz-feedback" id="qfb"></div><button class="quiz-next" id="qnext" onclick="nextQ()">${cur<questions.length-1?'Próxima →':'Ver Resultado'}</button>`;}
+function answer(btn,idx){if(answered)return;answered=true;const q=questions[cur];document.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);const correct=idx===q.ans;btn.classList.add(correct?'correct':'wrong');if(!correct)document.querySelectorAll('.option-btn')[q.ans].classList.add('correct');const fb=document.getElementById('qfb');fb.innerHTML=q.exp;fb.className='quiz-feedback show '+(correct?'ok':'err');if(correct){quizXP+=20;addXP(20);}document.getElementById(`qd${cur}`).classList.remove('current');document.getElementById(`qd${cur}`).classList.add('done');document.getElementById('qnext').style.display='inline-block';}
+function nextQ(){cur++;if(cur<questions.length){document.getElementById(`qd${cur}`).classList.add('current');renderQ();}else{document.getElementById('quizBody').innerHTML=`<div class="quiz-result"><div class="score">${quizXP/20}/${questions.length}</div><div class="score-label">respostas corretas</div><div class="xp-earn">⚡ +${quizXP} XP ganhos</div><br><button class="quiz-restart" onclick="cur=0;quizXP=0;buildQuiz()">🔄 Refazer Quiz</button></div>`;if(quizXP===questions.length*20)showAch('🧠','Quiz Perfeito!','100% de acertos!');}}
+buildQuiz();
+
+// FILL IN THE BLANKS
+let selectedChip=null,fitbXpAwarded=false;
+function selectChip(el){document.querySelectorAll('.fitb-chip').forEach(c=>c.style.outline='');if(selectedChip===el){selectedChip=null;return;}selectedChip=el;el.style.outline='2px solid var(--amber)';}
+function fillBlank(el){if(el.classList.contains('locked'))return;if(!selectedChip){if(el.classList.contains('filled')){const word=el.dataset.filled;el.textContent='___';el.classList.remove('filled','correct','wrong');el.dataset.filled='';document.querySelectorAll('.fitb-chip').forEach(c=>{if(c.dataset.word===word){c.classList.remove('used');c.style.outline='';}});}return;}const word=selectedChip.dataset.word;if(el.classList.contains('filled')&&el.dataset.filled){const old=el.dataset.filled;document.querySelectorAll('.fitb-chip').forEach(c=>{if(c.dataset.word===old)c.classList.remove('used');});}el.textContent=word;el.classList.add('filled');el.classList.remove('correct','wrong');el.dataset.filled=word;selectedChip.classList.add('used');selectedChip.style.outline='';selectedChip=null;}
+function checkFitb(){const blanks=document.querySelectorAll('.fitb-blank');let correct=0,total=blanks.length;blanks.forEach(b=>{if(!b.classList.contains('filled'))return;if(b.dataset.filled===b.dataset.answer){b.classList.add('correct','locked');b.classList.remove('wrong');correct++;}else{b.classList.add('wrong');b.classList.remove('correct');setTimeout(()=>b.classList.remove('wrong'),600);}});const r=document.getElementById('fitbResult');if(correct===total){r.className='fitb-result show ok';r.textContent=`🎉 Perfeito! Todas as ${total} lacunas corretas!`;if(!fitbXpAwarded){fitbXpAwarded=true;addXP(60);showAch('✏️','Código Completo!','Todas as lacunas preenchidas!');}}else{r.className='fitb-result show partial';r.textContent=`⚡ ${correct} de ${total} corretas. Continue tentando!`;}r.style.display='block';}
+function resetFitb(){document.querySelectorAll('.fitb-blank').forEach(b=>{b.textContent='___';b.className='fitb-blank';b.dataset.filled='';});document.querySelectorAll('.fitb-chip').forEach(c=>{c.classList.remove('used');c.style.outline='';});document.getElementById('fitbResult').className='fitb-result';fitbXpAwarded=false;selectedChip=null;}
+
+// DRAG AND DROP
+let draggedId=null,dndXpAwarded=false,touchDragId=null;
+function dragStart(e){draggedId=e.currentTarget.dataset.id;e.currentTarget.classList.add('dragging');}
+document.addEventListener('dragend',()=>{document.querySelectorAll('.dnd-card').forEach(c=>c.classList.remove('dragging'));});
+function dragOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+document.addEventListener('dragleave',e=>{if(e.target.classList&&e.target.classList.contains('dnd-target'))e.target.classList.remove('drag-over');});
+function drop(e){e.preventDefault();const target=e.currentTarget;target.classList.remove('drag-over');if(!draggedId)return;document.querySelectorAll('.dnd-target').forEach(t=>{const placed=t.querySelector('.dnd-card-static');if(placed&&placed.dataset.id===draggedId){t.removeChild(placed);t.classList.remove('correct','wrong','locked');const def=t.querySelector('.dnd-target-def');if(def)def.style.display='';}});document.querySelectorAll('#dndItems .dnd-card').forEach(c=>{if(c.dataset.id===draggedId)c.style.display='';});if(target.querySelector('.dnd-card-static'))return;const original=document.querySelector(`#dndItems [data-id="${draggedId}"]`);if(!original)return;const clone=original.cloneNode(true);clone.classList.add('dnd-card-static');clone.removeAttribute('draggable');clone.style.cursor='pointer';clone.title='Clique para remover';clone.onclick=()=>removeDndCard(clone,target);target.appendChild(clone);original.style.display='none';const def=target.querySelector('.dnd-target-def');if(def)def.style.display='none';draggedId=null;}
+function removeDndCard(card,target){if(target.classList.contains('locked'))return;const id=card.dataset.id;target.removeChild(card);target.classList.remove('correct','wrong');const def=target.querySelector('.dnd-target-def');if(def)def.style.display='';const original=document.querySelector(`#dndItems [data-id="${id}"]`);if(original)original.style.display='';}
+function touchStart(e){touchDragId=e.currentTarget.dataset.id;}
+function touchEnd(e){if(!touchDragId)return;const touch=e.changedTouches[0];const el=document.elementFromPoint(touch.clientX,touch.clientY);const target=el?el.closest('.dnd-target'):null;if(target){draggedId=touchDragId;drop({preventDefault:()=>{},currentTarget:target});}touchDragId=null;}
+function checkDnd(){const targets=document.querySelectorAll('.dnd-target');let correct=0,filled=0;targets.forEach(t=>{const placed=t.querySelector('.dnd-card-static');if(!placed)return;filled++;if(placed.dataset.id===t.dataset.accepts){t.classList.add('correct','locked');placed.classList.add('dnd-correct');correct++;}else{t.classList.add('wrong');placed.classList.add('dnd-wrong');setTimeout(()=>{t.classList.remove('wrong');placed.classList.remove('dnd-wrong');},600);}});const r=document.getElementById('dndResult');if(correct===6&&filled===6){r.className='dnd-result show ok';r.textContent='🎉 Perfeito! Todos os cmdlets associados corretamente!';if(!dndXpAwarded){dndXpAwarded=true;addXP(50);showAch('🎯','Mestre do Remoting!','Todos os pares corretos!');}}else{r.className='dnd-result show partial';r.textContent=`⚡ ${correct} de 6 corretos. Remova os errados clicando neles!`;}r.style.display='block';}
+function resetDnd(){document.querySelectorAll('.dnd-target').forEach(t=>{const placed=t.querySelector('.dnd-card-static');if(placed)t.removeChild(placed);t.classList.remove('correct','wrong','locked');const def=t.querySelector('.dnd-target-def');if(def)def.style.display='';});document.querySelectorAll('#dndItems .dnd-card').forEach(c=>c.style.display='');document.getElementById('dndResult').className='dnd-result';dndXpAwarded=false;}
+
+// COPY BUTTONS
+function addCopyButtons(){document.querySelectorAll('.cmd-block').forEach(block=>{if(block.querySelector('.copy-btn'))return;const input=block.querySelector('.cmd-input');if(!input)return;const btn=document.createElement('button');btn.className='copy-btn';btn.innerHTML='⎘ Copiar';btn.onclick=function(e){e.stopPropagation();const text=input.innerText||input.textContent;const cleaned=text.split('\n').map(l=>l.replace(/^(PS C:\\[^>]*>|\[.*?\]:\s*PS C:\\[^>]*>)\s*/,'')).join('\n').trim();navigator.clipboard.writeText(cleaned).then(()=>{btn.innerHTML='✓ Copiado!';btn.classList.add('copied');setTimeout(()=>{btn.innerHTML='⎘ Copiar';btn.classList.remove('copied');},2000);}).catch(()=>{btn.innerHTML='✗ Erro';setTimeout(()=>{btn.innerHTML='⎘ Copiar';},2000);});};block.insertBefore(btn,block.firstChild);});}
+addCopyButtons();
+</script>
+</body>
+</html>

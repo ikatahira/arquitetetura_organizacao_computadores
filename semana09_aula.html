@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S09 – PowerShell – Pipeline & Filtragem | GSO I 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--border:#21262d;
+  --green:#39d353;--green-dim:#1a4731;--blue:#58a6ff;--blue-dim:#0d2139;
+  --purple:#bc8cff;--purple-dim:#2a1f42;--amber:#f0b429;--amber-dim:#3d2c00;
+  --red:#f85149;--red-dim:#3d0f0d;--teal:#2dd4bf;--teal-dim:#0f2927;
+  --text:#e6edf3;--text-muted:#8b949e;--text-dim:#484f58;
+  --xp:#ffd700;--r:12px;--r-sm:8px;
+  --glow-purple:0 0 20px rgba(188,140,255,.25);--glow-blue:0 0 20px rgba(88,166,255,.25);
+  --glow-green:0 0 20px rgba(57,211,83,.25);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+.hud{position:sticky;top:0;z-index:200;background:rgba(13,17,23,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:10px 24px;}
+.hud-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.hud-week{font-family:'DM Mono',monospace;font-size:.78em;background:var(--purple-dim);color:var(--purple);border:1px solid rgba(188,140,255,.3);border-radius:50px;padding:4px 12px;white-space:nowrap;}
+.hud-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1em;color:var(--text);flex:1;min-width:0;}
+.hud-title span{color:var(--purple);}
+.hud-xp{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:5px 12px;}
+.hud-xp .xp-val{font-family:'DM Mono',monospace;font-size:.82em;font-weight:500;color:var(--xp);}
+.hud-xp .xp-label{font-size:.72em;color:var(--text-muted);}
+.progress-bar-outer{height:6px;background:var(--surface2);border-radius:3px;flex:1;min-width:80px;}
+.progress-bar-inner{height:100%;background:linear-gradient(90deg,var(--purple),var(--blue));border-radius:3px;transition:width .5s ease;width:0%;}
+
+.hero{position:relative;overflow:hidden;padding:60px 24px 48px;text-align:center;}
+.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(188,140,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(188,140,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(188,140,255,.06),transparent 70%);pointer-events:none;}
+.hero-inner{position:relative;max-width:700px;margin:0 auto;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--purple-dim);border:1px solid rgba(188,140,255,.3);border-radius:50px;padding:5px 14px;font-size:.8em;font-weight:600;color:var(--purple);margin-bottom:18px;}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2em,5vw,3.2em);line-height:1.1;letter-spacing:-.03em;margin-bottom:14px;}
+.hero h1 .accent{color:var(--purple);}
+.hero-sub{color:var(--text-muted);font-size:1em;margin-bottom:28px;}
+.hero-pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
+.pill{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:6px 14px;font-size:.82em;}
+.pill.purple{border-color:rgba(188,140,255,.3);color:var(--purple);}
+.pill.blue{border-color:rgba(88,166,255,.3);color:var(--blue);}
+.pill.green{border-color:rgba(57,211,83,.3);color:var(--green);}
+
+/* TERMINAL INTERATIVO */
+.terminal-hero{background:#080d14;border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:580px;margin:0 auto 32px;text-align:left;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.term-bar{background:#111820;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.term-dots{display:flex;gap:5px;}.term-dot{width:10px;height:10px;border-radius:50%;}
+.term-dot.r{background:#f85149;}.term-dot.y{background:#f0b429;}.term-dot.g{background:#39d353;}
+.term-label{font-family:'DM Mono',monospace;font-size:.72em;color:var(--text-dim);margin-left:6px;}
+.term-body{padding:14px 18px;font-family:'DM Mono',monospace;font-size:.8em;line-height:1.9;}
+.term-prompt{color:var(--purple);}
+.term-cmd{color:var(--text);}
+.term-out{color:var(--text-muted);padding-left:2px;}
+.term-out.green{color:var(--green);}
+.term-out.amber{color:var(--amber);}
+.term-cursor{display:inline-block;width:8px;height:14px;background:var(--purple);animation:blink 1s step-end infinite;vertical-align:text-bottom;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+.container{max-width:900px;margin:0 auto;padding:0 24px 60px;}
+
+.section-header{display:flex;align-items:center;gap:10px;margin:40px 0 16px;}
+.section-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1em;flex-shrink:0;}
+.section-icon.purple{background:var(--purple-dim);border:1px solid rgba(188,140,255,.3);}
+.section-icon.blue{background:var(--blue-dim);border:1px solid rgba(88,166,255,.3);}
+.section-icon.green{background:var(--green-dim);border:1px solid rgba(57,211,83,.3);}
+.section-icon.amber{background:var(--amber-dim);border:1px solid rgba(240,180,41,.3);}
+.section-icon.teal{background:var(--teal-dim);border:1px solid rgba(45,212,191,.3);}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.25em;}
+.section-xp{margin-left:auto;font-family:'DM Mono',monospace;font-size:.78em;color:var(--xp);background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:50px;padding:3px 10px;}
+
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:24px;}
+.obj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;display:flex;gap:10px;align-items:flex-start;transition:all .2s;cursor:pointer;}
+.obj-card:hover{border-color:rgba(188,140,255,.3);box-shadow:var(--glow-purple);}
+.obj-card.done{border-color:rgba(188,140,255,.4);background:var(--purple-dim);}
+.obj-num{width:26px;height:26px;background:var(--purple-dim);border:1px solid rgba(188,140,255,.3);color:var(--purple);border-radius:8px;font-size:.75em;font-weight:700;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;}
+.obj-text{font-size:.88em;color:var(--text);line-height:1.4;}
+
+.content-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;transition:box-shadow .2s;}
+.content-card:hover{box-shadow:0 4px 24px rgba(0,0,0,.3);}
+.cc-header{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;user-select:none;background:var(--surface2);}
+.cc-icon{font-size:1.3em;}
+.cc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;color:var(--text);flex:1;}
+.cc-xp{font-family:'DM Mono',monospace;font-size:.73em;color:var(--xp);background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:50px;padding:2px 9px;}
+.cc-chevron{color:var(--text-dim);transition:transform .3s;font-size:.85em;}
+.cc-header.open .cc-chevron{transform:rotate(180deg);}
+.cc-body{padding:0 20px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;}
+.cc-body.open{max-height:4000px;padding:20px;}
+
+.key-point{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.key-point:last-of-type{border:none;}
+.kp-dot{width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:7px;}
+.kp-dot.blue{background:var(--blue);}
+.kp-dot.green{background:var(--green);}
+.kp-text{font-size:.9em;color:var(--text-muted);line-height:1.5;}
+.kp-text strong{color:var(--text);}
+.kp-text code{background:rgba(188,140,255,.1);border:1px solid rgba(188,140,255,.2);color:var(--purple);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.88em;}
+
+/* BLOCO COMANDO + RESULTADO — a grande novidade */
+.cmd-block{margin:16px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.cmd-block-label{background:#111820;padding:8px 14px;font-family:'DM Mono',monospace;font-size:.72em;color:var(--text-dim);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.cmd-block-label span{background:var(--purple-dim);color:var(--purple);border-radius:4px;padding:1px 6px;font-size:.9em;}
+.cmd-input{background:#080d14;padding:14px 18px;font-family:'DM Mono',monospace;font-size:.82em;line-height:1.8;overflow-x:auto;}
+.cmd-input .ps{color:var(--purple);}
+.cmd-input .kw{color:var(--purple);}
+.cmd-input .param{color:var(--blue);}
+.cmd-input .str{color:#98c379;}
+.cmd-input .var{color:var(--amber);}
+.cmd-input .op{color:var(--teal);}
+.cmd-input .cm{color:var(--text-dim);font-style:italic;}
+.cmd-output{background:#050a10;border-top:1px solid rgba(57,211,83,.15);padding:14px 18px;font-family:'DM Mono',monospace;font-size:.8em;line-height:1.9;}
+.cmd-output-label{display:flex;align-items:center;gap:6px;font-size:.72em;color:var(--green);margin-bottom:8px;opacity:.8;}
+.cmd-output-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;}
+.out-header{color:var(--blue);font-weight:500;}
+.out-sep{color:var(--text-dim);}
+.out-val{color:var(--text-muted);}
+.out-val.hi{color:var(--amber);}
+.out-val.green{color:var(--green);}
+.out-val.red{color:var(--red);}
+.out-success{color:var(--green);}
+.out-info{color:var(--blue);}
+
+.callout{border-radius:var(--r-sm);padding:14px 18px;margin:14px 0;display:flex;gap:10px;align-items:flex-start;}
+.callout.purple{background:var(--purple-dim);border:1px solid rgba(188,140,255,.25);}
+.callout.blue{background:var(--blue-dim);border:1px solid rgba(88,166,255,.25);}
+.callout.green{background:var(--green-dim);border:1px solid rgba(57,211,83,.25);}
+.callout.amber{background:var(--amber-dim);border:1px solid rgba(240,180,41,.25);}
+.callout.teal{background:var(--teal-dim);border:1px solid rgba(45,212,191,.25);}
+.callout-icon{font-size:1.1em;flex-shrink:0;margin-top:1px;}
+.callout-text{font-size:.88em;color:var(--text-muted);line-height:1.5;}
+.callout-text strong{color:var(--text);}
+.callout-text code{background:rgba(188,140,255,.1);border:1px solid rgba(188,140,255,.2);color:var(--purple);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.88em;}
+
+.pipe-diagram{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:16px 0;}
+.pipe-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'DM Mono',monospace;font-size:.78em;color:var(--purple);}
+.pipe-arrow{color:var(--blue);font-size:1.2em;font-weight:700;padding:0 2px;}
+.pipe-out{color:var(--green);font-size:.75em;font-family:'DM Mono',monospace;}
+
+.mission-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;transition:all .2s;}
+.mission-card:hover{border-color:rgba(188,140,255,.25);box-shadow:0 0 16px rgba(188,140,255,.1);}
+.mission-card.completed{border-color:rgba(57,211,83,.4);background:rgba(57,211,83,.04);}
+.mission-icon{font-size:1.6em;flex-shrink:0;}
+.mission-content{flex:1;}
+.mission-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;color:var(--text);margin-bottom:4px;}
+.mission-desc{color:var(--text-muted);font-size:.87em;line-height:1.5;}
+.mission-meta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.mission-tag{background:var(--surface2);border:1px solid var(--border);border-radius:50px;padding:2px 9px;font-size:.74em;color:var(--text-muted);}
+.mission-tag.xp{background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.2);color:var(--xp);}
+.mission-check{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1em;color:var(--text-dim);flex-shrink:0;transition:all .2s;}
+.mission-check:hover{border-color:var(--purple);color:var(--purple);}
+.mission-check.done{background:var(--green);border-color:var(--green);color:#0d1117;}
+
+/* GABARITO */
+.gabarito-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.gabarito-header{display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:background .2s;}
+.gabarito-header:hover{background:var(--surface2);}
+.gabarito-header.open{border-bottom-color:var(--border);}
+.gabarito-header-icon{width:36px;height:36px;border-radius:8px;background:rgba(57,211,83,.12);border:1px solid rgba(57,211,83,.25);display:flex;align-items:center;justify-content:center;font-size:1.1em;flex-shrink:0;}
+.gabarito-header-text{flex:1;}
+.gabarito-header-text h3{font-family:'Syne',sans-serif;font-size:.95em;font-weight:700;color:var(--green);}
+.gabarito-header-text p{font-size:.78em;color:var(--text-muted);margin-top:2px;}
+.gabarito-warn{font-size:.72em;background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.25);border-radius:50px;padding:3px 10px;color:var(--amber);white-space:nowrap;}
+.gabarito-chevron{color:var(--text-muted);font-size:.9em;transition:transform .3s;}
+.gabarito-body{display:none;padding:20px;}
+.gabarito-body.open{display:block;}
+.gab-item{margin-bottom:20px;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;}
+.gab-item:last-child{margin-bottom:0;}
+.gab-item-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface2);}
+.gab-item-num{width:28px;height:28px;border-radius:6px;background:var(--green-dim);border:1px solid rgba(57,211,83,.3);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.8em;font-weight:700;color:var(--green);flex-shrink:0;}
+.gab-item-title{font-family:'Syne',sans-serif;font-size:.88em;font-weight:700;color:var(--text);}
+.gab-item-body{padding:14px 16px;}
+.gab-note{font-size:.83em;color:var(--text-muted);margin-bottom:12px;line-height:1.6;background:rgba(88,166,255,.06);border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:8px 12px;}
+.gab-note strong{color:var(--blue);}
+.gab-cmd{background:#0a0f16;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'DM Mono',monospace;font-size:.82em;line-height:1.7;white-space:pre-wrap;overflow-x:auto;}
+.gab-cmd .cm{color:var(--text-dim);}
+.gab-cmd .kw{color:var(--blue);}
+.gab-cmd .param{color:var(--purple);}
+.gab-cmd .str{color:var(--amber);}
+.gab-cmd .var{color:var(--green);}
+.gab-tip{margin-top:10px;font-size:.8em;color:var(--text-muted);line-height:1.5;background:rgba(57,211,83,.06);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:8px 12px;}
+.gab-tip strong{color:var(--green);}
+
+/* QUIZ */
+.quiz-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.quiz-topbar{background:linear-gradient(135deg,var(--purple-dim),var(--blue-dim));padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.quiz-topbar-icon{font-size:1.5em;}
+.quiz-topbar-text h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;}
+.quiz-topbar-text p{font-size:.78em;color:var(--text-muted);margin-top:2px;}
+.quiz-topbar-xp{margin-left:auto;text-align:right;}
+.quiz-topbar-xp .xp-big{font-family:'DM Mono',monospace;font-size:1.3em;font-weight:700;color:var(--xp);}
+.quiz-topbar-xp .xp-lbl{font-size:.72em;color:var(--text-muted);}
+.quiz-progress{padding:14px 20px 0;display:flex;align-items:center;gap:10px;border-top:1px solid var(--border);}
+.quiz-dots{display:flex;gap:5px;}
+.quiz-dot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:all .3s;}
+.quiz-dot.current{background:var(--purple);box-shadow:0 0 8px var(--purple);}
+.quiz-dot.done{background:var(--green);}
+.quiz-counter{font-family:'DM Mono',monospace;font-size:.78em;color:var(--text-muted);margin-left:auto;}
+.quiz-body{padding:20px;}
+.question-text{font-weight:600;font-size:.97em;line-height:1.5;margin-bottom:18px;}
+.question-text code{background:rgba(188,140,255,.1);border:1px solid rgba(188,140,255,.2);color:var(--purple);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.88em;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;text-align:left;cursor:pointer;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9em;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.option-btn:hover:not(:disabled){border-color:var(--purple);background:var(--purple-dim);transform:translateX(4px);}
+.option-letter{width:24px;height:24px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.75em;font-weight:700;flex-shrink:0;transition:all .2s;}
+.option-btn.correct{border-color:rgba(57,211,83,.5);background:rgba(57,211,83,.08);color:var(--green);}
+.option-btn.correct .option-letter{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.option-btn.wrong{border-color:rgba(248,81,73,.5);background:rgba(248,81,73,.08);color:var(--red);}
+.option-btn.wrong .option-letter{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.quiz-feedback{margin-top:14px;padding:12px 16px;border-radius:var(--r-sm);font-size:.87em;line-height:1.5;display:none;}
+.quiz-feedback.show.ok{display:block;background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.25);color:var(--green);}
+.quiz-feedback.show.err{display:block;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:var(--red);}
+.quiz-next{margin-top:14px;background:var(--purple);color:var(--bg);border:none;border-radius:var(--r-sm);padding:10px 22px;font-family:'Syne',sans-serif;font-weight:700;font-size:.85em;cursor:pointer;display:none;transition:all .2s;}
+.quiz-next:hover{background:#d4aaff;transform:translateY(-1px);}
+.quiz-result{text-align:center;padding:20px 0;}
+.quiz-result .score{font-family:'Syne',sans-serif;font-size:3.5em;font-weight:800;color:var(--purple);}
+.quiz-result .score-label{color:var(--text-muted);font-size:.9em;margin-bottom:16px;}
+.quiz-result .xp-earn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.25);border-radius:50px;padding:6px 16px;color:var(--xp);font-weight:700;font-size:.95em;margin-bottom:20px;}
+.quiz-restart{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--r-sm);padding:9px 20px;font-family:'DM Sans',sans-serif;cursor:pointer;font-size:.88em;transition:all .2s;}
+.quiz-restart:hover{border-color:var(--purple);color:var(--purple);}
+
+.checkpoint{background:linear-gradient(135deg,var(--purple-dim),var(--blue-dim));border:1px solid rgba(188,140,255,.2);border-radius:var(--r);padding:24px;text-align:center;margin:28px 0;}
+.checkpoint-stars{font-size:1.8em;margin-bottom:8px;}
+.checkpoint h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1em;color:var(--text);margin-bottom:6px;}
+.checkpoint p{color:var(--text-muted);font-size:.88em;}
+.xp-total-display{margin-top:12px;font-family:'DM Mono',monospace;font-size:1.1em;color:var(--xp);}
+
+.nav-bar{border-top:1px solid var(--border);padding:20px 24px;margin-top:20px;}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);text-decoration:none;border-radius:var(--r-sm);padding:10px 18px;font-size:.88em;transition:all .2s;cursor:pointer;}
+.nav-btn:hover{border-color:var(--purple);color:var(--purple);}
+.nav-btn.primary{background:var(--purple);border-color:var(--purple);color:#0d1117;font-weight:700;}
+.nav-btn.primary:hover{background:#d4aaff;border-color:#d4aaff;color:#0d1117;}
+.nav-home{font-family:'DM Mono',monospace;font-size:.8em;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+.nav-home:hover{color:var(--purple);}
+
+/* Achievement */
+.ach-toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--purple-dim),var(--blue-dim));border:1px solid rgba(188,140,255,.4);border-radius:14px;padding:14px 20px;display:flex;gap:12px;align-items:center;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);z-index:999;max-width:300px;}
+.ach-toast.show{transform:translateY(0);opacity:1;}
+.ach-icon{font-size:1.8em;}
+.ach-text strong{font-family:'Syne',sans-serif;font-size:.95em;color:var(--text);}
+.ach-text p{font-size:.8em;color:var(--text-muted);margin-top:2px;}
+.star{position:fixed;pointer-events:none;font-size:1.4em;animation:flyUp 1.5s ease forwards;z-index:998;}
+@keyframes flyUp{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-150px) scale(1.5);opacity:0;}}
+
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+.res-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-decoration:none;color:var(--text);transition:all .2s;display:flex;flex-direction:column;gap:6px;}
+.res-card:hover{border-color:rgba(188,140,255,.3);box-shadow:var(--glow-purple);}
+.res-icon{font-size:1.4em;}
+.res-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.88em;}
+.res-desc{font-size:.78em;color:var(--text-muted);}
+
+footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:.8em;color:var(--text-dim);}
+/* COPY BUTTON */
+.cmd-block{position:relative;}
+.copy-btn{position:absolute;top:8px;right:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);border-radius:6px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:.7em;cursor:pointer;transition:all .2s;z-index:10;display:flex;align-items:center;gap:5px;}
+.copy-btn:hover{border-color:var(--purple);color:var(--purple);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+/* POWERSHELL ACCESS */
+.ps-access-banner{background:linear-gradient(135deg,rgba(13,17,23,1),var(--surface));border:1px solid rgba(88,166,255,.25);border-radius:var(--r);padding:20px 22px;margin-bottom:28px;}
+.ps-access-banner h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1em;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.ps-access-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px;}
+.ps-step{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:.83em;}
+.ps-step .ps-step-num{font-family:'DM Mono',monospace;font-size:.75em;color:var(--blue);font-weight:700;margin-bottom:4px;}
+.ps-step .ps-step-text{color:var(--text-muted);line-height:1.4;}
+.ps-step .ps-step-text code{background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.2);color:var(--blue);padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.9em;}
+/* IMPORTANCE TAG */
+.importance-box{background:rgba(57,211,83,.05);border:1px solid rgba(57,211,83,.2);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:10px 14px;margin:10px 0 0 0;font-size:.83em;color:var(--text-muted);line-height:1.5;}
+.importance-box strong{color:var(--green);font-size:.85em;letter-spacing:.04em;text-transform:uppercase;}
+
+/* OPERATOR TABLE */
+.op-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.84em;}
+.op-table th{background:var(--surface2);color:var(--text-muted);font-family:'DM Mono',monospace;font-size:.78em;text-align:left;padding:8px 12px;border-bottom:2px solid var(--border);}
+.op-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+.op-table tr:last-child td{border:none;}
+.op-table td:first-child{font-family:'DM Mono',monospace;color:var(--purple);white-space:nowrap;}
+.op-table td:nth-child(2){color:var(--text-muted);}
+.op-table td:last-child{font-family:'DM Mono',monospace;color:var(--teal);font-size:.78em;}
+.op-table tr:hover td{background:rgba(188,140,255,.04);}
+
+/* CMD EXPLANATION */
+.cmd-explain{background:var(--surface2);border:1px solid var(--border);border-top:3px solid var(--purple);border-radius:0 0 10px 10px;padding:14px 18px;margin-top:-1px;margin-bottom:16px;}
+.cmd-explain-title{font-family:'DM Mono',monospace;font-size:.7em;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.cmd-explain-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--purple);display:inline-block;}
+.cmd-part{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);}
+.cmd-part:last-child{border:none;padding-bottom:0;}
+.cmd-part-token{font-family:'DM Mono',monospace;font-size:.78em;white-space:nowrap;padding:2px 8px;border-radius:5px;flex-shrink:0;min-width:140px;text-align:right;}
+.cmd-part-token.kw{background:rgba(188,140,255,.12);color:var(--purple);border:1px solid rgba(188,140,255,.25);}
+.cmd-part-token.param{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.25);}
+.cmd-part-token.val{background:rgba(152,195,121,.1);color:#98c379;border:1px solid rgba(152,195,121,.2);}
+.cmd-part-token.op{background:rgba(45,212,191,.1);color:var(--teal);border:1px solid rgba(45,212,191,.2);}
+.cmd-part-token.var{background:rgba(240,180,41,.1);color:var(--amber);border:1px solid rgba(240,180,41,.2);}
+.cmd-part-desc{font-size:.83em;color:var(--text-muted);line-height:1.5;}
+.cmd-part-desc strong{color:var(--text);}
+.cmd-part-desc code{background:rgba(188,140,255,.1);color:var(--purple);padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.9em;}
+.tech-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.2);color:var(--green);border-radius:50px;padding:2px 9px;font-size:.73em;font-family:'DM Sans',sans-serif;margin-top:4px;}
+
+/* FILL IN THE BLANKS */
+.fitb-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px;}
+.fitb-topbar{background:linear-gradient(135deg,var(--purple-dim),var(--blue-dim));padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.fitb-topbar-icon{font-size:1.5em;}
+.fitb-topbar-text h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;}
+.fitb-topbar-text p{font-size:.78em;color:var(--text-muted);margin-top:2px;}
+.fitb-topbar-xp{margin-left:auto;text-align:right;}
+.fitb-topbar-xp .xp-big{font-family:'DM Mono',monospace;font-size:1.3em;font-weight:700;color:var(--xp);}
+.fitb-topbar-xp .xp-lbl{font-size:.72em;color:var(--text-muted);}
+.fitb-body{padding:20px;}
+.fitb-word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}
+.fitb-word-bank-label{width:100%;font-size:.76em;color:var(--text-dim);font-family:'DM Mono',monospace;margin-bottom:4px;}
+.fitb-chip{background:var(--bg);border:1.5px solid var(--purple);color:var(--purple);border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:.8em;cursor:pointer;transition:all .2s;user-select:none;}
+.fitb-chip:hover:not(.used){background:var(--purple-dim);transform:translateY(-1px);}
+.fitb-chip.used{opacity:.3;cursor:default;pointer-events:none;}
+.fitb-lines{display:flex;flex-direction:column;gap:14px;}
+.fitb-line{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Mono',monospace;font-size:.82em;line-height:2;display:flex;flex-wrap:wrap;align-items:center;gap:4px;}
+.fitb-blank{display:inline-flex;align-items:center;justify-content:center;min-width:100px;height:26px;background:rgba(188,140,255,.06);border:1.5px dashed rgba(188,140,255,.4);border-radius:5px;padding:0 10px;font-family:'DM Mono',monospace;font-size:.85em;color:var(--text-dim);cursor:pointer;transition:all .2s;vertical-align:middle;}
+.fitb-blank:hover:not(.filled):not(.locked){border-color:var(--purple);background:var(--purple-dim);color:var(--purple);}
+.fitb-blank.filled{background:rgba(188,140,255,.12);border-style:solid;border-color:var(--purple);color:var(--text);}
+.fitb-blank.correct{background:rgba(57,211,83,.1);border-color:var(--green);color:var(--green);border-style:solid;}
+.fitb-blank.wrong{background:rgba(248,81,73,.1);border-color:var(--red);color:var(--red);border-style:solid;animation:shake .3s ease;}
+.fitb-blank.locked{pointer-events:none;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.fitb-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.fitb-btn{background:var(--purple);color:var(--bg);border:none;border-radius:8px;padding:9px 20px;font-family:'Syne',sans-serif;font-weight:700;font-size:.85em;cursor:pointer;transition:all .2s;}
+.fitb-btn:hover{background:#d4aaff;transform:translateY(-1px);}
+.fitb-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.fitb-btn.secondary:hover{border-color:var(--purple);color:var(--purple);}
+.fitb-result{margin-top:14px;padding:12px 16px;border-radius:8px;font-size:.87em;display:none;}
+.fitb-result.show{display:block;}
+.fitb-result.ok{background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.25);color:var(--green);}
+.fitb-result.partial{background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.25);color:var(--amber);}
+
+/* DRAG AND DROP */
+.dnd-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px;}
+.dnd-topbar{background:linear-gradient(135deg,var(--green-dim),var(--teal-dim));padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.dnd-topbar-icon{font-size:1.5em;}
+.dnd-topbar-text h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.95em;}
+.dnd-topbar-text p{font-size:.78em;color:var(--text-muted);margin-top:2px;}
+.dnd-topbar-xp{margin-left:auto;text-align:right;}
+.dnd-body{padding:20px;}
+.dnd-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.dnd-layout{grid-template-columns:1fr;}}
+.dnd-col-title{font-family:'DM Mono',monospace;font-size:.72em;color:var(--text-dim);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase;}
+.dnd-items{display:flex;flex-direction:column;gap:6px;}
+.dnd-card{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:.82em;color:var(--text);cursor:grab;transition:all .2s;user-select:none;display:flex;align-items:center;gap:8px;}
+.dnd-card:active{cursor:grabbing;}
+.dnd-card:hover:not(.placed):not(.dnd-card-static){border-color:var(--green);color:var(--green);transform:translateX(3px);}
+.dnd-card.dragging{opacity:.4;transform:scale(.95);}
+.dnd-card.dnd-correct{border-color:var(--green);color:var(--green);background:rgba(57,211,83,.06);cursor:default;}
+.dnd-card.dnd-wrong{border-color:var(--red);color:var(--red);background:rgba(248,81,73,.06);animation:shake .3s ease;}
+.dnd-card .dnd-handle{color:var(--text-dim);font-size:.85em;}
+.dnd-targets{display:flex;flex-direction:column;gap:6px;}
+.dnd-target{background:rgba(57,211,83,.03);border:1.5px dashed rgba(57,211,83,.2);border-radius:8px;padding:10px 14px;min-height:44px;display:flex;align-items:center;gap:8px;transition:all .2s;}
+.dnd-target:hover:not(.locked){border-color:var(--teal);background:rgba(45,212,191,.05);}
+.dnd-target.drag-over{border-color:var(--green);background:rgba(57,211,83,.07);border-style:solid;}
+.dnd-target.correct{border-color:var(--green);background:rgba(57,211,83,.06);border-style:solid;}
+.dnd-target.wrong{border-color:var(--red);border-style:solid;}
+.dnd-target-def{font-family:'DM Sans',sans-serif;font-size:.83em;color:var(--text-muted);flex:1;}
+.dnd-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.dnd-result{margin-top:14px;padding:12px 16px;border-radius:8px;font-size:.87em;display:none;}
+.dnd-result.show{display:block;}
+.dnd-result.ok{background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.25);color:var(--green);}
+.dnd-result.partial{background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.25);color:var(--amber);}
+
+</style>
+</head>
+<body>
+
+<div class="ach-toast" id="achToast">
+  <div class="ach-icon" id="achIcon">🏆</div>
+  <div class="ach-text"><strong id="achTitle">Conquista!</strong><p id="achDesc">Desbloqueada!</p></div>
+</div>
+
+<!-- HUD -->
+<nav class="hud">
+  <div class="hud-inner">
+    <span class="hud-week">S09/20</span>
+    <span class="hud-title">PowerShell — <span>Pipeline & Filtragem</span></span>
+    <div class="hud-xp"><span class="xp-val" id="xpDisplay">0</span><span class="xp-label">/ 420 XP</span></div>
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="mainProgress"></div></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">⚡ Semana 09 de 20</div>
+    <h1>Pipeline &<br><span class="accent">Filtragem</span></h1>
+    <p class="hero-sub">Aprenda a encadear cmdlets, filtrar resultados, ordenar dados e exportar relatórios — o coração do dia a dia de qualquer sysadmin.</p>
+    <div class="hero-pills">
+      <span class="pill purple">⚡ Cmdlets & Pipeline</span>
+      <span class="pill blue">🔍 Where-Object</span>
+      <span class="pill green">📊 Sort · Select · Export</span>
+    </div>
+
+    <!-- Terminal animado do hero -->
+    <div class="terminal-hero">
+      <div class="term-bar">
+        <div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div>
+        <span class="term-label">Windows PowerShell — Semana 09</span>
+      </div>
+      <div class="term-body">
+        <div><span class="term-prompt">PS C:\&gt; </span><span class="term-cmd">Get-Process | Where-Object {$_.CPU -gt 10} | Sort-Object CPU -Desc</span></div>
+        <div class="term-out" style="color:var(--blue)">NPM(K)  PM(M)   WS(M)   CPU(s)  Id    ProcessName</div>
+        <div class="term-out" style="color:var(--text-dim)">------  -----   -----   ------  --    -----------</div>
+        <div class="term-out amber">248     512.3   480.1   142.8   4120  chrome</div>
+        <div class="term-out">64      198.5   220.4   89.2    2380  Code</div>
+        <div class="term-out">32      88.1    102.3   24.7    1844  powershell</div>
+        <div style="margin-top:4px"><span class="term-prompt">PS C:\&gt; </span><span class="term-cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+
+  <!-- COMO ACESSAR O POWERSHELL -->
+  <div class="ps-access-banner">
+    <h3>💻 Como abrir o PowerShell nesta aula</h3>
+    <div class="ps-access-steps">
+      <div class="ps-step">
+        <div class="ps-step-num">FORMA 1 — Menu Iniciar</div>
+        <div class="ps-step-text">Clique em <strong>Iniciar</strong>, digite <code>powershell</code> e pressione <strong>Enter</strong>. Para abrir como Administrador, clique com o botão direito → <em>Executar como administrador</em>.</div>
+      </div>
+      <div class="ps-step">
+        <div class="ps-step-num">FORMA 2 — Atalho de teclado</div>
+        <div class="ps-step-text">Pressione <code>Win + X</code> e escolha <strong>Terminal do Windows</strong> ou <strong>PowerShell</strong>. No Windows 11 já abre o Terminal moderno.</div>
+      </div>
+      <div class="ps-step">
+        <div class="ps-step-num">FORMA 3 — Dentro de pasta</div>
+        <div class="ps-step-text">No Explorador de Arquivos, clique na barra de endereço, digite <code>powershell</code> e pressione <strong>Enter</strong>. O PS abre já naquela pasta!</div>
+      </div>
+      <div class="ps-step">
+        <div class="ps-step-num">FORMA 4 — Executar (Win+R)</div>
+        <div class="ps-step-text">Pressione <code>Win + R</code>, digite <code>powershell</code> e clique <strong>OK</strong>. Para versão 7+, use <code>pwsh</code> no lugar.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="section-header">
+    <div class="section-icon purple">🎯</div>
+    <h2 class="section-title">Objetivos de Aprendizagem</h2>
+    <span class="section-xp">+40 XP</span>
+  </div>
+  <div class="obj-grid">
+    <div class="obj-card" onclick="markObj(this,10)"><div class="obj-num">1</div><div class="obj-text">Entender e usar o <strong>pipeline</strong> do PowerShell</div></div>
+    <div class="obj-card" onclick="markObj(this,10)"><div class="obj-num">2</div><div class="obj-text">Filtrar, ordenar e selecionar objetos com <strong>Where / Sort / Select</strong></div></div>
+    <div class="obj-card" onclick="markObj(this,10)"><div class="obj-num">3</div><div class="obj-text">Usar <strong>variáveis</strong> e a variável especial <strong>$_</strong></div></div>
+    <div class="obj-card" onclick="markObj(this,10)"><div class="obj-num">4</div><div class="obj-text">Exportar dados para <strong>CSV</strong> e relatórios de texto</div></div>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="section-header">
+    <div class="section-icon blue">📖</div>
+    <h2 class="section-title">Conteúdo da Aula</h2>
+    <span class="section-xp">+80 XP</span>
+  </div>
+
+  <!-- CARD 1: O PIPE -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">🔗</span>
+      <span class="cc-title">O Pipe | — O Coração do PowerShell</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text">O pipe <code>|</code> conecta cmdlets em cadeia: a saída do da esquerda vira a <strong>entrada do da direita</strong>.</div></div>
+      <div class="key-point"><div class="kp-dot blue"></div><div class="kp-text">No PowerShell, passa <strong>objetos</strong>, não texto simples — cada item tem propriedades como <code>.Name</code>, <code>.CPU</code>, <code>.Status</code>.</div></div>
+      <div class="key-point"><div class="kp-dot green"></div><div class="kp-text">Você pode encadear quantos cmdlets quiser — como uma <strong>linha de montagem</strong>.</div></div>
+
+      <div class="pipe-diagram">
+        <div class="pipe-box">Get-Process</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-box">Where-Object</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-box">Sort-Object</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-box">Select-Object</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-out">resultado</div>
+      </div>
+
+
+      <div class="importance-box"><strong>🔧 Por que isso importa para o técnico?</strong> O pipeline é a ferramenta que transforma o PowerShell em uma <em>central de diagnóstico</em>. Em vez de abrir 5 janelas diferentes, você encadeia comandos e obtém exatamente o que precisa em segundos — processos pesados, serviços com falha, arquivos suspeitos. Todo chamado de suporte pode ser triado com um único pipeline bem escrito.</div>
+      <div class="callout purple">
+        <span class="callout-icon">💡</span>
+        <div class="callout-text">Use o acento grave <code>`</code> para quebrar uma linha longa em várias — o PowerShell entende que a instrução continua na linha seguinte.</div>
+      </div>
+
+      <!-- EXEMPLO 1: Pipeline simples -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Pipeline básico — processos com mais de 10s de CPU</div>
+        <div class="cmd-input">
+<span class="cm"># Exemplo 1 — pipeline simples</span><br>
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-Process</span> <span class="op">|</span> <span class="kw">Where-Object</span> { <span class="var">$_</span>.CPU <span class="op">-gt</span> <span class="str">10</span> }
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída no terminal</div>
+<span class="out-header">NPM(K)  PM(M)   WS(M)    CPU(s)   Id    ProcessName</span><br>
+<span class="out-sep">------  -----   ------   ------   --    -----------</span><br>
+<span class="out-val hi">248     512.3   480.1    142.8    4120  chrome</span><br>
+<span class="out-val">64      198.5   220.4    89.2     2380  Code</span><br>
+<span class="out-val">32      88.1    102.3    24.7     1844  powershell</span><br>
+<span class="out-val">12      45.2    62.8     18.3     3100  Teams</span>
+        </div>
+      </div>
+      <div class="cmd-explain">
+        <div class="cmd-explain-title">🔍 Entendendo cada parte do comando</div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Get-Process</span>
+          <div class="cmd-part-desc"><strong>Coleta todos os processos em execução</strong> no momento — cada processo é um objeto com propriedades como nome, uso de CPU, memória RAM ocupada e ID. É como abrir o Gerenciador de Tarefas, mas em forma de dados que você pode filtrar e exportar.<br><span class="tech-tag">🖥️ Técnico de TI</span> Use para identificar processos travados, consumindo CPU/RAM excessiva ou de origem suspeita.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token op">|</span>
+          <div class="cmd-part-desc"><strong>O pipe — passa o resultado para o próximo cmdlet.</strong> Em vez de mostrar tudo na tela, ele envia cada processo como "objeto" para o Where-Object processar. Pense em uma esteira de fábrica: cada peça passa para a próxima etapa.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Where-Object</span>
+          <div class="cmd-part-desc"><strong>Filtra os objetos recebidos</strong> de acordo com uma condição que você define dentro de <code>{ }</code>. Só os objetos que passam na condição seguem adiante — os demais são descartados.<br><span class="tech-tag">🖥️ Técnico de TI</span> É o "filtro de suporte": em vez de ver 80 processos, você vê só os que importam.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token var">$_</span>
+          <div class="cmd-part-desc"><strong>Representa o processo atual sendo avaliado.</strong> O PowerShell pega cada processo da lista e coloca em <code>$_</code> para testar a condição. Se passar, o processo continua; se não, é eliminado. O ponto <code>.</code> depois acessa uma propriedade: <code>$_.CPU</code> lê o consumo de CPU <em>daquele processo específico</em>.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token op">-gt 10</span>
+          <div class="cmd-part-desc"><strong>-gt significa "greater than" (maior que).</strong> O número <code>10</code> aqui é em <em>segundos de CPU acumulados</em> — não porcentagem. Processos que consumiram mais de 10 segundos de CPU desde que foram iniciados aparecem no resultado.</div>
+        </div>
+      </div>
+
+      <!-- EXEMPLO 2: Pipeline completo -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Pipeline completo — top 5 processos por CPU com colunas específicas</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-Process</span> <span class="str">`</span><br>
+&nbsp;&nbsp;<span class="op">|</span> <span class="kw">Where-Object</span> { <span class="var">$_</span>.CPU <span class="op">-gt</span> <span class="str">5</span> } <span class="str">`</span><br>
+&nbsp;&nbsp;<span class="op">|</span> <span class="kw">Sort-Object</span> CPU <span class="param">-Descending</span> <span class="str">`</span><br>
+&nbsp;&nbsp;<span class="op">|</span> <span class="kw">Select-Object</span> Name, CPU, Id <span class="str">`</span><br>
+&nbsp;&nbsp;<span class="op">|</span> <span class="kw">Select-Object</span> <span class="param">-First</span> <span class="str">5</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída no terminal — apenas 5 linhas, só as colunas que você pediu</div>
+<span class="out-header">Name          CPU       Id</span><br>
+<span class="out-sep">----          ---       --</span><br>
+<span class="out-val hi">chrome        142.8     4120</span><br>
+<span class="out-val">Code          89.2      2380</span><br>
+<span class="out-val">powershell    24.7      1844</span><br>
+<span class="out-val">Teams         18.3      3100</span><br>
+<span class="out-val">explorer      11.1      2104</span>
+        </div>
+      </div>
+      <div class="cmd-explain">
+        <div class="cmd-explain-title">🔍 Entendendo cada parte do comando</div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Get-Process</span>
+          <div class="cmd-part-desc"><strong>Ponto de partida:</strong> coleta todos os processos em execução com todas as suas propriedades. Daqui em diante, cada etapa do pipeline vai refinando esse conjunto de dados.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token val">` (acento grave)</span>
+          <div class="cmd-part-desc"><strong>Quebra de linha visual.</strong> O acento grave no final de cada linha diz ao PowerShell: "o comando continua na linha seguinte". Serve apenas para deixar o código mais legível — não afeta o resultado. Sem ele, tudo ficaria em uma linha só e seria difícil de ler.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Where-Object {$_.CPU -gt 5}</span>
+          <div class="cmd-part-desc"><strong>Primeira filtragem:</strong> elimina todos os processos que consumiram 5 segundos ou menos de CPU. Isso reduz a lista antes de ordenar — boa prática para melhorar o desempenho.<br><span class="tech-tag">🖥️ Técnico de TI</span> Filtrar antes de ordenar economiza processamento, especialmente em servidores com centenas de processos.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Sort-Object CPU</span>
+          <div class="cmd-part-desc"><strong>Ordena os processos restantes</strong> pela propriedade <code>CPU</code>, do menor para o maior por padrão.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token param">-Descending</span>
+          <div class="cmd-part-desc"><strong>Inverte a ordem:</strong> do maior para o menor. Sem este parâmetro, o processo com menos CPU apareceria primeiro — o que não é o que queremos em um diagnóstico de consumo alto.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Select-Object Name, CPU, Id</span>
+          <div class="cmd-part-desc"><strong>Escolhe quais colunas mostrar.</strong> Por padrão, <code>Get-Process</code> retorna dezenas de propriedades (memória virtual, handles, threads...). Aqui selecionamos apenas <code>Name</code> (nome do processo), <code>CPU</code> (segundos de processador) e <code>Id</code> (número identificador do processo — útil para encerrar com <code>Stop-Process -Id</code>).</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token param">Select-Object -First 5</span>
+          <div class="cmd-part-desc"><strong>Limita o resultado aos 5 primeiros itens</strong> da lista já ordenada — que são exatamente os 5 processos com maior consumo de CPU. O parâmetro <code>-First</code> é como dizer "me dê apenas os N primeiros".<br><span class="tech-tag">🖥️ Técnico de TI</span> Em vez de vasculhar 80 processos, você recebe direto o ranking dos vilões da lentidão.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2: WHERE-OBJECT -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">🔍</span>
+      <span class="cc-title">Filtragem — Where-Object e Operadores</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text"><code>Where-Object</code> filtra objetos. Dentro do bloco <code>{}</code>, use <code>$_</code> para representar <strong>cada item</strong>.</div></div>
+      <div class="key-point"><div class="kp-dot blue"></div><div class="kp-text">Operadores: <code>-eq</code> igual · <code>-ne</code> diferente · <code>-gt</code> maior · <code>-lt</code> menor · <code>-like</code> padrão com * · <code>-match</code> regex</div></div>
+      <div class="key-point"><div class="kp-dot green"></div><div class="kp-text">Sintaxe curta: <code>Where CPU -gt 100</code> (sem <code>$_.</code>) — disponível no PowerShell 3+.</div></div>
+
+      <div style="margin:14px 0 6px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88em;color:var(--text);">🔎 Tabela de Operadores de Comparação</div>
+      <table class="op-table">
+        <thead><tr><th>Operador</th><th>Significado</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td>-eq</td><td>Igual a</td><td>$_.Status -eq 'Running'</td></tr>
+          <tr><td>-ne</td><td>Diferente de</td><td>$_.Status -ne 'Stopped'</td></tr>
+          <tr><td>-gt</td><td>Maior que</td><td>$_.CPU -gt 100</td></tr>
+          <tr><td>-lt</td><td>Menor que</td><td>$_.CPU -lt 10</td></tr>
+          <tr><td>-ge</td><td>Maior ou igual</td><td>$_.Length -ge 1MB</td></tr>
+          <tr><td>-le</td><td>Menor ou igual</td><td>$_.WorkingSet -le 50MB</td></tr>
+          <tr><td>-like</td><td>Padrão com curinga *</td><td>$_.Name -like 'Win*'</td></tr>
+          <tr><td>-notlike</td><td>Não corresponde ao padrão</td><td>$_.Name -notlike 'svc*'</td></tr>
+          <tr><td>-match</td><td>Expressão regular</td><td>$_.Name -match '^Win\d'</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Filtrar serviços em execução -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Serviços ativos — filtro por Status</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-Service</span> <span class="op">|</span> <span class="kw">Where-Object</span> { <span class="var">$_</span>.Status <span class="op">-eq</span> <span class="str">'Running'</span> }
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — apenas serviços em execução</div>
+<span class="out-header">Status   Name               DisplayName</span><br>
+<span class="out-sep">------   ----               -----------</span><br>
+<span class="out-val green">Running  AudioSrv           Windows Audio</span><br>
+<span class="out-val green">Running  Dhcp               DHCP Client</span><br>
+<span class="out-val green">Running  Dnscache           DNS Client</span><br>
+<span class="out-val green">Running  Spooler            Print Spooler</span><br>
+<span class="out-val green">Running  WinRM              Windows Remote Management</span><br>
+<span class="out-val" style="color:var(--text-dim)">... (mais serviços abaixo)</span>
+        </div>
+      </div>
+      <div class="cmd-explain">
+        <div class="cmd-explain-title">🔍 Entendendo cada parte do comando</div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Get-Service</span>
+          <div class="cmd-part-desc"><strong>Lista todos os serviços do Windows</strong> — sejam eles em execução, parados ou pausados. Serviços são programas que rodam em segundo plano: servidor de impressão, cliente DHCP, antivírus, atualizações do Windows, etc. Sem filtro, retorna mais de 200 serviços.<br><span class="tech-tag">🖥️ Técnico de TI</span> Usado para verificar se serviços críticos estão ativos após uma reinicialização ou falha.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token var">$_.Status</span>
+          <div class="cmd-part-desc"><strong><code>$_</code> é o serviço atual</strong> sendo avaliado. <code>.Status</code> acessa a propriedade que informa o estado desse serviço. Os valores possíveis são: <code>Running</code> (em execução), <code>Stopped</code> (parado) e <code>Paused</code> (pausado).</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token op">-eq 'Running'</span>
+          <div class="cmd-part-desc"><strong>-eq significa "equal" (igual a).</strong> O valor <code>'Running'</code> deve estar entre aspas simples porque é um texto (string), não um número. O PowerShell compara o Status de cada serviço com esse texto — só passa quem for exatamente <code>Running</code>.</div>
+        </div>
+      </div>
+
+      <!-- Filtrar processos pesados -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Processos pesados — sintaxe curta (PowerShell 3+)</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-Process</span> <span class="op">|</span> <span class="kw">Where-Object</span> CPU <span class="op">-gt</span> <span class="str">100</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — processos que consumiram mais de 100s de CPU</div>
+<span class="out-header">NPM(K)  PM(M)    WS(M)   CPU(s)   Id    ProcessName</span><br>
+<span class="out-sep">------  -----    -----   ------   --    -----------</span><br>
+<span class="out-val hi">248     512.3    480.1   142.8    4120  chrome</span><br>
+<span class="out-val hi">64      198.5    220.4   108.2    2380  Code</span>
+        </div>
+      </div>
+      <div class="cmd-explain">
+        <div class="cmd-explain-title">🔍 Entendendo cada parte do comando</div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Where-Object CPU -gt 100</span>
+          <div class="cmd-part-desc"><strong>Sintaxe simplificada (sem chaves <code>{ }</code> e sem <code>$_.</code>).</strong> Disponível a partir do PowerShell 3. Em vez de escrever <code>Where-Object { $_.CPU -gt 100 }</code>, você pode escrever diretamente o nome da propriedade (<code>CPU</code>), o operador (<code>-gt</code>) e o valor (<code>100</code>). Mais rápido de digitar, mesma funcionalidade.<br><span class="tech-tag">🖥️ Técnico de TI</span> Use a sintaxe curta para comandos rápidos no terminal; use a com chaves em scripts para maior clareza.</div>
+        </div>
+      </div>
+
+      <!-- Filtrar arquivos .log -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Arquivos .log na pasta Windows</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-ChildItem</span> <span class="str">'C:\Windows'</span> <span class="op">|</span> <span class="kw">Where-Object</span> { <span class="var">$_</span>.Extension <span class="op">-eq</span> <span class="str">'.log'</span> }
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — apenas arquivos .log</div>
+<span class="out-header">    Directory: C:\Windows</span><br><br>
+<span class="out-header">Mode    LastWriteTime    Length  Name</span><br>
+<span class="out-sep">----    -------------    ------  ----</span><br>
+<span class="out-val">-a----  15/05/2026 10:32  18432   setupact.log</span><br>
+<span class="out-val">-a----  15/05/2026 08:14   4096   setuperr.log</span><br>
+<span class="out-val">-a----  14/05/2026 22:10  92160   WindowsUpdate.log</span>
+        </div>
+      </div>
+      <div class="cmd-explain">
+        <div class="cmd-explain-title">🔍 Entendendo cada parte do comando</div>
+        <div class="cmd-part">
+          <span class="cmd-part-token kw">Get-ChildItem 'C:\Windows'</span>
+          <div class="cmd-part-desc"><strong>Lista o conteúdo da pasta C:\Windows</strong> — equivalente ao <code>dir</code> do CMD. O caminho entre aspas define qual pasta listar. Cada arquivo e pasta retornado é um objeto com propriedades como <code>Name</code>, <code>Extension</code>, <code>Length</code> (tamanho em bytes), <code>LastWriteTime</code> (data de modificação).</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token var">$_.Extension</span>
+          <div class="cmd-part-desc"><strong>Acessa a extensão do arquivo atual</strong> — a parte depois do ponto: <code>.log</code>, <code>.exe</code>, <code>.txt</code>. Inclui o ponto, então compare sempre com <code>'.log'</code> (com o ponto), não <code>'log'</code>.<br><span class="tech-tag">🖥️ Técnico de TI</span> Essencial para buscar arquivos de log de erros, instalações e atualizações em toda a pasta do Windows.</div>
+        </div>
+      </div>
+
+      <!-- Filtrar por padrão -like -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Serviços cujo nome começa com "W" — operador -like</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-Service</span> <span class="op">|</span> <span class="kw">Where-Object</span> { <span class="var">$_</span>.Name <span class="op">-like</span> <span class="str">'W*'</span> }
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — serviços começando com W</div>
+<span class="out-header">Status   Name       DisplayName</span><br>
+<span class="out-sep">------   ----       -----------</span><br>
+<span class="out-val green">Running  WinRM      Windows Remote Management</span><br>
+<span class="out-val green">Running  Wecsvc     Windows Event Collector</span><br>
+<span class="out-val red">Stopped  WerSvc     Windows Error Reporting Service</span><br>
+<span class="out-val green">Running  WSearch    Windows Search</span>
+        </div>
+      </div>
+      <div class="cmd-explain">
+        <div class="cmd-explain-title">🔍 Entendendo cada parte do comando</div>
+        <div class="cmd-part">
+          <span class="cmd-part-token var">$_.Name</span>
+          <div class="cmd-part-desc"><strong>Acessa o nome técnico do serviço</strong> — não o nome amigável (<code>DisplayName</code>). Por exemplo: <code>Spooler</code> é o nome técnico; "Spooler de Impressão" é o DisplayName. Use <code>$_.Name</code> quando souber o nome interno do serviço.</div>
+        </div>
+        <div class="cmd-part">
+          <span class="cmd-part-token op">-like 'W*'</span>
+          <div class="cmd-part-desc"><strong>-like usa curingas (wildcards).</strong> O asterisco <code>*</code> representa "qualquer sequência de caracteres". Então <code>'W*'</code> significa: qualquer coisa que comece com W. Outros exemplos: <code>'*srv'</code> encontra nomes que terminam com "srv"; <code>'*win*'</code> encontra qualquer nome que contenha "win" em qualquer posição.<br><span class="tech-tag">🖥️ Técnico de TI</span> Útil quando você sabe parte do nome do serviço, mas não o nome completo exato.</div>
+        </div>
+      </div>
+
+
+      <div class="importance-box"><strong>🔧 Por que isso importa para o técnico?</strong> Filtrar é a diferença entre ver 300 serviços na tela e ver os 2 que estão com problema. Com <code>Where-Object</code> você identifica serviços parados, processos travados ou arquivos antigos em segundos — sem precisar vasculhar listas enormes manualmente.</div>
+      <div class="callout amber">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-text"><strong>Lembre-se:</strong> o operador <code>-like</code> usa <code>*</code> como curinga (qualquer coisa). Já <code>-match</code> usa expressões regulares completas — mais poderoso, mas mais complexo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: SORT · SELECT · EXPORT -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">📊</span>
+      <span class="cc-title">Sort · Select · Export — Apresentando Dados</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text"><code>Sort-Object</code> ordena resultados por qualquer propriedade. <code>-Descending</code> inverte a ordem.</div></div>
+      <div class="key-point"><div class="kp-dot blue"></div><div class="kp-text"><code>Select-Object</code> escolhe quais propriedades exibir. <code>-First 5</code> pega os 5 primeiros.</div></div>
+      <div class="key-point"><div class="kp-dot green"></div><div class="kp-text"><code>Export-Csv</code> exporta diretamente para Excel! <code>-NoTypeInformation</code> remove a linha técnica do cabeçalho.</div></div>
+
+      <!-- Top 5 por RAM -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Top 5 processos que mais consomem RAM</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-Process</span> <span class="str">`</span><br>
+&nbsp;&nbsp;<span class="op">|</span> <span class="kw">Sort-Object</span> WorkingSet <span class="param">-Descending</span> <span class="str">`</span><br>
+&nbsp;&nbsp;<span class="op">|</span> <span class="kw">Select-Object</span> <span class="param">-First</span> <span class="str">5</span> Name, @{N=<span class="str">'RAM(MB)'</span>;E={[math]::Round(<span class="var">$_</span>.WorkingSet/1MB,1)}}
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — coluna personalizada RAM(MB)</div>
+<span class="out-header">Name          RAM(MB)</span><br>
+<span class="out-sep">----          -------</span><br>
+<span class="out-val hi">chrome        480.1</span><br>
+<span class="out-val">Code          220.4</span><br>
+<span class="out-val">Teams         185.7</span><br>
+<span class="out-val">explorer      98.3</span><br>
+<span class="out-val">powershell    62.8</span>
+        </div>
+      </div>
+
+      <!-- Export-Csv -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Exportar lista de serviços para Excel (CSV)</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-Service</span> <span class="str">`</span><br>
+&nbsp;&nbsp;<span class="op">|</span> <span class="kw">Select-Object</span> Name, DisplayName, Status <span class="str">`</span><br>
+&nbsp;&nbsp;<span class="op">|</span> <span class="kw">Export-Csv</span> <span class="str">'C:\servicos.csv'</span> <span class="param">-NoTypeInformation</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Arquivo C:\servicos.csv criado (abra no Excel!)</div>
+<span class="out-info">"Name","DisplayName","Status"</span><br>
+<span class="out-val">"AJRouter","AllJoyn Router Service","Stopped"</span><br>
+<span class="out-val">"ALG","Application Layer Gateway","Stopped"</span><br>
+<span class="out-val">"AudioSrv","Windows Audio","Running"</span><br>
+<span class="out-val">"Dhcp","DHCP Client","Running"</span><br>
+<span class="out-val" style="color:var(--text-dim)">... (todos os serviços exportados)</span><br><br>
+<span class="out-success">✓ Arquivo criado com sucesso em C:\servicos.csv</span>
+        </div>
+      </div>
+
+      <!-- Out-File -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Salvar lista de processos em arquivo de texto</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Get-Process</span> <span class="op">|</span> <span class="kw">Out-File</span> <span class="str">'C:\processos.txt'</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Nenhuma saída no terminal — mas o arquivo foi criado</div>
+<span class="out-success">✓ C:\processos.txt criado (pode abrir no Bloco de Notas)</span><br><br>
+<span class="out-info"># Para verificar se foi criado:</span><br>
+<span class="out-val">Get-Item C:\processos.txt</span><br><br>
+<span class="out-header">Name           Length  LastWriteTime</span><br>
+<span class="out-sep">----           ------  -------------</span><br>
+<span class="out-val">processos.txt  14328   15/05/2026 14:22</span>
+        </div>
+      </div>
+
+
+      <div class="importance-box"><strong>🔧 Por que isso importa para o técnico?</strong> Clientes e gestores precisam de relatórios, não de terminais. Exportar para CSV e abrir no Excel é a forma mais rápida de entregar um inventário profissional de serviços, processos ou arquivos — sem instalar nenhum software extra. É a base de qualquer auditoria ou prestação de contas em TI.</div>
+      <div class="callout green">
+        <span class="callout-icon">🚀</span>
+        <div class="callout-text"><strong>Resultado imediato:</strong> rode <code>Get-Service | Export-Csv "C:\servicos.csv"</code> e abra o arquivo no Excel — você criou um relatório profissional em 1 linha!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4: VARIÁVEIS E $_ -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">📦</span>
+      <span class="cc-title">Variáveis e a Variável Especial $_</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text">Variáveis começam com <code>$</code>. Armazenam qualquer coisa: texto, número, lista de objetos ou resultado de cmdlet.</div></div>
+      <div class="key-point"><div class="kp-dot blue"></div><div class="kp-text"><code>$_</code> (ou <code>$PSItem</code>) representa o <strong>objeto atual</strong> dentro de um pipe ou laço. Você vai usar isso o tempo todo!</div></div>
+      <div class="key-point"><div class="kp-dot green"></div><div class="kp-text">Variáveis automáticas: <code>$env:COMPUTERNAME</code> (nome do PC), <code>$env:USERNAME</code> (usuário), <code>$PSVersionTable</code> (versão do PS).</div></div>
+
+      <!-- Variável básica -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Armazenar resultado em variável e reutilizar</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="var">$processos</span> = <span class="kw">Get-Process</span><br>
+<span class="ps">PS C:\&gt; </span><span class="var">$processos</span>.Count <span class="cm"># quantos processos?</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — total de processos em execução</div>
+<span class="out-val hi">87</span><br><br>
+<span class="out-info"># Agora filtramos da variável — sem precisar chamar Get-Process de novo!</span>
+        </div>
+      </div>
+
+      <!-- Reutilizar variável -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Reutilizar a variável no pipeline</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="var">$processos</span> <span class="op">|</span> <span class="kw">Where-Object</span> { <span class="var">$_</span>.CPU <span class="op">-gt</span> <span class="str">5</span> }
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — mesmos dados, novo filtro, sem nova consulta ao SO</div>
+<span class="out-header">NPM(K)  PM(M)   WS(M)   CPU(s)  Id    ProcessName</span><br>
+<span class="out-sep">------  -----   -----   ------  --    -----------</span><br>
+<span class="out-val hi">248     512.3   480.1   142.8   4120  chrome</span><br>
+<span class="out-val">64      198.5   220.4   89.2    2380  Code</span>
+        </div>
+      </div>
+
+      <!-- Variáveis de ambiente -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Variáveis de ambiente — informações do sistema</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Write-Host</span> <span class="str">"Computador: <span class="var">$env:COMPUTERNAME</span>"</span><br>
+<span class="ps">PS C:\&gt; </span><span class="kw">Write-Host</span> <span class="str">"Usuário: <span class="var">$env:USERNAME</span>"</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — dados reais do seu computador</div>
+<span class="out-success">Computador: DESKTOP-LAB01</span><br>
+<span class="out-success">Usuário: aluno.gso</span>
+        </div>
+      </div>
+
+      <!-- Espaço livre no disco -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Espaço livre no disco C: em GB</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="var">$disco</span> = (<span class="kw">Get-PSDrive</span> C).Free / 1GB<br>
+<span class="ps">PS C:\&gt; </span><span class="kw">Write-Host</span> <span class="str">"Espaço livre: $([math]::Round(<span class="var">$disco</span>,1)) GB"</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — espaço livre calculado automaticamente</div>
+<span class="out-success">Espaço livre: 127.4 GB</span>
+        </div>
+      </div>
+
+
+      <div class="importance-box"><strong>🔧 Por que isso importa para o técnico?</strong> Variáveis permitem capturar informações do sistema e reutilizá-las sem repetir comandos. <code>$env:COMPUTERNAME</code>, <code>$env:USERNAME</code> e resultados de cmdlets armazenados em variáveis formam a base de qualquer script de inventário, auditoria ou manutenção automatizada que você vai criar na vida profissional.</div>
+      <div class="callout teal">
+        <span class="callout-icon">⚡</span>
+        <div class="callout-text"><strong>Desafio:</strong> rode <code>$arquivos = Get-ChildItem C:\</code> e depois <code>$arquivos.Count</code> — quantos itens existem na raiz do C:\?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 5: NAVEGAÇÃO -->
+  <div class="content-card">
+    <div class="cc-header" onclick="toggleCard(this)">
+      <span class="cc-icon">🗺️</span>
+      <span class="cc-title">Navegação e Atalhos Essenciais</span>
+      <span class="cc-xp">+20 XP</span>
+      <span class="cc-chevron">▾</span>
+    </div>
+    <div class="cc-body">
+      <div class="key-point"><div class="kp-dot"></div><div class="kp-text"><code>Set-Location</code> (alias <code>cd</code>) muda o diretório. <code>Get-Location</code> (alias <code>pwd</code>) mostra onde você está.</div></div>
+      <div class="key-point"><div class="kp-dot blue"></div><div class="kp-text"><code>Get-ChildItem</code> (alias <code>ls</code> ou <code>dir</code>) lista o conteúdo. <code>-Recurse</code> entra em subpastas. <code>-Filter *.txt</code> filtra por extensão.</div></div>
+      <div class="key-point"><div class="kp-dot green"></div><div class="kp-text">Atalhos de teclado: <code>↑↓</code> histórico · <code>Tab</code> autocompletar · <code>Ctrl+C</code> cancelar execução.</div></div>
+
+      <!-- Navegar e listar -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Navegar pelo sistema de arquivos</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\&gt; </span><span class="kw">Set-Location</span> <span class="str">'C:\Windows'</span>  <span class="cm"># ou: cd C:\Windows</span><br>
+<span class="ps">PS C:\Windows&gt; </span><span class="kw">Get-Location</span>     <span class="cm"># ou: pwd</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — prompt muda para refletir a pasta atual</div>
+<span class="out-header">Path</span><br>
+<span class="out-sep">----</span><br>
+<span class="out-val green">C:\Windows</span>
+        </div>
+      </div>
+
+      <!-- Get-ChildItem -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Listar arquivos — básico e com filtro</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\Windows&gt; </span><span class="kw">Get-ChildItem</span>                  <span class="cm"># conteúdo atual</span><br>
+<span class="ps">PS C:\Windows&gt; </span><span class="kw">Get-ChildItem</span> <span class="param">-Filter</span> *.log    <span class="cm"># só .log</span>
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída do Get-ChildItem básico</div>
+<span class="out-header">    Directory: C:\Windows</span><br><br>
+<span class="out-header">Mode     LastWriteTime    Length  Name</span><br>
+<span class="out-sep">----     -------------    ------  ----</span><br>
+<span class="out-val">d----    10/05/2026       &lt;DIR&gt;   System32</span><br>
+<span class="out-val">d----    10/05/2026       &lt;DIR&gt;   SysWOW64</span><br>
+<span class="out-val">d----    09/05/2026       &lt;DIR&gt;   Temp</span><br>
+<span class="out-val">-a---    15/05/2026       18432   setupact.log</span><br>
+<span class="out-val">-a---    15/05/2026        4096   setuperr.log</span>
+        </div>
+      </div>
+
+      <!-- Recurse -->
+      <div class="cmd-block">
+        <div class="cmd-block-label"><span>COMANDO</span> Buscar todos os .exe recursivamente e mostrar caminho completo</div>
+        <div class="cmd-input">
+<span class="ps">PS C:\Windows&gt; </span><span class="kw">Get-ChildItem</span> <span class="param">-Recurse</span> <span class="param">-Filter</span> *.exe <span class="op">|</span> <span class="kw">Select-Object</span> FullName
+        </div>
+        <div class="cmd-output">
+          <div class="cmd-output-label">Saída — caminho completo de cada .exe encontrado</div>
+<span class="out-header">FullName</span><br>
+<span class="out-sep">--------</span><br>
+<span class="out-val">C:\Windows\System32\cmd.exe</span><br>
+<span class="out-val">C:\Windows\System32\notepad.exe</span><br>
+<span class="out-val">C:\Windows\System32\powershell.exe</span><br>
+<span class="out-val">C:\Windows\SysWOW64\cmd.exe</span><br>
+<span class="out-val" style="color:var(--text-dim)">... (centenas de resultados)</span>
+        </div>
+      </div>
+
+
+      <div class="importance-box"><strong>🔧 Por que isso importa para o técnico?</strong> Navegar pelo sistema de arquivos via PowerShell é muito mais poderoso do que usar o Explorer. Você pode buscar arquivos em subpastas inteiras, filtrar por extensão e exportar listas — tudo de forma auditável. É essencial para diagnóstico de espaço em disco, busca de logs e organização de backups.</div>
+      <div class="callout blue">
+        <span class="callout-icon">⌨️</span>
+        <div class="callout-text"><strong>Alias:</strong> <code>cd</code>, <code>ls</code>, <code>dir</code>, <code>cat</code>, <code>cp</code>, <code>mv</code>, <code>rm</code> — todos funcionam no PowerShell! Quem vem do CMD ou do Linux se sente em casa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISSÕES -->
+  <div class="section-header">
+    <div class="section-icon green">🔬</div>
+    <h2 class="section-title">Missões do Laboratório</h2>
+    <span class="section-xp">+90 XP</span>
+  </div>
+
+  <div class="mission-card" id="m1card">
+    <div class="mission-icon">📁</div>
+    <div class="mission-content">
+      <div class="mission-title">Relatório de Processos</div>
+      <div class="mission-desc">Crie um pipeline que liste os 10 processos com maior uso de CPU, exibindo Name, CPU e Id. Exporte o resultado para um CSV chamado <code>top10cpu.csv</code>.</div>
+      <div class="mission-meta"><span class="mission-tag">⏱ 20 min</span><span class="mission-tag">🔬 Laboratório</span><span class="mission-tag xp">+30 XP</span></div>
+    </div>
+    <div class="mission-check" id="m1" onclick="completeMission('m1','m1card',30)">○</div>
+  </div>
+
+  <div class="mission-card" id="m2card">
+    <div class="mission-icon">🛡️</div>
+    <div class="mission-content">
+      <div class="mission-title">Auditoria de Serviços</div>
+      <div class="mission-desc">Use <code>Get-Service</code> para separar serviços em dois grupos: em execução e parados. Exporte cada grupo em um CSV diferente (<code>rodando.csv</code> e <code>parados.csv</code>).</div>
+      <div class="mission-meta"><span class="mission-tag">⏱ 25 min</span><span class="mission-tag">🔬 Laboratório</span><span class="mission-tag xp">+35 XP</span></div>
+    </div>
+    <div class="mission-check" id="m2" onclick="completeMission('m2','m2card',35)">○</div>
+  </div>
+
+  <div class="mission-card" id="m3card">
+    <div class="mission-icon">💾</div>
+    <div class="mission-content">
+      <div class="mission-title">Inventário Rápido do Sistema</div>
+      <div class="mission-desc">Usando variáveis de ambiente e <code>Get-PSDrive</code>, crie um script de 5 linhas que exibe: nome do PC, usuário logado e espaço livre no disco C: em GB.</div>
+      <div class="mission-meta"><span class="mission-tag">⏱ 15 min</span><span class="mission-tag">🔬 Laboratório</span><span class="mission-tag xp">+25 XP</span></div>
+    </div>
+    <div class="mission-check" id="m3" onclick="completeMission('m3','m3card',25)">○</div>
+  </div>
+
+  <!-- GABARITO DAS MISSÕES -->
+  <div class="gabarito-shell">
+    <div class="gabarito-header" onclick="toggleGabarito(this)">
+      <div class="gabarito-header-icon">✅</div>
+      <div class="gabarito-header-text">
+        <h3>Gabarito das Missões</h3>
+        <p>Tente fazer antes de abrir — o esforço é o que aprende!</p>
+      </div>
+      <span class="gabarito-warn">⚠️ Tente primeiro!</span>
+      <span class="gabarito-chevron">▾</span>
+    </div>
+    <div class="gabarito-body">
+
+      <!-- MISSÃO 1 -->
+      <div class="gab-item">
+        <div class="gab-item-header">
+          <div class="gab-item-num">M1</div>
+          <div class="gab-item-title">Relatório de Processos — top10cpu.csv</div>
+        </div>
+        <div class="gab-item-body">
+          <div class="gab-note"><strong>Estratégia:</strong> Get-Process retorna objetos com propriedade CPU. Sort-Object -Descending + Select-Object -First 10 filtram os maiores. Export-Csv salva sem o tipo .NET (parâmetro -NoTypeInformation).</div>
+          <div class="gab-cmd"><span class="cm"># Missão 1 — Pipeline: processos com mais CPU → CSV</span>
+<span class="kw">Get-Process</span> |
+  <span class="kw">Sort-Object</span> <span class="param">-Property</span> CPU <span class="param">-Descending</span> |
+  <span class="kw">Select-Object</span> <span class="param">-First</span> 10 <span class="param">-Property</span> Name, CPU, Id |
+  <span class="kw">Export-Csv</span> <span class="param">-Path</span> <span class="str">'.\top10cpu.csv'</span> <span class="param">-NoTypeInformation</span> <span class="param">-Encoding</span> UTF8
+
+<span class="cm"># Conferir o resultado</span>
+<span class="kw">Import-Csv</span> <span class="str">'.\top10cpu.csv'</span> | <span class="kw">Format-Table</span></div>
+          <div class="gab-tip"><strong>Atenção:</strong> processos sem janela aberta (serviços) costumam ter CPU = <code>null</code>. Se aparecer erro, adicione <code>| Where-Object { $_.CPU -ne $null }</code> antes do Sort-Object.</div>
+        </div>
+      </div>
+
+      <!-- MISSÃO 2 -->
+      <div class="gab-item">
+        <div class="gab-item-header">
+          <div class="gab-item-num">M2</div>
+          <div class="gab-item-title">Auditoria de Serviços — rodando.csv e parados.csv</div>
+        </div>
+        <div class="gab-item-body">
+          <div class="gab-note"><strong>Estratégia:</strong> Where-Object filtra pelo Status do serviço. Status -eq "Running" para os ativos, -eq "Stopped" para os parados. Dois Export-Csv com caminhos diferentes.</div>
+          <div class="gab-cmd"><span class="cm"># Missão 2 — Auditoria separada por status</span>
+<span class="kw">Get-Service</span> | <span class="kw">Where-Object</span> { <span class="var">$_</span>.Status <span class="param">-eq</span> <span class="str">'Running'</span> } |
+  <span class="kw">Select-Object</span> Name, Status, DisplayName |
+  <span class="kw">Export-Csv</span> <span class="param">-Path</span> <span class="str">'.\rodando.csv'</span> <span class="param">-NoTypeInformation</span> <span class="param">-Encoding</span> UTF8
+
+<span class="kw">Get-Service</span> | <span class="kw">Where-Object</span> { <span class="var">$_</span>.Status <span class="param">-eq</span> <span class="str">'Stopped'</span> } |
+  <span class="kw">Select-Object</span> Name, Status, DisplayName |
+  <span class="kw">Export-Csv</span> <span class="param">-Path</span> <span class="str">'.\parados.csv'</span> <span class="param">-NoTypeInformation</span> <span class="param">-Encoding</span> UTF8
+
+<span class="cm"># Quantos em cada grupo?</span>
+<span class="kw">Write-Host</span> <span class="str">"Rodando: $((Import-Csv .\rodando.csv).Count)"</span>
+<span class="kw">Write-Host</span> <span class="str">"Parados: $((Import-Csv .\parados.csv).Count)"</span></div>
+          <div class="gab-tip"><strong>Variação aceita:</strong> pode-se usar <code>-eq 'Stopped'</code> ou <code>-ne 'Running'</code> — ambos funcionam, mas o primeiro é mais explícito e legível.</div>
+        </div>
+      </div>
+
+      <!-- MISSÃO 3 -->
+      <div class="gab-item">
+        <div class="gab-item-header">
+          <div class="gab-item-num">M3</div>
+          <div class="gab-item-title">Inventário Rápido do Sistema — 5 linhas</div>
+        </div>
+        <div class="gab-item-body">
+          <div class="gab-note"><strong>Estratégia:</strong> variáveis de ambiente ($env:) fornecem PC e usuário sem precisar de cmdlets pesados. Get-PSDrive filtra o drive C: e usa a propriedade Free (em bytes) — dividir por 1GB converte para gigabytes legíveis.</div>
+          <div class="gab-cmd"><span class="cm"># Missão 3 — Inventário em 5 linhas</span>
+<span class="var">$pc</span>      = <span class="var">$env:COMPUTERNAME</span>
+<span class="var">$usuario</span> = <span class="var">$env:USERNAME</span>
+<span class="var">$livreGB</span> = [<span class="kw">math</span>]::Round((<span class="kw">Get-PSDrive</span> C).Free / 1GB, 2)
+<span class="kw">Write-Host</span> <span class="str">"PC      : $pc"</span>
+<span class="kw">Write-Host</span> <span class="str">"Usuário : $usuario"</span>
+<span class="kw">Write-Host</span> <span class="str">"Livre C : $livreGB GB"</span></div>
+          <div class="gab-tip"><strong>Por que [math]::Round?</strong> A divisão por 1GB retorna muitas casas decimais. O Round arredonda para 2 casas, deixando a saída limpa. O <code>1GB</code> é uma constante embutida do PowerShell (= 1.073.741.824 bytes).</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section-header">
+    <div class="section-icon amber">🧠</div>
+    <h2 class="section-title">Quiz da Semana 09</h2>
+    <span class="section-xp">+80 XP</span>
+  </div>
+
+  <div class="quiz-shell">
+    <div class="quiz-topbar">
+      <div class="quiz-topbar-icon">🧠</div>
+      <div class="quiz-topbar-text"><h3>Teste seu conhecimento!</h3><p>4 perguntas sobre pipeline e filtragem</p></div>
+      <div class="quiz-topbar-xp"><div class="xp-big">+80</div><div class="xp-lbl">XP possível</div></div>
+    </div>
+    <div class="quiz-progress" id="quizProgress" style="padding:14px 20px;">
+      <div class="quiz-dots" id="quizDots"></div>
+      <span class="quiz-counter" id="quizCounter">1 / 4</span>
+    </div>
+    <div class="quiz-body" id="quizBody"></div>
+  </div>
+
+  <!-- CHECKPOINT -->
+  <div class="checkpoint">
+    <div class="checkpoint-stars" id="checkpointStars">⭐⭐⭐</div>
+    <h3>Progresso da Semana 09</h3>
+    <p>Complete as missões e o quiz para acumular XP!</p>
+    <div class="xp-total-display">⚡ <span id="xpFinal">0</span> / 420 XP</div>
+  </div>
+
+  <!-- FILL IN THE BLANKS -->
+  <div class="section-header">
+    <div class="section-icon purple">✏️</div>
+    <h2 class="section-title">Complete o Código</h2>
+    <span class="section-xp">+60 XP</span>
+  </div>
+
+  <div class="fitb-shell">
+    <div class="fitb-topbar">
+      <div class="fitb-topbar-icon">✏️</div>
+      <div class="fitb-topbar-text"><h3>Preencha as lacunas!</h3><p>Clique na palavra do banco e depois na lacuna para completar</p></div>
+      <div class="fitb-topbar-xp"><div class="xp-big">+60</div><div class="xp-lbl">XP possível</div></div>
+    </div>
+    <div class="fitb-body">
+      <div class="fitb-word-bank" id="fitbBank">
+        <div class="fitb-word-bank-label">🗂 Banco de palavras — clique para selecionar, depois clique na lacuna:</div>
+        <div class="fitb-chip" data-word="|" onclick="selectChip(this)">|</div>
+        <div class="fitb-chip" data-word="Where-Object" onclick="selectChip(this)">Where-Object</div>
+        <div class="fitb-chip" data-word="Sort-Object" onclick="selectChip(this)">Sort-Object</div>
+        <div class="fitb-chip" data-word="Select-Object" onclick="selectChip(this)">Select-Object</div>
+        <div class="fitb-chip" data-word="Export-Csv" onclick="selectChip(this)">Export-Csv</div>
+        <div class="fitb-chip" data-word="$_" onclick="selectChip(this)">$_</div>
+        <div class="fitb-chip" data-word="-gt" onclick="selectChip(this)">-gt</div>
+        <div class="fitb-chip" data-word="-eq" onclick="selectChip(this)">-eq</div>
+        <div class="fitb-chip" data-word="-Descending" onclick="selectChip(this)">-Descending</div>
+        <div class="fitb-chip" data-word="-NoTypeInformation" onclick="selectChip(this)">-NoTypeInformation</div>
+        <div class="fitb-chip" data-word="-First" onclick="selectChip(this)">-First</div>
+        <div class="fitb-chip" data-word="-like" onclick="selectChip(this)">-like</div>
+      </div>
+      <div class="fitb-lines" id="fitbLines">
+
+        <!-- Frase 1 -->
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">O símbolo</span>
+          <span class="fitb-blank" data-answer="|" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">conecta a saída de um cmdlet à entrada do próximo, formando um pipeline.</span>
+        </div>
+
+        <!-- Frase 2 -->
+        <div class="fitb-line">
+          <span style="color:var(--purple)">Get-Service</span>
+          <span style="color:var(--text-muted)">&nbsp;</span>
+          <span class="fitb-blank" data-answer="|" onclick="fillBlank(this)">___</span>
+          <span class="fitb-blank" data-answer="Where-Object" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">&nbsp;{</span>
+          <span class="fitb-blank" data-answer="$_" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">.Status</span>
+          <span class="fitb-blank" data-answer="-eq" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--green)">&nbsp;'Running' }</span>
+        </div>
+
+        <!-- Frase 3 -->
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">Para ordenar do maior ao menor, use</span>
+          <span class="fitb-blank" data-answer="Sort-Object" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">com o parâmetro</span>
+          <span class="fitb-blank" data-answer="-Descending" onclick="fillBlank(this)">___</span>
+        </div>
+
+        <!-- Frase 4 -->
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">Para pegar apenas os 5 primeiros resultados, use</span>
+          <span class="fitb-blank" data-answer="Select-Object" onclick="fillBlank(this)">___</span>
+          <span class="fitb-blank" data-answer="-First" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--green)">&nbsp;5</span>
+        </div>
+
+        <!-- Frase 5 -->
+        <div class="fitb-line">
+          <span style="color:var(--text-muted)">Para filtrar nomes que começam com "Win", o operador certo é</span>
+          <span class="fitb-blank" data-answer="-like" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--green)">&nbsp;'Win*'</span>
+        </div>
+
+        <!-- Frase 6 -->
+        <div class="fitb-line">
+          <span class="fitb-blank" data-answer="Export-Csv" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--green)">&nbsp;'C:\relatorio.csv'</span>
+          <span class="fitb-blank" data-answer="-NoTypeInformation" onclick="fillBlank(this)">___</span>
+          <span style="color:var(--text-muted)">&nbsp;— exporta para Excel sem a linha técnica no topo.</span>
+        </div>
+
+      </div>
+      <div class="fitb-actions">
+        <button class="fitb-btn" onclick="checkFitb()">✓ Verificar Respostas</button>
+        <button class="fitb-btn secondary" onclick="resetFitb()">↺ Recomeçar</button>
+      </div>
+      <div class="fitb-result" id="fitbResult"></div>
+    </div>
+  </div>
+
+  <!-- DRAG AND DROP -->
+  <div class="section-header">
+    <div class="section-icon green">🎯</div>
+    <h2 class="section-title">Puxe e Arraste — Conecte o Conceito</h2>
+    <span class="section-xp">+50 XP</span>
+  </div>
+
+  <div class="dnd-shell">
+    <div class="dnd-topbar">
+      <div class="dnd-topbar-icon">🎯</div>
+      <div class="dnd-topbar-text"><h3>Arraste cada cmdlet para sua definição!</h3><p>Associe o comando ou operador à descrição correta</p></div>
+      <div class="dnd-topbar-xp"><div class="xp-big" style="color:var(--xp)">+50</div><div class="xp-lbl" style="color:var(--text-muted)">XP possível</div></div>
+    </div>
+    <div class="dnd-body">
+      <div class="dnd-layout">
+        <div>
+          <div class="dnd-col-title">📦 Cmdlets / Operadores — arraste</div>
+          <div class="dnd-items" id="dndItems">
+            <div class="dnd-card" draggable="true" data-id="pipe" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> |</div>
+            <div class="dnd-card" draggable="true" data-id="where" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Where-Object</div>
+            <div class="dnd-card" draggable="true" data-id="sort" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Sort-Object</div>
+            <div class="dnd-card" draggable="true" data-id="select" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Select-Object</div>
+            <div class="dnd-card" draggable="true" data-id="dollar" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> $_</div>
+            <div class="dnd-card" draggable="true" data-id="exportcsv" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> Export-Csv</div>
+            <div class="dnd-card" draggable="true" data-id="like" ondragstart="dragStart(event)" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><span class="dnd-handle">⠿</span> -like</div>
+          </div>
+        </div>
+        <div>
+          <div class="dnd-col-title">📋 Definições — solte aqui</div>
+          <div class="dnd-targets" id="dndTargets">
+            <div class="dnd-target" data-accepts="pipe" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Encadeia cmdlets — a saída de um vira entrada do próximo.</div>
+            </div>
+            <div class="dnd-target" data-accepts="where" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Filtra objetos de acordo com uma condição no bloco {}.</div>
+            </div>
+            <div class="dnd-target" data-accepts="dollar" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Representa o objeto atual sendo processado no pipeline.</div>
+            </div>
+            <div class="dnd-target" data-accepts="sort" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Ordena resultados por qualquer propriedade; use -Descending para inverter.</div>
+            </div>
+            <div class="dnd-target" data-accepts="select" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Escolhe quais colunas/propriedades exibir; aceita -First N.</div>
+            </div>
+            <div class="dnd-target" data-accepts="exportcsv" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Salva os resultados em arquivo .csv compatível com Excel.</div>
+            </div>
+            <div class="dnd-target" data-accepts="like" ondragover="dragOver(event)" ondrop="drop(event)">
+              <div class="dnd-target-def">Operador de padrão com curinga * — ex: 'Win*' encontra "Windows", "WinRM".</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dnd-actions">
+        <button class="fitb-btn" onclick="checkDnd()">✓ Verificar</button>
+        <button class="fitb-btn secondary" onclick="resetDnd()">↺ Recomeçar</button>
+      </div>
+      <div class="dnd-result" id="dndResult"></div>
+    </div>
+  </div>
+
+  <!-- RECURSOS -->
+  <div class="section-header">
+    <div class="section-icon teal">🔗</div>
+    <h2 class="section-title">Recursos para Ir Além</h2>
+  </div>
+  <div class="resources-grid">
+    <a class="res-card" href="https://docs.microsoft.com/powershell" target="_blank"><div class="res-icon">📄</div><div class="res-title">Microsoft Docs</div><div class="res-desc">docs.microsoft.com</div></a>
+    <a class="res-card" href="https://learn.microsoft.com" target="_blank"><div class="res-icon">🎓</div><div class="res-title">Microsoft Learn</div><div class="res-desc">Cursos gratuitos online</div></a>
+    <a class="res-card" href="https://youtube.com" target="_blank"><div class="res-icon">▶️</div><div class="res-title">YouTube</div><div class="res-desc">Pesquise: "PowerShell pipeline"</div></a>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════
+       FICHAS PRÁTICAS — METODOLOGIA ATIVA
+       S09: Pipeline & Filtragem
+  ══════════════════════════════════════════════════ -->
+  <div class="section-header" style="margin-top:56px;">
+    <div class="section-icon" style="background:rgba(240,180,41,.12);border:1px solid rgba(240,180,41,.3);">✏️</div>
+    <h2 class="section-title">Fichas Práticas — Lápis de Cor + Sulfite</h2>
+    <span class="section-xp">+60 XP</span>
+  </div>
+  <p style="color:var(--text-muted);font-size:.9em;margin-bottom:20px;line-height:1.6;">
+    Abra cada ficha, leia as instruções, copie o mapa no sulfite com lápis de cor e depois teste o comando no computador. O desenho reforça a memória do que você digitou.
+  </p>
+
+  <style>
+    /* ── Fichas Práticas ── */
+    .fp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+    .fp-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;background:var(--surface2);}
+    .fp-icon{font-size:1.1em;}
+    .fp-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.92em;color:var(--text);flex:1;}
+    .fp-badge{font-family:'DM Mono',monospace;font-size:.7em;padding:2px 10px;border-radius:50px;border:1px solid;}
+    .fp-badge.amber{color:var(--amber);border-color:rgba(240,180,41,.4);background:rgba(240,180,41,.08);}
+    .fp-badge.blue{color:var(--blue);border-color:rgba(88,166,255,.4);background:rgba(88,166,255,.08);}
+    .fp-badge.green{color:var(--green);border-color:rgba(57,211,83,.4);background:rgba(57,211,83,.08);}
+    .fp-badge.purple{color:var(--purple);border-color:rgba(188,140,255,.4);background:rgba(188,140,255,.08);}
+    .fp-chevron{color:var(--text-dim);transition:transform .3s;font-size:.85em;}
+    .fp-body{display:none;padding:20px 22px;border-top:1px solid var(--border);}
+    .fp-body.open{display:block;}
+
+    .fp-instruction{background:rgba(88,166,255,.07);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;font-size:.85em;color:var(--text-muted);line-height:1.6;}
+    .fp-instruction strong{color:var(--blue);}
+
+    .fp-color-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);}
+    .fp-swatch{display:flex;align-items:center;gap:6px;font-size:.78em;color:var(--text-muted);}
+    .fp-dot{width:14px;height:14px;border-radius:4px;border:1px solid rgba(255,255,255,.1);flex-shrink:0;}
+
+    .fp-sulfite{border:2px dashed #3a3f4a;border-radius:10px;padding:14px 16px;background:#0a0f16;margin:12px 0;position:relative;}
+    .fp-sulfite::before{content:'✏️ COPIAR NO SULFITE';font-size:.65em;font-family:'DM Mono',monospace;color:var(--amber);letter-spacing:.1em;font-weight:700;display:block;margin-bottom:10px;}
+
+    .fp-pipeline{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:8px 0;}
+    .fp-node{font-family:'DM Mono',monospace;font-size:.75em;padding:7px 11px;border-radius:7px;text-align:center;min-width:88px;}
+    .fp-pipe{font-size:1.1em;color:var(--purple);padding:0 2px;margin-top:-8px;}
+    .fp-node-label{font-size:.65em;color:var(--text-dim);text-align:center;margin-top:3px;}
+
+    .fp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0;}
+    .fp-box{border:1px solid var(--border);border-radius:8px;padding:10px 12px;background:var(--surface2);}
+    .fp-box-title{font-size:.72em;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px;}
+    .fp-box-content{font-family:'DM Mono',monospace;font-size:.76em;color:var(--text-muted);line-height:1.5;}
+    .fp-box-blank{border:1px dashed #2d3748;border-radius:5px;min-height:36px;margin-top:6px;background:#080d14;display:flex;align-items:center;justify-content:center;font-size:.68em;color:#3a4555;text-align:center;padding:4px;}
+
+    .fp-table-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:7px;margin:10px 0;}
+    .fp-tbox{border:1px solid var(--border);border-radius:7px;padding:9px;background:var(--surface2);text-align:center;}
+    .fp-tbox-kw{font-family:'DM Mono',monospace;font-size:.85em;font-weight:700;margin-bottom:3px;}
+    .fp-tbox-desc{font-size:.72em;color:var(--text-muted);line-height:1.4;}
+    .fp-tbox-blank{border:1px dashed #2d3748;border-radius:4px;min-height:28px;margin-top:6px;background:#080d14;font-size:.65em;color:#3a4555;display:flex;align-items:center;justify-content:center;}
+
+    .fp-tip{background:rgba(57,211,83,.07);border-left:3px solid var(--green);border-radius:0 7px 7px 0;padding:9px 13px;margin-top:12px;font-size:.83em;color:var(--text-muted);line-height:1.5;}
+    .fp-tip strong{color:var(--green);}
+    .fp-tip code{background:rgba(57,211,83,.1);color:var(--green);padding:1px 5px;border-radius:3px;font-family:'DM Mono',monospace;font-size:.9em;}
+
+    .fp-mission{background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.82em;color:var(--text-muted);line-height:1.5;}
+    .fp-mission strong{color:var(--amber);}
+  </style>
+
+  <!-- FICHA 1 -->
+  <div class="fp-card">
+    <div class="fp-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.fp-chevron').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(180deg)':''">
+      <span class="fp-icon">🗺️</span>
+      <span class="fp-title">Ficha 1 — Mapa do Pipeline (copiar no sulfite)</span>
+      <span class="fp-badge amber">Sulfite + Lápis</span>
+      <span class="fp-chevron">▾</span>
+    </div>
+    <div class="fp-body">
+      <div class="fp-instruction"><strong>O que fazer:</strong> Copie o mapa abaixo no sulfite. Use lápis de cor seguindo a legenda. Depois digite o comando no computador e veja se a saída bate com o que você desenhou.</div>
+      <div class="fp-color-legend">
+        <div class="fp-swatch"><div class="fp-dot" style="background:#1e3a8a;"></div>Azul = coleta dados</div>
+        <div class="fp-swatch"><div class="fp-dot" style="background:#14532d;"></div>Verde = filtra</div>
+        <div class="fp-swatch"><div class="fp-dot" style="background:#713f12;"></div>Amarelo = organiza</div>
+        <div class="fp-swatch"><div class="fp-dot" style="background:#7f1d1d;"></div>Vermelho = exporta</div>
+        <div class="fp-swatch"><div class="fp-dot" style="background:#4a1d96;"></div>Roxo = pipe |</div>
+      </div>
+      <div class="fp-sulfite">
+        <div class="fp-pipeline">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="fp-node" style="background:#1e3a8a;color:#bfdbfe;">Get-Process</div>
+            <div class="fp-node-label">coleta (azul)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <span class="fp-pipe">→</span>
+            <div class="fp-node fp-pipe" style="background:#4a1d96;color:#ede9fe;min-width:28px;padding:7px 8px;font-size:1em;">|</div>
+            <div class="fp-node-label">pipe (roxo)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="fp-node" style="background:#14532d;color:#bbf7d0;">Where-Object</div>
+            <div class="fp-node-label">filtra (verde)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <span class="fp-pipe">→</span>
+            <div class="fp-node fp-pipe" style="background:#4a1d96;color:#ede9fe;min-width:28px;padding:7px 8px;font-size:1em;">|</div>
+            <div class="fp-node-label">pipe (roxo)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="fp-node" style="background:#713f12;color:#fde68a;">Sort-Object</div>
+            <div class="fp-node-label">ordena (amarelo)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <span class="fp-pipe">→</span>
+            <div class="fp-node fp-pipe" style="background:#4a1d96;color:#ede9fe;min-width:28px;padding:7px 8px;font-size:1em;">|</div>
+            <div class="fp-node-label">pipe (roxo)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="fp-node" style="background:#7f1d1d;color:#fca5a5;">Export-Csv</div>
+            <div class="fp-node-label">exporta (vermelho)</div>
+          </div>
+        </div>
+        <div class="fp-mission" style="margin-top:10px;"><strong>Missão extra:</strong> Desenhe uma seta curva de volta do Export-Csv para o Get-Process e escreva: <em>"e se eu quiser outro dado?"</em> — qual cmdlet você trocaria?</div>
+      </div>
+      <div class="fp-tip"><strong>Comando para testar:</strong><br><code>Get-Process | Where-Object {$_.CPU -gt 10} | Sort-Object CPU -Descending | Export-Csv processos.csv -NoTypeInformation</code></div>
+    </div>
+  </div>
+
+  <!-- FICHA 2 -->
+  <div class="fp-card">
+    <div class="fp-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.fp-chevron').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(180deg)':''">
+      <span class="fp-icon">🔬</span>
+      <span class="fp-title">Ficha 2 — Anatomia do Where-Object (peça por peça)</span>
+      <span class="fp-badge blue">Sulfite + Computador</span>
+      <span class="fp-chevron">▾</span>
+    </div>
+    <div class="fp-body">
+      <div class="fp-instruction"><strong>O que fazer:</strong> Digite o comando no computador. Depois preencha as caixinhas no sulfite descrevendo com suas palavras o que cada parte faz.</div>
+      <div class="cmd-block" style="margin-bottom:14px;">
+        <div class="cmd-block-label"><span>COMANDO</span>Where-Object — anatomia completa</div>
+        <div class="cmd-input"><span class="ps">PS C:\&gt; </span><span class="kw">Get-Process</span> <span class="op">|</span> <span class="kw">Where-Object</span> { <span class="var">$_</span><span class="op">.</span>CPU <span class="op">-gt</span> <span class="op">10</span> }</div>
+      </div>
+      <div class="fp-sulfite">
+        <div class="fp-grid">
+          <div class="fp-box" style="border-color:#1e3a8a;">
+            <div class="fp-box-title" style="color:#58a6ff;">Get-Process</div>
+            <div class="fp-box-content">Lista todos os processos em execução</div>
+            <div class="fp-box-blank">Como é no Gerenciador de Tarefas?</div>
+          </div>
+          <div class="fp-box" style="border-color:#4a1d96;">
+            <div class="fp-box-title" style="color:#bc8cff;">| (pipe)</div>
+            <div class="fp-box-content">Passa cada processo para o próximo</div>
+            <div class="fp-box-blank">Desenhe uma esteira de fábrica aqui</div>
+          </div>
+          <div class="fp-box" style="border-color:#14532d;">
+            <div class="fp-box-title" style="color:#39d353;">Where-Object { }</div>
+            <div class="fp-box-content">Filtra: só passa quem atende a condição</div>
+            <div class="fp-box-blank">O que é -gt? O que é -lt?</div>
+          </div>
+          <div class="fp-box" style="border-color:#713f12;">
+            <div class="fp-box-title" style="color:#f0b429;">$_ .CPU</div>
+            <div class="fp-box-content">$_ = o item atual sendo testado</div>
+            <div class="fp-box-blank">Escreva 2 outras propriedades de $_</div>
+          </div>
+        </div>
+      </div>
+      <div class="fp-tip"><strong>Desafio:</strong> Troque <code>-gt 10</code> por <code>-gt 50</code> e depois por <code>-lt 5</code>. O que muda? Anote no sulfite ao lado da ficha.</div>
+    </div>
+  </div>
+
+  <!-- FICHA 3 -->
+  <div class="fp-card">
+    <div class="fp-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.fp-chevron').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(180deg)':''">
+      <span class="fp-icon">🎨</span>
+      <span class="fp-title">Ficha 3 — Comparadores: tabela para colorir e completar</span>
+      <span class="fp-badge green">Sulfite + Lápis</span>
+      <span class="fp-chevron">▾</span>
+    </div>
+    <div class="fp-body">
+      <div class="fp-instruction"><strong>O que fazer:</strong> Copie esta tabela no sulfite. Pinte de <strong>verde</strong> os comparadores que significam "aprovado/maior" e de <strong>vermelho</strong> os que rejeitam. Escreva um exemplo seu para cada um.</div>
+      <div class="fp-sulfite">
+        <div class="fp-table-grid">
+          <div class="fp-tbox" style="border-color:#14532d;">
+            <div class="fp-tbox-kw" style="color:#39d353;">-eq</div>
+            <div class="fp-tbox-desc">igual a<br><em>equal</em></div>
+            <div class="fp-tbox-blank">meu exemplo:</div>
+          </div>
+          <div class="fp-tbox" style="border-color:#7f1d1d;">
+            <div class="fp-tbox-kw" style="color:#f85149;">-ne</div>
+            <div class="fp-tbox-desc">diferente de<br><em>not equal</em></div>
+            <div class="fp-tbox-blank">meu exemplo:</div>
+          </div>
+          <div class="fp-tbox" style="border-color:#1e3a8a;">
+            <div class="fp-tbox-kw" style="color:#58a6ff;">-gt</div>
+            <div class="fp-tbox-desc">maior que<br><em>greater than</em></div>
+            <div class="fp-tbox-blank">meu exemplo:</div>
+          </div>
+          <div class="fp-tbox" style="border-color:#1e3a8a;">
+            <div class="fp-tbox-kw" style="color:#58a6ff;">-lt</div>
+            <div class="fp-tbox-desc">menor que<br><em>less than</em></div>
+            <div class="fp-tbox-blank">meu exemplo:</div>
+          </div>
+          <div class="fp-tbox" style="border-color:#4a1d96;">
+            <div class="fp-tbox-kw" style="color:#bc8cff;">-like</div>
+            <div class="fp-tbox-desc">parecido com<br>(usa * curinga)</div>
+            <div class="fp-tbox-blank">meu exemplo:</div>
+          </div>
+          <div class="fp-tbox" style="border-color:#713f12;">
+            <div class="fp-tbox-kw" style="color:#f0b429;">-contains</div>
+            <div class="fp-tbox-desc">contém o valor<br>(em listas)</div>
+            <div class="fp-tbox-blank">meu exemplo:</div>
+          </div>
+        </div>
+      </div>
+      <div class="fp-mission"><strong>Missão computador:</strong> Teste cada comparador digitando um comando real. Ex.: <code>Get-Service | Where-Object {$_.Status -eq "Running"}</code> — quantos serviços ativos aparecem na sua máquina?</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a class="nav-btn" href="#">← Anterior</a>
+    <a class="nav-home" href="#">🏠 Índice</a>
+    <a class="nav-btn primary" href="semana10_aula.html">Próxima →</a>
+  </div>
+</nav>
+
+<footer>Gestão de Sistemas Operacionais I · GSO I 2026 · Prof. Isaque Kampa</footer>
+
+<script>
+function toggleGabarito(h){const b=h.nextElementSibling,o=b.classList.contains('open');b.classList.toggle('open');h.classList.toggle('open');h.querySelector('.gabarito-chevron').style.transform=o?'':'rotate(180deg)';}
+
+let xp=0,objDone=new Set(),missionDone=new Set(),cardXpDone=new Set();
+const totalXP=420;
+
+function addXP(a){
+  xp+=a;
+  document.getElementById('xpDisplay').textContent=xp;
+  document.getElementById('xpFinal').textContent=xp;
+  const p=Math.min(100,(xp/totalXP)*100);
+  document.getElementById('mainProgress').style.width=p+'%';
+  const s=document.getElementById('checkpointStars');
+  if(p>=80)s.textContent='🌟🌟🌟';
+  else if(p>=50)s.textContent='⭐🌟⭐';
+  spawnStars();
+  checkAch();
+}
+
+function spawnStars(){
+  for(let i=0;i<3;i++)setTimeout(()=>{
+    const e=document.createElement('div');
+    e.className='star';
+    e.textContent=['⭐','✨','💫','⚡'][Math.floor(Math.random()*4)];
+    e.style.left=(Math.random()*80+10)+'%';
+    e.style.top=(window.scrollY+window.innerHeight*.5)+'px';
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),1500);
+  },i*150);
+}
+
+function markObj(el,pts){
+  if(el.classList.contains('done'))return;
+  el.classList.add('done');
+  el.querySelector('.obj-num').style.background='var(--purple)';
+  el.querySelector('.obj-num').style.color='#0d1117';
+  addXP(pts);
+  if([...document.querySelectorAll('.obj-card.done')].length===4)
+    showAch('🎯','Objetivos Marcados!','Você leu todos os objetivos!');
+}
+
+function toggleCard(h){
+  const b=h.nextElementSibling,o=b.classList.contains('open');
+  document.querySelectorAll('.cc-body.open').forEach(x=>{x.classList.remove('open');x.previousElementSibling.classList.remove('open');});
+  if(!o){
+    b.classList.add('open');h.classList.add('open');
+    const t=h.querySelector('.cc-title').textContent;
+    if(!cardXpDone.has(t)){cardXpDone.add(t);addXP(20);}
+  }
+}
+
+function completeMission(id,cardId,pts){
+  if(missionDone.has(id))return;
+  missionDone.add(id);
+  const e=document.getElementById(id);
+  e.classList.add('done');e.textContent='✓';
+  document.getElementById(cardId).classList.add('completed');
+  addXP(pts);
+  if(missionDone.size===3)showAch('🔬','Lab Completo!','Todas as missões concluídas!');
+}
+
+function showAch(icon,title,desc){
+  const t=document.getElementById('achToast');
+  document.getElementById('achIcon').textContent=icon;
+  document.getElementById('achTitle').textContent=title;
+  document.getElementById('achDesc').textContent=desc;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+function checkAch(){
+  const p=(xp/totalXP)*100;
+  if(p>=100)showAch('🏆','100% Completo!','Semana 09 dominada!');
+}
+
+// QUIZ
+const questions=[
+  {q:"O que o símbolo <code>|</code> (pipe) faz no PowerShell?",opts:["Salva a saída em um arquivo","Conecta a saída de um cmdlet à entrada do próximo","Comenta uma linha de código","Divide dois números"],ans:1,exp:"✅ O pipe <strong>|</strong> conecta cmdlets! A saída do da esquerda se torna a entrada do da direita — como uma esteira de fábrica. Você pode encadear quantos quiser!"},
+  {q:"Qual cmdlet você usa para FILTRAR resultados no PowerShell?",opts:["Filter-Object","Find-Object","Where-Object","Search-Object"],ans:2,exp:"✅ <strong>Where-Object</strong> filtra! Ex: <code>Get-Service | Where-Object {$_.Status -eq 'Running'}</code> — mostra só os serviços em execução. Use <code>$_</code> para referenciar cada item."},
+  {q:"O que a variável especial <code>$_</code> representa dentro de um pipeline?",opts:["O número de itens na lista","O computador local","O objeto atual sendo processado","O diretório atual"],ans:2,exp:"✅ <strong>$_</strong> é o objeto atual! Dentro de Where-Object, ForEach-Object ou qualquer bloco <code>{}</code>, representa o item que está sendo processado naquele momento."},
+  {q:"Como exportar os resultados de um cmdlet direto para um arquivo Excel?",opts:["Save-Csv","Export-Excel","Export-Csv","Out-Excel"],ans:2,exp:"✅ <strong>Export-Csv</strong> gera um arquivo .csv que o Excel abre diretamente! Use <code>-NoTypeInformation</code> para remover a linha técnica do topo."}
+];
+
+let cur=0,quizXP=0,answered=false;
+
+function buildQuiz(){
+  const dots=document.getElementById('quizDots');
+  dots.innerHTML=questions.map((_,i)=>`<div class="quiz-dot${i===0?' current':''}" id="qd${i}"></div>`).join('');
+  renderQ();
+}
+
+function renderQ(){
+  const q=questions[cur];
+  answered=false;
+  document.getElementById('quizCounter').textContent=`${cur+1} / ${questions.length}`;
+  document.getElementById('quizBody').innerHTML=`
+    <div class="question-text">${q.q}</div>
+    <div class="options">${q.opts.map((o,i)=>`
+      <button class="option-btn" onclick="answer(this,${i})">
+        <div class="option-letter">${'ABCD'[i]}</div>${o}
+      </button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qfb"></div>
+    <button class="quiz-next" id="qnext" onclick="nextQ()">${cur<questions.length-1?'Próxima →':'Ver Resultado'}</button>
+  `;
+}
+
+function answer(btn,idx){
+  if(answered)return;answered=true;
+  const q=questions[cur];
+  document.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);
+  const correct=idx===q.ans;
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct)document.querySelectorAll('.option-btn')[q.ans].classList.add('correct');
+  const fb=document.getElementById('qfb');
+  fb.innerHTML=q.exp;
+  fb.className='quiz-feedback show '+(correct?'ok':'err');
+  if(correct){quizXP+=20;addXP(20);}
+  document.getElementById(`qd${cur}`).classList.remove('current');
+  document.getElementById(`qd${cur}`).classList.add('done');
+  document.getElementById('qnext').style.display='inline-block';
+}
+
+function nextQ(){
+  cur++;
+  if(cur<questions.length){
+    document.getElementById(`qd${cur}`).classList.add('current');
+    renderQ();
+  } else {
+    document.getElementById('quizBody').innerHTML=`
+      <div class="quiz-result">
+        <div class="score">${quizXP/20}/${questions.length}</div>
+        <div class="score-label">respostas corretas</div>
+        <div class="xp-earn">⚡ +${quizXP} XP ganhos</div>
+        <br><button class="quiz-restart" onclick="cur=0;quizXP=0;buildQuiz()">🔄 Refazer Quiz</button>
+      </div>`;
+    if(quizXP===questions.length*20)showAch('🧠','Quiz Perfeito!','100% de acertos!');
+  }
+}
+
+buildQuiz();
+
+// ========== FILL IN THE BLANKS ==========
+let selectedChip = null;
+let fitbXpAwarded = false;
+
+function selectChip(el) {
+  document.querySelectorAll('.fitb-chip').forEach(c => c.style.outline = '');
+  if (selectedChip === el) { selectedChip = null; return; }
+  selectedChip = el;
+  el.style.outline = '2px solid var(--amber)';
+}
+
+function fillBlank(el) {
+  if (el.classList.contains('locked')) return;
+  if (!selectedChip) {
+    if (el.classList.contains('filled')) {
+      const word = el.dataset.filled;
+      el.textContent = '___'; el.classList.remove('filled','correct','wrong'); el.dataset.filled = '';
+      document.querySelectorAll('.fitb-chip').forEach(c => { if (c.dataset.word === word) { c.classList.remove('used'); c.style.outline = ''; } });
+    }
+    return;
+  }
+  const word = selectedChip.dataset.word;
+  if (el.classList.contains('filled') && el.dataset.filled) {
+    const old = el.dataset.filled;
+    document.querySelectorAll('.fitb-chip').forEach(c => { if (c.dataset.word === old) c.classList.remove('used'); });
+  }
+  el.textContent = word; el.classList.add('filled'); el.classList.remove('correct','wrong');
+  el.dataset.filled = word; selectedChip.classList.add('used'); selectedChip.style.outline = ''; selectedChip = null;
+}
+
+function checkFitb() {
+  const blanks = document.querySelectorAll('.fitb-blank');
+  let correct = 0, total = blanks.length;
+  blanks.forEach(b => {
+    if (!b.classList.contains('filled')) return;
+    if (b.dataset.filled === b.dataset.answer) { b.classList.add('correct','locked'); b.classList.remove('wrong'); correct++; }
+    else { b.classList.add('wrong'); b.classList.remove('correct'); setTimeout(() => b.classList.remove('wrong'), 600); }
+  });
+  const r = document.getElementById('fitbResult');
+  if (correct === total) {
+    r.className = 'fitb-result show ok'; r.textContent = `🎉 Perfeito! Todas as ${total} lacunas corretas!`;
+    if (!fitbXpAwarded) { fitbXpAwarded = true; addXP(60); showAch('✏️','Código Completo!','Todas as lacunas preenchidas!'); }
+  } else {
+    r.className = 'fitb-result show partial'; r.textContent = `⚡ ${correct} de ${total} corretas. Continue tentando!`;
+  }
+  r.style.display = 'block';
+}
+
+function resetFitb() {
+  document.querySelectorAll('.fitb-blank').forEach(b => { b.textContent = '___'; b.className = 'fitb-blank'; b.dataset.filled = ''; });
+  document.querySelectorAll('.fitb-chip').forEach(c => { c.classList.remove('used'); c.style.outline = ''; });
+  document.getElementById('fitbResult').className = 'fitb-result'; fitbXpAwarded = false; selectedChip = null;
+}
+
+// ========== DRAG AND DROP ==========
+let draggedId = null;
+let dndXpAwarded = false;
+let touchDragId = null;
+
+function dragStart(e) { draggedId = e.currentTarget.dataset.id; e.currentTarget.classList.add('dragging'); }
+document.addEventListener('dragend', () => { document.querySelectorAll('.dnd-card').forEach(c => c.classList.remove('dragging')); });
+function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+document.addEventListener('dragleave', e => { if(e.target.classList && e.target.classList.contains('dnd-target')) e.target.classList.remove('drag-over'); });
+
+function drop(e) {
+  e.preventDefault();
+  const target = e.currentTarget; target.classList.remove('drag-over');
+  if (!draggedId) return;
+  document.querySelectorAll('.dnd-target').forEach(t => {
+    const placed = t.querySelector('.dnd-card-static');
+    if (placed && placed.dataset.id === draggedId) { t.removeChild(placed); t.classList.remove('correct','wrong','locked'); const def = t.querySelector('.dnd-target-def'); if(def) def.style.display=''; }
+  });
+  document.querySelectorAll('#dndItems .dnd-card').forEach(c => { if(c.dataset.id === draggedId) c.style.display = ''; });
+  if (target.querySelector('.dnd-card-static')) return;
+  const original = document.querySelector(`#dndItems [data-id="${draggedId}"]`);
+  if (!original) return;
+  const clone = original.cloneNode(true); clone.classList.add('dnd-card-static'); clone.removeAttribute('draggable');
+  clone.style.cursor = 'pointer'; clone.title = 'Clique para remover'; clone.onclick = () => removeDndCard(clone, target);
+  target.appendChild(clone); original.style.display = 'none';
+  const def = target.querySelector('.dnd-target-def'); if(def) def.style.display='none';
+  draggedId = null;
+}
+
+function removeDndCard(card, target) {
+  if (target.classList.contains('locked')) return;
+  const id = card.dataset.id; target.removeChild(card); target.classList.remove('correct','wrong');
+  const def = target.querySelector('.dnd-target-def'); if(def) def.style.display='';
+  const original = document.querySelector(`#dndItems [data-id="${id}"]`); if (original) original.style.display = '';
+}
+
+function touchStart(e) { touchDragId = e.currentTarget.dataset.id; }
+function touchEnd(e) {
+  if (!touchDragId) return;
+  const touch = e.changedTouches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  const target = el ? el.closest('.dnd-target') : null;
+  if (target) { draggedId = touchDragId; drop({ preventDefault: ()=>{}, currentTarget: target }); }
+  touchDragId = null;
+}
+
+function checkDnd() {
+  const targets = document.querySelectorAll('.dnd-target'); let correct = 0, filled = 0;
+  targets.forEach(t => {
+    const placed = t.querySelector('.dnd-card-static'); if (!placed) return; filled++;
+    if (placed.dataset.id === t.dataset.accepts) { t.classList.add('correct','locked'); placed.classList.add('dnd-correct'); correct++; }
+    else { t.classList.add('wrong'); placed.classList.add('dnd-wrong'); setTimeout(() => { t.classList.remove('wrong'); placed.classList.remove('dnd-wrong'); }, 600); }
+  });
+  const r = document.getElementById('dndResult');
+  if (correct === 7 && filled === 7) {
+    r.className = 'dnd-result show ok'; r.textContent = '🎉 Perfeito! Todos os conceitos associados corretamente!';
+    if (!dndXpAwarded) { dndXpAwarded = true; addXP(50); showAch('🎯','Mestre do Pipeline!','Todos os pares corretos!'); }
+  } else {
+    r.className = 'dnd-result show partial'; r.textContent = `⚡ ${correct} de 7 corretos. Remova os errados clicando neles e tente novamente!`;
+  }
+  r.style.display = 'block';
+}
+
+function resetDnd() {
+  document.querySelectorAll('.dnd-target').forEach(t => {
+    const placed = t.querySelector('.dnd-card-static'); if(placed) t.removeChild(placed);
+    t.classList.remove('correct','wrong','locked');
+    const def = t.querySelector('.dnd-target-def'); if(def) def.style.display='';
+  });
+  document.querySelectorAll('#dndItems .dnd-card').forEach(c => c.style.display = '');
+  document.getElementById('dndResult').className = 'dnd-result'; dndXpAwarded = false;
+}
+
+// COPY BUTTONS
+function addCopyButtons() {
+  document.querySelectorAll('.cmd-block').forEach(block => {
+    if (block.querySelector('.copy-btn')) return;
+    const input = block.querySelector('.cmd-input');
+    if (!input) return;
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.innerHTML = '⎘ Copiar';
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      // Extract plain text from cmd-input (strip HTML tags)
+      const text = input.innerText || input.textContent;
+      // Remove PS prompt prefix lines
+      const cleaned = text.split('\n').map(l => {
+        // Remove PS C:\> prefix
+        return l.replace(/^PS C:\[^>]*>\s*/, '').replace(/^PS C:\\[^>]*>\s*/, '');
+      }).join('\n').trim();
+      navigator.clipboard.writeText(cleaned).then(() => {
+        btn.innerHTML = '✓ Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.innerHTML = '⎘ Copiar'; btn.classList.remove('copied'); }, 2000);
+      }).catch(() => {
+        btn.innerHTML = '✗ Erro';
+        setTimeout(() => { btn.innerHTML = '⎘ Copiar'; }, 2000);
+      });
+    };
+    block.style.position = 'relative';
+    block.insertBefore(btn, block.firstChild);
+  });
+}
+
+// Run after cards open
+const origToggle = window.toggleCard;
+window.toggleCard = function(h) {
+  origToggle(h);
+  setTimeout(addCopyButtons, 450);
+};
+addCopyButtons();
+
+</script>
+</body>
+</html>
