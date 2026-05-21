@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia Semana 08 – Introdução ao PowerShell | GSO I 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --dark:#0f172a; --navy:#1e3a5f; --blue:#2a5298; --azure:#3b82f6;
+  --teal:#0891b2; --green:#16a34a; --amber:#d97706; --purple:#7c3aed;
+  --red:#dc2626;
+  --gray-50:#f8fafc; --gray-100:#f1f5f9; --gray-200:#e2e8f0;
+  --gray-500:#64748b; --gray-700:#334155; --white:#fff;
+  --radius:12px; --radius-sm:8px; --shadow:0 4px 16px rgba(0,0,0,.1);
+}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-50);color:var(--gray-700);line-height:1.7;}
+
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 50%,#4f46e5 100%);color:var(--white);padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3);}
+.header-inner{max-width:1200px;margin:0 auto;padding:18px 32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.week-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:50px;padding:5px 14px;font-size:.78em;font-weight:600;white-space:nowrap;font-family:'IBM Plex Mono',monospace;}
+.header-text{flex:1;}
+.header-text h1{font-size:clamp(1.1em,2.5vw,1.7em);font-weight:700;letter-spacing:-.02em;}
+.header-text p{opacity:.7;font-size:.85em;margin-top:3px;}
+.guide-tag{background:linear-gradient(135deg,var(--amber),#b45309);border-radius:50px;padding:5px 14px;font-size:.75em;font-weight:600;}
+
+.container{max-width:1200px;margin:0 auto;padding:28px 32px;}
+.card{background:var(--white);border-radius:var(--radius);padding:28px;margin-bottom:20px;box-shadow:var(--shadow);border:1px solid var(--gray-200);}
+
+.nav-bar{background:var(--white);border-radius:var(--radius);padding:16px 22px;box-shadow:var(--shadow);border:1px solid var(--gray-200);display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;}
+.nav-btn{padding:9px 18px;border-radius:var(--radius-sm);text-decoration:none;font-weight:600;font-size:.88em;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+.btn-primary{background:linear-gradient(135deg,#1e1b4b,#4f46e5);color:var(--white);box-shadow:0 2px 8px rgba(79,70,229,.3);}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-secondary{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200);}
+.btn-secondary:hover{background:var(--gray-200);}
+.btn-blue{background:linear-gradient(135deg,var(--navy),var(--blue));color:var(--white);}
+.nav-spacer{flex:1;}
+
+.ex-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--gray-100);}
+.ex-num-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:1.1em;font-weight:700;flex-shrink:0;}
+.ex-title-wrap h2{font-size:1.2em;font-weight:700;color:var(--navy);}
+.ex-title-wrap .meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;}
+.meta-tag{background:var(--gray-100);border-radius:50px;padding:2px 9px;font-size:.78em;color:var(--gray-500);font-weight:500;}
+
+.enunciado{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:var(--radius-sm);padding:18px 22px;margin-bottom:18px;}
+.enunciado h3{color:var(--navy);font-size:.95em;font-weight:700;margin-bottom:7px;}
+.enunciado p{color:#1e40af;font-size:.92em;}
+
+.rubric-wrap{margin-bottom:20px;overflow-x:auto;}
+.rubric-title{font-size:.98em;font-weight:700;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+table.rubric{width:100%;border-collapse:collapse;min-width:560px;border-radius:var(--radius-sm);overflow:hidden;}
+table.rubric thead tr{background:linear-gradient(135deg,var(--navy),var(--blue));}
+table.rubric thead th{color:var(--white);padding:11px 13px;text-align:left;font-size:.82em;font-weight:600;}
+table.rubric tbody tr:nth-child(even){background:var(--gray-50);}
+table.rubric tbody td{padding:10px 13px;border-bottom:1px solid var(--gray-100);font-size:.85em;vertical-align:top;}
+table.rubric tbody td:first-child{font-weight:700;color:var(--navy);white-space:nowrap;}
+.lv0{color:#dc2626;}.lv1{color:#d97706;}.lv2{color:#0369a1;}.lv3{color:#15803d;font-weight:600;}
+
+.tip-box{background:linear-gradient(135deg,#fefce8,#fef9c3);border:1px solid #fde047;border-radius:var(--radius-sm);padding:14px 18px;margin-top:14px;}
+.tip-box p{font-size:.88em;color:#713f12;}
+
+.warn-box{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;border-radius:var(--radius-sm);padding:14px 18px;margin-top:14px;}
+.warn-box p{font-size:.88em;color:#92400e;}
+
+.check-wrap{margin-top:14px;}
+.check-wrap h4{font-size:.92em;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.check-item{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;font-size:.87em;color:var(--gray-500);}
+.check-box{width:15px;height:15px;border:2px solid var(--green);border-radius:3px;flex-shrink:0;margin-top:3px;display:flex;align-items:center;justify-content:center;background:var(--green);}
+.check-box::after{content:'✓';color:white;font-size:9px;font-weight:700;}
+
+/* ===== POWERSHELL TERMINAL SIMULATION ===== */
+.ps-window{border-radius:8px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4);margin:14px 0;}
+.ps-titlebar{background:#2d2d2d;padding:8px 14px;display:flex;align-items:center;gap:10px;}
+.ps-win-btns{display:flex;gap:5px;}
+.ps-win-btn{width:12px;height:12px;border-radius:50%;display:inline-block;}
+.ps-win-btn.close{background:#ff5f57;}.ps-win-btn.min{background:#febc2e;}.ps-win-btn.max{background:#28c840;}
+.ps-titlebar-title{font-size:.78em;color:#ccc;flex:1;}
+.ps-body{background:#012456;padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:.78em;line-height:1.8;}
+.ps-prompt{color:#eeedf0;}
+.ps-cmd{color:#ffff00;}
+.ps-output{color:#cccccc;display:block;}
+.ps-output-green{color:#4ec94e;display:block;}
+.ps-output-blue{color:#6bceff;display:block;}
+.ps-output-header{color:#ffffff;font-weight:700;display:block;margin-top:2px;}
+.ps-error{color:#ff6b6b;display:block;}
+.ps-success{color:#4ec94e;display:block;}
+.ps-cursor{display:inline-block;width:8px;height:14px;background:#fff;animation:blink 1s step-end infinite;vertical-align:text-bottom;}
+@keyframes blink{50%{opacity:0;}}
+.ps-line{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px;}
+.ps-answer{color:#f0f0f0;background:rgba(255,255,255,.07);border-left:2px solid #4ec94e;padding-left:8px;display:block;margin:4px 0;}
+
+/* ===== STEP BY STEP ===== */
+.step-section{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:20px;margin:16px 0;}
+.step-section-title{font-size:.92em;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.step-list{list-style:none;padding:0;}
+.step-list li{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.step-n{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--blue));color:white;font-size:.78em;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-family:'IBM Plex Mono',monospace;}
+.step-body{flex:1;font-size:.88em;color:var(--gray-700);line-height:1.6;}
+.step-body strong{color:var(--navy);}
+.step-body code{background:#1e293b;color:#7dd3fc;padding:2px 7px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:.9em;}
+
+/* Annotation */
+.annotation{display:flex;gap:8px;align-items:flex-start;background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--radius-sm);padding:10px 14px;margin:8px 0;}
+.annotation p{font-size:.83em;color:#1e40af;line-height:1.5;}
+.annotation p strong{color:#1e3a5f;}
+
+/* Error box */
+.error-box{background:#fef2f2;border:1px solid #fecaca;border-left:3px solid var(--red);border-radius:var(--radius-sm);padding:12px 16px;margin:12px 0;}
+.error-box p{font-size:.85em;color:#7f1d1d;}
+.error-box .error-cmd{font-family:'IBM Plex Mono',monospace;color:var(--red);background:#fff;padding:2px 7px;border-radius:4px;font-size:.9em;}
+.error-box .fix-cmd{font-family:'IBM Plex Mono',monospace;color:var(--green);background:#f0fdf4;padding:2px 7px;border-radius:4px;font-size:.9em;}
+
+/* Screen label */
+.screen-label{font-size:.72em;color:var(--gray-500);text-align:center;margin:-6px 0 12px;font-family:'IBM Plex Mono',monospace;}
+
+/* Success box */
+.success-box{background:#f0fdf4;border:1px solid #86efac;border-left:3px solid var(--green);border-radius:var(--radius-sm);padding:12px 16px;margin:12px 0;}
+.success-box p{font-size:.85em;color:#14532d;}
+
+/* UAC */
+.uac-overlay{background:rgba(0,0,0,.5);border-radius:10px;padding:20px;margin:14px 0;}
+.uac-dialog{background:#f0f0f0;border-radius:8px;overflow:hidden;max-width:380px;margin:0 auto;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.uac-header{background:#003399;padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.uac-header-text{color:white;font-size:.85em;font-weight:600;}
+.uac-body{padding:16px;background:#fafafa;}
+.uac-question{font-size:.88em;color:#333;font-weight:600;margin-bottom:10px;}
+.uac-app-info{background:#e8f4f8;border:1px solid #b8d4e8;border-radius:6px;padding:10px 14px;margin-bottom:14px;}
+.uac-app-info p{font-size:.78em;color:#333;line-height:1.5;}
+.uac-buttons{display:flex;gap:8px;justify-content:flex-end;}
+.uac-btn{padding:6px 20px;border-radius:4px;font-size:.82em;font-weight:600;border:none;cursor:default;}
+.uac-btn-yes{background:#003399;color:white;}.uac-btn-no{background:#e0e0e0;color:#333;}
+
+/* Context menu */
+.ctx-menu{background:#2d2d2d;border:1px solid #444;border-radius:8px;overflow:hidden;max-width:240px;box-shadow:0 8px 24px rgba(0,0,0,.6);margin:10px auto;}
+.ctx-item{padding:8px 14px;font-size:.78em;color:#eee;display:flex;align-items:center;gap:8px;}
+.ctx-item.highlighted{background:rgba(0,120,215,.3);}
+.ctx-divider{border:none;border-top:1px solid #444;margin:3px 0;}
+
+/* Compare table */
+.compare-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.84em;}
+.compare-table th{background:#1e3a5f;color:white;padding:9px 12px;text-align:left;}
+.compare-table td{padding:8px 12px;border-bottom:1px solid var(--gray-200);color:var(--gray-700);vertical-align:top;}
+.compare-table tr:nth-child(even) td{background:var(--gray-50);}
+.compare-table .ps-cell{color:#15803d;font-family:'IBM Plex Mono',monospace;font-size:.9em;}
+.compare-table .cmd-cell{color:#d97706;font-family:'IBM Plex Mono',monospace;font-size:.9em;}
+
+@media(max-width:768px){.container{padding:14px;}.card{padding:18px;}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <span class="week-badge">📝 Guia · S08/20</span>
+    <div class="header-text">
+      <h1>Guia – Introdução ao PowerShell</h1>
+      <p>Rubricas · Resoluções passo a passo · GSO I · Prof. Isaque Katahira · 2026</p>
+    </div>
+    <span class="guide-tag">🔬 3 Exercícios</span>
+  </div>
+</header>
+
+<div class="container">
+  <nav class="nav-bar">
+    <a href="semana07_guia.html" class="nav-btn btn-secondary">⬅ Anterior</a>
+    <a href="index.html" class="nav-btn btn-secondary">🏠 Índice</a>
+    <a href="semana08_aula.html" class="nav-btn btn-blue">📖 Ver Aula</a>
+    <span class="nav-spacer"></span>
+    <a href="semana09_guia.html" class="nav-btn btn-primary">Próximo ➡</a>
+  </nav>
+
+  <!-- Como usar este guia -->
+  <div class="card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#bfdbfe;">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <span style="font-size:1.8em;">📝</span>
+      <div>
+        <div style="font-weight:700;color:#1e3a5f;font-size:1em;">Como usar este Guia</div>
+        <div style="color:#1e40af;font-size:.88em;margin-top:3px;">
+          Tente resolver cada exercício <strong>por conta própria primeiro</strong>. Se travar, abra o passo a passo aqui — não como cópia, mas como guia. Cada print mostra exatamente o que você deve ver na tela. Se o seu resultado for diferente, compare com atenção e veja o que mudou!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= EXERCÍCIO 1 ========================= -->
+  <div class="card">
+    <div class="ex-header">
+      <div class="ex-num-circle" style="background:linear-gradient(135deg,#1e3a5f,#2a5298);">1</div>
+      <div class="ex-title-wrap">
+        <h2>🔵 Primeiros Passos no PowerShell</h2>
+        <div class="meta">
+          <span class="meta-tag">🔬 Laboratório</span>
+          <span class="meta-tag">⏱ 30 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="enunciado">
+      <h3>📋 Enunciado</h3>
+      <p>Abra o PowerShell e execute uma série de cmdlets básicos, observando e documentando os resultados de cada um. Ao final, crie uma tabela comparando PowerShell e CMD.</p>
+    </div>
+
+    <!-- RUBRIC -->
+    <div class="rubric-wrap">
+      <div class="rubric-title">📊 Rubrica de Avaliação</div>
+      <table class="rubric">
+        <thead>
+          <tr><th>Critério</th><th>Insuficiente (0–5)</th><th>Básico (6–7)</th><th>Proficiente (8–9)</th><th>Excelente (10)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Execução dos Cmdlets</td><td class="lv0">Não executou ou errou todos</td><td class="lv1">Executou ao menos metade</td><td class="lv2">Executou a maioria corretamente</td><td class="lv3">Executou todos corretamente</td></tr>
+          <tr><td>Anotação dos resultados</td><td class="lv0">Sem anotações</td><td class="lv1">Anotações superficiais</td><td class="lv2">Anotações claras</td><td class="lv3">Explicou o que cada comando faz com suas palavras</td></tr>
+          <tr><td>Tabela Comparativa</td><td class="lv0">Ausente</td><td class="lv1">Incompleta</td><td class="lv2">Completa com erros mínimos</td><td class="lv3">Completa, organizada e com exemplos extras</td></tr>
+          <tr><td>Nomenclatura do Arquivo</td><td class="lv0">Nome errado</td><td class="lv1">Nome parcialmente correto</td><td class="lv2">Nome correto</td><td class="lv3">Nome correto + organizado</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PASSO A PASSO DETALHADO -->
+    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius-sm);padding:20px;margin-top:18px;">
+      <h3 style="color:#065f46;font-size:1em;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:6px;">✅ Resolução Passo a Passo</h3>
+
+      <!-- ANTES DE COMEÇAR: Como abrir -->
+      <div class="step-section">
+        <div class="step-section-title">🚀 Antes de começar — Abrindo o PowerShell como Administrador</div>
+        <ul class="step-list">
+          <li>
+            <div class="step-n">1</div>
+            <div class="step-body">Pressione <strong>Win + X</strong> (segurar a tecla do Windows e apertar X ao mesmo tempo). Um menu escuro aparece no canto inferior esquerdo.</div>
+          </li>
+          <li>
+            <div class="step-n">2</div>
+            <div class="step-body">Clique em <strong>"Terminal (Administrador)"</strong> no menu que aparecer:
+              <div class="ctx-menu" style="margin-top:8px;">
+                <div class="ctx-item">⚙️ Gerenciador de Dispositivos</div>
+                <div class="ctx-item">💾 Gerenciamento de Disco</div>
+                <hr class="ctx-divider">
+                <div class="ctx-item highlighted">🖥️ Terminal (Administrador) ← clique aqui</div>
+                <div class="ctx-item">📋 Gerenciador de Tarefas</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">3</div>
+            <div class="step-body">Uma janela azul de confirmação vai aparecer (UAC). Clique em <strong>"Sim"</strong>:
+              <div class="uac-overlay" style="margin-top:8px;">
+                <div class="uac-dialog">
+                  <div class="uac-header"><span style="font-size:1.3em;">🛡️</span><span class="uac-header-text">Controle de Conta de Usuário</span></div>
+                  <div class="uac-body">
+                    <div class="uac-question">Deseja permitir que este aplicativo faça alterações no seu dispositivo?</div>
+                    <div class="uac-app-info"><p><strong>Windows PowerShell</strong><br>Fornecedor verificado: Microsoft Windows</p></div>
+                    <div class="uac-buttons"><button class="uac-btn uac-btn-no">Não</button><button class="uac-btn uac-btn-yes">Sim ← clique aqui</button></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">4</div>
+            <div class="step-body">O PowerShell vai abrir. Confirme que aparece <strong>"Administrador:"</strong> na barra de título:
+              <div class="ps-window" style="margin-top:8px;">
+                <div class="ps-titlebar">
+                  <div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div>
+                  <div class="ps-titlebar-title">✅ Administrador: Windows PowerShell ← confirme isso!</div>
+                </div>
+                <div class="ps-body">
+                  <span class="ps-output">Windows PowerShell</span>
+                  <span class="ps-output">Direitos autorais (C) Microsoft Corporation. Todos os direitos reservados.</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="success-box" style="margin-top:6px;"><p>✅ <strong>Pronto!</strong> Se a barra de título mostra "Administrador:" você está no lugar certo. Agora pode digitar os comandos!</p></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- COMANDOS UM POR UM -->
+      <div class="step-section">
+        <div class="step-section-title">⌨️ Executando os Cmdlets — Um por Um</div>
+
+        <!-- Get-Location -->
+        <ul class="step-list">
+          <li>
+            <div class="step-n">1</div>
+            <div class="step-body">
+              <strong>Ver em qual pasta você está agora</strong><br>
+              Digite o comando abaixo e pressione <kbd style="background:#1e293b;color:#7dd3fc;padding:1px 6px;border-radius:3px;font-family:monospace;">Enter</kbd>:
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cmd">Get-Location</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Path</span>
+                  <span class="ps-output-header">----</span>
+                  <span class="ps-output-green">C:\Windows\System32</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 <strong>O que você vê:</strong> a pasta atual onde o PowerShell está trabalhando. É como o <code style="font-family:monospace;color:#1e40af;">cd</code> do CMD — mas com mais informação!</p></div>
+            </div>
+          </li>
+
+          <!-- Set-Location C:\ -->
+          <li>
+            <div class="step-n">2</div>
+            <div class="step-body">
+              <strong>Navegar para a raiz do disco C:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cmd">Set-Location C:\</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 <strong>Repare:</strong> o prompt mudou de <code style="font-family:monospace;color:#1e40af;">C:\Windows\System32&gt;</code> para <code style="font-family:monospace;color:#1e40af;">C:\&gt;</code> — isso confirma que você se moveu para a raiz do C:. É o mesmo que <code style="font-family:monospace;color:#1e40af;">cd C:\</code> no CMD.</p></div>
+            </div>
+          </li>
+
+          <!-- Get-ChildItem -->
+          <li>
+            <div class="step-n">3</div>
+            <div class="step-body">
+              <strong>Listar arquivos e pastas do diretório atual:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">Get-ChildItem</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">    Directory: C:\</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Mode                 LastWriteTime         Length Name</span>
+                  <span class="ps-output-header">----                 -------------         ------ ----</span>
+                  <span class="ps-output-blue">d----          01/04/2026    10:23                PerfLogs</span>
+                  <span class="ps-output-blue">d-r--          15/04/2026    08:44                Program Files</span>
+                  <span class="ps-output-blue">d-r--          15/04/2026    08:44                Program Files (x86)</span>
+                  <span class="ps-output-blue">d-r--          27/04/2026    07:30                Users</span>
+                  <span class="ps-output-blue">d-r--          27/04/2026    07:30                Windows</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 <strong>Mode</strong> = tipo (d = diretório/pasta, - = arquivo). <strong>LastWriteTime</strong> = última modificação. <strong>Name</strong> = nome da pasta ou arquivo. É o mesmo que <code style="font-family:monospace;color:#1e40af;">dir</code> no CMD!</p></div>
+            </div>
+          </li>
+
+          <!-- Get-ChildItem -Hidden -->
+          <li>
+            <div class="step-n">4</div>
+            <div class="step-body">
+              <strong>Ver também os arquivos ocultos:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">Get-ChildItem -Hidden</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">    Directory: C:\</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Mode                 LastWriteTime         Length Name</span>
+                  <span class="ps-output-header">----                 -------------         ------ ----</span>
+                  <span class="ps-output" style="color:#9ca3af;">d--h-          15/04/2026    08:44                $Recycle.Bin</span>
+                  <span class="ps-output" style="color:#9ca3af;">d--h-          01/04/2026    10:22                System Volume Information</span>
+                  <span class="ps-output" style="color:#9ca3af;">---h-          27/04/2026    07:31            512 hiberfil.sys</span>
+                  <span class="ps-output" style="color:#9ca3af;">---h-          27/04/2026    07:30         16384 pagefile.sys</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 <strong>O "h" no Mode</strong> significa "hidden" (oculto). Esses arquivos normalmente não aparecem no Windows Explorer. O <code style="font-family:monospace;color:#1e40af;">$Recycle.Bin</code> é a Lixeira!</p></div>
+            </div>
+          </li>
+
+          <!-- Set-Location System32 -->
+          <li>
+            <div class="step-n">5</div>
+            <div class="step-body">
+              <strong>Navegar até a pasta System32:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">Set-Location C:\Windows\System32</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <!-- Contar .exe -->
+          <li>
+            <div class="step-n">6</div>
+            <div class="step-body">
+              <strong>Contar quantos arquivos .exe existem no System32:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cmd">Get-ChildItem *.exe | Measure-Object</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Count    : 516</span>
+                  <span class="ps-output">Average  :</span>
+                  <span class="ps-output">Sum      :</span>
+                  <span class="ps-output">Maximum  :</span>
+                  <span class="ps-output">Minimum  :</span>
+                  <span class="ps-output">Property :</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 O <strong>|</strong> (pipe) manda o resultado de Get-ChildItem para o Measure-Object contar. O número vai variar no seu computador — pode ser diferente do print!</p></div>
+            </div>
+          </li>
+
+          <!-- Get-ComputerInfo -->
+          <li>
+            <div class="step-n">7</div>
+            <div class="step-body">
+              <strong>Ver informações do computador:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cmd">Get-ComputerInfo | Select-Object OsName, TotalPhysicalMemory</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">OsName                          TotalPhysicalMemory</span>
+                  <span class="ps-output-header">------                          -------------------</span>
+                  <span class="ps-output-blue">Microsoft Windows 11 Pro        8455016448</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 <strong>TotalPhysicalMemory</strong> aparece em bytes. Para converter: 8.455.016.448 ÷ 1.073.741.824 ≈ 7,87 GB de RAM. O seu número vai ser diferente!</p></div>
+            </div>
+          </li>
+
+          <!-- Get-Process top 10 -->
+          <li>
+            <div class="step-n">8</div>
+            <div class="step-body">
+              <strong>Ver os 10 processos que mais consomem CPU:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cmd">Get-Process | Sort-Object CPU -Descending | Select-Object -First 10</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header"> Handles  NPM(K)    PM(K)    WS(K)     CPU(s)     Id  SI ProcessName</span>
+                  <span class="ps-output-header"> -------  ------    -----    -----     ------     --  -- -----------</span>
+                  <span class="ps-output-blue">     892      45    98432   148322    1823,47   4120   1 chrome</span>
+                  <span class="ps-output-blue">     445      31     8192    24576      18,23   3560   1 powershell</span>
+                  <span class="ps-output-blue">     312      22     5104    18234      12,45   2340   1 msedge</span>
+                  <span class="ps-output-blue">     234      18     4096    12800       8,12   1820   1 SearchHost</span>
+                  <span class="ps-output">  ... (continua até 10 processos) ...</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Windows\System32&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 O processo com maior CPU(s) aparece primeiro. <strong>Sort-Object CPU -Descending</strong> ordena do maior para o menor. <strong>Select-Object -First 10</strong> mostra só os 10 primeiros.</p></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- TABELA COMPARATIVA -->
+      <div class="step-section">
+        <div class="step-section-title">📊 Criando a Tabela Comparativa (Entrega do Exercício)</div>
+        <ul class="step-list">
+          <li>
+            <div class="step-n">9</div>
+            <div class="step-body">
+              <strong>Abra o Word (ou LibreOffice) e crie uma tabela com estas colunas:</strong>
+              <table class="compare-table" style="margin-top:10px;">
+                <thead><tr><th>O que faz</th><th>CMD (antigo)</th><th>PowerShell (moderno)</th></tr></thead>
+                <tbody>
+                  <tr><td>Mostrar pasta atual</td><td class="cmd-cell">cd</td><td class="ps-cell">Get-Location</td></tr>
+                  <tr><td>Navegar entre pastas</td><td class="cmd-cell">cd C:\</td><td class="ps-cell">Set-Location C:\</td></tr>
+                  <tr><td>Listar arquivos</td><td class="cmd-cell">dir</td><td class="ps-cell">Get-ChildItem</td></tr>
+                  <tr><td>Ver arquivos ocultos</td><td class="cmd-cell">dir /a:h</td><td class="ps-cell">Get-ChildItem -Hidden</td></tr>
+                  <tr><td>Ver processos</td><td class="cmd-cell">tasklist</td><td class="ps-cell">Get-Process</td></tr>
+                  <tr><td>Limpar a tela</td><td class="cmd-cell">cls</td><td class="ps-cell">Clear-Host</td></tr>
+                  <tr><td>Criar pasta</td><td class="cmd-cell">mkdir NomePasta</td><td class="ps-cell">New-Item -Type Directory NomePasta</td></tr>
+                  <tr><td>Ver info do sistema</td><td class="cmd-cell">systeminfo</td><td class="ps-cell">Get-ComputerInfo</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">10</div>
+            <div class="step-body">
+              <strong>Salve o arquivo com o nome correto:</strong><br>
+              <code>sem08_ex1_SeuNome.docx</code><br>
+              <span style="color:#64748b;font-size:.9em;">Exemplo: <code>sem08_ex1_JoaoSilva.docx</code></span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div><!-- fim resolução -->
+
+    <div class="tip-box">
+      <p><strong>💡 Dica Profissional:</strong> Sempre documente o que você fez durante o laboratório. Um técnico sem registros não consegue reproduzir soluções nem comprovar seu trabalho.</p>
+    </div>
+
+    <!-- ERROS COMUNS -->
+    <div style="margin-top:16px;">
+      <div style="font-weight:700;color:#7f1d1d;font-size:.92em;margin-bottom:8px;">🚨 Erros Comuns e Como Resolver:</div>
+      <div class="error-box">
+        <p><strong>Erro:</strong> <span class="error-cmd">O termo 'Get-ChildItem' não é reconhecido</span><br>
+        <strong>Causa:</strong> Você digitou errado — talvez esqueceu o hífen ou errou uma letra.<br>
+        <strong>Solução:</strong> Escreva exatamente <span class="fix-cmd">Get-ChildItem</span> (G maiúsculo, C maiúsculo, I maiúsculo)</p>
+      </div>
+      <div class="error-box" style="margin-top:8px;">
+        <p><strong>Erro:</strong> <span class="error-cmd">Acesso negado</span> ou <span class="error-cmd">Access is denied</span><br>
+        <strong>Causa:</strong> Você abriu o PowerShell sem ser Administrador.<br>
+        <strong>Solução:</strong> Feche e abra de novo com botão direito → <span class="fix-cmd">Executar como Administrador</span></p>
+      </div>
+    </div>
+
+    <div class="check-wrap">
+      <h4>☑️ Checklist de Entrega:</h4>
+      <div class="check-item"><div class="check-box"></div><span>Executou Get-Location e anotou o resultado</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Executou Set-Location C:\ e confirmou que o prompt mudou</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Executou Get-ChildItem e listou o conteúdo de C:\</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Executou Get-ChildItem -Hidden e encontrou arquivos ocultos</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Executou o comando de contar .exe no System32</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Executou Get-ComputerInfo e anotou a versão do Windows</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Executou o top 10 processos por CPU</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Criou a tabela comparativa PowerShell vs CMD</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Arquivo salvo como sem08_ex1_SeuNome.docx</span></div>
+    </div>
+  </div>
+
+  <!-- ========================= EXERCÍCIO 2 ========================= -->
+  <div class="card">
+    <div class="ex-header">
+      <div class="ex-num-circle" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">2</div>
+      <div class="ex-title-wrap">
+        <h2>🟣 Navegação pelo Sistema via PowerShell</h2>
+        <div class="meta">
+          <span class="meta-tag">🔬 Laboratório</span>
+          <span class="meta-tag">⏱ 35 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="enunciado">
+      <h3>📋 Enunciado</h3>
+      <p>Use os comandos de navegação do PowerShell para explorar o sistema de arquivos, criar uma pasta e um arquivo de texto dentro dela, tudo pela linha de comando.</p>
+    </div>
+
+    <div class="rubric-wrap">
+      <div class="rubric-title">📊 Rubrica de Avaliação</div>
+      <table class="rubric">
+        <thead>
+          <tr><th>Critério</th><th>Insuficiente (0–5)</th><th>Básico (6–7)</th><th>Proficiente (8–9)</th><th>Excelente (10)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Navegação entre pastas</td><td class="lv0">Não navegou</td><td class="lv1">Navegou com erros</td><td class="lv2">Navegou corretamente</td><td class="lv3">Navegou com fluência e sem erros</td></tr>
+          <tr><td>Criação de pasta/arquivo</td><td class="lv0">Não criou</td><td class="lv1">Criou parcialmente</td><td class="lv2">Criou corretamente</td><td class="lv3">Criou e verificou com Get-ChildItem</td></tr>
+          <tr><td>Documentação</td><td class="lv0">Sem registro</td><td class="lv1">Registro mínimo</td><td class="lv2">Bem documentado</td><td class="lv3">Prints + explicações de cada etapa</td></tr>
+          <tr><td>Nomenclatura do Arquivo</td><td class="lv0">Nome errado</td><td class="lv1">Parcialmente correto</td><td class="lv2">Nome correto</td><td class="lv3">Nome correto + organizado</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius-sm);padding:20px;margin-top:18px;">
+      <h3 style="color:#065f46;font-size:1em;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:6px;">✅ Resolução Passo a Passo</h3>
+
+      <div class="step-section">
+        <div class="step-section-title">🗺️ Navegando pelo Sistema de Arquivos</div>
+        <ul class="step-list">
+          <li>
+            <div class="step-n">1</div>
+            <div class="step-body">
+              <strong>Ir para a pasta de usuários:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">Set-Location C:\Users</span></div>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">2</div>
+            <div class="step-body">
+              <strong>Ver o que tem dentro da pasta Users:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users&gt; </span><span class="ps-cmd">Get-ChildItem</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">    Directory: C:\Users</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Mode                 LastWriteTime         Length Name</span>
+                  <span class="ps-output-header">----                 -------------         ------ ----</span>
+                  <span class="ps-output-blue">d-r--          27/04/2026    07:30                Aluno</span>
+                  <span class="ps-output-blue">d-r--          01/04/2026    10:22                Default</span>
+                  <span class="ps-output-blue">d-r--          01/04/2026    10:22                Public</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 O nome da sua pasta de usuário vai ser diferente — pode ser seu nome, "aluno", ou o nome do computador da escola.</p></div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">3</div>
+            <div class="step-body">
+              <strong>Ir para a pasta Desktop (Área de Trabalho) do seu usuário:</strong><br>
+              <span style="color:#64748b;font-size:.9em;">Troque "Aluno" pelo nome da sua pasta!</span>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users&gt; </span><span class="ps-cmd">Set-Location C:\Users\Aluno\Desktop</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users\Aluno\Desktop&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>💡 <strong>Atalho:</strong> Você também pode digitar <code style="font-family:monospace;color:#1e40af;">Set-Location ~\Desktop</code> — o <code style="font-family:monospace;color:#1e40af;">~</code> representa automaticamente sua pasta de usuário!</p></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-title">📁 Criando Pasta e Arquivo pela Linha de Comando</div>
+        <ul class="step-list">
+          <li>
+            <div class="step-n">4</div>
+            <div class="step-body">
+              <strong>Criar uma pasta chamada "MinhasAulas" no Desktop:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users\Aluno\Desktop&gt; </span><span class="ps-cmd">New-Item -Name "MinhasAulas" -Type Directory</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">    Directory: C:\Users\Aluno\Desktop</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Mode                 LastWriteTime         Length Name</span>
+                  <span class="ps-output-header">----                 -------------         ------ ----</span>
+                  <span class="ps-output-green">d----          27/04/2026    09:15                MinhasAulas</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users\Aluno\Desktop&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="success-box" style="margin-top:6px;"><p>✅ A pasta <strong>MinhasAulas</strong> foi criada! Você pode abrir o Windows Explorer e confirmar que ela apareceu no Desktop.</p></div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">5</div>
+            <div class="step-body">
+              <strong>Entrar na pasta que acabou de criar:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users\Aluno\Desktop&gt; </span><span class="ps-cmd">Set-Location MinhasAulas</span></div>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users\Aluno\Desktop\MinhasAulas&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">6</div>
+            <div class="step-body">
+              <strong>Criar um arquivo de texto dentro da pasta:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\...\MinhasAulas&gt; </span><span class="ps-cmd">New-Item -Name "anotacoes.txt" -Type File</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">    Directory: C:\Users\Aluno\Desktop\MinhasAulas</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Mode                 LastWriteTime         Length Name</span>
+                  <span class="ps-output-header">----                 -------------         ------ ----</span>
+                  <span class="ps-output-green">-a---          27/04/2026    09:18              0 anotacoes.txt</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\...\MinhasAulas&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">7</div>
+            <div class="step-body">
+              <strong>Confirmar que o arquivo foi criado (listar o conteúdo da pasta):</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\...\MinhasAulas&gt; </span><span class="ps-cmd">Get-ChildItem</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">    Directory: C:\Users\Aluno\Desktop\MinhasAulas</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Mode                 LastWriteTime         Length Name</span>
+                  <span class="ps-output-header">----                 -------------         ------ ----</span>
+                  <span class="ps-output-blue">-a---          27/04/2026    09:18              0 anotacoes.txt</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\...\MinhasAulas&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="success-box" style="margin-top:6px;"><p>✅ <strong>Parabéns!</strong> Você criou uma pasta e um arquivo usando só a linha de comando — sem clicar em nada! Documente essa conquista com um print da tela.</p></div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">8</div>
+            <div class="step-body">
+              <strong>Voltar uma pasta (ir para o diretório pai):</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\...\MinhasAulas&gt; </span><span class="ps-cmd">Set-Location ..</span></div>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users\Aluno\Desktop&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 O <code style="font-family:monospace;color:#1e40af;">..</code> (dois pontos) significa "pasta acima". É igual ao CMD! Funciona em todos os sistemas.</p></div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">9</div>
+            <div class="step-body">
+              <strong>Salve seu relatório:</strong><br>
+              Documente todos os prints e salve como <code>sem08_ex2_SeuNome.docx</code>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div><!-- fim resolução -->
+
+    <div class="tip-box">
+      <p><strong>💡 Dica:</strong> Use a tecla <kbd style="background:#713f12;color:#fef9c3;padding:1px 5px;border-radius:3px;font-family:monospace;">Tab</kbd> para autocompletar nomes de pastas! Digitou <code>Set-Location Min</code> e aperta Tab → completa para <code>Set-Location MinhasAulas</code> automaticamente!</p>
+    </div>
+
+    <div class="error-box" style="margin-top:14px;">
+      <p><strong>🚨 Erro comum:</strong> <span class="error-cmd">Set-Location: Não foi possível localizar o caminho especificado</span><br>
+      <strong>Causa:</strong> Você tentou entrar em uma pasta que não existe ou digitou o nome errado.<br>
+      <strong>Solução:</strong> Use <span class="fix-cmd">Get-ChildItem</span> primeiro para ver os nomes exatos das pastas disponíveis, depois tente de novo.</p>
+    </div>
+
+    <div class="check-wrap">
+      <h4>☑️ Checklist de Entrega:</h4>
+      <div class="check-item"><div class="check-box"></div><span>Navegou até C:\Users com Set-Location</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Usou Get-ChildItem para listar pastas em pelo menos 3 lugares diferentes</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Criou a pasta "MinhasAulas" no Desktop com New-Item</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Criou um arquivo .txt dentro da pasta com New-Item</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Confirmou a criação com Get-ChildItem</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Usou ".." para voltar uma pasta</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Arquivo salvo como sem08_ex2_SeuNome.docx com prints</span></div>
+    </div>
+  </div>
+
+  <!-- ========================= EXERCÍCIO 3 ========================= -->
+  <div class="card">
+    <div class="ex-header">
+      <div class="ex-num-circle" style="background:linear-gradient(135deg,#16a34a,#15803d);">3</div>
+      <div class="ex-title-wrap">
+        <h2>🟢 Configurando o Perfil do PowerShell</h2>
+        <div class="meta">
+          <span class="meta-tag">🔬 Laboratório</span>
+          <span class="meta-tag">⏱ 25 min</span>
+          <span class="meta-tag" style="background:#fef9c3;border:1px solid #fde047;color:#713f12;">⚠️ Atenção: requer Administrador</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="enunciado">
+      <h3>📋 Enunciado</h3>
+      <p>Configure o ambiente PowerShell com um perfil personalizado que carrega aliases e funções úteis automaticamente toda vez que você abre o PowerShell.</p>
+    </div>
+
+    <div class="rubric-wrap">
+      <div class="rubric-title">📊 Rubrica de Avaliação</div>
+      <table class="rubric">
+        <thead>
+          <tr><th>Critério</th><th>Insuficiente (0–5)</th><th>Básico (6–7)</th><th>Proficiente (8–9)</th><th>Excelente (10)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Diagnóstico</td><td class="lv0">Não verificou política</td><td class="lv1">Verificou sem interpretar</td><td class="lv2">Verificou e entendeu</td><td class="lv3">Diagnóstico preciso e documentado</td></tr>
+          <tr><td>Criação do Perfil</td><td class="lv0">Não criou</td><td class="lv1">Criou com erros</td><td class="lv2">Criou corretamente</td><td class="lv3">Criou e confirmou funcionamento</td></tr>
+          <tr><td>Aliases Funcionais</td><td class="lv0">Aliases não funcionam</td><td class="lv1">Um alias funciona</td><td class="lv2">Dois aliases funcionam</td><td class="lv3">Todos funcionam + adicionou extras</td></tr>
+          <tr><td>Documentação</td><td class="lv0">Sem registro</td><td class="lv1">Registro mínimo</td><td class="lv2">Bem documentado</td><td class="lv3">Prints + explicação de cada etapa</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius-sm);padding:20px;margin-top:18px;">
+      <h3 style="color:#065f46;font-size:1em;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:6px;">✅ Resolução Passo a Passo</h3>
+
+      <div class="warn-box">
+        <p>⚠️ <strong>Antes de começar:</strong> Este exercício precisa do PowerShell aberto <strong>como Administrador</strong>. Se não tiver aberto assim, feche e abra novamente com botão direito → Executar como Administrador.</p>
+      </div>
+
+      <div class="step-section" style="margin-top:16px;">
+        <div class="step-section-title">🛡️ Passo 1 — Verificar e Configurar a Política de Execução</div>
+        <ul class="step-list">
+          <li>
+            <div class="step-n">1</div>
+            <div class="step-body">
+              <strong>Verificar qual política está ativa agora:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">Get-ExecutionPolicy</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-blue">Restricted</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation">
+                <p>📌 <strong>O que significa cada resposta:</strong><br>
+                <code style="color:#dc2626;font-family:monospace;">Restricted</code> = nenhum script pode rodar → faça o Passo 2<br>
+                <code style="color:#d97706;font-family:monospace;">AllSigned</code> = só scripts assinados → faça o Passo 2<br>
+                <code style="color:#16a34a;font-family:monospace;">RemoteSigned</code> = já está configurado → pule para o Passo 3<br>
+                <code style="color:#16a34a;font-family:monospace;">Unrestricted</code> = tudo liberado → pule para o Passo 3</p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">2</div>
+            <div class="step-body">
+              <strong>Se apareceu "Restricted", execute este comando para liberar:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output">Alteração na política de execução</span>
+                  <span class="ps-output">Deseja alterar a política de execução?</span>
+                  <span class="ps-output">[S] Sim  [A] Sim para Todos  [N] Não  ...</span>
+                  <div class="ps-line"><span class="ps-prompt">(padrão é "N"): </span><span class="ps-cmd">S</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 Digite <strong>S</strong> e pressione Enter quando perguntar. Isso permite rodar seus próprios scripts, mas ainda protege contra scripts maliciosos da internet.</p></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-title">📄 Passo 2 — Criar o Arquivo de Perfil</div>
+        <ul class="step-list">
+          <li>
+            <div class="step-n">3</div>
+            <div class="step-body">
+              <strong>Verificar se o arquivo de perfil já existe:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">Test-Path $PROFILE</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-blue">False</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation">
+                <p>📌 <strong>False</strong> = perfil não existe ainda → faça o Passo 4<br>
+                <strong>True</strong> = perfil já existe → pule para o Passo 5 (editar)</p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">4</div>
+            <div class="step-body">
+              <strong>Criar o arquivo de perfil (se não existia):</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">New-Item -Path $PROFILE -Type File -Force</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">    Directory: C:\Users\Aluno\Documents\WindowsPowerShell</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Mode                 LastWriteTime         Length Name</span>
+                  <span class="ps-output-header">----                 -------------         ------ ----</span>
+                  <span class="ps-output-green">-a---          27/04/2026    09:30              0 Microsoft.PowerShell_profile.ps1</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 O <code style="font-family:monospace;color:#1e40af;">$PROFILE</code> é uma variável especial que o PowerShell já conhece — ela guarda o caminho completo do seu arquivo de perfil automaticamente.</p></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-title">✏️ Passo 3 — Editar o Perfil com o Bloco de Notas</div>
+        <ul class="step-list">
+          <li>
+            <div class="step-n">5</div>
+            <div class="step-body">
+              <strong>Abrir o perfil no Bloco de Notas:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">notepad $PROFILE</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output" style="color:#aaa;">(O Bloco de Notas abre com o arquivo em branco)</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="annotation"><p>📌 O Bloco de Notas vai abrir com um arquivo vazio (ou com o conteúdo que já estava lá). O PowerShell continua funcionando em paralelo — as duas janelas ficam abertas!</p></div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">6</div>
+            <div class="step-body">
+              <strong>No Bloco de Notas, digite exatamente este conteúdo:</strong>
+              <div style="background:#1e1e1e;border-radius:8px;padding:16px;margin:10px 0;font-family:'IBM Plex Mono',monospace;font-size:.82em;line-height:1.8;border:1px solid #333;">
+                <span style="color:#6a9955;"># Meu perfil do PowerShell — GSO I 2026</span><br>
+                <span style="color:#9cdcfe;">Set-Alias</span> <span style="color:#ce9178;">-Name</span> gs <span style="color:#ce9178;">-Value</span> <span style="color:#4ec9b0;">Get-Service</span><br>
+                <span style="color:#9cdcfe;">Set-Alias</span> <span style="color:#ce9178;">-Name</span> gp <span style="color:#ce9178;">-Value</span> <span style="color:#4ec9b0;">Get-Process</span><br>
+                <span style="color:#9cdcfe;">Set-Alias</span> <span style="color:#ce9178;">-Name</span> gl <span style="color:#ce9178;">-Value</span> <span style="color:#4ec9b0;">Get-Location</span><br>
+                <span style="color:#9cdcfe;">Write-Host</span> <span style="color:#ce9178;">'✅ PowerShell carregado! Boa aula!'</span> <span style="color:#ce9178;">-ForegroundColor</span> <span style="color:#4ec9b0;">Green</span>
+              </div>
+              <div class="annotation">
+                <p>📌 <strong>O que cada linha faz:</strong><br>
+                <code style="color:#6a9955;font-family:monospace;"># comentário</code> — linhas que começam com # são comentários, o PowerShell ignora<br>
+                <code style="color:#9cdcfe;font-family:monospace;">Set-Alias</code> — cria um atalho: digitar <code style="font-family:monospace;">gs</code> vai executar <code style="font-family:monospace;">Get-Service</code><br>
+                <code style="color:#9cdcfe;font-family:monospace;">Write-Host</code> — escreve uma mensagem colorida na tela ao abrir</p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">7</div>
+            <div class="step-body">
+              <strong>Salvar o arquivo:</strong><br>
+              No Bloco de Notas: <strong>Ctrl+S</strong> → Salvar. Depois <strong>feche o Bloco de Notas</strong>.
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-title">🔄 Passo 4 — Testar o Perfil</div>
+        <ul class="step-list">
+          <li>
+            <div class="step-n">8</div>
+            <div class="step-body">
+              <strong>Feche o PowerShell e abra novamente como Administrador.</strong><br>
+              Quando o PowerShell abrir, a mensagem deve aparecer automaticamente:
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <span class="ps-output">Windows PowerShell</span>
+                  <span class="ps-output">Direitos autorais (C) Microsoft Corporation. Todos os direitos reservados.</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-green">✅ PowerShell carregado! Boa aula!</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\Users\Aluno&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="success-box" style="margin-top:6px;"><p>✅ Se a mensagem verde apareceu — o perfil está funcionando! Toda vez que você abrir o PowerShell, ele vai carregar seus aliases automaticamente.</p></div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">9</div>
+            <div class="step-body">
+              <strong>Testar os aliases criados:</strong>
+              <div class="ps-window">
+                <div class="ps-titlebar"><div class="ps-win-btns"><div class="ps-win-btn close"></div><div class="ps-win-btn min"></div><div class="ps-win-btn max"></div></div><div class="ps-titlebar-title">Administrador: Windows PowerShell</div></div>
+                <div class="ps-body">
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">gs</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header">Status   Name               DisplayName</span>
+                  <span class="ps-output-header">------   ----               -----------</span>
+                  <span class="ps-output-green">Running  AudioEndpointBu... Windows Audio Endpoint Builder</span>
+                  <span class="ps-output">  ... (lista de serviços aparece) ...</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cmd">gp</span></div>
+                  <span class="ps-output">&nbsp;</span>
+                  <span class="ps-output-header"> Handles  NPM(K) PM(K) WS(K) CPU(s)   Id SI ProcessName</span>
+                  <span class="ps-output">  ... (lista de processos aparece) ...</span>
+                  <span class="ps-output">&nbsp;</span>
+                  <div class="ps-line"><span class="ps-prompt">PS C:\&gt; </span><span class="ps-cursor"></span></div>
+                </div>
+              </div>
+              <div class="success-box" style="margin-top:6px;"><p>✅ <strong>Funcionou!</strong> Agora você digitando apenas <code style="font-family:monospace;">gs</code> lista todos os serviços — em vez de digitar o longo <code style="font-family:monospace;">Get-Service</code>. Isso é personalização profissional!</p></div>
+            </div>
+          </li>
+          <li>
+            <div class="step-n">10</div>
+            <div class="step-body">
+              <strong>Salve seu relatório com prints de cada etapa:</strong><br>
+              Salve como <code>sem08_ex3_SeuNome.docx</code>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div><!-- fim resolução -->
+
+    <div class="tip-box">
+      <p><strong>💡 Dica Profissional:</strong> Você pode adicionar mais aliases ao perfil quando quiser! Abra de novo com <code style="font-family:monospace;">notepad $PROFILE</code> e adicione mais linhas de <code style="font-family:monospace;">Set-Alias</code>. Profissionais de TI acumulam aliases úteis ao longo dos anos!</p>
+    </div>
+
+    <div class="error-box" style="margin-top:14px;">
+      <p><strong>🚨 Erro comum:</strong> <span class="error-cmd">Não é possível carregar o arquivo ... não está assinado digitalmente</span><br>
+      <strong>Causa:</strong> A política de execução ainda está como Restricted.<br>
+      <strong>Solução:</strong> Execute novamente o Passo 2: <span class="fix-cmd">Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</span></p>
+    </div>
+
+    <div class="check-wrap">
+      <h4>☑️ Checklist de Entrega:</h4>
+      <div class="check-item"><div class="check-box"></div><span>Verificou a política com Get-ExecutionPolicy e anotou o resultado</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Alterou para RemoteSigned se necessário</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Verificou se o perfil existia com Test-Path $PROFILE</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Criou o arquivo de perfil com New-Item</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Editou o perfil no Bloco de Notas com os aliases</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Fechou e reabriu o PowerShell — mensagem verde apareceu</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Testou os aliases gs e gp — funcionaram</span></div>
+      <div class="check-item"><div class="check-box"></div><span>Arquivo salvo como sem08_ex3_SeuNome.docx com prints</span></div>
+    </div>
+  </div>
+
+  <!-- NAV BOTTOM -->
+  <nav class="nav-bar">
+    <a href="semana07_guia.html" class="nav-btn btn-secondary">⬅ Anterior</a>
+    <a href="index.html" class="nav-btn btn-secondary">🏠 Índice</a>
+    <a href="semana08_aula.html" class="nav-btn btn-blue">📖 Ver Aula</a>
+    <span class="nav-spacer"></span>
+    <a href="semana09_guia.html" class="nav-btn btn-primary">Próximo ➡</a>
+  </nav>
+</div>
+</body>
+</html>
