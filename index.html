@@ -132,6 +132,15 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .wl-special:hover{background:rgba(0,229,255,.15);border-color:var(--cyan);}
 .wl-prova{color:var(--purple);border-color:rgba(179,107,255,.35);background:rgba(179,107,255,.08);}
 .wl-prova:hover{background:rgba(179,107,255,.2);border-color:var(--purple);}
+.wl-novo-aula{color:#0b0f0e;border-color:var(--green);background:var(--green);font-weight:700;}
+.wl-novo-aula:hover{background:var(--green2);border-color:var(--green2);}
+.wl-novo-doc{color:var(--green);border-color:rgba(0,255,136,.35);background:rgba(0,255,136,.07);}
+.wl-novo-doc:hover{background:rgba(0,255,136,.18);border-color:var(--green);}
+.novo-box{background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.3);border-radius:7px;padding:12px 13px;display:flex;flex-direction:column;gap:8px;position:relative;}
+.novo-box::before{content:'NOVO · S02';position:absolute;top:-9px;right:10px;font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:#0b0f0e;background:var(--green);padding:2px 7px;border-radius:4px;font-weight:700;}
+.novo-box-title{font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;padding-right:60px;}
+.novo-box-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+.novo-box-links{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px;}
 .card-special{border-color:rgba(0,229,255,.22) !important;}
 .card-final{border-color:rgba(255,224,51,.3) !important;background:rgba(255,224,51,.025) !important;}
 .card-prova{border-color:rgba(179,107,255,.3) !important;background:rgba(179,107,255,.02) !important;}
@@ -441,7 +450,15 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <div class="prova-box-title">📝 Prova Semanas 02–03 — Sistemas Numéricos & Portas Lógicas</div>
         <div class="prova-box-desc">Instrumento avaliativo cobrindo o conteúdo desta semana e da S03. Aplicar após conclusão dos Labs 01 e 02.</div>
       </div>
-      
+      <div class="novo-box">
+        <div class="novo-box-title">✨ Novo material — Conversor de Decimal para Binário com LEDs</div>
+        <div class="novo-box-desc">Aula interativa gamificada (simulador de LEDs, jogo "Monte o Binário" e quiz com XP) e o registro de aula em Word, ambos prontos para esta semana — montagem no Tinkercad com 4 LEDs e desafio de expansão para 8 LEDs.</div>
+        <div class="novo-box-links">
+          <a href="ads_aula02_decimal_binario.html" class="wl wl-novo-aula">🎮 Aula Interativa (LEDs)</a>
+          <a href="registro-aula-decimal-binario.docx" class="wl wl-novo-doc">📋 Registro de Aula (.docx)</a>
+        </div>
+      </div>
+
       <div class="bib-map">
         <div class="bib-map-title">📚 Referências desta semana</div>
         <div class="bib-map-body">Silva cap. 2 · Tocci cap. 1–3 · CompSim cap. 1–2 (Sistemas numéricos, binário, BCD)</div>
@@ -456,6 +473,8 @@ footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-i
         <a href="projeto_arduino_sistemas_numericos_conversor_decimal_binario.html" class="wl wl-proj">🎯 Projeto 01</a>
         <a href="arquitetura_semana02_lab.html" class="wl wl-lab">🔬 Lab 01</a>
         <a href="prova_s02_s03.html" class="wl wl-prova">📝 Prova S02–03</a>
+        <a href="ads_aula02_decimal_binario.html" class="wl wl-novo-aula">🎮 Aula Interativa</a>
+        <a href="registro-aula-decimal-binario.docx" class="wl wl-novo-doc">📋 Registro (.docx)</a>
       </div>
     </div>
 
