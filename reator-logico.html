@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reator Lógico — Portas Lógicas | ADS 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a0a;--bg2:#0a0f0f;--bg3:#0f1a14;--card:#0d1a12;
+  --border:#1a3320;--green:#00ff88;--green2:#00cc66;--green3:#00ff88;
+  --amber:#f59e0b;--red:#ef4444;--blue:#38bdf8;--purple:#a78bfa;
+  --pink:#f472b6;--orange:#fb923c;
+  --text:#c8ffd4;--text2:#6b9e78;--white:#ffffff;
+  --glow:0 0 20px rgba(0,255,136,.25);--glow2:0 0 30px rgba(0,255,136,.4);
+  --scanline:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:var(--scanline);pointer-events:none;z-index:0;opacity:.3}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px;position:relative;z-index:1}
+
+/* ── HEADER ── */
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--green2);letter-spacing:.18em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(1.5em,4vw,2.1em);color:var(--green3);text-shadow:0 0 20px rgba(0,255,136,.4);margin-bottom:8px}
+.subtitle{color:var(--text2);font-size:.92em;max-width:560px;margin-bottom:22px}
+
+/* ── HUD ── */
+.hud-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--bg2);border:1px solid var(--border);padding:12px 16px;margin-bottom:16px}
+.hud-pill{font-family:'IBM Plex Mono',monospace;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.18);padding:6px 12px;text-align:center;min-width:78px}
+.hud-pill .v{font-size:1.05em;font-weight:700;color:var(--green);display:block;line-height:1.1}
+.hud-pill .l{font-size:.56em;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;display:block;margin-top:3px}
+.shields{font-size:1.1em;letter-spacing:2px;margin-left:auto;font-family:'IBM Plex Mono',monospace}
+.shields .lost{opacity:.2;filter:grayscale(1)}
+
+/* ── INSTRUCTIONS ── */
+.instructions{font-size:.82em;color:var(--text2);background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.18);border-left:3px solid var(--blue);padding:10px 14px;margin-bottom:22px;line-height:1.6}
+.instructions b{color:#7dd3fc}
+
+/* ── REACTOR PANEL ── */
+.panel{background:var(--card);border:1px solid var(--border);padding:24px;position:relative;box-shadow:var(--glow),inset 0 0 60px rgba(0,255,136,.02);margin-bottom:18px}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.panel-tag{position:absolute;right:20px;top:16px;font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);letter-spacing:.15em}
+
+.gate-stage{display:flex;justify-content:center;padding:10px 0 4px}
+.gate-stage svg{overflow:visible;max-width:100%}
+
+.led-label{font-family:'IBM Plex Mono',monospace;font-size:.6em;fill:var(--text2);letter-spacing:.08em}
+
+/* answer buttons */
+.answers{display:flex;justify-content:center;gap:20px;margin-top:8px}
+.ans-btn{font-family:'IBM Plex Mono',monospace;width:92px;height:92px;border-radius:50%;border:3px solid rgba(0,255,136,.3);background:rgba(0,255,136,.04);color:var(--green);font-size:1.9em;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.ans-btn:hover:not(:disabled){background:rgba(0,255,136,.14);box-shadow:var(--glow2);transform:translateY(-2px)}
+.ans-btn:disabled{cursor:default}
+.ans-btn.correct{border-color:var(--green);background:rgba(0,255,136,.22);box-shadow:0 0 30px rgba(0,255,136,.6);color:var(--green3)}
+.ans-btn.wrong{border-color:var(--red);background:rgba(239,68,68,.14);color:var(--red);animation:shake .35s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.feedback{min-height:1.6em;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.8em;margin-top:14px;transition:opacity .2s}
+.feedback.ok{color:var(--green)}
+.feedback.fail{color:var(--red)}
+
+/* ── HINT TABLE ── */
+.hint{margin-top:16px;border-top:1px dashed var(--border);padding-top:14px;display:none}
+.hint.show{display:block}
+.hint-title{font-family:'IBM Plex Mono',monospace;font-size:.65em;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+table.tt{width:100%;max-width:320px;margin:0 auto;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.82em}
+table.tt th{background:rgba(0,255,136,.08);color:var(--green);padding:5px 10px;border:1px solid var(--border)}
+table.tt td{padding:5px 10px;border:1px solid var(--border);text-align:center;color:var(--text2)}
+table.tt td.hi{color:var(--green3);font-weight:700}
+table.tt tr.current td{background:rgba(245,158,11,.1);color:var(--amber);font-weight:700}
+
+/* ── CONTROLS ── */
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:18px}
+.ctrl-btn{font-family:'IBM Plex Mono',monospace;padding:8px 16px;border:1px solid rgba(0,255,136,.25);background:rgba(0,255,136,.05);color:var(--green);font-size:.76em;cursor:pointer;transition:all .2s}
+.ctrl-btn:hover{background:rgba(0,255,136,.15)}
+.ctrl-btn.active{background:rgba(0,255,136,.2);border-color:var(--green)}
+
+/* ── FOOTER NOTE ── */
+.footnote{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2);text-align:center;line-height:1.7;border-top:1px solid var(--border);padding-top:16px}
+.footnote b{color:var(--green)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;left:auto;z-index:9999;background:#0d1a12;border:1px solid rgba(0,255,136,.4);border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.6),0 0 20px rgba(0,255,136,.3);transform:translateY(100px) scale(.9);opacity:0;transition:all .4s cubic-bezier(.175,.885,.32,1.275);max-width:280px}
+.toast.show{transform:translateY(0) scale(1);opacity:1}
+.toast-icon{font-size:1.4em}
+.toast-title{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.82em;color:var(--green)}
+.toast-msg{font-size:.7em;color:var(--text2);margin-top:2px}
+
+.victory{display:none;text-align:center;padding:20px 0}
+.victory.show{display:block}
+.victory h2{font-family:'IBM Plex Mono',monospace;color:var(--green3);font-size:1.3em;margin-bottom:8px;text-shadow:0 0 20px rgba(0,255,136,.5)}
+.victory p{color:var(--text2);font-size:.85em;margin-bottom:14px}
+
+@media(max-width:520px){
+  .ans-btn{width:76px;height:76px;font-size:1.5em}
+  .answers{gap:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">SEMANA 04 · LABORATÓRIO DE CIRCUITOS</div>
+  <h1>⚡ Reator Lógico</h1>
+  <p class="subtitle">Estabilize o reator prevendo a saída de cada porta lógica. Observe as entradas (LEDs A/B) e o símbolo da porta no centro do painel, então escolha se a saída é <b style="color:var(--text)">0</b> ou <b style="color:var(--text)">1</b>.</p>
+
+  <div class="hud-bar">
+    <div class="hud-pill"><span class="v" id="hud-level">1/3</span><span class="l">Nível</span></div>
+    <div class="hud-pill"><span class="v" id="hud-score">0</span><span class="l">Pontuação</span></div>
+    <div class="hud-pill"><span class="v" id="hud-rounds">0</span><span class="l">Portas avaliadas</span></div>
+    <div class="hud-pill"><span class="v" id="hud-streak">0</span><span class="l">Sequência</span></div>
+    <div class="shields" id="hud-shields">🛡🛡🛡</div>
+  </div>
+
+  <div class="instructions">
+    <b>Como jogar:</b> a cada rodada o reator sorteia uma porta lógica e valores para as entradas. Leia o símbolo e clique no LED de saída (0 ou 1) que você acredita ser o resultado. Acertar avança a barra de progresso do nível; errar consome um escudo 🛡.
+  </div>
+
+  <div class="panel">
+    <span class="panel-tag" id="panel-level-tag">[NÍVEL 1/3]</span>
+    <div class="gate-stage" id="gate-stage"></div>
+
+    <div class="answers">
+      <button class="ans-btn" id="btn-0" onclick="answer(0)">0</button>
+      <button class="ans-btn" id="btn-1" onclick="answer(1)">1</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="hint" id="hint">
+      <div class="hint-title">📊 Tabela-verdade da porta atual</div>
+      <div id="hint-table"></div>
+    </div>
+
+    <div class="victory" id="victory">
+      <h2>🎉 Reator estabilizado!</h2>
+      <p>Você dominou AND, OR, NOT, NAND, NOR, XOR e XNOR. Pontuação final: <b id="victory-score" style="color:var(--green)">0</b></p>
+      <button class="ctrl-btn" onclick="resetGame()">↺ Jogar novamente</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" onclick="resetGame()">↺ Reiniciar</button>
+    <button class="ctrl-btn" id="btn-auto" onclick="toggleAutopilot()">▶ Piloto automático</button>
+    <button class="ctrl-btn" id="btn-hint" onclick="toggleHint()">📊 Tabela-verdade</button>
+    <button class="ctrl-btn" id="btn-sound" onclick="toggleSound()">🔊 Som</button>
+  </div>
+
+  <div class="footnote" id="footnote"></div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-icon" id="t-icon">⚡</span>
+  <div><div class="toast-title" id="t-title"></div><div class="toast-msg" id="t-msg"></div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DADOS DAS PORTAS LÓGICAS
+// ═══════════════════════════════════════════════════════════
+const GATES = {
+  and:  { name:'AND',  color:'#00ff88', expr:'S = A · B',   inputs:['A','B'], desc:'Saída 1 somente se TODAS as entradas forem 1.',
+          tt:[{in:[0,0],out:0},{in:[0,1],out:0},{in:[1,0],out:0},{in:[1,1],out:1}] },
+  or:   { name:'OR',   color:'#38bdf8', expr:'S = A + B',   inputs:['A','B'], desc:'Saída 1 se PELO MENOS UMA entrada for 1.',
+          tt:[{in:[0,0],out:0},{in:[0,1],out:1},{in:[1,0],out:1},{in:[1,1],out:1}] },
+  not:  { name:'NOT',  color:'#a78bfa', expr:'S = Ā',       inputs:['A'],     desc:'Inverte a entrada: 0 vira 1, e 1 vira 0.',
+          tt:[{in:[0],out:1},{in:[1],out:0}] },
+  nand: { name:'NAND', color:'#fb923c', expr:'S = ¬(A·B)',  inputs:['A','B'], desc:'Negação do AND. Só dá 0 quando TODAS as entradas são 1.',
+          tt:[{in:[0,0],out:1},{in:[0,1],out:1},{in:[1,0],out:1},{in:[1,1],out:0}] },
+  nor:  { name:'NOR',  color:'#f472b6', expr:'S = ¬(A+B)',  inputs:['A','B'], desc:'Negação do OR. Só dá 1 quando TODAS as entradas são 0.',
+          tt:[{in:[0,0],out:1},{in:[0,1],out:0},{in:[1,0],out:0},{in:[1,1],out:0}] },
+  xor:  { name:'XOR',  color:'#f59e0b', expr:'S = A ⊕ B',   inputs:['A','B'], desc:'Saída 1 quando as entradas são DIFERENTES.',
+          tt:[{in:[0,0],out:0},{in:[0,1],out:1},{in:[1,0],out:1},{in:[1,1],out:0}] },
+  xnor: { name:'XNOR', color:'#34d399', expr:'S = ¬(A⊕B)',  inputs:['A','B'], desc:'Saída 1 quando as entradas são IGUAIS.',
+          tt:[{in:[0,0],out:1},{in:[0,1],out:0},{in:[1,0],out:0},{in:[1,1],out:1}] }
+};
+
+const LEVELS = [
+  ['and','or','not'],
+  ['and','or','not','nand','nor'],
+  ['and','or','not','nand','nor','xor','xnor']
+];
+const NEEDED_PER_LEVEL = 5;
+
+// ═══════════════════════════════════════════════════════════
+// ESTADO DO JOGO
+// ═══════════════════════════════════════════════════════════
+let state = {
+  level: 1, score: 0, shields: 3, streak: 0,
+  rounds: 0, correctInLevel: 0,
+  soundOn: true, hintOn: false,
+  locked: false, autopilot: false,
+  current: null
+};
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function newRound(){
+  const pool = LEVELS[state.level-1];
+  const gateId = pick(pool);
+  const gate = GATES[gateId];
+  const row = pick(gate.tt);
+  state.current = { gateId, inputs: row.in, out: row.out };
+  state.locked = false;
+  document.getElementById('btn-0').disabled = false;
+  document.getElementById('btn-1').disabled = false;
+  document.getElementById('btn-0').className = 'ans-btn';
+  document.getElementById('btn-1').className = 'ans-btn';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  renderStage();
+  renderHint();
+  renderFootnote();
+}
+
+function renderStage(){
+  const { gateId, inputs } = state.current;
+  const gate = GATES[gateId];
+  const c = gate.color;
+  const has2 = inputs.length === 2;
+
+  let inputLines = '';
+  if (has2) {
+    inputLines = `
+      <text x="6" y="34" class="led-label">A</text>
+      <circle cx="26" cy="30" r="7" fill="${inputs[0]?c:'#111'}" stroke="${c}" stroke-width="2" opacity="${inputs[0]?1:.5}"/>
+      <line x1="33" y1="30" x2="55" y2="30" stroke="${c}" stroke-width="2" opacity="${inputs[0]?1:.35}"/>
+      <text x="6" y="74" class="led-label">B</text>
+      <circle cx="26" cy="70" r="7" fill="${inputs[1]?c:'#111'}" stroke="${c}" stroke-width="2" opacity="${inputs[1]?1:.5}"/>
+      <line x1="33" y1="70" x2="55" y2="70" stroke="${c}" stroke-width="2" opacity="${inputs[1]?1:.35}"/>`;
+  } else {
+    inputLines = `
+      <text x="6" y="54" class="led-label">A</text>
+      <circle cx="26" cy="50" r="7" fill="${inputs[0]?c:'#111'}" stroke="${c}" stroke-width="2" opacity="${inputs[0]?1:.5}"/>
+      <line x1="33" y1="50" x2="55" y2="50" stroke="${c}" stroke-width="2" opacity="${inputs[0]?1:.35}"/>`;
+  }
+
+  const gateShape = gateSVGPath(gateId, c);
+  const outStartX = { and:95, or:100, not:113, nand:105, nor:109, xor:100, xnor:107 }[gateId];
+
+  const svg = `<svg width="300" height="120" viewBox="0 0 300 120">
+    ${inputLines}
+    ${gateShape}
+    <line x1="${outStartX}" y1="50" x2="250" y2="50" stroke="${c}" stroke-width="2"/>
+    <circle cx="258" cy="50" r="9" fill="#0d1a12" stroke="${c}" stroke-width="2" id="out-led"/>
+    <text x="254" y="55" fill="${c}" font-family="IBM Plex Mono" font-size="11" id="out-mark">?</text>
+    <text x="150" y="105" text-anchor="middle" fill="${c}" font-family="IBM Plex Mono" font-size="12" font-weight="700">${gate.name} · ${gate.expr}</text>
+  </svg>`;
+  document.getElementById('gate-stage').innerHTML = svg;
+}
+
+function gateSVGPath(id, c){
+  if(id==='and') return `<path d="M55,20 L55,80 Q95,80 95,50 Q95,20 55,20Z" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+  if(id==='or')  return `<path d="M50,20 Q65,50 50,80 Q80,80 100,50 Q80,20 50,20Z" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+  if(id==='not') return `<polygon points="55,30 55,70 100,50" fill="none" stroke="${c}" stroke-width="2.5"/><circle cx="107" cy="50" r="6" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+  if(id==='nand'){
+    return `<path d="M55,20 L55,80 Q92,80 92,50 Q92,20 55,20Z" fill="none" stroke="${c}" stroke-width="2.5"/><circle cx="99" cy="50" r="6" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+  }
+  if(id==='nor'){
+    return `<path d="M50,20 Q62,50 50,80 Q78,80 96,50 Q78,20 50,20Z" fill="none" stroke="${c}" stroke-width="2.5"/><circle cx="103" cy="50" r="6" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+  }
+  if(id==='xor'){
+    return `<path d="M43,20 Q55,50 43,80" fill="none" stroke="${c}" stroke-width="2"/><path d="M50,20 Q64,50 50,80 Q80,80 100,50 Q80,20 50,20Z" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+  }
+  if(id==='xnor'){
+    return `<path d="M43,20 Q55,50 43,80" fill="none" stroke="${c}" stroke-width="2"/><path d="M50,20 Q63,50 50,80 Q77,80 94,50 Q77,20 50,20Z" fill="none" stroke="${c}" stroke-width="2.5"/><circle cx="101" cy="50" r="6" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+  }
+  return '';
+}
+
+function renderHint(){
+  const box = document.getElementById('hint');
+  box.classList.toggle('show', state.hintOn);
+  if(!state.hintOn) return;
+  const { gateId, inputs } = state.current;
+  const gate = GATES[gateId];
+  let rows = gate.tt.map(row=>{
+    const isCurrent = JSON.stringify(row.in) === JSON.stringify(inputs);
+    const cells = row.in.map(v=>`<td>${v}</td>`).join('') + `<td class="${row.out?'hi':''}">${row.out}</td>`;
+    return `<tr class="${isCurrent?'current':''}">${cells}</tr>`;
+  }).join('');
+  const headCols = gate.inputs.map(l=>`<th>${l}</th>`).join('') + '<th>S</th>';
+  document.getElementById('hint-table').innerHTML =
+    `<table class="tt"><thead><tr>${headCols}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function renderFootnote(){
+  const gate = GATES[state.current.gateId];
+  document.getElementById('footnote').innerHTML =
+    `<b>${gate.name}</b> (${gate.expr}) — ${gate.desc}`;
+}
+
+function updateHUD(){
+  document.getElementById('hud-level').textContent = state.level + '/3';
+  document.getElementById('panel-level-tag').textContent = '[NÍVEL ' + state.level + '/3]';
+  document.getElementById('hud-score').textContent = state.score;
+  document.getElementById('hud-rounds').textContent = state.rounds;
+  document.getElementById('hud-streak').textContent = state.streak;
+  let sh = '';
+  for(let i=0;i<3;i++) sh += i < state.shields ? '🛡' : '<span class="lost">🛡</span>';
+  document.getElementById('hud-shields').innerHTML = sh;
+}
+
+function answer(val){
+  if(state.locked) return;
+  state.locked = true;
+  const correct = state.current.out;
+  const ok = val === correct;
+  const btn = document.getElementById('btn-' + val);
+  const otherBtn = document.getElementById('btn-' + (1-val));
+  document.getElementById('btn-0').disabled = true;
+  document.getElementById('btn-1').disabled = true;
+
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  if(!ok) otherBtn.classList.add('correct');
+
+  const fb = document.getElementById('feedback');
+  const gate = GATES[state.current.gateId];
+  if(ok){
+    fb.textContent = '✅ Correto! ' + gate.name + ' com essas entradas dá ' + correct + '.';
+    fb.className = 'feedback ok';
+    state.score += 10 * state.level;
+    state.streak++;
+    state.correctInLevel++;
+    beep(true);
+  } else {
+    fb.textContent = '❌ A saída correta era ' + correct + '. ' + gate.desc;
+    fb.className = 'feedback fail';
+    state.streak = 0;
+    state.shields--;
+    beep(false);
+  }
+  state.rounds++;
+  updateHUD();
+
+  const delay = state.autopilot ? 650 : 1150;
+
+  setTimeout(()=>{
+    if(state.shields <= 0){
+      state.shields = 3;
+      state.correctInLevel = 0;
+      updateHUD();
+      toast('🔧', 'Reator instável!', 'Escudos esgotados — progresso do nível reiniciado. Continue tentando.');
+      newRound();
+      continueAutopilot();
+      return;
+    }
+    if(state.correctInLevel >= NEEDED_PER_LEVEL){
+      if(state.level < 3){
+        state.level++;
+        state.correctInLevel = 0;
+        state.shields = 3;
+        updateHUD();
+        toast('⚡', 'Nível ' + state.level + ' desbloqueado!', 'Novas portas lógicas liberadas no reator.');
+        newRound();
+        continueAutopilot();
+      } else {
+        showVictory();
+      }
+      return;
+    }
+    newRound();
+    continueAutopilot();
+  }, delay);
+}
+
+function showVictory(){
+  document.querySelector('.panel > .gate-stage').style.display = 'none';
+  document.querySelector('.answers').style.display = 'none';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('hint').classList.remove('show');
+  document.getElementById('victory-score').textContent = state.score;
+  document.getElementById('victory').classList.add('show');
+  state.autopilot = false;
+  document.getElementById('btn-auto').classList.remove('active');
+  document.getElementById('btn-auto').textContent = '▶ Piloto automático';
+}
+
+function resetGame(){
+  state = { level:1, score:0, shields:3, streak:0, rounds:0, correctInLevel:0,
+            soundOn:state.soundOn, hintOn:state.hintOn, locked:false, autopilot:false, current:null };
+  document.querySelector('.panel > .gate-stage').style.display = 'flex';
+  document.querySelector('.answers').style.display = 'flex';
+  document.getElementById('victory').classList.remove('show');
+  document.getElementById('btn-auto').classList.remove('active');
+  document.getElementById('btn-auto').textContent = '▶ Piloto automático';
+  updateHUD();
+  newRound();
+}
+
+// ── PILOTO AUTOMÁTICO ──
+function toggleAutopilot(){
+  state.autopilot = !state.autopilot;
+  const btn = document.getElementById('btn-auto');
+  btn.classList.toggle('active', state.autopilot);
+  btn.textContent = state.autopilot ? '⏸ Pausar piloto' : '▶ Piloto automático';
+  if(state.autopilot) continueAutopilot();
+}
+function continueAutopilot(){
+  if(!state.autopilot) return;
+  setTimeout(()=>{
+    if(!state.autopilot || state.locked) return;
+    if(document.getElementById('victory').classList.contains('show')) return;
+    answer(state.current.out);
+  }, 500);
+}
+
+// ── DICA / TABELA-VERDADE ──
+function toggleHint(){
+  state.hintOn = !state.hintOn;
+  document.getElementById('btn-hint').classList.toggle('active', state.hintOn);
+  renderHint();
+}
+
+// ── SOM ──
+let audioCtx;
+function toggleSound(){
+  state.soundOn = !state.soundOn;
+  document.getElementById('btn-sound').classList.toggle('active', state.soundOn);
+  document.getElementById('btn-sound').textContent = state.soundOn ? '🔊 Som' : '🔇 Som';
+}
+function beep(ok){
+  if(!state.soundOn) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine';
+    o.frequency.value = ok ? 880 : 220;
+    g.gain.value = 0.06;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.25);
+    o.stop(audioCtx.currentTime + 0.25);
+  }catch(e){}
+}
+
+// ── TOAST ──
+function toast(icon, title, msg){
+  document.getElementById('t-icon').textContent = icon;
+  document.getElementById('t-title').textContent = title;
+  document.getElementById('t-msg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+// ── INIT ──
+document.getElementById('btn-sound').classList.add('active');
+updateHUD();
+newRound();
+</script>
+</body>
+</html>

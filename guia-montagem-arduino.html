@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Montagem — Reator Lógico no Arduino | ADS 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a0a;--bg2:#0a0f0f;--card:#0d1a12;
+  --border:#1a3320;--green:#00ff88;--green2:#00cc66;
+  --amber:#f59e0b;--red:#ef4444;--blue:#38bdf8;--purple:#a78bfa;--teal:#34d399;
+  --text:#c8ffd4;--text2:#6b9e78;--white:#ffffff;
+  --glow:0 0 20px rgba(0,255,136,.25);
+  --scanline:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:var(--scanline);pointer-events:none;z-index:0;opacity:.3}
+.wrap{max-width:860px;margin:0 auto;padding:32px 20px 70px;position:relative;z-index:1}
+
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:var(--green2);letter-spacing:.18em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(1.4em,3.6vw,2em);color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.4);margin-bottom:8px}
+.subtitle{color:var(--text2);font-size:.92em;max-width:620px;margin-bottom:28px}
+
+.card{background:var(--card);border:1px solid var(--border);padding:24px;margin-bottom:20px;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--green2)}
+.card-title{font-family:'IBM Plex Mono',monospace;font-size:1em;color:var(--green);font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+
+.materials{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.mat-item{background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);padding:10px 12px;font-size:.85em}
+.mat-item b{color:var(--green);display:block;font-family:'IBM Plex Mono',monospace;font-size:.9em}
+.mat-item span{color:var(--text2);font-size:.85em}
+
+table.pins{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.82em}
+table.pins th{background:rgba(0,255,136,.08);color:var(--green);padding:8px 10px;border:1px solid var(--border);text-align:left}
+table.pins td{padding:8px 10px;border:1px solid var(--border);color:var(--text)}
+table.pins td.pin{color:var(--amber);font-weight:700;white-space:nowrap}
+
+.diagram-wrap{overflow-x:auto;padding:6px 0}
+.diagram-wrap svg{min-width:600px}
+
+.steps{counter-reset:step}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{counter-increment:step;font-family:'IBM Plex Mono',monospace;color:var(--bg);background:var(--green);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.step-num::before{content:counter(step)}
+.step-body h3{font-family:'IBM Plex Mono',monospace;font-size:.9em;color:var(--green);margin-bottom:4px}
+.step-body p{color:var(--text2);font-size:.86em}
+.step-body code{background:rgba(0,255,136,.08);color:var(--amber);padding:1px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:.9em}
+
+.info-box{background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.22);border-left:3px solid var(--blue);padding:12px 16px;font-size:.85em;color:#bfe4fb;margin-top:6px;line-height:1.65}
+.info-box b{color:#7dd3fc}
+
+.code-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.copy-btn{font-family:'IBM Plex Mono',monospace;padding:6px 14px;border:1px solid rgba(0,255,136,.3);background:rgba(0,255,136,.06);color:var(--green);font-size:.75em;cursor:pointer;transition:all .2s}
+.copy-btn:hover{background:rgba(0,255,136,.16)}
+.copy-btn.copied{border-color:var(--green);background:rgba(0,255,136,.22)}
+pre.code{background:#020a06;border:1px solid var(--border);padding:16px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:.74em;line-height:1.6;color:#a8e8bd;max-height:480px;overflow-y:auto}
+pre.code .cm{color:var(--text2)}
+pre.code .kw{color:var(--purple)}
+pre.code .str{color:var(--amber)}
+
+.footnote{font-family:'IBM Plex Mono',monospace;font-size:.72em;color:var(--text2);text-align:center;line-height:1.7;border-top:1px solid var(--border);padding-top:16px;margin-top:8px}
+.footnote b{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">SEMANA 04 · MONTAGEM FÍSICA</div>
+  <h1>🔧 Guia de Montagem — Reator Lógico no Arduino</h1>
+  <p class="subtitle">Versão física do jogo de portas lógicas, montada só com Arduino, LEDs, resistores e jumpers — sem botões nem buzzer. O próprio fio jumper funciona como botão: você encosta a ponta solta no GND para responder.</p>
+
+  <div class="card">
+    <div class="card-title">🧰 Materiais</div>
+    <div class="materials">
+      <div class="mat-item"><b>1×</b><span>Arduino Uno ou Nano</span></div>
+      <div class="mat-item"><b>1×</b><span>Protoboard</span></div>
+      <div class="mat-item"><b>4×</b><span>LED (A, B, verde, vermelho)</span></div>
+      <div class="mat-item"><b>4×</b><span>Resistor 220Ω</span></div>
+      <div class="mat-item"><b>~8×</b><span>Jumpers (LEDs + 2 fios de resposta)</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Pinagem</div>
+    <table class="pins">
+      <thead><tr><th>Pino Arduino</th><th>Componente</th><th>Função</th></tr></thead>
+      <tbody>
+        <tr><td class="pin">D2</td><td>LED A</td><td>mostra a entrada A da porta sorteada</td></tr>
+        <tr><td class="pin">D3</td><td>LED B</td><td>mostra a entrada B da porta sorteada</td></tr>
+        <tr><td class="pin">D4</td><td>LED verde</td><td>acende quando a resposta está correta</td></tr>
+        <tr><td class="pin">D5</td><td>LED vermelho</td><td>acende quando a resposta está errada</td></tr>
+        <tr><td class="pin">D8</td><td>Fio resposta "0"</td><td>ponta solta — encoste no GND para responder 0</td></tr>
+        <tr><td class="pin">D9</td><td>Fio resposta "1"</td><td>ponta solta — encoste no GND para responder 1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔌 Diagrama de ligação</div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 680 560" width="100%">
+        <rect x="40" y="42" width="170" height="496" rx="14" fill="rgba(56,189,248,.06)" stroke="var(--blue)" stroke-width="1"/>
+        <text x="125" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" font-weight="700" fill="var(--blue)">Arduino Uno</text>
+
+        <circle cx="210" cy="90" r="3" fill="var(--text)"/><text x="200" y="94" text-anchor="end" font-family="IBM Plex Mono" font-size="12" fill="var(--text2)">D2</text>
+        <circle cx="210" cy="170" r="3" fill="var(--text)"/><text x="200" y="174" text-anchor="end" font-family="IBM Plex Mono" font-size="12" fill="var(--text2)">D3</text>
+        <circle cx="210" cy="250" r="3" fill="var(--text)"/><text x="200" y="254" text-anchor="end" font-family="IBM Plex Mono" font-size="12" fill="var(--text2)">D4</text>
+        <circle cx="210" cy="330" r="3" fill="var(--text)"/><text x="200" y="334" text-anchor="end" font-family="IBM Plex Mono" font-size="12" fill="var(--text2)">D5</text>
+        <circle cx="210" cy="410" r="3" fill="var(--text)"/><text x="200" y="414" text-anchor="end" font-family="IBM Plex Mono" font-size="12" fill="var(--text2)">D8</text>
+        <circle cx="210" cy="490" r="3" fill="var(--text)"/><text x="200" y="494" text-anchor="end" font-family="IBM Plex Mono" font-size="12" fill="var(--text2)">D9</text>
+
+        <line x1="213" y1="90" x2="418" y2="90" stroke="var(--text2)" stroke-width="1"/>
+        <line x1="213" y1="170" x2="418" y2="170" stroke="var(--text2)" stroke-width="1"/>
+        <line x1="213" y1="250" x2="418" y2="250" stroke="var(--text2)" stroke-width="1"/>
+        <line x1="213" y1="330" x2="418" y2="330" stroke="var(--text2)" stroke-width="1"/>
+        <line x1="213" y1="410" x2="418" y2="410" stroke="var(--purple)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="213" y1="490" x2="418" y2="490" stroke="var(--purple)" stroke-width="1" stroke-dasharray="4,3"/>
+
+        <rect x="420" y="62" width="220" height="56" rx="8" fill="rgba(52,211,153,.08)" stroke="var(--teal)" stroke-width="1"/>
+        <text x="530" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="700" fill="var(--teal)">LED A (entrada)</text>
+        <text x="530" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="var(--text2)">resistor 220R → GND</text>
+
+        <rect x="420" y="142" width="220" height="56" rx="8" fill="rgba(52,211,153,.08)" stroke="var(--teal)" stroke-width="1"/>
+        <text x="530" y="162" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="700" fill="var(--teal)">LED B (entrada)</text>
+        <text x="530" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="var(--text2)">resistor 220R → GND</text>
+
+        <rect x="420" y="222" width="220" height="56" rx="8" fill="rgba(0,255,136,.08)" stroke="var(--green)" stroke-width="1"/>
+        <text x="530" y="242" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="700" fill="var(--green)">LED verde</text>
+        <text x="530" y="260" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="var(--text2)">acende quando acerta</text>
+
+        <rect x="420" y="302" width="220" height="56" rx="8" fill="rgba(239,68,68,.08)" stroke="var(--red)" stroke-width="1"/>
+        <text x="530" y="322" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="700" fill="var(--red)">LED vermelho</text>
+        <text x="530" y="340" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="var(--text2)">acende quando erra</text>
+
+        <rect x="420" y="382" width="220" height="56" rx="8" fill="rgba(167,139,250,.08)" stroke="var(--purple)" stroke-width="1"/>
+        <text x="530" y="402" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="700" fill="var(--purple)">Fio resposta 0</text>
+        <text x="530" y="420" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="var(--text2)">ponta solta → toca GND</text>
+
+        <rect x="420" y="462" width="220" height="56" rx="8" fill="rgba(167,139,250,.08)" stroke="var(--purple)" stroke-width="1"/>
+        <text x="530" y="482" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="700" fill="var(--purple)">Fio resposta 1</text>
+        <text x="530" y="500" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="var(--text2)">ponta solta → toca GND</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Passo a passo</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>LEDs de entrada</h3>
+          <p>Ligue o ânodo do LED A ao pino <code>2</code> (com resistor de 220Ω em série) e o LED B ao pino <code>3</code>. O cátodo de ambos vai no trilho GND do protoboard.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>LEDs de feedback</h3>
+          <p>LED verde no pino <code>4</code> e LED vermelho no pino <code>5</code>, cada um com seu resistor de 220Ω, mesmo esquema até o GND.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>Fios de resposta</h3>
+          <p>Pegue dois jumpers soltos. Uma ponta de cada um vai direto nos pinos <code>8</code> e <code>9</code> — sem resistor, pois o código usa o pull-up interno do Arduino. A outra ponta fica livre, sem conectar em nada ainda.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>Carregue o código</h3>
+          <p>Copie o sketch abaixo para o Arduino IDE, envie para a placa e abra o Monitor Serial em 9600 bps para acompanhar nível, pontuação e escudos.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>Jogue</h3>
+          <p>Observe os LEDs A/B, decida se a saída é 0 ou 1, e encoste a ponta solta do jumper correspondente em qualquer ponto do GND. O LED verde ou vermelho acende conforme o resultado.</p>
+        </div>
+      </div>
+    </div>
+    <div class="info-box"><b>Dica:</b> solte o fio depois de responder — ele volta sozinho para nível alto (1 = não respondido) por causa do pull-up interno, pronto para a próxima rodada.</div>
+  </div>
+
+  <div class="card">
+    <div class="code-head">
+      <div class="card-title" style="margin-bottom:0">💻 Código completo (.ino)</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">📋 Copiar código</button>
+    </div>
+    <pre class="code" id="codeBlock"></pre>
+  </div>
+
+  <div class="footnote">
+    <b>Reator Lógico</b> — versão física · Semana 04 · Portas lógicas AND, OR, NOT, NAND, NOR, XOR, XNOR
+  </div>
+</div>
+
+<script>
+const code = `/*
+  ============================================================
+  REATOR LOGICO — versao "so LEDs, Arduino, jumpers e resistores"
+  ============================================================
+  Sem botao fisico e sem buzzer. As respostas 0 e 1 sao dadas
+  encostando a PONTA SOLTA de um jumper no GND (o proprio fio
+  funciona como um botao improvisado, usando o pull-up interno
+  do Arduino).
+
+  LIGACOES:
+    LED A (entrada) .......... pino digital 2  -> resistor 220R -> GND
+    LED B (entrada) .......... pino digital 3  -> resistor 220R -> GND
+    LED verde (acerto) ....... pino digital 4  -> resistor 220R -> GND
+    LED vermelho (erro) ...... pino digital 5  -> resistor 220R -> GND
+    Fio resposta "0" .......... pino digital 8  -> jumper com ponta solta
+    Fio resposta "1" .......... pino digital 9  -> jumper com ponta solta
+
+  COMO RESPONDER:
+    Para responder "0": encoste a ponta solta do jumper do
+    pino 8 em qualquer ponto do trilho GND do protoboard.
+    Para responder "1": faca o mesmo com o jumper do pino 9.
+    Solte o fio depois — ele volta sozinho para "1" (nao
+    respondido) por causa do pull-up interno.
+
+  Acompanhe nivel, pontuacao e escudos pelo Monitor Serial
+  (9600 bps). Nao ha som (sem buzzer nesta versao).
+  ============================================================
+*/
+
+const int LED_A = 2, LED_B = 3, LED_OK = 4, LED_ERR = 5;
+const int WIRE_0 = 8, WIRE_1 = 9;
+
+struct Gate {
+  const char* name;
+  int nInputs;
+  int inA[4];
+  int inB[4];
+  int out[4];
+  int rows;
+};
+
+Gate GATES[7] = {
+  { "AND",  2, {0,0,1,1}, {0,1,0,1}, {0,0,0,1}, 4 },
+  { "OR",   2, {0,0,1,1}, {0,1,0,1}, {0,1,1,1}, 4 },
+  { "NOT",  1, {0,1,0,0}, {0,0,0,0}, {1,0,0,0}, 2 },
+  { "NAND", 2, {0,0,1,1}, {0,1,0,1}, {1,1,1,0}, 4 },
+  { "NOR",  2, {0,0,1,1}, {0,1,0,1}, {1,0,0,0}, 4 },
+  { "XOR",  2, {0,0,1,1}, {0,1,0,1}, {0,1,1,0}, 4 },
+  { "XNOR", 2, {0,0,1,1}, {0,1,0,1}, {1,0,0,1}, 4 }
+};
+
+int LEVEL_POOL[3][7] = {
+  { 0,1,2,-1,-1,-1,-1 },
+  { 0,1,2,3,4,-1,-1  },
+  { 0,1,2,3,4,5,6    }
+};
+int LEVEL_SIZE[3] = { 3, 5, 7 };
+const int NEEDED_PER_LEVEL = 5;
+
+int level = 1, score = 0, shields = 3, streak = 0, correctInLevel = 0;
+int curGateIdx, curA, curB, curOut;
+
+void setup() {
+  pinMode(LED_A, OUTPUT);
+  pinMode(LED_B, OUTPUT);
+  pinMode(LED_OK, OUTPUT);
+  pinMode(LED_ERR, OUTPUT);
+  pinMode(WIRE_0, INPUT_PULLUP);
+  pinMode(WIRE_1, INPUT_PULLUP);
+
+  randomSeed(analogRead(A0));
+  Serial.begin(9600);
+  Serial.println(F("=== REATOR LOGICO - versao so LEDs/jumpers/resistores ==="));
+  Serial.println(F("Encoste o jumper do pino 8 no GND para responder 0."));
+  Serial.println(F("Encoste o jumper do pino 9 no GND para responder 1."));
+  newRound();
+}
+
+void newRound() {
+  int idx = random(LEVEL_SIZE[level - 1]);
+  curGateIdx = LEVEL_POOL[level - 1][idx];
+  Gate g = GATES[curGateIdx];
+  int row = random(g.rows);
+  curA = g.inA[row];
+  curB = g.inB[row];
+  curOut = g.out[row];
+
+  digitalWrite(LED_A, curA);
+  digitalWrite(LED_B, g.nInputs == 2 ? curB : LOW);
+  digitalWrite(LED_OK, LOW);
+  digitalWrite(LED_ERR, LOW);
+
+  Serial.println();
+  Serial.print(F("Nivel ")); Serial.print(level); Serial.print(F("/3   "));
+  Serial.print(F("Pontos: ")); Serial.print(score); Serial.print(F("   "));
+  Serial.print(F("Escudos: ")); Serial.println(shields);
+  Serial.print(F("Porta: ")); Serial.print(g.name);
+  Serial.print(F("   A=")); Serial.print(curA);
+  if (g.nInputs == 2) { Serial.print(F("  B=")); Serial.print(curB); }
+  Serial.println(F("   -> qual a saida? (encoste o fio 0 ou 1 no GND)"));
+}
+
+void loop() {
+  if (digitalRead(WIRE_0) == LOW) { answer(0); delay(400); }
+  if (digitalRead(WIRE_1) == LOW) { answer(1); delay(400); }
+}
+
+void answer(int val) {
+  bool ok = (val == curOut);
+
+  if (ok) {
+    digitalWrite(LED_OK, HIGH);
+    score += 10 * level;
+    streak++;
+    correctInLevel++;
+    Serial.print(F(">> Correto! Saida = ")); Serial.println(curOut);
+  } else {
+    digitalWrite(LED_ERR, HIGH);
+    shields--;
+    streak = 0;
+    Serial.print(F(">> Errado! A saida correta era ")); Serial.println(curOut);
+  }
+
+  delay(1000);
+
+  if (shields <= 0) {
+    shields = 3;
+    correctInLevel = 0;
+    Serial.println(F("!! Escudos esgotados. Progresso do nivel reiniciado."));
+  } else if (correctInLevel >= NEEDED_PER_LEVEL) {
+    if (level < 3) {
+      level++;
+      correctInLevel = 0;
+      shields = 3;
+      Serial.print(F("*** Nivel ")); Serial.print(level); Serial.println(F(" desbloqueado! ***"));
+    } else {
+      Serial.println(F("*** REATOR ESTABILIZADO! Parabens! ***"));
+      Serial.print(F("Pontuacao final: ")); Serial.println(score);
+      digitalWrite(LED_OK, HIGH);
+      while (true) { /* fim de jogo - reinicie o Arduino para jogar de novo */ }
+    }
+  }
+
+  newRound();
+}
+`;
+document.getElementById('codeBlock').textContent = code;
+
+function copyCode(){
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent = '📋 Copiar código'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
