@@ -1,0 +1,933 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Bancada IAC012</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: bancada de laboratório. Cabeçalho curto, barra de abas fixa com progresso, painéis por frente de trabalho. */
+:root{
+  --bg:#edf0f3; --surface:#ffffff; --surface2:#f3f6f8;
+  --ink:#13202b; --muted:#54667a;
+  --line:#d5dce3; --line-strong:#b6c1cc;
+  --accent:#b3121f; --accent-ink:#ffffff;
+  --signal:#0b7a72; --ok:#17803d; --warn:#a85a05; --bad:#b42318;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d141b; --surface:#151f29; --surface2:#1b2733;
+    --ink:#e7edf3; --muted:#96a7b8;
+    --line:#26333f; --line-strong:#3a4b5b;
+    --accent:#ff6b73; --accent-ink:#1a0608;
+    --signal:#45d0c3; --ok:#4ade80; --warn:#f0a04b; --bad:#ff8a80;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d141b; --surface:#151f29; --surface2:#1b2733;
+  --ink:#e7edf3; --muted:#96a7b8;
+  --line:#26333f; --line-strong:#3a4b5b;
+  --accent:#ff6b73; --accent-ink:#1a0608;
+  --signal:#45d0c3; --ok:#4ade80; --warn:#f0a04b; --bad:#ff8a80;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--body);padding-inline:16px;padding-block:0}
+.wrap{max-width:1040px;margin-inline:auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h2{font-size:1.5rem;line-height:1.2;font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.1rem;font-weight:600;font-family:var(--body)}
+p{margin:0}
+a{color:var(--signal);text-underline-offset:3px}
+code,pre,.mono{font-family:var(--mono)}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+/* Cabeçalho */
+.top{padding-block:28px 20px;display:grid;gap:10px}
+.eyebrow{font:500 .75rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);line-height:1;font-weight:800;letter-spacing:-.02em}
+.lede{max-width:62ch;color:var(--muted)}
+.lede strong{color:var(--ink);font-weight:600}
+
+/* Abas */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line-strong)}
+.tabs{display:flex;gap:4px;overflow-x:auto}
+.tab{flex:1 1 0;min-width:130px;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:600 .95rem var(--body);padding:12px 8px 10px;cursor:pointer;display:grid;gap:2px;text-align:left}
+.tab small{font:500 .75rem var(--mono);color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:hover{color:var(--ink)}
+.meter{height:4px;background:var(--line)}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.meter.full i{background:var(--ok)}
+.overall{font:500 .8rem var(--mono);color:var(--muted);padding-block:8px 0}
+
+main{padding-block:24px 64px;display:grid;gap:20px}
+section[role="tabpanel"]{display:grid;gap:20px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:16px;min-width:0}
+.panel-h{display:grid;gap:4px}
+.panel-h p{color:var(--muted);max-width:68ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.chips li{font:500 .8rem var(--mono);border:1px solid var(--line-strong);background:var(--surface2);border-radius:999px;padding:3px 12px}
+
+/* Controles */
+.btn{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:6px;font:500 .9rem var(--body);cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.small{padding:4px 10px;font-size:.8rem}
+input[type=text],input[type=number],textarea{width:100%;background:var(--surface2);color:var(--ink);border:1px solid var(--line-strong);border-radius:6px;padding:8px 10px;font:inherit}
+textarea{resize:vertical;min-height:110px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);margin:2px 0 0;cursor:pointer}
+label.f{display:grid;gap:4px;font-weight:500;font-size:.9rem}
+label.f span.hint{font-weight:400;color:var(--muted);font-size:.8rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* Simulador */
+.sim{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}
+.sim-view{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:8px;min-width:0}
+.sim-view svg{width:100%;height:auto;display:block}
+.s-body{fill:var(--surface);stroke:var(--line-strong);stroke-width:1.5}
+.s-eye{fill:var(--surface2);stroke:var(--ink);stroke-width:2}
+.s-lbl{fill:var(--muted);font:500 12px var(--mono)}
+.s-rule{stroke:var(--line-strong);stroke-width:2}
+.s-tick{stroke:var(--line-strong);stroke-width:1.5}
+.s-path{stroke:var(--line-strong);stroke-width:1.5;stroke-dasharray:5 5}
+.s-obj{fill:var(--ink)}
+.s-obj.soft{fill:var(--muted);opacity:.55}
+.s-d{fill:var(--ink);font:500 14px var(--mono)}
+.ctrl{display:grid;gap:14px;align-content:start}
+.ctrl .val{font:500 .9rem var(--mono);color:var(--accent)}
+.lblrow{display:flex;justify-content:space-between;gap:8px;font-weight:500;font-size:.9rem}
+.switch{display:flex;gap:10px;align-items:flex-start;font-size:.9rem}
+.formula{font:500 .9rem var(--mono);background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-wrap:anywhere}
+.ro{display:grid;gap:0;margin:0}
+.ro div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line)}
+.ro dt{color:var(--muted);font-size:.85rem}
+.ro dd{margin:0;font:500 .9rem var(--mono);text-align:right}
+.pins{display:grid;gap:8px}
+.pin{display:flex;justify-content:space-between;align-items:center;gap:10px;font:500 .85rem var(--mono);border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.pin span:first-child{color:var(--muted)}
+.pill{display:inline-block;min-width:56px;text-align:center;border-radius:999px;padding:1px 10px;font:500 .78rem var(--mono);border:1px solid var(--line-strong)}
+.pill.hi{background:var(--signal);border-color:var(--signal);color:var(--bg)}
+.pill.led{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.serial{background:#0b1218;color:#7ee7dc;border-radius:8px;padding:12px 14px;font:400 .85rem/1.5 var(--mono);min-height:9.5em;overflow:hidden}
+.serial .h{color:#8ea1b3;margin-bottom:6px;display:flex;justify-content:space-between;gap:10px}
+.serial .none{color:#ffb4a8}
+.serial .l{white-space:pre-wrap}
+
+/* Ligações */
+.wiring{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:start}
+.wire{fill:none;stroke-width:3.5;stroke-linecap:round;transition:opacity .15s}
+.wire.dim{opacity:.18}
+.wire.on{stroke-width:5}
+.bx{fill:var(--surface2);stroke:var(--line-strong);stroke-width:1.5}
+.bx-t{fill:var(--ink);font:600 13px var(--body)}
+.pn{fill:var(--muted);font:500 12px var(--mono)}
+.dot{fill:var(--ink)}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th{font:500 .72rem var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid var(--line-strong);white-space:nowrap}
+td{padding:9px 10px 9px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.sel td{background:var(--surface2)}
+tr.wrow{cursor:pointer}
+tr.done td.nm{color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid var(--line-strong)}
+
+/* Código */
+.codetabs{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ct{border:1px solid var(--line-strong);background:var(--surface);color:var(--muted);border-radius:6px;padding:5px 12px;font:500 .85rem var(--mono);cursor:pointer}
+.ct[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.codebox{position:relative}
+pre{margin:0;background:#0b1218;color:#dbe6ee;border-radius:8px;padding:16px;overflow-x:auto;font-size:.82rem;line-height:1.6;tab-size:2}
+pre .c{color:#7d8fa0}pre .k{color:#ff8b94}pre .f{color:#7ee7dc}pre .n{color:#f2c46d}pre .s{color:#a8d8a0}pre .u{color:#c3a6ff}
+.note{color:var(--muted);font-size:.88rem}
+
+/* Medição */
+.errbar{display:inline-block;height:8px;background:var(--warn);border-radius:2px;vertical-align:middle;min-width:2px}
+td input[type=number]{width:96px}
+.avg{font:500 .95rem var(--mono)}
+
+/* Passos */
+.step{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+.step:first-child{border-top:0;padding-top:0}
+.step-t{font-weight:600;cursor:pointer;display:block}
+.step p,.step ul{color:var(--muted);font-size:.92rem;max-width:66ch}
+.step ul{margin:6px 0 0;padding-left:1.1em}
+.step li{margin-top:3px}
+.step.done .step-t{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line-strong)}
+
+/* Quiz */
+.q{display:grid;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;padding-top:0}
+.q p.qt{font-weight:600}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);border-radius:6px;padding:9px 12px;font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
+.why{font-size:.9rem;color:var(--muted);border-left:3px solid var(--line-strong);padding-left:12px}
+.score{font:500 .9rem var(--mono)}
+
+/* Lista de unidades */
+.units{list-style:none;padding:0;margin:0;display:grid;gap:0}
+.units li{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.units .empty{color:var(--muted);font-size:.9rem;border-top:0;padding:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.grid3{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) auto;gap:10px;align-items:end}
+.out{white-space:pre-wrap;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:12px;font-size:.9rem}
+.count{font:500 .78rem var(--mono);color:var(--muted)}
+
+@media (max-width:760px){
+  .sim,.wiring,.grid2{grid-template-columns:minmax(0,1fr)}
+  .grid3{grid-template-columns:minmax(0,1fr)}
+  .panel{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){.meter i,.wire{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">IAC012 · Arquitetura e Organização de Computadores · Fatec Ourinhos</p>
+    <h1>Tarefa do dia</h1>
+    <p class="lede">Terça-feira, 29 de setembro de 2026. Três frentes: <strong>medir distância com Arduino Uno e HC-SR04</strong>, <strong>concluir o módulo base da Escola de Inovadores</strong> e <strong>montar o currículo Lattes</strong>. Marque cada etapa ao concluir; o progresso fica salvo neste navegador.</p>
+  </header>
+
+  <div class="bar">
+    <div class="tabs" role="tablist" aria-label="Frentes de trabalho">
+      <button class="tab" role="tab" id="tab-arduino" aria-controls="p-arduino" aria-selected="true" data-tab="arduino">1 · Arduino e sensor <small id="cnt-arduino">0/10</small></button>
+      <button class="tab" role="tab" id="tab-inovadores" aria-controls="p-inovadores" aria-selected="false" data-tab="inovadores">2 · Escola de Inovadores <small id="cnt-inovadores">0/6</small></button>
+      <button class="tab" role="tab" id="tab-lattes" aria-controls="p-lattes" aria-selected="false" data-tab="lattes">3 · Currículo Lattes <small id="cnt-lattes">0/7</small></button>
+    </div>
+    <div class="meter" id="meter"><i id="meter-fill"></i></div>
+  </div>
+  <p class="overall" id="overall">0 de 23 etapas concluídas</p>
+
+  <main>
+    <!-- ARDUINO -->
+    <section role="tabpanel" id="p-arduino" aria-labelledby="tab-arduino">
+      <div class="panel">
+        <div class="panel-h">
+          <h2>Medidor de distância com HC-SR04</h2>
+          <p>O Arduino dispara um pulso no pino Trig, o sensor emite ultrassom e devolve um pulso no pino Echo com a duração do trajeto de ida e volta. Convertendo esse tempo em distância, o LED acende quando o objeto chega perto. Ligação com a ementa: sistemas de entrada e saída (I/O), periféricos e temporização.</p>
+        </div>
+        <ul class="chips" aria-label="Materiais">
+          <li>Arduino Uno</li><li>HC-SR04</li><li>LED</li><li>Resistor 220 Ω</li><li>Protoboard</li><li>Jumpers</li><li>Régua ou trena</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Simulador: do eco à distância</h3>
+          <p>Mova o objeto e veja o tempo do eco, o cálculo do código e o estado dos pinos. A animação do pulso não está em escala real: o som leva cerca de 1,7 milésimo de segundo para percorrer 30 cm de ida e volta.</p>
+        </div>
+        <div class="sim">
+          <div class="sim-view">
+            <svg id="simsvg" viewBox="0 0 720 235" role="img" aria-label="Sensor emitindo um pulso ultrassônico até um objeto e recebendo o eco">
+              <rect x="12" y="55" width="78" height="120" rx="6" class="s-body"/>
+              <circle cx="51" cy="90" r="20" class="s-eye"/>
+              <circle cx="51" cy="140" r="20" class="s-eye"/>
+              <text x="51" y="192" text-anchor="middle" class="s-lbl">HC-SR04</text>
+              <line x1="100" y1="205" x2="700" y2="205" class="s-rule"/>
+              <g id="ticks"></g>
+              <line id="path" x1="90" y1="115" x2="300" y2="115" class="s-path"/>
+              <rect id="obj" x="286" y="40" width="14" height="140" rx="2" class="s-obj"/>
+              <text id="objlbl" x="293" y="30" text-anchor="middle" class="s-lbl">parede</text>
+              <text id="dlbl" x="195" y="100" text-anchor="middle" class="s-d">d = 30,0 cm</text>
+              <circle id="dot" cx="90" cy="115" r="7" style="fill:var(--signal)"/>
+            </svg>
+          </div>
+          <div class="ctrl">
+            <div>
+              <div class="lblrow"><label for="dist">Distância do objeto</label><span class="val" id="distv">30,0 cm</span></div>
+              <input type="range" id="dist" min="2" max="400" step="0.5" value="30">
+            </div>
+            <div>
+              <div class="lblrow"><label for="temp">Temperatura do ar</label><span class="val" id="tempv">20 °C</span></div>
+              <input type="range" id="temp" min="0" max="40" step="1" value="20">
+            </div>
+            <div>
+              <div class="lblrow"><label for="thr">Limite do LED</label><span class="val" id="thrv">15 cm</span></div>
+              <input type="range" id="thr" min="5" max="100" step="1" value="15">
+            </div>
+            <label class="switch" for="soft"><input type="checkbox" id="soft"><span>Superfície macia (tecido). O eco enfraquece e some depois de cerca de 80 cm.</span></label>
+          </div>
+        </div>
+        <div class="formula" id="formula">1747 × 0,0343 ÷ 2 = 29,96 cm</div>
+        <div class="sim">
+          <dl class="ro" id="ro">
+            <div><dt>Tempo do eco (pulseIn)</dt><dd id="ro-t">—</dd></div>
+            <div><dt>Distância real</dt><dd id="ro-real">—</dd></div>
+            <div><dt>Leitura do Arduino</dt><dd id="ro-read">—</dd></div>
+            <div><dt>Erro da leitura</dt><dd id="ro-err">—</dd></div>
+            <div><dt>Velocidade do som</dt><dd id="ro-v">—</dd></div>
+          </dl>
+          <div class="pins">
+            <div class="pin"><span>D9 · Trig · OUTPUT</span><span class="pill hi">pulso 10 µs</span></div>
+            <div class="pin"><span>D10 · Echo · INPUT</span><span class="pill" id="pin-echo">—</span></div>
+            <div class="pin"><span>D13 · LED · OUTPUT</span><span class="pill" id="pin-led">LOW</span></div>
+          </div>
+        </div>
+        <div class="serial" role="log" aria-live="off" aria-label="Monitor Serial simulado">
+          <div class="h"><span>Monitor Serial · 9600 baud</span><button class="btn small" id="serpause" type="button">Pausar</button></div>
+          <div id="serlines"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Montagem</h3>
+          <p>Desligue o Arduino do USB antes de mexer nos fios. Clique em uma linha da tabela para destacar o fio no esquema e marque a caixa quando conferir a ligação.</p>
+        </div>
+        <div class="wiring">
+          <svg viewBox="0 0 520 250" role="img" aria-label="Esquema de ligação entre o Arduino Uno, o HC-SR04 e o LED com resistor">
+            <rect x="20" y="10" width="150" height="235" rx="8" class="bx"/>
+            <text x="95" y="30" text-anchor="middle" class="bx-t">Arduino Uno</text>
+            <rect x="350" y="10" width="150" height="145" rx="8" class="bx"/>
+            <text x="425" y="30" text-anchor="middle" class="bx-t">HC-SR04</text>
+            <rect x="350" y="168" width="150" height="77" rx="8" class="bx"/>
+            <text x="425" y="240" text-anchor="middle" class="bx-t" style="font-size:11px">R 220 Ω + LED</text>
+            <g id="wires">
+              <path data-w="w1" class="wire" d="M170,50 C260,50 260,40 350,40"/>
+              <path data-w="w2" class="wire" d="M170,205 C300,205 300,130 350,130"/>
+              <path data-w="w3" class="wire" d="M170,90 C260,90 260,70 350,70"/>
+              <path data-w="w4" class="wire" d="M170,125 C260,125 260,100 350,100"/>
+              <path data-w="w5" class="wire" d="M170,160 C260,160 260,185 350,185"/>
+              <path data-w="w6" class="wire" d="M350,225 C260,225 260,205 170,205"/>
+            </g>
+            <g>
+              <circle cx="170" cy="50" r="4" class="dot"/><text x="160" y="54" text-anchor="end" class="pn">5V</text>
+              <circle cx="170" cy="90" r="4" class="dot"/><text x="160" y="94" text-anchor="end" class="pn">D9</text>
+              <circle cx="170" cy="125" r="4" class="dot"/><text x="160" y="129" text-anchor="end" class="pn">D10</text>
+              <circle cx="170" cy="160" r="4" class="dot"/><text x="160" y="164" text-anchor="end" class="pn">D13</text>
+              <circle cx="170" cy="205" r="4" class="dot"/><text x="160" y="209" text-anchor="end" class="pn">GND</text>
+              <circle cx="350" cy="40" r="4" class="dot"/><text x="362" y="44" class="pn">VCC</text>
+              <circle cx="350" cy="70" r="4" class="dot"/><text x="362" y="74" class="pn">Trig</text>
+              <circle cx="350" cy="100" r="4" class="dot"/><text x="362" y="104" class="pn">Echo</text>
+              <circle cx="350" cy="130" r="4" class="dot"/><text x="362" y="134" class="pn">GND</text>
+              <circle cx="350" cy="185" r="4" class="dot"/><text x="362" y="189" class="pn">ânodo (+)</text>
+              <circle cx="350" cy="225" r="4" class="dot"/><text x="362" y="229" class="pn" style="display:none">cátodo</text>
+            </g>
+          </svg>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Conferi</th><th>De</th><th>Para</th><th>Fio</th></tr></thead>
+              <tbody id="wiretbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="note">O LED tem perna longa (ânodo) e perna curta (cátodo). O resistor de 220 Ω fica em série para proteger o LED e o pino.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Código</h3>
+          <p>Cole na Arduino IDE, escolha a placa Arduino Uno e a porta correta, faça o upload e abra o Monitor Serial em 9600 baud.</p>
+        </div>
+        <div class="codetabs">
+          <button class="ct" type="button" data-code="base" aria-pressed="true">Programa base</button>
+          <button class="ct" type="button" data-code="buzz" aria-pressed="false">Desafio: buzzer</button>
+          <button class="btn small" type="button" id="copycode" style="margin-left:auto">Copiar código</button>
+        </div>
+        <div class="codebox"><pre><code id="code"></code></pre></div>
+        <p class="note" id="codenote"></p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Medição com régua</h3>
+          <p>Posicione um objeto rígido e liso de frente para o sensor, meça com a régua e anote a leitura do Monitor Serial. O erro percentual é |leitura − régua| ÷ régua × 100.</p>
+        </div>
+        <p class="note" id="measnote">Os valores abaixo são exemplos. Substitua pelas suas medidas.</p>
+        <div class="tblwrap">
+          <table>
+            <thead><tr><th>Régua (cm)</th><th>Leitura (cm)</th><th>Erro</th><th></th></tr></thead>
+            <tbody id="meastbody"></tbody>
+          </table>
+        </div>
+        <div class="row">
+          <button class="btn" type="button" id="addmeas">Adicionar medida</button>
+          <span class="avg" id="avgerr">Erro médio: —</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Entrega da prática</h3>
+          <p>Formulário com foto do circuito e print do Monitor Serial, mais as respostas do relatório abaixo.</p>
+        </div>
+        <div id="steps-a"></div>
+        <div class="why" style="margin-top:4px">
+          <strong>Perguntas do relatório.</strong> (1) Por que dividimos o tempo por 2? (2) O que acontece com objetos muito próximos, muito distantes ou de superfície macia? (3) Quais são as entradas e as saídas digitais deste circuito?
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Quiz de fixação</h3>
+          <p class="score" id="score">0 de 6 respondidas</p>
+        </div>
+        <div id="quiz"></div>
+        <div class="row"><button class="btn small" type="button" id="quizreset">Refazer o quiz</button></div>
+      </div>
+    </section>
+
+    <!-- ESCOLA DE INOVADORES -->
+    <section role="tabpanel" id="p-inovadores" aria-labelledby="tab-inovadores" hidden>
+      <div class="panel">
+        <div class="panel-h">
+          <h2>Módulo base da Escola de Inovadores</h2>
+          <p>Este roteiro é geral: a plataforma exige login institucional e não consegui abrir o conteúdo do módulo. Ajuste os nomes ao que aparecer na sua tela.</p>
+        </div>
+        <div class="row"><a class="btn primary" style="text-decoration:none" href="https://plataformainova.cps.sp.gov.br/" target="_blank" rel="noopener">Abrir a plataforma</a></div>
+        <div id="steps-e"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <div class="panel-h">
+            <h3>Registro de unidades</h3>
+            <p>Anote cada unidade concluída. A soma de horas alimenta o texto de formação complementar do Lattes.</p>
+          </div>
+          <form id="unitform" class="grid3" autocomplete="off">
+            <label class="f" for="u-name">Unidade<input type="text" id="u-name" placeholder="Ex.: Introdução à inovação"></label>
+            <label class="f" for="u-h">Horas<input type="number" id="u-h" min="0" step="0.5" placeholder="4"></label>
+            <button class="btn primary" type="submit">Adicionar</button>
+          </form>
+          <ul class="units" id="units"></ul>
+          <p class="avg" id="unittotal">Total: 0 h</p>
+        </div>
+        <div class="panel">
+          <div class="panel-h">
+            <h3>Anotações</h3>
+            <p>Um aprendizado por unidade ajuda na conversa com o professor.</p>
+          </div>
+          <label class="f" for="notes"><span class="hint">Salvo automaticamente neste navegador.</span>
+            <textarea id="notes" placeholder="Unidade 1: aprendi que..."></textarea>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- LATTES -->
+    <section role="tabpanel" id="p-lattes" aria-labelledby="tab-lattes" hidden>
+      <div class="panel">
+        <div class="panel-h">
+          <h2>Currículo Lattes, passo a passo</h2>
+          <p>A interface da Plataforma Lattes muda de vez em quando. Use os nomes abaixo como guia e confira os menus na tela.</p>
+        </div>
+        <div id="steps-l"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Rascunho dos seus dados</h3>
+          <p>Preencha os campos e copie os textos para dentro do Lattes. Nada é enviado a lugar nenhum: tudo fica neste navegador.</p>
+        </div>
+        <div class="grid2">
+          <div style="display:grid;gap:14px;align-content:start">
+            <label class="f" for="lat-nome">Nome completo<input type="text" id="lat-nome" placeholder="Nome e sobrenomes"></label>
+            <div class="out" id="cit" aria-live="polite">Sugestão de nome em citações: —</div>
+            <label class="f" for="lat-ano">Ano de ingresso na Fatec<input type="number" id="lat-ano" min="2000" max="2030" placeholder="2025"></label>
+            <label class="f" for="lat-int">Áreas de interesse<input type="text" id="lat-int"></label>
+          </div>
+          <div style="display:grid;gap:10px;align-content:start">
+            <div class="row" style="justify-content:space-between"><strong>Resumo (texto informado pelo autor)</strong><span class="count" id="rescount">0 caracteres</span></div>
+            <div class="out" id="resumo"></div>
+            <div class="row"><button class="btn small" type="button" id="copyres">Copiar resumo</button></div>
+          </div>
+        </div>
+        <div style="display:grid;gap:10px">
+          <div class="row" style="justify-content:space-between"><strong>Formação complementar e produção técnica</strong><button class="btn small" type="button" id="copyforms">Copiar tudo</button></div>
+          <div class="out" id="forms"></div>
+          <p class="note">Complete as horas que estiverem em branco com os dados dos certificados.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Estado e persistência ---------- */
+const KEY='bancada-iac012-2026-09-29';
+const D={
+  checks:{}, quiz:{}, meas:null, measExample:true, units:[], notes:'',
+  lat:{nome:'',ano:'',int:'arquitetura de computadores, sistemas embarcados e desenvolvimento de software'}
+};
+let S=JSON.parse(JSON.stringify(D));
+try{
+  const raw=localStorage.getItem(KEY);
+  if(raw){const p=JSON.parse(raw); S=Object.assign({},D,p); S.lat=Object.assign({},D.lat,p.lat||{});}
+}catch(e){}
+if(!S.meas){S.meas=[{r:10,l:10.2},{r:20,l:19.6},{r:30,l:30.4},{r:50,l:49.3}];}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+const $=(id)=>document.getElementById(id);
+const nf=(n,d)=>Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+function flash(btn,txt){const o=btn.dataset.o||btn.textContent;btn.dataset.o=o;btn.textContent=txt;clearTimeout(btn._t);btn._t=setTimeout(()=>{btn.textContent=o;},1700);}
+async function copyText(text,btn,el){
+  try{await navigator.clipboard.writeText(text);flash(btn,'Copiado');}
+  catch(e){
+    try{const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);}catch(_){}
+    flash(btn,'Selecionado: use Ctrl+C');
+  }
+}
+
+/* ---------- Progresso ---------- */
+const GROUPS={
+  arduino:['w1','w2','w3','w4','w5','w6','a1','a2','a3','a4'],
+  inovadores:['e1','e2','e3','e4','e5','e6'],
+  lattes:['l1','l2','l3','l4','l5','l6','l7']
+};
+function updateProgress(){
+  let done=0,total=0;
+  for(const g in GROUPS){
+    const n=GROUPS[g].filter(id=>S.checks[id]).length;
+    $('cnt-'+g).textContent=n+'/'+GROUPS[g].length;
+    done+=n;total+=GROUPS[g].length;
+  }
+  const pct=Math.round(done/total*100);
+  $('meter-fill').style.width=pct+'%';
+  $('meter').classList.toggle('full',done===total);
+  $('overall').textContent=done+' de '+total+' etapas concluídas ('+pct+'%)';
+}
+function mkCheck(id){
+  const i=document.createElement('input');
+  i.type='checkbox';i.id='chk-'+id;i.checked=!!S.checks[id];
+  i.addEventListener('change',()=>{
+    S.checks[id]=i.checked;save();updateProgress();
+    const host=i.closest('.step,tr');if(host)host.classList.toggle('done',i.checked);
+    if(id==='e5')renderLattes();
+  });
+  return i;
+}
+
+/* ---------- Abas ---------- */
+const tabs=[...document.querySelectorAll('.tab')];
+function showTab(name){
+  tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.tab===name)));
+  ['arduino','inovadores','lattes'].forEach(n=>{$('p-'+n).hidden=(n!==name);});
+  try{history.replaceState(null,'','#'+name);}catch(e){}
+}
+tabs.forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
+tabs.forEach((t,i)=>t.addEventListener('keydown',ev=>{
+  if(ev.key==='ArrowRight'||ev.key==='ArrowLeft'){
+    const n=tabs[(i+(ev.key==='ArrowRight'?1:tabs.length-1))%tabs.length];
+    n.focus();showTab(n.dataset.tab);
+  }
+}));
+
+/* ---------- Passos ---------- */
+function renderSteps(el,arr){
+  arr.forEach(s=>{
+    const d=document.createElement('div');d.className='step';
+    const c=mkCheck(s.id);
+    const b=document.createElement('div');
+    const l=document.createElement('label');l.htmlFor=c.id;l.className='step-t';l.textContent=s.t;
+    const p=document.createElement('p');p.innerHTML=s.d;
+    b.append(l,p);
+    if(s.items){
+      const ul=document.createElement('ul');
+      s.items.forEach(x=>{const li=document.createElement('li');li.innerHTML=x;ul.append(li);});
+      b.append(ul);
+    }
+    d.append(c,b);d.classList.toggle('done',c.checked);el.append(d);
+  });
+}
+const STEPS_A=[
+  {id:'a1',t:'Código enviado à placa sem erros',d:'A Arduino IDE mostra “Carregado” e o LED L da placa pisca durante o upload.'},
+  {id:'a2',t:'Monitor Serial mostrando distâncias',d:'Abra o Monitor Serial em 9600 baud e aproxime a mão: os valores devem mudar e o LED acender abaixo do limite.'},
+  {id:'a3',t:'Pelo menos 3 medidas comparadas com a régua',d:'Preencha a tabela de medição acima e calcule o erro médio.'},
+  {id:'a4',t:'Foto do circuito e print do Monitor Serial',d:'Envie no formulário da atividade, junto com as respostas do relatório.'}
+];
+const STEPS_E=[
+  {id:'e1',t:'Entrar na plataforma',d:'Abra a Escola de Inovadores e faça login com a conta institucional do CPS. Se ainda não tem cadastro, crie um pelo próprio site.'},
+  {id:'e2',t:'Encontrar o módulo base',d:'Procure a trilha ou o curso chamado módulo base e confirme que sua inscrição está ativa.'},
+  {id:'e3',t:'Fazer as unidades em ordem',d:'Assista aos vídeos e leia os materiais. Registre cada unidade no painel ao lado e escreva um aprendizado nas anotações.'},
+  {id:'e4',t:'Responder atividades e quizzes',d:'Conclua as atividades de cada unidade até o status aparecer como concluído.'},
+  {id:'e5',t:'Guardar o certificado',d:'Baixe o certificado ou tire um print da tela de conclusão com seu nome visível. Ele também vale como formação complementar no Lattes.'},
+  {id:'e6',t:'Entregar a evidência',d:'Envie o arquivo pelo Teams da disciplina, como combinado com o professor.'}
+];
+const STEPS_L=[
+  {id:'l1',t:'Acessar a Plataforma Lattes',d:'Abra <a href="https://lattes.cnpq.br" target="_blank" rel="noopener">lattes.cnpq.br</a> e clique em Currículo Lattes.'},
+  {id:'l2',t:'Criar o currículo',d:'Escolha criar currículo e informe CPF, data de nascimento, nome e e-mail. Guarde a senha em local seguro.'},
+  {id:'l3',t:'Preencher os dados gerais',d:'Dentro do sistema, abra Dados gerais e complete:',items:['<strong>Identificação:</strong> nome completo e nome em citações bibliográficas (use a sugestão abaixo)','<strong>Endereço</strong> profissional ou residencial','<strong>Idiomas</strong> e <strong>áreas de atuação</strong>']},
+  {id:'l4',t:'Cadastrar a formação',d:'Na parte de formação, registre:',items:['<strong>Acadêmica:</strong> Tecnologia em Análise e Desenvolvimento de Sistemas, Fatec Ourinhos, situação em andamento','<strong>Complementar:</strong> curso Fundamentos de Hardware (Cisco, SkillsForAll) e módulo base da Escola de Inovadores, com carga horária e ano']},
+  {id:'l5',t:'Registrar projetos e produções',d:'Inclua o que já existe:',items:['Projeto de I/O com Arduino (medidor de distância) como produção técnica ou projeto','Apresentações e seminários da disciplina']},
+  {id:'l6',t:'Escrever o resumo',d:'Use o rascunho abaixo como ponto de partida e reescreva com suas palavras.'},
+  {id:'l7',t:'Salvar, publicar e exportar',d:'Salve cada seção, use a opção de enviar ou publicar o currículo e gere o PDF pela opção de impressão do próprio Lattes para entregar ao professor.'}
+];
+renderSteps($('steps-a'),STEPS_A);
+renderSteps($('steps-e'),STEPS_E);
+renderSteps($('steps-l'),STEPS_L);
+
+/* ---------- Simulador ---------- */
+const X0=100, K=1.5;               // x(d) = 100 + 1,5·d, com d em cm
+const xOf=d=>X0+d*K;
+(function ticks(){
+  const g=$('ticks');let h='';
+  for(let d=0;d<=400;d+=50){
+    const x=xOf(d);
+    h+='<line x1="'+x+'" y1="199" x2="'+x+'" y2="211" class="s-tick"/><text x="'+x+'" y="228" text-anchor="middle" class="s-lbl">'+d+'</text>';
+  }
+  g.innerHTML=h+'<text x="700" y="192" text-anchor="end" class="s-lbl">cm</text>';
+})();
+const sim={dist:30,temp:20,thr:15,soft:false,paused:false,lines:[]};
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let state={};
+function calc(){
+  const v=331.3+0.606*sim.temp;                     // m/s
+  const tReal=20000*sim.dist/v;                     // µs, ida e volta
+  const echo=Math.round(tReal);
+  const has=!(sim.soft&&sim.dist>80);
+  const read=echo*0.0343/2;                         // como no código
+  const err=Math.abs(read-sim.dist)/sim.dist*100;
+  const led=has&&read<sim.thr;
+  state={v,echo,has,read,err,led};
+  return state;
+}
+function renderSim(){
+  const s=calc();
+  const xo=xOf(sim.dist);
+  $('distv').textContent=nf(sim.dist,1)+' cm';
+  $('tempv').textContent=sim.temp+' °C';
+  $('thrv').textContent=sim.thr+' cm';
+  const obj=$('obj');obj.setAttribute('x',xo-14);obj.classList.toggle('soft',sim.soft);
+  const ol=$('objlbl');ol.textContent=sim.soft?'tecido':'parede';
+  ol.setAttribute('x',Math.min(xo-7,670));
+  $('path').setAttribute('x2',xo-14);
+  const dl=$('dlbl');dl.textContent='d = '+nf(sim.dist,1)+' cm';
+  dl.setAttribute('x',(90+xo-14)/2);
+  $('ro-v').textContent=nf(s.v,1)+' m/s';
+  $('ro-real').textContent=nf(sim.dist,1)+' cm';
+  if(s.has){
+    $('ro-t').textContent=s.echo+' µs';
+    $('ro-read').textContent=nf(s.read,2)+' cm';
+    $('ro-err').textContent=nf(s.err,1)+' %';
+    $('formula').textContent=s.echo+' × 0,0343 ÷ 2 = '+nf(s.read,2)+' cm';
+    $('pin-echo').textContent='HIGH '+s.echo+' µs';
+    $('pin-echo').className='pill hi';
+  }else{
+    $('ro-t').textContent='0 (timeout)';
+    $('ro-read').textContent='Sem leitura';
+    $('ro-err').textContent='—';
+    $('formula').textContent='pulseIn devolveu 0: o eco não voltou em 30000 µs';
+    $('pin-echo').textContent='sem eco';
+    $('pin-echo').className='pill';
+  }
+  const led=$('pin-led');led.textContent=s.led?'HIGH':'LOW';led.className='pill'+(s.led?' led':'');
+}
+let last=0;
+function frame(now){
+  const cycle=2600,p=((now)%cycle)/cycle;
+  const xs=90,xe=xOf(sim.dist)-14;
+  const out=p<0.5,q=out?p/0.5:(p-0.5)/0.5;
+  const x=out?xs+(xe-xs)*q:xe-(xe-xs)*q;
+  const dot=$('dot');
+  dot.setAttribute('cx',x);
+  dot.style.fill=out?'var(--signal)':'var(--accent)';
+  dot.style.opacity=(!out&&!state.has)?'0.08':'1';
+  requestAnimationFrame(frame);
+}
+if(reduceMotion){
+  const mid=(90+xOf(sim.dist)-14)/2;$('dot').setAttribute('cx',mid);
+  ['dist','thr','temp','soft'].forEach(id=>$(id).addEventListener('input',()=>{$('dot').setAttribute('cx',(90+xOf(sim.dist)-14)/2);}));
+}else{requestAnimationFrame(frame);}
+function pushSerial(){
+  if(sim.paused)return;
+  const s=state;
+  sim.lines.push(s.has?['Distancia: '+s.read.toFixed(2)+' cm',false]:['Sem leitura',true]);
+  if(sim.lines.length>6)sim.lines.shift();
+  const box=$('serlines');box.textContent='';
+  sim.lines.forEach(([t,none])=>{const d=document.createElement('div');d.className='l'+(none?' none':'');d.textContent=t;box.append(d);});
+}
+$('dist').addEventListener('input',e=>{sim.dist=parseFloat(e.target.value);renderSim();});
+$('temp').addEventListener('input',e=>{sim.temp=parseInt(e.target.value,10);renderSim();});
+$('thr').addEventListener('input',e=>{sim.thr=parseInt(e.target.value,10);renderSim();});
+$('soft').addEventListener('change',e=>{sim.soft=e.target.checked;renderSim();});
+$('serpause').addEventListener('click',e=>{sim.paused=!sim.paused;e.target.textContent=sim.paused?'Retomar':'Pausar';});
+renderSim();pushSerial();
+setInterval(pushSerial,700);
+
+/* ---------- Ligações ---------- */
+const WIRES=[
+  {id:'w1',a:'HC-SR04 VCC',b:'5V',c:'Vermelho',col:'#d9363e'},
+  {id:'w2',a:'HC-SR04 GND',b:'GND',c:'Preto',col:'var(--ink)'},
+  {id:'w3',a:'HC-SR04 Trig',b:'D9',c:'Amarelo',col:'#d9a400'},
+  {id:'w4',a:'HC-SR04 Echo',b:'D10',c:'Verde',col:'#2e9e57'},
+  {id:'w5',a:'LED ânodo (perna longa), via resistor 220 Ω',b:'D13',c:'Azul',col:'#3b82f6'},
+  {id:'w6',a:'LED cátodo (perna curta)',b:'GND',c:'Preto',col:'var(--ink)'}
+];
+let activeWire=null;
+function setActive(id){
+  activeWire=(activeWire===id)?null:id;
+  document.querySelectorAll('.wire').forEach(p=>{
+    p.classList.toggle('on',activeWire&&p.dataset.w===activeWire);
+    p.classList.toggle('dim',!!activeWire&&p.dataset.w!==activeWire);
+  });
+  document.querySelectorAll('tr.wrow').forEach(r=>r.classList.toggle('sel',r.dataset.w===activeWire));
+}
+(function(){
+  const tb=$('wiretbody');
+  WIRES.forEach(w=>{
+    const p=document.querySelector('.wire[data-w="'+w.id+'"]');
+    if(p)p.style.stroke=w.col;
+    const tr=document.createElement('tr');tr.className='wrow';tr.dataset.w=w.id;tr.tabIndex=0;
+    const c=mkCheck(w.id);
+    const t1=document.createElement('td');t1.append(c);
+    const t2=document.createElement('td');t2.className='nm';t2.textContent=w.a;
+    const t3=document.createElement('td');t3.className='mono';t3.textContent=w.b;
+    const t4=document.createElement('td');
+    const sw=document.createElement('span');sw.className='sw';sw.style.background=w.col;
+    t4.append(sw,document.createTextNode(w.c));
+    tr.append(t1,t2,t3,t4);
+    tr.classList.toggle('done',c.checked);
+    tr.addEventListener('click',ev=>{if(ev.target.tagName!=='INPUT')setActive(w.id);});
+    tr.addEventListener('keydown',ev=>{if((ev.key==='Enter'||ev.key===' ')&&ev.target===tr){ev.preventDefault();setActive(w.id);}});
+    tb.append(tr);
+  });
+})();
+
+/* ---------- Código ---------- */
+const CODE={
+base:`const int TRIG = 9;
+const int ECHO = 10;
+const int LED  = 13;
+
+void setup() {
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECHO, INPUT);
+  pinMode(LED, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Pulso de 10 µs no Trig
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG, LOW);
+
+  // Tempo do eco (µs); timeout de 30 ms
+  long duracao = pulseIn(ECHO, HIGH, 30000);
+
+  // Som: ~343 m/s = 0,0343 cm/µs; divide por 2 (ida e volta)
+  float distancia = duracao * 0.0343 / 2;
+
+  if (duracao == 0) {
+    Serial.println("Sem leitura");
+    digitalWrite(LED, LOW);
+  } else {
+    Serial.print("Distancia: ");
+    Serial.print(distancia);
+    Serial.println(" cm");
+    digitalWrite(LED, distancia < 15 ? HIGH : LOW);
+  }
+  delay(200);
+}`,
+buzz:`// 1) No topo do arquivo, junto das outras constantes:
+const int BUZZER = 8;
+
+// 2) Dentro do setup():
+pinMode(BUZZER, OUTPUT);
+
+// 3) No fim do loop(), no lugar de delay(200):
+if (duracao != 0 && distancia < 50) {
+  tone(BUZZER, 1000, 40);                      // bip curto
+  delay(constrain(distancia * 8, 40, 400));    // perto = bips mais rápidos
+} else {
+  delay(200);
+}`
+};
+const CODENOTE={
+  base:'Troque o 15 na linha do LED para mudar a distância de acionamento.',
+  buzz:'Ligue o buzzer entre o pino D8 e o GND. Quanto mais perto o objeto, menor o intervalo entre os bips.'
+};
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function hl(src){
+  const re=/(\/\/.*)|("[^"\n]*")|\b(const|int|void|long|float|if|else)\b|\b(pinMode|digitalWrite|delayMicroseconds|delay|pulseIn|begin|print|println|tone|constrain)\b|\b(HIGH|LOW|OUTPUT|INPUT)\b|\b(\d+\.?\d*)\b/g;
+  return esc(src).replace(re,(m,c,s,k,f,u,n)=>{
+    if(c)return '<span class="c">'+c+'</span>';
+    if(s)return '<span class="s">'+s+'</span>';
+    if(k)return '<span class="k">'+k+'</span>';
+    if(f)return '<span class="f">'+f+'</span>';
+    if(u)return '<span class="u">'+u+'</span>';
+    return '<span class="n">'+n+'</span>';
+  });
+}
+let curCode='base';
+function showCode(k){
+  curCode=k;
+  $('code').innerHTML=hl(CODE[k]);
+  $('codenote').textContent=CODENOTE[k];
+  document.querySelectorAll('.ct').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.code===k)));
+}
+document.querySelectorAll('.ct').forEach(b=>b.addEventListener('click',()=>showCode(b.dataset.code)));
+$('copycode').addEventListener('click',e=>copyText(CODE[curCode],e.target,$('code')));
+showCode('base');
+
+/* ---------- Medição ---------- */
+function calcMeas(){
+  let sum=0,n=0;
+  S.meas.forEach((m,i)=>{
+    const cell=$('meas-err-'+i);if(!cell)return;
+    const r=parseFloat(m.r),l=parseFloat(m.l);
+    cell.textContent='';
+    if(r>0&&isFinite(l)){
+      const e=Math.abs(l-r)/r*100;sum+=e;n++;
+      const b=document.createElement('span');b.className='errbar';b.style.width=Math.min(e*10,100)+'px';
+      cell.append(document.createTextNode(nf(e,1)+' % '),b);
+    }else cell.textContent='—';
+  });
+  $('avgerr').textContent='Erro médio: '+(n?nf(sum/n,1)+' %':'—');
+}
+function renderMeas(){
+  const tb=$('meastbody');tb.textContent='';
+  S.meas.forEach((m,i)=>{
+    const tr=document.createElement('tr');
+    const mk=(k,lab)=>{
+      const td=document.createElement('td');
+      const inp=document.createElement('input');inp.type='number';inp.step='0.1';inp.min='0';inp.id='meas-'+k+'-'+i;
+      inp.setAttribute('aria-label',lab+' da medida '+(i+1));
+      inp.value=(m[k]===''||m[k]==null)?'':m[k];
+      inp.addEventListener('input',()=>{
+        S.meas[i][k]=inp.value===''?'':parseFloat(inp.value);
+        S.measExample=false;$('measnote').hidden=true;save();calcMeas();
+      });
+      td.append(inp);return td;
+    };
+    const te=document.createElement('td');te.id='meas-err-'+i;te.className='mono';
+    const tx=document.createElement('td');
+    const rm=document.createElement('button');rm.type='button';rm.className='btn small';rm.textContent='Remover';
+    rm.setAttribute('aria-label','Remover medida '+(i+1));
+    rm.addEventListener('click',()=>{S.meas.splice(i,1);S.measExample=false;$('measnote').hidden=true;save();renderMeas();});
+    tx.append(rm);
+    tr.append(mk('r','Régua'),mk('l','Leitura'),te,tx);tb.append(tr);
+  });
+  calcMeas();
+  $('measnote').hidden=!S.measExample;
+}
+$('addmeas').addEventListener('click',()=>{S.meas.push({r:'',l:''});S.measExample=false;save();renderMeas();
+  const last=$('meas-r-'+(S.meas.length-1));if(last)last.focus();});
+renderMeas();
+
+/* ---------- Quiz ---------- */
+const QUIZ=[
+  {q:'Por que a fórmula divide o tempo do eco por 2?',o:['O som viaja mais devagar na volta.','O sensor dispara dois pulsos por medição.','O tempo medido é de ida e volta, então a distância até o objeto é metade do percurso.','Para converter microssegundos em milissegundos.'],a:2,w:'O pulso vai até o objeto e volta. O tempo medido cobre o dobro da distância que queremos.'},
+  {q:'Qual pino é saída do Arduino e recebe o pulso de disparo de 10 µs?',o:['Echo (D10)','VCC (5V)','LED (D13)','Trig (D9)'],a:3,w:'O Trig é configurado como OUTPUT e dispara a medição. O Echo é INPUT e traz o eco de volta.'},
+  {q:'O que a função pulseIn(ECHO, HIGH, 30000) devolve?',o:['A duração em µs em que o pino ficou em HIGH, ou 0 se estourar o tempo limite.','A distância em centímetros.','O número de pulsos recebidos.','Uma tensão analógica proporcional à distância.'],a:0,w:'pulseIn mede tempo, não distância. A conversão para centímetros é feita no código.'},
+  {q:'Com eco de 1749 µs e velocidade do som de 0,0343 cm/µs, qual é a distância aproximada?',o:['15 cm','30 cm','60 cm','120 cm'],a:1,w:'1749 × 0,0343 ÷ 2 ≈ 30 cm.'},
+  {q:'Um objeto de tecido, inclinado ou muito fino tende a causar…',o:['Leitura mais precisa.','Curto-circuito no sensor.','Aumento do brilho do LED.','Eco fraco ou desviado, com leitura 0 ou instável.'],a:3,w:'Superfícies macias absorvem o som e superfícies inclinadas desviam o eco para longe do sensor.'},
+  {q:'A temperatura do ar sobe de 20 °C para 35 °C e o código não muda. A distância lida pelo Arduino…',o:['Fica menor que a real, porque o som viaja mais rápido e o eco volta antes.','Fica maior que a real.','Não muda.','Vira zero.'],a:0,w:'O código supõe 343 m/s. Com o ar mais quente o som é mais rápido, o tempo medido diminui e a distância calculada fica menor. Teste no simulador.'}
+];
+function renderQuiz(){
+  const box=$('quiz');box.textContent='';
+  QUIZ.forEach((it,qi)=>{
+    const wrap=document.createElement('div');wrap.className='q';
+    const p=document.createElement('p');p.className='qt';p.textContent=(qi+1)+'. '+it.q;
+    const ops=document.createElement('div');ops.className='opts';
+    const why=document.createElement('p');why.className='why';why.hidden=true;why.textContent=it.w;
+    const ans=S.quiz[qi];
+    it.o.forEach((t,oi)=>{
+      const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=t;
+      if(ans!==undefined){
+        b.disabled=true;
+        if(oi===it.a)b.classList.add('right');
+        else if(oi===ans)b.classList.add('wrong');
+        why.hidden=false;
+      }
+      b.addEventListener('click',()=>{S.quiz[qi]=oi;save();renderQuiz();});
+      ops.append(b);
+    });
+    wrap.append(p,ops,why);box.append(wrap);
+  });
+  const n=Object.keys(S.quiz).length;
+  const ok=Object.keys(S.quiz).filter(k=>S.quiz[k]===QUIZ[k].a).length;
+  $('score').textContent=n+' de '+QUIZ.length+' respondidas · '+ok+' corretas';
+}
+$('quizreset').addEventListener('click',()=>{S.quiz={};save();renderQuiz();});
+renderQuiz();
+
+/* ---------- Escola de Inovadores ---------- */
+function totalHours(){return S.units.reduce((a,u)=>a+(parseFloat(u.h)||0),0);}
+function renderUnits(){
+  const ul=$('units');ul.textContent='';
+  if(!S.units.length){
+    const li=document.createElement('li');li.className='empty';li.textContent='Nenhuma unidade registrada. Adicione a primeira no formulário acima.';ul.append(li);
+  }
+  S.units.forEach((u,i)=>{
+    const li=document.createElement('li');
+    const sp=document.createElement('span');sp.textContent=u.n+(u.h!==''&&u.h!=null?' · '+nf(u.h,1).replace(',0','')+' h':'');
+    const rm=document.createElement('button');rm.type='button';rm.className='btn small';rm.textContent='Remover';
+    rm.setAttribute('aria-label','Remover '+u.n);
+    rm.addEventListener('click',()=>{S.units.splice(i,1);save();renderUnits();renderLattes();});
+    li.append(sp,rm);ul.append(li);
+  });
+  $('unittotal').textContent='Total: '+nf(totalHours(),1).replace(',0','')+' h';
+}
+$('unitform').addEventListener('submit',e=>{
+  e.preventDefault();
+  const n=$('u-name').value.trim();if(!n){$('u-name').focus();return;}
+  const h=$('u-h').value===''?'':parseFloat($('u-h').value);
+  S.units.push({n:n,h:h});save();
+  $('u-name').value='';$('u-h').value='';$('u-name').focus();
+  renderUnits();renderLattes();
+});
+$('notes').value=S.notes||'';
+$('notes').addEventListener('input',e=>{S.notes=e.target.value;save();});
+renderUnits();
+
+/* ---------- Lattes ---------- */
+const PART=['de','da','do','das','dos','e'];
+function citacao(nome){
+  const w=nome.trim().split(/\s+/).filter(Boolean);
+  if(w.length<2)return '';
+  const last=w[w.length-1].toUpperCase();
+  const ini=w.slice(0,-1).filter(x=>!PART.includes(x.toLowerCase())).map(x=>x[0].toUpperCase()+'.');
+  return last+', '+ini.join(' ');
+}
+function renderLattes(){
+  const L=S.lat;
+  const cit=citacao(L.nome);
+  $('cit').textContent='Sugestão de nome em citações: '+(cit||'—');
+  const h=totalHours();
+  const ano=String(L.ano||'').trim();
+  const inter=(L.int||'').trim()||'tecnologia';
+  const em=S.checks.e5?'concluiu':'cursa';
+  const res='Estudante de Tecnologia em Análise e Desenvolvimento de Sistemas na Fatec Ourinhos (Centro Paula Souza)'+(ano?', com ingresso em '+ano:'')+'. Tem interesse em '+inter+'. Nas aulas de Arquitetura e Organização de Computadores, desenvolveu práticas com Arduino Uno, como a medição de distância com o sensor ultrassônico HC-SR04, relacionando hardware, entrada e saída digital e programação embarcada. Também '+em+' o módulo base da Escola de Inovadores'+(h?' ('+nf(h,1).replace(',0','')+' h registradas)':'')+'.';
+  $('resumo').textContent=res;
+  $('rescount').textContent=res.length+' caracteres';
+  const hs=h?nf(h,1).replace(',0','')+' h':'____ h';
+  const forms=[
+    'Formação complementar',
+    '• Fundamentos de Hardware. Cisco Networking Academy (SkillsForAll). Carga horária: ____ h. 2026.',
+    '• Módulo base, Escola de Inovadores. Centro Paula Souza. Carga horária: '+hs+'. 2026.',
+    '',
+    'Produção técnica',
+    '• Medidor de distância com Arduino Uno e sensor ultrassônico HC-SR04. Fatec Ourinhos, disciplina Arquitetura e Organização de Computadores. 2026.'
+  ].join('\n');
+  $('forms').textContent=forms;
+}
+$('lat-nome').value=S.lat.nome;$('lat-ano').value=S.lat.ano;$('lat-int').value=S.lat.int;
+[['lat-nome','nome'],['lat-ano','ano'],['lat-int','int']].forEach(([id,k])=>{
+  $(id).addEventListener('input',e=>{S.lat[k]=e.target.value;save();renderLattes();});
+});
+$('copyres').addEventListener('click',e=>copyText($('resumo').textContent,e.target,$('resumo')));
+$('copyforms').addEventListener('click',e=>copyText($('forms').textContent,e.target,$('forms')));
+renderLattes();
+
+/* ---------- Início ---------- */
+updateProgress();
+const h=(location.hash||'').replace('#','');
+if(['arduino','inovadores','lattes'].includes(h))showTab(h);
+})();
+</script>
+
+</body></html>
