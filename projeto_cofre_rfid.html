@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cofre RFID com arquivo na EEPROM · Modo Jogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{--bg:#F1F3F8;--surface:#FFF;--ink:#101936;--muted:#4F5985;--line:#D3D9EB;--accent:#2B50F5;--accent-ink:#fff;--soft:#E6EBFF;--hi:#FFD93D;--hi-ink:#101936;
+--good:#0F7A58;--good-bg:#DDF4EA;--bad:#B3302A;--bad-bg:#FBE3E0;--code:#0F1630;--codeink:#E3E8FF;
+--paper:#FFFBE6;--paperink:#2B2A1F;--paperline:#CFE0F5;--margin:#E57373;
+--display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;--body:'DM Sans','Segoe UI',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0C1122;--surface:#151C36;--ink:#E9ECFA;--muted:#9BA5CC;--line:#2A3358;--accent:#7C93FF;--accent-ink:#0C1122;--soft:#1E2850;--good:#5FD9AA;--good-bg:#12372B;--bad:#FF9A92;--bad-bg:#40201F;--code:#080C1A;--paper:#23253A;--paperink:#E9ECFA;--paperline:#33406A;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--body);padding:0 16px 64px}
+.wrap{max-width:940px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0} a{color:var(--accent)} .mono{font-family:var(--mono)} .muted{color:var(--muted)} .small{font-size:.85rem}
+button,input,select,textarea{font:inherit;color:inherit} button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hero{padding:32px 0 20px;display:grid;gap:16px}
+.herotop{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.kicker{font:700 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(2rem,5.6vw,3.4rem);font-weight:800;letter-spacing:-.02em}
+.lead{font-size:1.1rem;max-width:64ch;color:var(--muted)}
+.bubble{background:var(--surface);border:2px solid var(--ink);border-radius:14px;padding:10px 14px;max-width:46ch;font-weight:500}
+.mapa{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.mapa a{display:grid;gap:2px;justify-items:center;text-align:center;text-decoration:none;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 6px;font-size:.8rem}
+.mapa a .em{font-size:1.7rem} .mapa a b{font-family:var(--display);font-size:.92rem} .mapa a:hover{border-color:var(--accent)}
+.rules{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.rules li{border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px;font-size:.9rem}
+nav.steps{position:sticky;top:0;z-index:6;background:var(--bg);border-bottom:1px solid var(--line);margin:0 -16px;padding:8px 16px}
+.hud{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;max-width:940px;margin:0 auto 6px}
+.lvl{font:800 1rem var(--display)} .xpw{flex:1;min-width:170px;display:grid;gap:2px}
+.xpbar{height:12px;border-radius:6px;background:var(--soft);overflow:hidden;border:1px solid var(--line)}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--hi));transition:width .4s}
+.xptxt{font:700 .75rem var(--mono);color:var(--muted)}
+.badges{display:flex;gap:4px} .badge{font-size:1.15rem;filter:grayscale(1);opacity:.3;transition:.3s} .badge.on{filter:none;opacity:1;transform:scale(1.15)}
+#navlist{display:flex;gap:6px;list-style:none;margin:0 auto;padding:0;max-width:940px;overflow-x:auto}
+#navlist a{display:flex;gap:6px;align-items:center;white-space:nowrap;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:.84rem;font-weight:500}
+#navlist a b{background:var(--accent);color:var(--accent-ink);border-radius:50%;min-width:20px;height:20px;display:grid;place-items:center;font-size:.72rem}
+#navlist a.on{border-color:var(--accent);background:var(--soft)}
+#toasts{position:fixed;right:14px;bottom:14px;display:grid;gap:8px;z-index:20;max-width:min(92vw,340px)}
+.toast{background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-weight:700;animation:in .25s} .toast.big{background:var(--accent);color:var(--accent-ink);font-size:1.05rem}
+@keyframes in{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+section.etapa{margin-top:44px;display:grid;gap:14px}
+.etapa-head{display:grid;gap:10px}
+.tag{font:700 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.etapa-head h2{font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:800} .etapa-head p{max-width:66ch;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;display:grid;gap:10px;align-content:start}
+.panel h3{font-size:1.1rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap} .panel ul,.panel ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.pill{font:700 .72rem var(--mono);background:var(--soft);border-radius:999px;padding:3px 9px} .pill.xp{background:var(--hi);color:var(--hi-ink)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem} th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top} th{background:var(--soft);font-family:var(--display)} tr:last-child td{border-bottom:0} td.c{text-align:center}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:9px 16px;font-weight:700;text-decoration:none} .btn:hover{filter:brightness(1.1)} .btn.sec{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.score{font-weight:700} .ok{color:var(--good)} .no{color:var(--bad)}
+label.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer} label.chk input{margin-top:5px;width:18px;height:18px;accent-color:var(--accent)}
+textarea{background:var(--bg);border:2px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-height:84px}
+.chal{display:grid;gap:18px} .chal .c{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px} .chal .c:first-child{border-top:0;padding-top:0}
+.chal h4{margin:0;font:800 1rem var(--display);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.opts{display:grid;gap:6px} .opt{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 12px} .opt:hover{border-color:var(--accent)} .opt.good{background:var(--good-bg);border-color:var(--good)} .opt.bad{background:var(--bad-bg);border-color:var(--bad)}
+details.codebox,details.prof{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 16px 12px} details summary{cursor:pointer;font-weight:700;padding:14px 0}
+pre{margin:0;background:var(--code);color:var(--codeink);border-radius:10px;padding:14px;overflow:auto;max-height:480px;font:400 .8rem/1.5 var(--mono)}
+.bytebox{display:flex;gap:10px;align-items:center} .bytebox .bubble{font-size:.92rem}
+.callout{border:1px solid var(--line);border-left:5px solid var(--hi);background:var(--surface);border-radius:10px;padding:12px 16px;display:grid;gap:6px}
+.note{background:var(--paper);color:var(--paperink);border:1px solid var(--paperline);border-left:4px solid var(--margin);border-radius:8px;padding:12px 16px;display:grid;gap:8px;background-image:repeating-linear-gradient(transparent,transparent 27px,var(--paperline) 28px)}
+.note h4{margin:0;font:800 1.02rem var(--display)} .note ul{margin:0;padding-left:20px} .note li{line-height:28px}
+.note .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.player{display:grid;gap:8px;text-align:center;padding:18px;background:var(--surface);border:2px solid var(--ink);border-radius:16px} .player .big{font:800 1.5rem var(--display)}
+footer.outros{margin-top:50px;display:grid;gap:10px}
+footer.outros .links{display:flex;flex-wrap:wrap;gap:8px} footer.outros a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;text-decoration:none;font-size:.9rem}
+@media print{nav.steps,.btn,#toasts,details.codebox,.bytebox,.chal,.mapa,.rules,footer.outros,details.prof{display:none!important} body.pc section.etapa:not(#caderno){display:none} .note{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">Arquitetura e Organização de Computadores · Projeto prático · 3 a 4 aulas</div>
+  <div class="herotop"><div id="byteHero"></div><div class="bubble">Eu sou o <b>Chip</b>. Complete as missões, ganhe XP e suba de nível. Boa montagem!</div></div>
+  <h1>🔐 Cofre RFID com arquivo na EEPROM</h1>
+  <p class="lead">Um leitor RFID abre uma trava (servo) para cartões cadastrados. Os cartões ficam em uma tabela na EEPROM, com permissões, checksum e registro de acessos, como um pequeno sistema de arquivos.</p>
+  <ul class="rules"><li>🧰 Somente Arduino físico (o Tinkercad não tem o MFRC522)</li><li>⭐ XP por desafio (uma vez só)</li><li>🏅 Medalha com 70% do XP da missão</li><li>📝 Caixas “Para o caderno”</li></ul>
+  <div class="mapa" id="mapa"></div>
+  <details class="prof"><summary>📚 Ementa: o que este projeto cobre</summary>
+    <div class="tablewrap"><table><thead><tr><th>Conteúdo da ementa</th><th>Fase</th></tr></thead><tbody><tr><td>Organização de arquivos: cabeçalho, tabela e registros</td><td class="c">2, 3</td></tr><tr><td>Sistemas de memória: EEPROM (não volátil) e desgaste</td><td class="c">2, 3</td></tr><tr><td>Barramentos e interfaces: SPI (mestre, escravo, clock)</td><td class="c">1</td></tr><tr><td>Níveis lógicos: 5 V × 3,3 V e conversor de nível</td><td class="c">1</td></tr><tr><td>Sistemas operacionais: permissões, usuário administrador e log</td><td class="c">3</td></tr><tr><td>Tipos de dados: struct e tamanho em bytes</td><td class="c">2</td></tr><tr><td>Detecção de erros: checksum XOR</td><td class="c">1, 2</td></tr><tr><td>Periféricos: leitor RFID, servo, buzzer e LEDs</td><td class="c">1, 3</td></tr></tbody></table></div></details>
+</header>
+
+<nav class="steps" aria-label="Missões e progresso">
+  <div class="hud"><div class="lvl" id="lvl"></div><div class="xpw"><div class="xpbar"><i id="xpfill"></i></div><div class="xptxt" id="xptxt"></div></div><div class="badges" id="badges"></div></div>
+  <ol id="navlist"><li><a href="#e1"><b>1</b>Montagem</a></li><li><a href="#e2"><b>2</b>Fase 1</a></li><li><a href="#e3"><b>3</b>Fase 2</a></li><li><a href="#e4"><b>4</b>Fase 3</a></li><li><a href="#e5"><b>5</b>Final</a></li><li><a href="#caderno"><b>📒</b>Caderno</a></li></ol>
+</nav>
+<div id="toasts" aria-live="polite"></div>
+
+<section class="etapa" id="e1">
+  <div class="etapa-head"><div class="tag">Missão 1 · Montagem</div><h2>🔌 Monte o circuito</h2><p>Separe os materiais e faça as ligações antes de carregar o primeiro código.</p></div>
+  <div class="cols">
+    <div class="panel"><h3>🧰 Materiais</h3><ul><li>1 Arduino Uno R3 + cabo USB</li><li>1 protoboard 830 pontos</li><li>1 kit RFID MFRC522 (leitor + cartão + chaveiro)</li><li>1 conversor de nível lógico (4 canais)</li><li>1 micro servo SG90 (fase 3) + cabo extensor, se precisar</li><li>1 buzzer passivo</li><li>1 LED verde e 1 LED vermelho + 2 resistores de 300 Ω</li><li>Jumpers macho-macho e macho-fêmea</li></ul></div>
+    <div class="panel"><h3>⚠️ Antes de começar</h3><ul><li>O MFRC522 trabalha com 3,3 V. Ligar o módulo no 5V pode queimá-lo.</li><li>Só funciona na placa física: o Tinkercad não tem o MFRC522. Para rodar a fase 1 no simulador, troque o leitor por entradas manuais.</li><li>Se o servo reiniciar a placa, alimente-o por outra fonte com o GND em comum.</li><li>Guarde os cartões: o UID é único e é a “chave” do sistema. Não é um sistema de segurança real (o UID pode ser clonado).</li></ul></div>
+  </div>
+  <div class="panel"><h3>📍 Ligações</h3><div class="tablewrap"><table><thead><tr><th>Peça</th><th>Onde liga</th><th>Observação</th></tr></thead><tbody><tr><td>Conversor: lado HV</td><td>5V do Uno</td><td class="muted">e o GND comum</td></tr><tr><td>Conversor: lado LV</td><td>3.3V do Uno</td><td class="muted">e o GND comum</td></tr><tr><td>SCK (Uno 13)</td><td>HV1 → LV1 → SCK do módulo</td><td class="muted"></td></tr><tr><td>MOSI (Uno 11)</td><td>HV2 → LV2 → MOSI do módulo</td><td class="muted"></td></tr><tr><td>SS (Uno 10)</td><td>HV3 → LV3 → SDA do módulo</td><td class="muted"></td></tr><tr><td>RST (Uno 9)</td><td>HV4 → LV4 → RST do módulo</td><td class="muted"></td></tr><tr><td>MISO (Uno 12)</td><td>MISO do módulo, direto</td><td class="muted">3,3 V já é lido como ALTO</td></tr><tr><td>Módulo: 3.3V e GND</td><td>3.3V e GND do Uno</td><td class="muted">NUNCA ligar o módulo no 5V</td></tr><tr><td>LED verde</td><td>pino 7</td><td class="muted">300 Ω ao GND</td></tr><tr><td>LED vermelho</td><td>pino 6</td><td class="muted">300 Ω ao GND</td></tr><tr><td>Buzzer passivo</td><td>pino 5 e GND</td><td class="muted"></td></tr><tr><td>Servo SG90 (fase 3)</td><td>laranja → pino 3; vermelho → 5V; marrom → GND</td><td class="muted"></td></tr></tbody></table></div></div>
+  <div class="panel"><h3>✅ Checklist de montagem <span class="pill xp">10 XP</span></h3><div class="chal" id="ch1"></div></div>
+</section>
+
+<section class="etapa" id="e2">
+  <div class="etapa-head"><div class="tag">Missão 2 · Fase 1</div><h2>📶 SPI, níveis lógicos e UID do cartão</h2><p>Ligar o leitor pelo barramento SPI com conversor de nível e ler o UID: em hexadecimal, binário e decimal, mais um checksum XOR.</p></div>
+  <div class="panel"><div class="chal" id="ch2"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 1 <span class="mono">cofre1_leitor_uid.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c1">Copiar código</button><button class="btn dl" type="button" data-t="c1" data-f="cofre1_leitor_uid.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c1">/*
+  COFRE RFID - FASE 1: barramento SPI, niveis logicos 5 V x 3,3 V e o UID do cartao
+
+  O leitor RFID MFRC522 conversa com o Arduino pelo barramento SPI (4 fios + reset).
+  ATENCAO: o MFRC522 funciona com 3,3 V. O Uno trabalha com 5 V.
+    - Alimente o modulo com o pino 3.3V do Uno (NUNCA com 5V).
+    - Use o CONVERSOR DE NIVEL LOGICO (lado HV = 5 V, lado LV = 3,3 V) nos sinais
+      que saem do Arduino: SCK, MOSI, SDA(SS) e RST.
+    - MISO (saida do modulo, 3,3 V) pode ir direto ao Arduino: 3,3 V ja e lido como ALTO.
+
+  Ligacoes (Uno -&gt; conversor -&gt; MFRC522):
+    13 (SCK)  -&gt; HV1 / LV1 -&gt; SCK       11 (MOSI) -&gt; HV2 / LV2 -&gt; MOSI
+    10 (SS)   -&gt; HV3 / LV3 -&gt; SDA       9  (RST)  -&gt; HV4 / LV4 -&gt; RST
+    12 (MISO) &lt;- MISO (direto)          3.3V -&gt; 3.3V do modulo e do lado LV
+    5V -&gt; lado HV do conversor          GND -&gt; GND de tudo
+    LED verde (300 ohms) no pino 7 | LED vermelho (300 ohms) no pino 6 | buzzer passivo no pino 5
+  Biblioteca: MFRC522 (de Miguel Balboa). Instale pelo Gerenciador de Bibliotecas da IDE.
+
+  O que o programa faz: ao aproximar um cartao ou chaveiro, mostra o UID
+  (identificador unico, 4 bytes) em hexadecimal e binario, mais o tipo do cartao.
+*/
+#include &lt;SPI.h&gt;
+#include &lt;MFRC522.h&gt;
+
+const uint8_t PIN_SS = 10, PIN_RST = 9;
+const uint8_t PIN_VERDE = 7, PIN_VERMELHO = 6, PIN_BUZZER = 5;
+MFRC522 leitor(PIN_SS, PIN_RST);
+
+void imprimirBinario(uint8_t v) {
+  for (int8_t i = 7; i &gt;= 0; i--) Serial.print((v &gt;&gt; i) &amp; 1);
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_VERDE, OUTPUT); pinMode(PIN_VERMELHO, OUTPUT); pinMode(PIN_BUZZER, OUTPUT);
+  SPI.begin();
+  leitor.PCD_Init();
+  Serial.println(F(&quot;=== COFRE RFID - Fase 1: leitor de UID ===&quot;));
+  Serial.print(F(&quot;Versao do chip MFRC522 (0x92 = v2.0, 0x91 = v1.0): 0x&quot;));
+  Serial.println(leitor.PCD_ReadRegister(MFRC522::VersionReg), HEX);
+  Serial.println(F(&quot;Aproxime um cartao...&quot;));
+}
+
+void loop() {
+  if (!leitor.PICC_IsNewCardPresent() || !leitor.PICC_ReadCardSerial()) return;
+
+  Serial.print(F(&quot;Tipo: &quot;)); Serial.println(leitor.PICC_GetTypeName(leitor.PICC_GetType(leitor.uid.sak)));
+  Serial.print(F(&quot;UID (&quot;)); Serial.print(leitor.uid.size); Serial.println(F(&quot; bytes):&quot;));
+  uint8_t xorTotal = 0;
+  for (uint8_t i = 0; i &lt; leitor.uid.size; i++) {
+    Serial.print(F(&quot;  byte &quot;)); Serial.print(i);
+    Serial.print(F(&quot;: HEX 0x&quot;)); if (leitor.uid.uidByte[i] &lt; 16) Serial.print(&#x27;0&#x27;);
+    Serial.print(leitor.uid.uidByte[i], HEX);
+    Serial.print(F(&quot; | BIN &quot;)); imprimirBinario(leitor.uid.uidByte[i]);
+    Serial.print(F(&quot; | DEC &quot;)); Serial.println(leitor.uid.uidByte[i]);
+    xorTotal ^= leitor.uid.uidByte[i];
+  }
+  Serial.print(F(&quot;XOR dos bytes (checksum simples): 0x&quot;)); Serial.println(xorTotal, HEX);
+
+  digitalWrite(PIN_VERDE, HIGH);
+  tone(PIN_BUZZER, 1500, 120);
+  delay(400);
+  digitalWrite(PIN_VERDE, LOW);
+  leitor.PICC_HaltA();
+}
+</code></pre></details>
+  <div class="notehost" data-note="0"></div>
+</section>
+<section class="etapa" id="e3">
+  <div class="etapa-head"><div class="tag">Missão 3 · Fase 2</div><h2>🗄️ Tabela de cartões na EEPROM</h2><p>Criar um “sistema de arquivos” minúsculo: cabeçalho com número mágico, tabela de 16 registros (UID, permissões, acessos, checksum) e comandos para listar, cadastrar, remover e formatar.</p></div>
+  <div class="panel"><div class="chal" id="ch3"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 2 <span class="mono">cofre2_cartoes_eeprom.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c2">Copiar código</button><button class="btn dl" type="button" data-t="c2" data-f="cofre2_cartoes_eeprom.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c2">/*
+  COFRE RFID - FASE 2: um mini &quot;sistema de arquivos&quot; na EEPROM
+
+  Os cartoes autorizados ficam guardados na EEPROM (memoria que nao se apaga).
+  Organizacao (como um disco minusculo):
+      endereco 0..3  : CABECALHO  = numero magico 0xC0, versao, quantidade, reservado
+      endereco 4...  : TABELA de ate 16 REGISTROS de 8 bytes cada:
+           uid[4] | permissoes (1 byte) | acessos (2 bytes) | checksum (1 byte)
+  O checksum (XOR dos 7 primeiros bytes) detecta registro corrompido.
+  Permissoes: bit 0 = pode abrir | bit 1 = administrador
+
+  Comandos no Monitor Serial:
+     l = listar cartoes | a = cadastrar (o proximo cartao lido) | r = remover (o proximo cartao)
+     f = formatar a tabela (apaga tudo)
+
+  Ligacoes: as mesmas da Fase 1.
+*/
+#include &lt;SPI.h&gt;
+#include &lt;MFRC522.h&gt;
+#include &lt;EEPROM.h&gt;
+
+const uint8_t PIN_SS = 10, PIN_RST = 9;
+const uint8_t PIN_VERDE = 7, PIN_VERMELHO = 6, PIN_BUZZER = 5;
+MFRC522 leitor(PIN_SS, PIN_RST);
+
+const uint8_t MAGICO = 0xC0;
+const uint8_t MAX_CARTOES = 16;
+const uint8_t TAM_REG = 8;
+const int INICIO_TABELA = 4;
+
+struct Cartao {
+  uint8_t  uid[4];
+  uint8_t  perm;
+  uint16_t acessos;
+  uint8_t  soma;
+};
+
+char modo = &#x27;u&#x27;;          // u = uso normal | a = cadastrar | r = remover
+
+uint8_t calcularSoma(const Cartao &amp;c) {
+  const uint8_t *p = (const uint8_t *)&amp;c;
+  uint8_t x = 0;
+  for (uint8_t i = 0; i &lt; TAM_REG - 1; i++) x ^= p[i];
+  return x;
+}
+
+int enderecoDe(uint8_t i) { return INICIO_TABELA + i * TAM_REG; }
+
+void lerRegistro(uint8_t i, Cartao &amp;c) { EEPROM.get(enderecoDe(i), c); }
+void gravarRegistro(uint8_t i, Cartao &amp;c) { c.soma = calcularSoma(c); EEPROM.put(enderecoDe(i), c); }
+
+void formatar() {
+  EEPROM.update(0, MAGICO); EEPROM.update(1, 1); EEPROM.update(2, 0); EEPROM.update(3, 0);
+  Cartao vazio;
+  memset(&amp;vazio, 0xFF, sizeof(vazio));
+  for (uint8_t i = 0; i &lt; MAX_CARTOES; i++) EEPROM.put(enderecoDe(i), vazio);
+  Serial.println(F(&quot;&gt;&gt; tabela formatada&quot;));
+}
+
+bool registroLivre(const Cartao &amp;c) { return c.uid[0] == 0xFF &amp;&amp; c.uid[1] == 0xFF &amp;&amp; c.uid[2] == 0xFF &amp;&amp; c.uid[3] == 0xFF; }
+
+// Busca linear: devolve o indice do cartao ou -1
+int buscar(const uint8_t *uid) {
+  Cartao c;
+  for (uint8_t i = 0; i &lt; MAX_CARTOES; i++) {
+    lerRegistro(i, c);
+    if (!registroLivre(c) &amp;&amp; memcmp(c.uid, uid, 4) == 0) return i;
+  }
+  return -1;
+}
+
+void listar() {
+  Serial.println(F(&quot;--- tabela de cartoes (EEPROM) ---&quot;));
+  Cartao c;
+  uint8_t n = 0;
+  for (uint8_t i = 0; i &lt; MAX_CARTOES; i++) {
+    lerRegistro(i, c);
+    if (registroLivre(c)) continue;
+    n++;
+    Serial.print(i); Serial.print(F(&quot;: UID &quot;));
+    for (uint8_t k = 0; k &lt; 4; k++) { if (c.uid[k] &lt; 16) Serial.print(&#x27;0&#x27;); Serial.print(c.uid[k], HEX); Serial.print(&#x27; &#x27;); }
+    Serial.print(F(&quot;| perm=&quot;)); Serial.print(c.perm, BIN);
+    Serial.print(F(&quot; | acessos=&quot;)); Serial.print(c.acessos);
+    Serial.print(F(&quot; | checksum &quot;)); Serial.println(c.soma == calcularSoma(c) ? F(&quot;ok&quot;) : F(&quot;CORROMPIDO&quot;));
+  }
+  Serial.print(F(&quot;Total: &quot;)); Serial.print(n); Serial.print(F(&quot; de &quot;)); Serial.println(MAX_CARTOES);
+}
+
+void sinal(bool bom) {
+  digitalWrite(bom ? PIN_VERDE : PIN_VERMELHO, HIGH);
+  tone(PIN_BUZZER, bom ? 1500 : 300, bom ? 120 : 400);
+  delay(500);
+  digitalWrite(PIN_VERDE, LOW); digitalWrite(PIN_VERMELHO, LOW);
+}
+
+void tratarCartao(const uint8_t *uid) {
+  int idx = buscar(uid);
+  Cartao c;
+  if (modo == &#x27;a&#x27;) {
+    if (idx &gt;= 0) { Serial.println(F(&quot;Cartao ja cadastrado.&quot;)); sinal(false); }
+    else {
+      for (uint8_t i = 0; i &lt; MAX_CARTOES; i++) {
+        lerRegistro(i, c);
+        if (registroLivre(c)) {
+          memcpy(c.uid, uid, 4); c.perm = 0b01; c.acessos = 0;
+          gravarRegistro(i, c);
+          Serial.print(F(&quot;Cadastrado na posicao &quot;)); Serial.println(i);
+          sinal(true);
+          modo = &#x27;u&#x27;;
+          return;
+        }
+      }
+      Serial.println(F(&quot;Tabela cheia!&quot;)); sinal(false);
+    }
+    modo = &#x27;u&#x27;;
+  } else if (modo == &#x27;r&#x27;) {
+    if (idx &lt; 0) { Serial.println(F(&quot;Cartao nao encontrado.&quot;)); sinal(false); }
+    else {
+      memset(&amp;c, 0xFF, sizeof(c));
+      EEPROM.put(enderecoDe(idx), c);
+      Serial.println(F(&quot;Cartao removido.&quot;)); sinal(true);
+    }
+    modo = &#x27;u&#x27;;
+  } else {
+    if (idx &gt;= 0) {
+      lerRegistro(idx, c);
+      c.acessos++;
+      gravarRegistro(idx, c);             // so grava quando o contador muda
+      Serial.print(F(&quot;ACESSO PERMITIDO | acessos deste cartao: &quot;)); Serial.println(c.acessos);
+      sinal(true);
+    } else {
+      Serial.println(F(&quot;ACESSO NEGADO&quot;));
+      sinal(false);
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_VERDE, OUTPUT); pinMode(PIN_VERMELHO, OUTPUT); pinMode(PIN_BUZZER, OUTPUT);
+  SPI.begin();
+  leitor.PCD_Init();
+  if (EEPROM.read(0) != MAGICO) { Serial.println(F(&quot;EEPROM sem formato: formatando...&quot;)); formatar(); }
+  Serial.println(F(&quot;=== COFRE RFID - Fase 2 ===&quot;));
+  Serial.println(F(&quot;Comandos: l listar | a cadastrar | r remover | f formatar&quot;));
+  Serial.print(F(&quot;sizeof(Cartao) = &quot;)); Serial.print(sizeof(Cartao)); Serial.println(F(&quot; bytes&quot;));
+  listar();
+}
+
+void loop() {
+  while (Serial.available()) {
+    char c = Serial.read();
+    if (c == &#x27;l&#x27;) listar();
+    if (c == &#x27;a&#x27;) { modo = &#x27;a&#x27;; Serial.println(F(&quot;&gt;&gt; aproxime o cartao a CADASTRAR&quot;)); }
+    if (c == &#x27;r&#x27;) { modo = &#x27;r&#x27;; Serial.println(F(&quot;&gt;&gt; aproxime o cartao a REMOVER&quot;)); }
+    if (c == &#x27;f&#x27;) formatar();
+  }
+  if (!leitor.PICC_IsNewCardPresent() || !leitor.PICC_ReadCardSerial()) return;
+  tratarCartao(leitor.uid.uidByte);
+  leitor.PICC_HaltA();
+}
+</code></pre></details>
+  <div class="notehost" data-note="1"></div>
+</section>
+<section class="etapa" id="e4">
+  <div class="etapa-head"><div class="tag">Missão 4 · Fase 3</div><h2>🔑 Trava com servo, administrador e log circular</h2><p>Fechar o projeto: o servo abre a trava por 3 s, um cartão administrador cadastra novos cartões sem computador e um log circular de 16 eventos registra os acessos.</p></div>
+  <div class="panel"><div class="chal" id="ch4"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 3 <span class="mono">cofre3_servo_permissoes_log.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c3">Copiar código</button><button class="btn dl" type="button" data-t="c3" data-f="cofre3_servo_permissoes_log.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c3">/*
+  COFRE RFID - FASE 3: trava com servo, permissoes (administrador) e registro de acessos
+
+  Novidades:
+    - Um micro servo SG90 faz de TRAVA: 0 graus = trancado, 90 graus = aberto (3 s).
+    - Cadastro SEM computador: passe o cartao ADMINISTRADOR e, em ate 5 segundos,
+      passe o cartao NOVO. Ele entra na tabela com permissao de abrir.
+    - Um LOG circular de 16 eventos na EEPROM (a partir do endereco 160):
+        evento = [indice do cartao | tipo | segundos desde o boot, 2 bytes]
+      Quando enche, o evento novo sobrescreve o mais antigo.
+    - Comandos: l listar cartoes | g mostrar o log | f formatar tudo | m promover o
+      PRIMEIRO cartao cadastrado a administrador (use na primeira vez)
+      e &#x27;a&#x27; cadastra o proximo cartao lido (como na Fase 2)
+
+  Ligacoes: as da Fase 1 e mais:  servo SG90: fio marrom GND, vermelho 5V, laranja pino 3
+  (se o servo reiniciar a placa, alimente-o por uma fonte separada com GND comum).
+*/
+#include &lt;SPI.h&gt;
+#include &lt;MFRC522.h&gt;
+#include &lt;EEPROM.h&gt;
+#include &lt;Servo.h&gt;
+
+const uint8_t PIN_SS = 10, PIN_RST = 9;
+const uint8_t PIN_VERDE = 7, PIN_VERMELHO = 6, PIN_BUZZER = 5, PIN_SERVO = 3;
+MFRC522 leitor(PIN_SS, PIN_RST);
+Servo trava;
+
+const uint8_t MAGICO = 0xC0;
+const uint8_t MAX_CARTOES = 16;
+const uint8_t TAM_REG = 8;
+const int INICIO_TABELA = 4;
+const int INICIO_LOG = 160;
+const uint8_t MAX_LOG = 16;
+const uint8_t PERM_ABRIR = 0b01, PERM_ADMIN = 0b10;
+const unsigned long JANELA_ADMIN_MS = 5000;
+
+struct Cartao { uint8_t uid[4]; uint8_t perm; uint16_t acessos; uint8_t soma; };
+struct Evento { uint8_t cartao; uint8_t tipo; uint16_t segundos; };
+
+enum { EV_ABRIU = 1, EV_NEGADO = 2, EV_CADASTRO = 3 };
+char modo = &#x27;u&#x27;;
+unsigned long ate = 0;             // quando termina a janela do administrador
+uint8_t ponteiroLog = 0;
+
+uint8_t calcularSoma(const Cartao &amp;c) {
+  const uint8_t *p = (const uint8_t *)&amp;c;
+  uint8_t x = 0;
+  for (uint8_t i = 0; i &lt; TAM_REG - 1; i++) x ^= p[i];
+  return x;
+}
+int enderecoDe(uint8_t i) { return INICIO_TABELA + i * TAM_REG; }
+void lerRegistro(uint8_t i, Cartao &amp;c) { EEPROM.get(enderecoDe(i), c); }
+void gravarRegistro(uint8_t i, Cartao &amp;c) { c.soma = calcularSoma(c); EEPROM.put(enderecoDe(i), c); }
+bool registroLivre(const Cartao &amp;c) { return c.uid[0] == 0xFF &amp;&amp; c.uid[1] == 0xFF &amp;&amp; c.uid[2] == 0xFF &amp;&amp; c.uid[3] == 0xFF; }
+
+void formatar() {
+  EEPROM.update(0, MAGICO); EEPROM.update(1, 1); EEPROM.update(2, 0); EEPROM.update(3, 0);
+  Cartao vazio; memset(&amp;vazio, 0xFF, sizeof(vazio));
+  for (uint8_t i = 0; i &lt; MAX_CARTOES; i++) EEPROM.put(enderecoDe(i), vazio);
+  Evento e; memset(&amp;e, 0xFF, sizeof(e));
+  for (uint8_t i = 0; i &lt; MAX_LOG; i++) EEPROM.put(INICIO_LOG + i * sizeof(Evento), e);
+  Serial.println(F(&quot;&gt;&gt; tudo formatado&quot;));
+}
+
+int buscar(const uint8_t *uid) {
+  Cartao c;
+  for (uint8_t i = 0; i &lt; MAX_CARTOES; i++) {
+    lerRegistro(i, c);
+    if (!registroLivre(c) &amp;&amp; memcmp(c.uid, uid, 4) == 0) return i;
+  }
+  return -1;
+}
+
+void registrarEvento(uint8_t cartao, uint8_t tipo) {
+  Evento e = { cartao, tipo, (uint16_t)(millis() / 1000) };
+  EEPROM.put(INICIO_LOG + ponteiroLog * sizeof(Evento), e);
+  ponteiroLog = (ponteiroLog + 1) % MAX_LOG;     // buffer circular
+}
+
+void descobrirPonteiroLog() {                    // acha a proxima posicao livre (0xFF) do log
+  Evento e;
+  ponteiroLog = 0;
+  for (uint8_t i = 0; i &lt; MAX_LOG; i++) {
+    EEPROM.get(INICIO_LOG + i * sizeof(Evento), e);
+    if (e.tipo == 0xFF) { ponteiroLog = i; return; }
+  }
+}
+
+void mostrarLog() {
+  Serial.println(F(&quot;--- log de acessos (posicao | cartao | evento | segundos desde o boot) ---&quot;));
+  Evento e;
+  for (uint8_t i = 0; i &lt; MAX_LOG; i++) {
+    EEPROM.get(INICIO_LOG + i * sizeof(Evento), e);
+    if (e.tipo == 0xFF) continue;
+    Serial.print(i); Serial.print(F(&quot; | &quot;)); Serial.print(e.cartao); Serial.print(F(&quot; | &quot;));
+    Serial.print(e.tipo == EV_ABRIU ? F(&quot;abriu&quot;) : e.tipo == EV_NEGADO ? F(&quot;negado&quot;) : F(&quot;cadastro&quot;));
+    Serial.print(F(&quot; | &quot;)); Serial.println(e.segundos);
+  }
+}
+
+void listar() {
+  Serial.println(F(&quot;--- cartoes ---&quot;));
+  Cartao c;
+  for (uint8_t i = 0; i &lt; MAX_CARTOES; i++) {
+    lerRegistro(i, c);
+    if (registroLivre(c)) continue;
+    Serial.print(i); Serial.print(F(&quot;: &quot;));
+    for (uint8_t k = 0; k &lt; 4; k++) { if (c.uid[k] &lt; 16) Serial.print(&#x27;0&#x27;); Serial.print(c.uid[k], HEX); }
+    Serial.print(F(&quot; perm=&quot;)); Serial.print(c.perm, BIN);
+    Serial.print(F(&quot; acessos=&quot;)); Serial.print(c.acessos);
+    Serial.println(c.soma == calcularSoma(c) ? F(&quot; ok&quot;) : F(&quot; CORROMPIDO&quot;));
+  }
+}
+
+void sinal(bool bom) {
+  digitalWrite(bom ? PIN_VERDE : PIN_VERMELHO, HIGH);
+  tone(PIN_BUZZER, bom ? 1500 : 300, bom ? 120 : 400);
+  delay(300);
+  digitalWrite(PIN_VERDE, LOW); digitalWrite(PIN_VERMELHO, LOW);
+}
+
+void abrirTrava() {
+  trava.attach(PIN_SERVO);
+  trava.write(90);
+  digitalWrite(PIN_VERDE, HIGH);
+  delay(3000);
+  trava.write(0);
+  delay(400);
+  trava.detach();
+  digitalWrite(PIN_VERDE, LOW);
+}
+
+bool cadastrarNovo(const uint8_t *uid) {
+  Cartao c;
+  for (uint8_t i = 0; i &lt; MAX_CARTOES; i++) {
+    lerRegistro(i, c);
+    if (registroLivre(c)) {
+      memcpy(c.uid, uid, 4); c.perm = PERM_ABRIR; c.acessos = 0;
+      gravarRegistro(i, c);
+      registrarEvento(i, EV_CADASTRO);
+      Serial.print(F(&quot;Cartao cadastrado na posicao &quot;)); Serial.println(i);
+      return true;
+    }
+  }
+  return false;
+}
+
+void tratarCartao(const uint8_t *uid) {
+  int idx = buscar(uid);
+  Cartao c;
+
+  if (modo == &#x27;a&#x27;) {                                  // cadastro pelo Serial
+    modo = &#x27;u&#x27;;
+    if (idx &gt;= 0) { Serial.println(F(&quot;Ja cadastrado.&quot;)); sinal(false); }
+    else if (cadastrarNovo(uid)) sinal(true); else { Serial.println(F(&quot;Tabela cheia&quot;)); sinal(false); }
+    return;
+  }
+
+  if (modo == &#x27;j&#x27; &amp;&amp; millis() &lt; ate) {                // janela aberta pelo administrador
+    modo = &#x27;u&#x27;;
+    if (idx &gt;= 0) { Serial.println(F(&quot;Ja cadastrado.&quot;)); sinal(false); }
+    else if (cadastrarNovo(uid)) sinal(true); else { Serial.println(F(&quot;Tabela cheia&quot;)); sinal(false); }
+    return;
+  }
+  modo = &#x27;u&#x27;;
+
+  if (idx &lt; 0) { Serial.println(F(&quot;ACESSO NEGADO (cartao desconhecido)&quot;)); registrarEvento(255, EV_NEGADO); sinal(false); return; }
+
+  lerRegistro(idx, c);
+  if (c.perm &amp; PERM_ADMIN) {                          // administrador: abre a janela de cadastro
+    modo = &#x27;j&#x27;; ate = millis() + JANELA_ADMIN_MS;
+    Serial.println(F(&quot;ADMIN reconhecido: passe o cartao NOVO em ate 5 s&quot;));
+    tone(PIN_BUZZER, 2000, 80); delay(150); tone(PIN_BUZZER, 2000, 80);
+    return;
+  }
+  if (c.perm &amp; PERM_ABRIR) {
+    c.acessos++;
+    gravarRegistro(idx, c);
+    registrarEvento(idx, EV_ABRIU);
+    Serial.print(F(&quot;ACESSO PERMITIDO | acessos: &quot;)); Serial.println(c.acessos);
+    abrirTrava();
+  } else {
+    Serial.println(F(&quot;ACESSO NEGADO (sem permissao)&quot;));
+    registrarEvento(idx, EV_NEGADO);
+    sinal(false);
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_VERDE, OUTPUT); pinMode(PIN_VERMELHO, OUTPUT); pinMode(PIN_BUZZER, OUTPUT);
+  trava.attach(PIN_SERVO); trava.write(0); delay(400); trava.detach();
+  SPI.begin();
+  leitor.PCD_Init();
+  if (EEPROM.read(0) != MAGICO) { Serial.println(F(&quot;EEPROM sem formato: formatando...&quot;)); formatar(); }
+  descobrirPonteiroLog();
+  Serial.println(F(&quot;=== COFRE RFID - Fase 3 ===&quot;));
+  Serial.println(F(&quot;Comandos: l cartoes | g log | a cadastrar | m 1o cartao vira admin | f formatar&quot;));
+  Serial.print(F(&quot;sizeof(Evento) = &quot;)); Serial.print(sizeof(Evento)); Serial.println(F(&quot; bytes&quot;));
+  listar();
+}
+
+void loop() {
+  while (Serial.available()) {
+    char ch = Serial.read();
+    if (ch == &#x27;l&#x27;) listar();
+    if (ch == &#x27;g&#x27;) mostrarLog();
+    if (ch == &#x27;a&#x27;) { modo = &#x27;a&#x27;; Serial.println(F(&quot;&gt;&gt; aproxime o cartao a CADASTRAR&quot;)); }
+    if (ch == &#x27;f&#x27;) formatar();
+    if (ch == &#x27;m&#x27;) {
+      Cartao c; lerRegistro(0, c);
+      if (!registroLivre(c)) { c.perm = PERM_ABRIR | PERM_ADMIN; gravarRegistro(0, c); Serial.println(F(&quot;&gt;&gt; cartao 0 agora e administrador&quot;)); }
+    }
+  }
+  if (!leitor.PICC_IsNewCardPresent() || !leitor.PICC_ReadCardSerial()) return;
+  tratarCartao(leitor.uid.uidByte);
+  leitor.PICC_HaltA();
+}
+</code></pre></details>
+  <div class="notehost" data-note="2"></div>
+</section>
+<section class="etapa" id="e5">
+  <div class="etapa-head"><div class="tag">Missão 5 · Chefão final</div><h2>🏆 Entrega</h2><p>Mostre o projeto funcionando e entregue o relatório com as respostas das perguntas de cada fase, as tabelas feitas à mão, fotos ou prints e a conclusão.</p></div>
+  <div class="panel"><h3>🏁 Entrega <span class="pill xp">10 XP</span></h3><div class="chal" id="ch5"></div>
+    <p class="muted small">Sugestão de avaliação (10,0): montagem e funcionamento 3,0 · medições e tabelas 3,0 · respostas do relatório 3,0 · demonstração oral 1,0.</p></div>
+  <div class="player" id="pcard"><div class="big">Seu progresso</div><div id="pout" class="muted">Complete missões para ver o seu cartão.</div><div class="row" style="justify-content:center"><button class="btn" id="pgo" type="button">Gerar meu cartão</button></div></div>
+</section>
+
+<section class="etapa" id="caderno">
+  <div class="etapa-head"><div class="tag">Folha final</div><h2>📒 Tudo para o caderno</h2><p>Todas as caixas juntas. Copie à mão, copie o texto ou imprima.</p></div>
+  <div class="row"><button class="btn" id="noteprint" type="button">Imprimir a folha</button></div>
+  <div id="noteall" style="display:grid;gap:12px"></div>
+</section>
+
+<details class="prof" style="margin-top:36px"><summary>👩‍🏫 Notas para o professor</summary><ul style="padding-left:20px;display:grid;gap:6px"><li>Pelas notas há 6 leitores RFID e 6 conversores de nível: até 6 grupos.</li><li>Os 3 sketches foram compilados para o Uno com as bibliotecas MFRC522, Servo e EEPROM. NÃO foram testados com o hardware: faça um teste prévio, principalmente da ligação com o conversor de nível.</li><li>Oriente os alunos a nunca ligar o módulo no 5V e revise as ligações antes de energizar.</li><li>O UID do cartão não é seguro; discuta com a turma a diferença entre identificação e autenticação.</li></ul></details>
+
+<footer class="outros"><b>Outros projetos</b><div class="links"><a href="projetos_arquitetura.html">📚 Catálogo de projetos</a><a href="projeto_ula_4bits.html">🧮 Mini-ULA de 4 bits com teclado hexadecimal</a><a href="projeto_cpu_didatica.html">🖥️ CPU didática: busca, decodificação e execução</a><a href="projeto_telegrafo_optico.html">💡 Telégrafo óptico: uma UART feita de luz</a><a href="projeto_portas_transistores.html">🔌 Laboratório de portas lógicas com transistores</a><a href="projeto_esp32_paralelo.html">⚡ ESP32: dois núcleos, speedup e condição de corrida</a></div></footer>
+</div>
+<script type="application/json" id="pdata">{"montagem": ["Instalei a biblioteca MFRC522 na IDE do Arduino", "Liguei o módulo na alimentação de 3,3 V (nunca em 5 V!)", "Liguei SCK, MOSI, SS e RST pelo conversor de nível e MISO direto", "Liguei LEDs e buzzer", "Carreguei a Fase 1 e li a versão do chip no Monitor Serial"], "icons": ["📶", "🗄️", "🔑"], "fases": [{"obs": ["Leia a versão do chip (0x92 ou 0x91).", "Aproxime o cartão e o chaveiro: os UIDs são diferentes?", "Anote o XOR dos bytes do UID de cada cartão."], "quiz": [{"q": "Por que o módulo RFID precisa do conversor de nível?", "o": ["Ele funciona em 3,3 V e o Uno envia sinais de 5 V, que podem danificá-lo", "Para aumentar o alcance", "Para mudar a cor do LED", "Porque o SPI não existe no Uno"], "a": 0, "e": "Os sinais do Arduino (5 V) devem ser reduzidos para 3,3 V antes de chegar ao módulo."}, {"q": "No barramento SPI, quem gera o clock (SCK)?", "o": ["O escravo (MFRC522)", "O mestre (Arduino)", "Ninguém", "O cartão"], "a": 1, "e": "O mestre controla a comunicação: gera o clock e escolhe o escravo pelo SS."}], "nota": {"t": "SPI e UID", "l": ["SPI: 4 fios — SCK (clock), MOSI (mestre → escravo), MISO (escravo → mestre) e SS (escolhe o escravo).", "O MESTRE (Arduino) gera o clock.", "Níveis lógicos: Uno = 5 V; MFRC522 = 3,3 V → use conversor de nível.", "UID: identificador único do cartão (4 bytes).", "Checksum XOR: operação simples para detectar erros."]}, "rel": "Desenhe o diagrama de ligações do SPI (4 fios + conversor) e explique o que cada fio faz.", "des": "Mostre também o tipo do cartão e o SAK lido (leia a documentação da biblioteca)."}, {"obs": ["Cadastre 2 cartões (comando a) e liste com l.", "Passe o cartão cadastrado e o não cadastrado: veja “permitido” e “negado”.", "Desligue e ligue a placa: os cartões continuam lá?"], "quiz": [{"q": "Para que serve o “número mágico” 0xC0 no cabeçalho?", "o": ["Embelezar", "Reconhecer se a EEPROM já foi formatada nesse formato", "Criptografar", "Contar cartões"], "a": 1, "e": "Se o número mágico não estiver lá, o programa sabe que a EEPROM está “em branco” e formata."}, {"q": "O checksum XOR do registro detecta:", "o": ["Alteração ou corrupção dos bytes do registro", "Cartões falsos", "Falta de energia", "Servo travado"], "a": 0, "e": "Se algum byte mudar sem querer, o XOR deixa de bater."}], "nota": {"t": "Arquivo na EEPROM", "l": ["EEPROM: 1 KB, mantém os dados sem energia; ~100.000 gravações por posição.", "Estrutura: cabeçalho (número mágico, versão) + tabela de registros de tamanho fixo.", "Registro de 8 bytes: UID (4) + permissões (1) + acessos (2) + checksum (1).", "Endereço do registro i = início da tabela + i × 8.", "Gravar só quando o dado muda (EEPROM.put/update) economiza a vida útil."]}, "rel": "Calcule o endereço na EEPROM do registro de número 5 e explique como o programa o encontra. Quantos bytes a tabela inteira usa?", "des": "Acrescente um campo “nome” de 4 letras no registro e ajuste os endereços."}, {"obs": ["Promova o primeiro cartão a administrador (comando m) e cadastre outro: ADMIN → cartão novo em até 5 s.", "Faça acessos permitidos e negados e leia o log com g.", "Gere mais de 16 eventos: o mais antigo é sobrescrito?"], "quiz": [{"q": "Por que o log é circular?", "o": ["Para ser bonito", "A EEPROM é pequena: o evento novo sobrescreve o mais antigo e o desgaste se espalha", "Para acelerar o SPI", "Para apagar tudo"], "a": 1, "e": "Um buffer circular reaproveita o espaço e distribui as gravações."}, {"q": "O que o administrador representa em um sistema operacional?", "o": ["Um usuário com permissões maiores (ex.: cadastrar outros)", "Um tipo de cartão físico", "O servo", "Um erro"], "a": 0, "e": "Permissões separam o que cada usuário pode fazer: abrir, administrar…"}], "nota": {"t": "Permissões e log", "l": ["Permissões em bits: bit 0 = pode abrir; bit 1 = administrador.", "Administrador: abre uma janela de 5 s para cadastrar um cartão novo.", "Log circular: ponteiro que volta ao início ao chegar ao fim (módulo 16).", "Evento = cartão (1 byte) + tipo (1 byte) + segundos (2 bytes) = 4 bytes.", "Sistema operacional: controla acessos, usuários e registros (auditoria)."]}, "rel": "Explique com suas palavras como este cofre se parece com o sistema de arquivos e o controle de acesso de um sistema operacional. Cite 3 semelhanças.", "des": "Faça o servo fechar sozinho depois de 3 s mesmo se o cartão continuar perto, e registre “porta aberta por muito tempo”."}]}</script>
+<script>
+(function(){
+const P=JSON.parse(document.getElementById('pdata').textContent);
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function el(t,a,k){const e=document.createElement(t);for(const x in (a||{})){if(x==='text')e.textContent=a[x];else if(x==='html')e.innerHTML=a[x];else e.setAttribute(x,a[x]);}(k||[]).forEach(c=>e.appendChild(c));return e;}
+function copyText(t,btn,label){const done=()=>{if(btn){btn.textContent='Copiado!';setTimeout(()=>btn.textContent=label,1400);}};
+ function fb(){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');done();}catch(e){}a.remove();}
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,fb);else fb();}
+const CHIP='<svg viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Chip, o mascote"><g stroke="var(--ink)" stroke-width="3" stroke-linecap="round"><path d="M18 6v8M32 6v8M46 6v8M18 50v8M32 50v8M46 50v8M6 18h8M6 32h8M6 46h8M50 18h8M50 32h8M50 46h8"/></g><rect x="12" y="12" width="40" height="40" rx="8" fill="var(--accent)" stroke="var(--ink)" stroke-width="2.5"/><circle cx="25" cy="30" r="5.5" fill="#fff" stroke="var(--ink)" stroke-width="2"/><circle cx="39" cy="30" r="5.5" fill="#fff" stroke="var(--ink)" stroke-width="2"/><circle cx="26" cy="31" r="2.3" fill="#101936"/><circle cx="40" cy="31" r="2.3" fill="#101936"/><path d="M24 41q8 6 16 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>';
+$('#byteHero').innerHTML=CHIP;
+$$('.bytebox').forEach(b=>{const w=el('div');w.innerHTML=CHIP.replace('width="64" height="64"','width="48" height="48"');b.appendChild(w);b.appendChild(el('div',{class:'bubble',text:b.getAttribute('data-tip')}));});
+const links=$$('#navlist a'),secs=links.map(a=>$(a.getAttribute('href')));
+function onScroll(){let c=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<160)c=i;});links.forEach((a,i)=>a.classList.toggle('on',i===c&&scrollY>200));}
+addEventListener('scroll',onScroll,{passive:true});
+
+/* XP */
+const nF=P.fases.length;
+const ETAPAS=[{e:'🔌',n:'Montagem',xp:P.montagem.length*2}];
+P.fases.forEach((f,i)=>ETAPAS.push({e:P.icons[i],n:'Fase '+(i+1),xp:f.obs.length+6+4+3}));
+ETAPAS.push({e:'🏆',n:'Chefão',xp:10});
+const TOTAL=ETAPAS.reduce((a,x)=>a+x.xp,0);
+ETAPAS.forEach((x,i)=>$('#mapa').appendChild(el('a',{href:'#e'+(i+1)},[el('span',{class:'em',text:x.e}),el('b',{text:(i+1)+'. '+x.n}),el('span',{text:x.xp+' XP'})])));
+const BAD=ETAPAS.map((x,i)=>['Eletricista','Fase 1 concluída','Fase 2 concluída','Fase 3 concluída','Fase 4 concluída'][i]||'');
+BAD[0]='🔌 Eletricista';for(let i=0;i<nF;i++)BAD[i+1]=P.icons[i]+' Fase '+(i+1)+' concluída';BAD[nF+1]='🏆 Arquiteto de Computadores';
+const LEVELS=[{n:'Estagiário',e:'🔌',min:0},{n:'Montador',e:'🔧',min:Math.round(TOTAL*.15)},{n:'Programador de Bits',e:'🧮',min:Math.round(TOTAL*.4)},{n:'Arquiteto',e:'🧠',min:Math.round(TOTAL*.68)},{n:'Mestre dos Bits',e:'🏆',min:Math.round(TOTAL*.9)}];
+const state={xp:0,done:{},ex:ETAPAS.map(()=>0),badges:ETAPAS.map(()=>false)};
+function lv(x){let l=0;LEVELS.forEach((v,i)=>{if(x>=v.min)l=i;});return l;}
+function toast(m,big){const t=el('div',{class:'toast'+(big?' big':''),text:m});$('#toasts').appendChild(t);setTimeout(()=>t.remove(),big?3400:2000);}
+function hud(){const i=lv(state.xp),L=LEVELS[i],N=LEVELS[i+1];$('#lvl').textContent=L.e+' Nível '+(i+1)+' · '+L.n;
+ $('#xpfill').style.width=(N?Math.round(100*(state.xp-L.min)/(N.min-L.min)):100)+'%';
+ $('#xptxt').textContent='⭐ '+state.xp+' / '+TOTAL+' XP'+(N?' · faltam '+(N.min-state.xp)+' para '+N.n:' · nível máximo!');
+ const b=$('#badges');b.innerHTML='';BAD.forEach((x,k)=>b.appendChild(el('span',{class:'badge'+(state.badges[k]?' on':''),title:x,text:x.split(' ')[0]})));}
+function award(key,pts,et,msg){if(state.done[key])return false;state.done[key]=true;const b=lv(state.xp);state.xp+=pts;state.ex[et]+=pts;toast('+'+pts+' XP'+(msg?' · '+msg:''));
+ if(lv(state.xp)>b)toast('🎉 Nível '+(lv(state.xp)+1)+': '+LEVELS[lv(state.xp)].n+'!',true);
+ if(!state.badges[et]&&state.ex[et]>=Math.ceil(ETAPAS[et].xp*.7)){state.badges[et]=true;toast('🏅 Medalha: '+BAD[et],true);}hud();return true;}
+hud();
+
+function check(box,key,pts,et,text){const id='k_'+key;const i=el('input',{type:'checkbox',id});i.onchange=()=>{if(i.checked)award(key,pts,et,'feito!');};box.appendChild(el('label',{class:'chk',for:id},[i,el('span',{text:text+' ('+pts+' XP)'})]));}
+function quiz(box,key,pts,et,items){items.forEach((q,qi)=>{const w=el('div',{class:'c'});w.appendChild(el('h4',{text:'❓ '+q.q}));const o=el('div',{class:'opts'});const fb=el('div',{class:'score'});
+ q.o.forEach((t,k)=>{const b=el('button',{class:'opt',type:'button',text:t});b.onclick=()=>{if(w.dataset.d)return;if(k===q.a){w.dataset.d=1;b.classList.add('good');fb.className='score ok';fb.textContent='✅ '+q.e;award(key+qi,pts,et,'acertou!');}else{b.classList.add('bad');fb.className='score no';fb.textContent='Tente de novo.';}};o.appendChild(b);});
+ w.appendChild(o);w.appendChild(fb);box.appendChild(w);});}
+
+/* Montagem */
+const m=$('#ch1');P.montagem.forEach((t,i)=>check(m,'m_'+i,2,0,t));
+
+/* Fases */
+P.fases.forEach((f,i)=>{
+  const et=i+1,box=$('#ch'+(i+2));
+  const o=el('div',{class:'c'});o.appendChild(el('h4',{html:'👀 O que observar <span class="pill xp">'+f.obs.length+' XP</span>'}));f.obs.forEach((t,k)=>check(o,'o'+i+'_'+k,1,et,t));box.appendChild(o);
+  const qb=el('div',{class:'c'});qb.appendChild(el('h4',{html:'🧠 Quiz <span class="pill xp">6 XP</span>'}));const qq=el('div',{class:'chal'});qb.appendChild(qq);quiz(qq,'q'+i+'_',3,et,f.quiz);box.appendChild(qb);
+  const r=el('div',{class:'c'});r.appendChild(el('h4',{html:'📝 Pergunta do relatório <span class="pill xp">4 XP</span>'}));r.appendChild(el('p',{text:f.rel}));
+  const ta=el('textarea',{'aria-label':'Resposta da fase '+(i+1),placeholder:'Escreva a sua resposta (mínimo de 40 letras)...'});const fb=el('div',{class:'score'});const go=el('button',{class:'btn',type:'button',text:'Registrar resposta'});
+  go.onclick=()=>{if(ta.value.trim().length>=40){award('r'+i,4,et,'resposta registrada');fb.className='score ok';fb.textContent='✅ Anote também no caderno ou no relatório.';}else{fb.className='score no';fb.textContent='Escreva um pouco mais ('+ta.value.trim().length+'/40).';}};
+  r.appendChild(ta);r.appendChild(el('div',{class:'row'},[go,fb]));box.appendChild(r);
+  const d=el('div',{class:'c'});d.appendChild(el('h4',{html:'🏅 Desafio extra <span class="pill xp">3 XP</span>'}));d.appendChild(el('p',{text:f.des}));check(d,'d'+i,3,et,'Fiz o desafio extra e mostrei ao professor');box.appendChild(d);
+});
+
+/* Final */
+const c7=$('#ch'+(nF+2));
+check(c7,'fin_proj',5,nF+1,'O meu projeto está funcionando e eu o demonstrei ao professor');
+check(c7,'fin_rel',5,nF+1,'O relatório está pronto, com tabelas, respostas e desenhos');
+
+/* Cadernos */
+const NOTES=P.fases.map(f=>f.nota);
+function noteText(i){const N=NOTES[i];return N.t+'\n'+N.l.map(x=>'• '+x).join('\n');}
+function noteEl(i,bar){const N=NOTES[i];const n=el('div',{class:'note'});n.appendChild(el('h4',{text:'📝 Para o caderno: '+N.t}));n.appendChild(el('ul',{},N.l.map(x=>el('li',{text:x}))));
+ if(bar){const b=el('button',{class:'btn sec',type:'button',text:'Copiar texto'});b.onclick=()=>copyText(noteText(i),b,'Copiar texto');n.appendChild(el('div',{class:'bar'},[b,el('span',{class:'muted small',text:'ou copie à mão no caderno'})]));}return n;}
+$$('.notehost').forEach(h=>h.appendChild(noteEl(+h.dataset.note,true)));
+NOTES.forEach((n,i)=>$('#noteall').appendChild(noteEl(i,false)));
+$('#noteprint').onclick=()=>{document.body.classList.add('pc');window.print();};
+addEventListener('afterprint',()=>document.body.classList.remove('pc'));
+
+/* código */
+$$('.cp').forEach(b=>b.addEventListener('click',()=>copyText(document.getElementById(b.dataset.t).textContent,b,'Copiar código')));
+$$('.dl').forEach(b=>b.addEventListener('click',()=>{const blob=new Blob([document.getElementById(b.dataset.t).textContent],{type:'text/plain;charset=utf-8'});
+ const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=b.dataset.f;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);}));
+
+$('#pgo').onclick=()=>{const l=LEVELS[lv(state.xp)];const mm=BAD.filter((b,i)=>state.badges[i]);
+ $('#pout').innerHTML='<b>'+l.e+' '+l.n+'</b> · '+state.xp+' / '+TOTAL+' XP<br>Medalhas: '+(mm.length?mm.join(' · '):'ainda nenhuma')+'<br><span class="small">Tire um print e entregue com o relatório.</span>';};
+})();
+</script>
+</body>
+</html>

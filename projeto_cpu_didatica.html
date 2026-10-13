@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CPU didática: busca, decodificação e execução · Modo Jogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{--bg:#F1F3F8;--surface:#FFF;--ink:#101936;--muted:#4F5985;--line:#D3D9EB;--accent:#2B50F5;--accent-ink:#fff;--soft:#E6EBFF;--hi:#FFD93D;--hi-ink:#101936;
+--good:#0F7A58;--good-bg:#DDF4EA;--bad:#B3302A;--bad-bg:#FBE3E0;--code:#0F1630;--codeink:#E3E8FF;
+--paper:#FFFBE6;--paperink:#2B2A1F;--paperline:#CFE0F5;--margin:#E57373;
+--display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;--body:'DM Sans','Segoe UI',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0C1122;--surface:#151C36;--ink:#E9ECFA;--muted:#9BA5CC;--line:#2A3358;--accent:#7C93FF;--accent-ink:#0C1122;--soft:#1E2850;--good:#5FD9AA;--good-bg:#12372B;--bad:#FF9A92;--bad-bg:#40201F;--code:#080C1A;--paper:#23253A;--paperink:#E9ECFA;--paperline:#33406A;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--body);padding:0 16px 64px}
+.wrap{max-width:940px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0} a{color:var(--accent)} .mono{font-family:var(--mono)} .muted{color:var(--muted)} .small{font-size:.85rem}
+button,input,select,textarea{font:inherit;color:inherit} button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hero{padding:32px 0 20px;display:grid;gap:16px}
+.herotop{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.kicker{font:700 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(2rem,5.6vw,3.4rem);font-weight:800;letter-spacing:-.02em}
+.lead{font-size:1.1rem;max-width:64ch;color:var(--muted)}
+.bubble{background:var(--surface);border:2px solid var(--ink);border-radius:14px;padding:10px 14px;max-width:46ch;font-weight:500}
+.mapa{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.mapa a{display:grid;gap:2px;justify-items:center;text-align:center;text-decoration:none;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 6px;font-size:.8rem}
+.mapa a .em{font-size:1.7rem} .mapa a b{font-family:var(--display);font-size:.92rem} .mapa a:hover{border-color:var(--accent)}
+.rules{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.rules li{border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px;font-size:.9rem}
+nav.steps{position:sticky;top:0;z-index:6;background:var(--bg);border-bottom:1px solid var(--line);margin:0 -16px;padding:8px 16px}
+.hud{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;max-width:940px;margin:0 auto 6px}
+.lvl{font:800 1rem var(--display)} .xpw{flex:1;min-width:170px;display:grid;gap:2px}
+.xpbar{height:12px;border-radius:6px;background:var(--soft);overflow:hidden;border:1px solid var(--line)}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--hi));transition:width .4s}
+.xptxt{font:700 .75rem var(--mono);color:var(--muted)}
+.badges{display:flex;gap:4px} .badge{font-size:1.15rem;filter:grayscale(1);opacity:.3;transition:.3s} .badge.on{filter:none;opacity:1;transform:scale(1.15)}
+#navlist{display:flex;gap:6px;list-style:none;margin:0 auto;padding:0;max-width:940px;overflow-x:auto}
+#navlist a{display:flex;gap:6px;align-items:center;white-space:nowrap;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:.84rem;font-weight:500}
+#navlist a b{background:var(--accent);color:var(--accent-ink);border-radius:50%;min-width:20px;height:20px;display:grid;place-items:center;font-size:.72rem}
+#navlist a.on{border-color:var(--accent);background:var(--soft)}
+#toasts{position:fixed;right:14px;bottom:14px;display:grid;gap:8px;z-index:20;max-width:min(92vw,340px)}
+.toast{background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-weight:700;animation:in .25s} .toast.big{background:var(--accent);color:var(--accent-ink);font-size:1.05rem}
+@keyframes in{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+section.etapa{margin-top:44px;display:grid;gap:14px}
+.etapa-head{display:grid;gap:10px}
+.tag{font:700 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.etapa-head h2{font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:800} .etapa-head p{max-width:66ch;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;display:grid;gap:10px;align-content:start}
+.panel h3{font-size:1.1rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap} .panel ul,.panel ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.pill{font:700 .72rem var(--mono);background:var(--soft);border-radius:999px;padding:3px 9px} .pill.xp{background:var(--hi);color:var(--hi-ink)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem} th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top} th{background:var(--soft);font-family:var(--display)} tr:last-child td{border-bottom:0} td.c{text-align:center}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:9px 16px;font-weight:700;text-decoration:none} .btn:hover{filter:brightness(1.1)} .btn.sec{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.score{font-weight:700} .ok{color:var(--good)} .no{color:var(--bad)}
+label.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer} label.chk input{margin-top:5px;width:18px;height:18px;accent-color:var(--accent)}
+textarea{background:var(--bg);border:2px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-height:84px}
+.chal{display:grid;gap:18px} .chal .c{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px} .chal .c:first-child{border-top:0;padding-top:0}
+.chal h4{margin:0;font:800 1rem var(--display);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.opts{display:grid;gap:6px} .opt{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 12px} .opt:hover{border-color:var(--accent)} .opt.good{background:var(--good-bg);border-color:var(--good)} .opt.bad{background:var(--bad-bg);border-color:var(--bad)}
+details.codebox,details.prof{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 16px 12px} details summary{cursor:pointer;font-weight:700;padding:14px 0}
+pre{margin:0;background:var(--code);color:var(--codeink);border-radius:10px;padding:14px;overflow:auto;max-height:480px;font:400 .8rem/1.5 var(--mono)}
+.bytebox{display:flex;gap:10px;align-items:center} .bytebox .bubble{font-size:.92rem}
+.callout{border:1px solid var(--line);border-left:5px solid var(--hi);background:var(--surface);border-radius:10px;padding:12px 16px;display:grid;gap:6px}
+.note{background:var(--paper);color:var(--paperink);border:1px solid var(--paperline);border-left:4px solid var(--margin);border-radius:8px;padding:12px 16px;display:grid;gap:8px;background-image:repeating-linear-gradient(transparent,transparent 27px,var(--paperline) 28px)}
+.note h4{margin:0;font:800 1.02rem var(--display)} .note ul{margin:0;padding-left:20px} .note li{line-height:28px}
+.note .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.player{display:grid;gap:8px;text-align:center;padding:18px;background:var(--surface);border:2px solid var(--ink);border-radius:16px} .player .big{font:800 1.5rem var(--display)}
+footer.outros{margin-top:50px;display:grid;gap:10px}
+footer.outros .links{display:flex;flex-wrap:wrap;gap:8px} footer.outros a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;text-decoration:none;font-size:.9rem}
+@media print{nav.steps,.btn,#toasts,details.codebox,.bytebox,.chal,.mapa,.rules,footer.outros,details.prof{display:none!important} body.pc section.etapa:not(#caderno){display:none} .note{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">Arquitetura e Organização de Computadores · Projeto prático · 3 aulas</div>
+  <div class="herotop"><div id="byteHero"></div><div class="bubble">Eu sou o <b>Chip</b>. Complete as missões, ganhe XP e suba de nível. Boa montagem!</div></div>
+  <h1>🖥️ CPU didática: busca, decodificação e execução</h1>
+  <p class="lead">Um processador de 8 bits “de mentirinha” rodando no Arduino: memória de 16 bytes, registradores, 12 instruções e programas em linguagem de montagem. A saída vai para LEDs e para o LCD.</p>
+  <ul class="rules"><li>🧰 Tinkercad e Arduino físico</li><li>⭐ XP por desafio (uma vez só)</li><li>🏅 Medalha com 70% do XP da missão</li><li>📝 Caixas “Para o caderno”</li></ul>
+  <div class="mapa" id="mapa"></div>
+  <details class="prof"><summary>📚 Ementa: o que este projeto cobre</summary>
+    <div class="tablewrap"><table><thead><tr><th>Conteúdo da ementa</th><th>Fase</th></tr></thead><tbody><tr><td>Conjunto de instruções e linguagem de montagem</td><td class="c">2</td></tr><tr><td>Microarquitetura: ciclo de busca-decodificação-execução</td><td class="c">1, 2</td></tr><tr><td>Registradores: PC, IR, acumulador e flag Z</td><td class="c">1, 2</td></tr><tr><td>Modos de endereçamento: imediato × direto</td><td class="c">2</td></tr><tr><td>Memória: arquitetura de Von Neumann (programa e dados juntos)</td><td class="c">1</td></tr><tr><td>Desempenho: ciclos, CPI e clock</td><td class="c">3</td></tr><tr><td>Sistemas de E/S: porta de saída e painel LCD</td><td class="c">2, 3</td></tr><tr><td>Arquiteturas RISC e CISC (discussão)</td><td class="c">3</td></tr></tbody></table></div></details>
+</header>
+
+<nav class="steps" aria-label="Missões e progresso">
+  <div class="hud"><div class="lvl" id="lvl"></div><div class="xpw"><div class="xpbar"><i id="xpfill"></i></div><div class="xptxt" id="xptxt"></div></div><div class="badges" id="badges"></div></div>
+  <ol id="navlist"><li><a href="#e1"><b>1</b>Montagem</a></li><li><a href="#e2"><b>2</b>Fase 1</a></li><li><a href="#e3"><b>3</b>Fase 2</a></li><li><a href="#e4"><b>4</b>Fase 3</a></li><li><a href="#e5"><b>5</b>Final</a></li><li><a href="#caderno"><b>📒</b>Caderno</a></li></ol>
+</nav>
+<div id="toasts" aria-live="polite"></div>
+
+<section class="etapa" id="e1">
+  <div class="etapa-head"><div class="tag">Missão 1 · Montagem</div><h2>🔌 Monte o circuito</h2><p>Separe os materiais e faça as ligações antes de carregar o primeiro código.</p></div>
+  <div class="cols">
+    <div class="panel"><h3>🧰 Materiais</h3><ul><li>1 Arduino Uno R3 + cabo USB</li><li>1 protoboard 830 pontos</li><li>4 LEDs (de qualquer cor) + 4 resistores de 300 Ω</li><li>1 LCD 16×2 (fase 3)</li><li>1 resistor de 1 kΩ (contraste do LCD) e 1 de 300 Ω (luz de fundo do LCD)</li><li>Jumpers</li></ul></div>
+    <div class="panel"><h3>⚠️ Antes de começar</h3><ul><li>O contraste do LCD é o problema mais comum: se aparecem só quadradinhos escuros, mexa no resistor do V0 (ou use um potenciômetro).</li><li>Os comandos são enviados como linha: no Monitor Serial, escolha “Nova linha” ao lado do campo de envio.</li><li>No Tinkercad, o LCD 16×2 já vem com os mesmos pinos.</li></ul></div>
+  </div>
+  <div class="panel"><h3>📍 Ligações</h3><div class="tablewrap"><table><thead><tr><th>Peça</th><th>Onde liga</th><th>Observação</th></tr></thead><tbody><tr><td>LEDs de saída (bit 0 a bit 3)</td><td>pinos 10, 9, 8, 7</td><td class="muted">300 Ω ao GND</td></tr><tr><td>LCD: RS</td><td>pino 12</td><td class="muted">fase 3</td></tr><tr><td>LCD: E</td><td>pino 11</td><td class="muted">fase 3</td></tr><tr><td>LCD: D4, D5, D6, D7</td><td>pinos 5, 4, 3, 2</td><td class="muted">fase 3</td></tr><tr><td>LCD: VSS, RW e K (−)</td><td>GND</td><td class="muted"></td></tr><tr><td>LCD: VDD</td><td>5V</td><td class="muted"></td></tr><tr><td>LCD: A (+), luz de fundo</td><td>5V por 300 Ω</td><td class="muted"></td></tr><tr><td>LCD: V0 (contraste)</td><td>GND por 1 kΩ</td><td class="muted">ou potenciômetro de 10 kΩ</td></tr></tbody></table></div></div>
+  <div class="panel"><h3>✅ Checklist de montagem <span class="pill xp">10 XP</span></h3><div class="chal" id="ch1"></div></div>
+</section>
+
+<section class="etapa" id="e2">
+  <div class="etapa-head"><div class="tag">Missão 2 · Fase 1</div><h2>📥 Memória, PC e busca (fetch)</h2><p>Construir a primeira parte do processador: a memória de 16 bytes, o contador de programa (PC) e a busca da instrução. Os LEDs mostram o PC em binário.</p></div>
+  <div class="panel"><div class="chal" id="ch2"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 1 <span class="mono">cpu1_memoria_fetch.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c1">Copiar código</button><button class="btn dl" type="button" data-t="c1" data-f="cpu1_memoria_fetch.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c1">/*
+  CPU DIDATICA - FASE 1: memoria, contador de programa (PC) e busca (fetch)
+
+  Vamos construir um processador minusculo, no estilo SAP-1:
+    - memoria unica de 16 bytes (programa E dados juntos: arquitetura Von Neumann)
+    - PC (Program Counter): endereco da proxima instrucao (4 bits)
+    - IR (Instruction Register): instrucao que esta sendo executada (8 bits)
+    - Instrucao de 8 bits = 4 bits de OPCODE + 4 bits de OPERANDO
+
+  Nesta fase so fazemos a BUSCA (fetch):  IR &lt;- memoria[PC] ; PC &lt;- PC + 1
+  Os 4 LEDs mostram o PC em binario.
+
+  Comandos no Monitor Serial:  s = um passo | r = reset | m = mostrar memoria
+
+  Ligacoes: 4 LEDs (cada um com 300 ohms) nos pinos 10, 9, 8, 7 (bit 0 ... bit 3)
+*/
+const uint8_t LEDS[4] = {10, 9, 8, 7};
+
+// Programa de exemplo (&quot;contagem regressiva&quot;), em hexadecimal:
+uint8_t memoria[16] = {
+  0x15, 0x80, 0x61, 0xB1, 0xF0, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+uint8_t PC = 0;
+uint8_t IR = 0;
+
+void imprimirBinario(uint8_t v, uint8_t bits) {
+  for (int8_t i = bits - 1; i &gt;= 0; i--) Serial.print((v &gt;&gt; i) &amp; 1);
+}
+
+void mostrarPC() {
+  for (uint8_t b = 0; b &lt; 4; b++) digitalWrite(LEDS[b], (PC &gt;&gt; b) &amp; 1);
+}
+
+void mostrarMemoria() {
+  Serial.println(F(&quot;end | conteudo (HEX) | binario&quot;));
+  for (uint8_t i = 0; i &lt; 16; i++) {
+    Serial.print(i, HEX); Serial.print(F(&quot;   | 0x&quot;));
+    if (memoria[i] &lt; 16) Serial.print(&#x27;0&#x27;);
+    Serial.print(memoria[i], HEX); Serial.print(F(&quot;           | &quot;));
+    imprimirBinario(memoria[i], 8);
+    if (i == PC) Serial.print(F(&quot;   &lt;-- PC&quot;));
+    Serial.println();
+  }
+}
+
+void passoBusca() {
+  IR = memoria[PC];                      // T1: IR &lt;- mem[PC]
+  Serial.print(F(&quot;PC = &quot;)); Serial.print(PC, HEX);
+  Serial.print(F(&quot; | IR = 0x&quot;)); if (IR &lt; 16) Serial.print(&#x27;0&#x27;); Serial.print(IR, HEX);
+  Serial.print(F(&quot; = &quot;)); imprimirBinario(IR, 8);
+  Serial.print(F(&quot; | opcode = &quot;)); imprimirBinario(IR &gt;&gt; 4, 4);
+  Serial.print(F(&quot; | operando = &quot;)); imprimirBinario(IR &amp; 0xF, 4);
+  Serial.println();
+  PC = (PC + 1) &amp; 0xF;                   // T2: PC &lt;- PC + 1 (so 4 bits: volta para 0 depois de F)
+  mostrarPC();
+}
+
+void setup() {
+  Serial.begin(9600);
+  for (uint8_t b = 0; b &lt; 4; b++) pinMode(LEDS[b], OUTPUT);
+  mostrarPC();
+  Serial.println(F(&quot;=== CPU DIDATICA - Fase 1 (busca) ===&quot;));
+  Serial.println(F(&quot;Comandos: s = passo | r = reset | m = memoria&quot;));
+  mostrarMemoria();
+}
+
+void loop() {
+  while (Serial.available()) {
+    char c = Serial.read();
+    if (c == &#x27;s&#x27;) passoBusca();
+    if (c == &#x27;r&#x27;) { PC = 0; IR = 0; mostrarPC(); Serial.println(F(&quot;&gt;&gt; reset&quot;)); }
+    if (c == &#x27;m&#x27;) mostrarMemoria();
+  }
+}
+</code></pre></details>
+  <div class="notehost" data-note="0"></div>
+</section>
+<section class="etapa" id="e3">
+  <div class="etapa-head"><div class="tag">Missão 3 · Fase 2</div><h2>⚙️ Decodificação, execução e o conjunto de instruções</h2><p>Completar o ciclo: decodificar o opcode e executar 12 instruções (LDI, LDA, STA, ADD, ADDM, SUB, AND, OUT, JMP, JZ, JNZ, XOR, SUBM, HLT). Rodar programas de exemplo e escrever o seu.</p></div>
+  <div class="panel"><div class="chal" id="ch3"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 2 <span class="mono">cpu2_decodifica_executa.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c2">Copiar código</button><button class="btn dl" type="button" data-t="c2" data-f="cpu2_decodifica_executa.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c2">/*
+  CPU DIDATICA - FASE 2: decodificacao, execucao e conjunto de instrucoes
+
+  Ciclo de instrucao (busca -&gt; decodificacao -&gt; execucao):
+    T1: IR &lt;- mem[PC] ; PC &lt;- PC + 1       (busca)
+    T2: a unidade de controle olha o OPCODE (decodifica)
+    T3: executa e atualiza A, a flag Z e/ou a saida
+
+  Registradores: A (acumulador, 8 bits), PC (4 bits), IR (8 bits), flag Z (zero)
+  Conjunto de instrucoes (opcode em hexadecimal):
+    0 NOP            1 LDI n  (A &lt;- n)          imediato
+    2 LDA m  (A &lt;- mem[m])   direto             3 STA m  (mem[m] &lt;- A)
+    4 ADD n  (A &lt;- A + n)    imediato           5 ADDM m (A &lt;- A + mem[m]) direto
+    6 SUB n  (A &lt;- A - n)    imediato           7 AND n
+    8 OUT    (saida &lt;- A)                       9 JMP n  (PC &lt;- n)
+    A JZ n   (salta se Z=1)  B JNZ n (salta se Z=0)
+    C XOR n                  D SUBM m (A &lt;- A - mem[m])      F HLT (para)
+
+  Comandos no Monitor Serial:
+    s = um passo | g = executar ate HLT (maximo 60 passos) | r = reset
+    m = mostrar memoria | l0, l1, l2 = carregar programa de exemplo
+    w &lt;end&gt; &lt;hex&gt; = escrever na memoria. Exemplo:  w 3 2F
+
+  Ligacoes: 4 LEDs (300 ohms) nos pinos 10, 9, 8, 7 mostram os 4 bits menos
+  significativos da SAIDA.
+*/
+const uint8_t LEDS[4] = {10, 9, 8, 7};
+
+uint8_t memoria[16];
+uint8_t PC = 0, IR = 0, A = 0, saida = 0;
+bool Z = false, parada = false;
+unsigned long passos = 0;
+
+const char* NOMES[16] = {&quot;NOP&quot;, &quot;LDI&quot;, &quot;LDA&quot;, &quot;STA&quot;, &quot;ADD&quot;, &quot;ADDM&quot;, &quot;SUB&quot;, &quot;AND&quot;,
+                         &quot;OUT&quot;, &quot;JMP&quot;, &quot;JZ&quot;, &quot;JNZ&quot;, &quot;XOR&quot;, &quot;SUBM&quot;, &quot;???&quot;, &quot;HLT&quot;};
+
+void carregarPrograma(uint8_t n) {
+  for (uint8_t i = 0; i &lt; 16; i++) memoria[i] = 0;
+  if (n == 0) {              // contagem regressiva 5,4,3,2,1
+    const uint8_t p[] = {0x15, 0x80, 0x61, 0xB1, 0xF0};
+    for (uint8_t i = 0; i &lt; sizeof(p); i++) memoria[i] = p[i];
+  } else if (n == 1) {       // soma de duas variaveis na memoria: 3 + 4
+    const uint8_t p[] = {0x2E, 0x5F, 0x3D, 0x80, 0xF0};
+    for (uint8_t i = 0; i &lt; sizeof(p); i++) memoria[i] = p[i];
+    memoria[14] = 3; memoria[15] = 4;
+  } else {                   // Fibonacci (1 1 2 3 5 8 13 ...)
+    const uint8_t p[] = {0x2F, 0x80, 0x5E, 0x3D, 0x2F, 0x3E, 0x2D, 0x3F, 0x90};
+    for (uint8_t i = 0; i &lt; sizeof(p); i++) memoria[i] = p[i];
+    memoria[14] = 0; memoria[15] = 1;
+  }
+}
+
+void resetar() { PC = 0; IR = 0; A = 0; saida = 0; Z = false; parada = false; passos = 0; }
+
+void mostrarSaida() {
+  for (uint8_t b = 0; b &lt; 4; b++) digitalWrite(LEDS[b], (saida &gt;&gt; b) &amp; 1);
+}
+
+void mostrarMemoria() {
+  for (uint8_t i = 0; i &lt; 16; i++) {
+    Serial.print(i, HEX); Serial.print(F(&quot;: &quot;));
+    if (memoria[i] &lt; 16) Serial.print(&#x27;0&#x27;);
+    Serial.print(memoria[i], HEX);
+    Serial.print(F(&quot;  &quot;));
+    Serial.print(NOMES[memoria[i] &gt;&gt; 4]); Serial.print(&#x27; &#x27;); Serial.print(memoria[i] &amp; 0xF, HEX);
+    if (i == PC) Serial.print(F(&quot;   &lt;-- PC&quot;));
+    Serial.println();
+  }
+}
+
+void atualizaZ() { Z = (A == 0); }
+
+void passo() {
+  if (parada) { Serial.println(F(&quot;CPU parada (HLT). Use r para reiniciar.&quot;)); return; }
+
+  // T1: busca
+  uint8_t pcAntes = PC;
+  IR = memoria[PC];
+  PC = (PC + 1) &amp; 0xF;
+  // T2: decodificacao
+  uint8_t op = IR &gt;&gt; 4, n = IR &amp; 0xF;
+  // T3: execucao
+  switch (op) {
+    case 0x0: break;
+    case 0x1: A = n; atualizaZ(); break;
+    case 0x2: A = memoria[n]; atualizaZ(); break;
+    case 0x3: memoria[n] = A; break;
+    case 0x4: A = A + n; atualizaZ(); break;
+    case 0x5: A = A + memoria[n]; atualizaZ(); break;
+    case 0x6: A = A - n; atualizaZ(); break;
+    case 0x7: A = A &amp; n; atualizaZ(); break;
+    case 0x8: saida = A; mostrarSaida(); break;
+    case 0x9: PC = n; break;
+    case 0xA: if (Z) PC = n; break;
+    case 0xB: if (!Z) PC = n; break;
+    case 0xC: A = A ^ n; atualizaZ(); break;
+    case 0xD: A = A - memoria[n]; atualizaZ(); break;
+    case 0xF: parada = true; break;
+    default: break;
+  }
+  passos++;
+
+  Serial.print(F(&quot;PC=&quot;)); Serial.print(pcAntes, HEX);
+  Serial.print(F(&quot; IR=0x&quot;)); if (IR &lt; 16) Serial.print(&#x27;0&#x27;); Serial.print(IR, HEX);
+  Serial.print(F(&quot; &quot;)); Serial.print(NOMES[op]); Serial.print(&#x27; &#x27;); Serial.print(n, HEX);
+  Serial.print(F(&quot; | A=&quot;)); Serial.print(A);
+  Serial.print(F(&quot; Z=&quot;)); Serial.print(Z);
+  Serial.print(F(&quot; SAIDA=&quot;)); Serial.println(saida);
+}
+
+// Le uma linha do Serial e executa comandos de varios caracteres
+void tratarLinha(String l) {
+  l.trim();
+  if (l.length() == 0) return;
+  char c = l.charAt(0);
+  if (c == &#x27;s&#x27;) passo();
+  else if (c == &#x27;r&#x27;) { resetar(); mostrarSaida(); Serial.println(F(&quot;&gt;&gt; reset&quot;)); }
+  else if (c == &#x27;m&#x27;) mostrarMemoria();
+  else if (c == &#x27;g&#x27;) {
+    for (uint8_t i = 0; i &lt; 60 &amp;&amp; !parada; i++) { passo(); delay(150); }
+  }
+  else if (c == &#x27;l&#x27;) { carregarPrograma(l.charAt(1) - &#x27;0&#x27;); resetar(); mostrarSaida(); Serial.println(F(&quot;&gt;&gt; programa carregado&quot;)); mostrarMemoria(); }
+  else if (c == &#x27;w&#x27;) {
+    int sp = l.indexOf(&#x27; &#x27;);
+    int sp2 = l.indexOf(&#x27; &#x27;, sp + 1);
+    if (sp &gt; 0 &amp;&amp; sp2 &gt; 0) {
+      long end = strtol(l.substring(sp + 1, sp2).c_str(), NULL, 16);
+      long val = strtol(l.substring(sp2 + 1).c_str(), NULL, 16);
+      if (end &gt;= 0 &amp;&amp; end &lt; 16) { memoria[end] = val &amp; 0xFF; Serial.println(F(&quot;&gt;&gt; escrito&quot;)); }
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  for (uint8_t b = 0; b &lt; 4; b++) pinMode(LEDS[b], OUTPUT);
+  carregarPrograma(0);
+  resetar();
+  mostrarSaida();
+  Serial.println(F(&quot;=== CPU DIDATICA - Fase 2 ===&quot;));
+  Serial.println(F(&quot;Comandos: s passo | g executa | r reset | m memoria | l0 l1 l2 programas | w end hex&quot;));
+  mostrarMemoria();
+}
+
+void loop() {
+  if (Serial.available()) {
+    String l = Serial.readStringUntil(&#x27;\n&#x27;);
+    tratarLinha(l);
+  }
+}
+</code></pre></details>
+  <div class="notehost" data-note="1"></div>
+</section>
+<section class="etapa" id="e4">
+  <div class="etapa-head"><div class="tag">Missão 4 · Fase 3</div><h2>📊 Painel LCD, ciclos e desempenho</h2><p>Acrescentar o LCD como painel do processador e medir o desempenho: ciclos gastos por instrução, CPI e tempo total para um clock de 1 a 20 Hz.</p></div>
+  <div class="panel"><div class="chal" id="ch4"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 3 <span class="mono">cpu3_painel_lcd.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c3">Copiar código</button><button class="btn dl" type="button" data-t="c3" data-f="cpu3_painel_lcd.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c3">/*
+  CPU DIDATICA - FASE 3: painel LCD, ciclos de clock e desempenho
+
+  Igual a Fase 2, com tres novidades:
+    1. Um LCD 16x2 funciona como &quot;painel de controle&quot; (PC, A, SAIDA, flag Z).
+    2. Cada instrucao gasta CICLOS: busca = 1, execucao = 1 (2 se acessa a memoria).
+       O Monitor Serial mostra o total de ciclos, o CPI (ciclos por instrucao)
+       e o tempo total para um clock simulado de FREQ_HZ.
+    3. Comando &#x27;f &lt;hz&gt;&#x27; muda a frequencia do clock simulado (1 a 20 Hz).
+
+  Comandos: s passo | g executa | r reset | l0 l1 l2 programas | f &lt;hz&gt; | m memoria
+
+  Ligacoes do LCD 16x2 (modo 4 bits):
+    LCD RS -&gt; 12   E -&gt; 11   D4 -&gt; 5   D5 -&gt; 4   D6 -&gt; 3   D7 -&gt; 2
+    LCD VSS, RW, K(-) -&gt; GND   VDD, A(+) -&gt; 5V (A com resistor de 300 ohms)
+    V0 (contraste) -&gt; GND por um resistor de 1 kohm (ou potenciometro de 10 kohm)
+  LEDs de saida (300 ohms) nos pinos 10, 9, 8, 7.
+*/
+#include &lt;LiquidCrystal.h&gt;
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+const uint8_t LEDS[4] = {10, 9, 8, 7};
+uint8_t memoria[16];
+uint8_t PC = 0, IR = 0, A = 0, saida = 0;
+bool Z = false, parada = false;
+unsigned long instrucoes = 0, ciclos = 0;
+uint8_t freqHz = 4;
+
+const char* NOMES[16] = {&quot;NOP&quot;, &quot;LDI&quot;, &quot;LDA&quot;, &quot;STA&quot;, &quot;ADD&quot;, &quot;ADDM&quot;, &quot;SUB&quot;, &quot;AND&quot;,
+                         &quot;OUT&quot;, &quot;JMP&quot;, &quot;JZ&quot;, &quot;JNZ&quot;, &quot;XOR&quot;, &quot;SUBM&quot;, &quot;???&quot;, &quot;HLT&quot;};
+
+void carregarPrograma(uint8_t n) {
+  for (uint8_t i = 0; i &lt; 16; i++) memoria[i] = 0;
+  if (n == 0) {
+    const uint8_t p[] = {0x15, 0x80, 0x61, 0xB1, 0xF0};
+    for (uint8_t i = 0; i &lt; sizeof(p); i++) memoria[i] = p[i];
+  } else if (n == 1) {
+    const uint8_t p[] = {0x2E, 0x5F, 0x3D, 0x80, 0xF0};
+    for (uint8_t i = 0; i &lt; sizeof(p); i++) memoria[i] = p[i];
+    memoria[14] = 3; memoria[15] = 4;
+  } else {
+    const uint8_t p[] = {0x2F, 0x80, 0x5E, 0x3D, 0x2F, 0x3E, 0x2D, 0x3F, 0x90};
+    for (uint8_t i = 0; i &lt; sizeof(p); i++) memoria[i] = p[i];
+    memoria[14] = 0; memoria[15] = 1;
+  }
+}
+
+void resetar() { PC = 0; IR = 0; A = 0; saida = 0; Z = false; parada = false; instrucoes = 0; ciclos = 0; }
+
+void mostrarSaida() {
+  for (uint8_t b = 0; b &lt; 4; b++) digitalWrite(LEDS[b], (saida &gt;&gt; b) &amp; 1);
+}
+
+void atualizarLcd(const char* mnem, uint8_t n) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(&quot;PC:&quot;); lcd.print(PC, HEX);
+  lcd.print(&#x27; &#x27;); lcd.print(mnem); lcd.print(&#x27; &#x27;); lcd.print(n, HEX);
+  lcd.setCursor(0, 1);
+  lcd.print(&quot;A:&quot;); lcd.print(A);
+  lcd.print(&quot; Z:&quot;); lcd.print(Z ? 1 : 0);
+  lcd.print(&quot; S:&quot;); lcd.print(saida);
+}
+
+void atualizaZ() { Z = (A == 0); }
+
+void passo() {
+  if (parada) { Serial.println(F(&quot;CPU parada (HLT). Use r para reiniciar.&quot;)); return; }
+  IR = memoria[PC];
+  PC = (PC + 1) &amp; 0xF;
+  uint8_t op = IR &gt;&gt; 4, n = IR &amp; 0xF;
+  uint8_t custo = 2;                       // 1 ciclo de busca + 1 de execucao
+  switch (op) {
+    case 0x0: break;
+    case 0x1: A = n; atualizaZ(); break;
+    case 0x2: A = memoria[n]; atualizaZ(); custo = 3; break;
+    case 0x3: memoria[n] = A; custo = 3; break;
+    case 0x4: A = A + n; atualizaZ(); break;
+    case 0x5: A = A + memoria[n]; atualizaZ(); custo = 3; break;
+    case 0x6: A = A - n; atualizaZ(); break;
+    case 0x7: A = A &amp; n; atualizaZ(); break;
+    case 0x8: saida = A; mostrarSaida(); break;
+    case 0x9: PC = n; break;
+    case 0xA: if (Z) PC = n; break;
+    case 0xB: if (!Z) PC = n; break;
+    case 0xC: A = A ^ n; atualizaZ(); break;
+    case 0xD: A = A - memoria[n]; atualizaZ(); custo = 3; break;
+    case 0xF: parada = true; break;
+    default: break;
+  }
+  instrucoes++;
+  ciclos += custo;
+  atualizarLcd(NOMES[op], n);
+
+  Serial.print(NOMES[op]); Serial.print(&#x27; &#x27;); Serial.print(n, HEX);
+  Serial.print(F(&quot; | A=&quot;)); Serial.print(A);
+  Serial.print(F(&quot; SAIDA=&quot;)); Serial.print(saida);
+  Serial.print(F(&quot; | ciclos desta instrucao = &quot;)); Serial.println(custo);
+}
+
+void relatorioDesempenho() {
+  if (instrucoes == 0) return;
+  float cpi = (float)ciclos / instrucoes;
+  float tempo = (float)ciclos / freqHz;
+  Serial.println(F(&quot;--- DESEMPENHO ---&quot;));
+  Serial.print(F(&quot;instrucoes = &quot;)); Serial.println(instrucoes);
+  Serial.print(F(&quot;ciclos     = &quot;)); Serial.println(ciclos);
+  Serial.print(F(&quot;CPI (ciclos por instrucao) = &quot;)); Serial.println(cpi, 2);
+  Serial.print(F(&quot;clock simulado = &quot;)); Serial.print(freqHz); Serial.println(F(&quot; Hz&quot;));
+  Serial.print(F(&quot;tempo = ciclos / clock = &quot;)); Serial.print(tempo, 2); Serial.println(F(&quot; s&quot;));
+}
+
+void executarTudo() {
+  for (uint8_t i = 0; i &lt; 60 &amp;&amp; !parada; i++) {
+    passo();
+    delay(1000UL / freqHz);                 // o &quot;clock&quot; da nossa CPU
+  }
+  relatorioDesempenho();
+}
+
+void tratarLinha(String l) {
+  l.trim();
+  if (l.length() == 0) return;
+  char c = l.charAt(0);
+  if (c == &#x27;s&#x27;) passo();
+  else if (c == &#x27;g&#x27;) executarTudo();
+  else if (c == &#x27;r&#x27;) { resetar(); mostrarSaida(); lcd.clear(); lcd.print(&quot;CPU pronta&quot;); Serial.println(F(&quot;&gt;&gt; reset&quot;)); }
+  else if (c == &#x27;l&#x27;) { carregarPrograma(l.charAt(1) - &#x27;0&#x27;); resetar(); mostrarSaida(); Serial.println(F(&quot;&gt;&gt; programa carregado&quot;)); }
+  else if (c == &#x27;f&#x27;) { int v = l.substring(1).toInt(); if (v &gt;= 1 &amp;&amp; v &lt;= 20) { freqHz = v; Serial.print(F(&quot;&gt;&gt; clock = &quot;)); Serial.print(freqHz); Serial.println(F(&quot; Hz&quot;)); } }
+  else if (c == &#x27;m&#x27;) {
+    for (uint8_t i = 0; i &lt; 16; i++) {
+      Serial.print(i, HEX); Serial.print(F(&quot;: &quot;));
+      if (memoria[i] &lt; 16) Serial.print(&#x27;0&#x27;);
+      Serial.println(memoria[i], HEX);
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  lcd.begin(16, 2);
+  lcd.print(&quot;CPU Didatica&quot;);
+  for (uint8_t b = 0; b &lt; 4; b++) pinMode(LEDS[b], OUTPUT);
+  carregarPrograma(0);
+  resetar();
+  mostrarSaida();
+  Serial.println(F(&quot;=== CPU DIDATICA - Fase 3 ===&quot;));
+  Serial.println(F(&quot;Comandos: s | g | r | l0 l1 l2 | f &lt;hz&gt; | m&quot;));
+}
+
+void loop() {
+  if (Serial.available()) {
+    String l = Serial.readStringUntil(&#x27;\n&#x27;);
+    tratarLinha(l);
+  }
+}
+</code></pre></details>
+  <div class="notehost" data-note="2"></div>
+</section>
+<section class="etapa" id="e5">
+  <div class="etapa-head"><div class="tag">Missão 5 · Chefão final</div><h2>🏆 Entrega</h2><p>Mostre o projeto funcionando e entregue o relatório com as respostas das perguntas de cada fase, as tabelas feitas à mão, fotos ou prints e a conclusão.</p></div>
+  <div class="panel"><h3>🏁 Entrega <span class="pill xp">10 XP</span></h3><div class="chal" id="ch5"></div>
+    <p class="muted small">Sugestão de avaliação (10,0): montagem e funcionamento 3,0 · medições e tabelas 3,0 · respostas do relatório 3,0 · demonstração oral 1,0.</p></div>
+  <div class="player" id="pcard"><div class="big">Seu progresso</div><div id="pout" class="muted">Complete missões para ver o seu cartão.</div><div class="row" style="justify-content:center"><button class="btn" id="pgo" type="button">Gerar meu cartão</button></div></div>
+</section>
+
+<section class="etapa" id="caderno">
+  <div class="etapa-head"><div class="tag">Folha final</div><h2>📒 Tudo para o caderno</h2><p>Todas as caixas juntas. Copie à mão, copie o texto ou imprima.</p></div>
+  <div class="row"><button class="btn" id="noteprint" type="button">Imprimir a folha</button></div>
+  <div id="noteall" style="display:grid;gap:12px"></div>
+</section>
+
+<details class="prof" style="margin-top:36px"><summary>👩‍🏫 Notas para o professor</summary><ul style="padding-left:20px;display:grid;gap:6px"><li>Pelas notas há só 1 LCD 16×2: a fase 3 pode ser demonstração do professor, em rodízio, ou usar apenas o Monitor Serial (os sketches das fases 1 e 2 não precisam de LCD).</li><li>Os 3 sketches foram compilados para o Uno e os 3 programas de exemplo (contagem, soma e Fibonacci) foram conferidos por simulação em computador.</li><li>Sugestão de discussão: comparar este processador com o ATmega328P (Harvard, RISC, 32 registradores).</li><li>Cuide para que os alunos escolham “Nova linha” no Monitor Serial.</li></ul></details>
+
+<footer class="outros"><b>Outros projetos</b><div class="links"><a href="projetos_arquitetura.html">📚 Catálogo de projetos</a><a href="projeto_ula_4bits.html">🧮 Mini-ULA de 4 bits com teclado hexadecimal</a><a href="projeto_telegrafo_optico.html">💡 Telégrafo óptico: uma UART feita de luz</a><a href="projeto_portas_transistores.html">🔌 Laboratório de portas lógicas com transistores</a><a href="projeto_cofre_rfid.html">🔐 Cofre RFID com arquivo na EEPROM</a><a href="projeto_esp32_paralelo.html">⚡ ESP32: dois núcleos, speedup e condição de corrida</a></div></footer>
+</div>
+<script type="application/json" id="pdata">{"montagem": ["Montei os 4 LEDs com resistor nos pinos 10, 9, 8 e 7", "Carreguei a Fase 1 e abri o Monitor Serial em 9600", "Enviei s e vi o PC mudar nos LEDs", "(Fase 3) Montei o LCD e ajustei o contraste", "Li o programa de exemplo na memória com o comando m"], "icons": ["📥", "⚙️", "📊"], "fases": [{"obs": ["Envie m para ver a memória. Qual endereço guarda 0xB1?", "Envie s várias vezes: o PC conta de 0 a F e volta a 0.", "Separe o IR em opcode (4 bits) e operando (4 bits) e confira."], "quiz": [{"q": "Em memória unificada (Von Neumann), programa e dados ficam:", "o": ["Em memórias separadas", "Na mesma memória", "Só na EEPROM", "Só em registradores"], "a": 1, "e": "No Von Neumann a mesma memória guarda instruções e dados. Já o AVR do Uno é Harvard: Flash para o programa e SRAM para os dados."}, {"q": "Na instrução 0xB1, o opcode e o operando são:", "o": ["B e 1", "1 e B", "0xB1 e 0", "11 e 1"], "a": 0, "e": "Os 4 bits altos são o opcode (B = JNZ) e os 4 bits baixos são o operando (1)."}], "nota": {"t": "Memória, PC e busca", "l": ["Instrução de 8 bits = 4 bits de opcode + 4 bits de operando.", "PC (Program Counter): endereço da próxima instrução.", "IR (Instruction Register): instrução em execução.", "Busca: IR ← mem[PC]; PC ← PC + 1.", "Von Neumann: programa e dados na mesma memória. Harvard: memórias separadas."]}, "rel": "Por que o PC deste processador só tem 4 bits? Quantos endereços ele alcança e qual a consequência para o tamanho dos programas?", "des": "Aumente a memória para 32 bytes: quantos bits o PC precisa agora e como muda a codificação da instrução?"}, {"obs": ["Carregue l0 (contagem regressiva) e rode com g: veja a saída 5, 4, 3, 2, 1 nos LEDs.", "Carregue l1 e confira 3 + 4 = 7. Qual instrução usa o modo direto?", "Escreva um programa seu com o comando w (ex.: w 0 15)."], "quiz": [{"q": "Qual a diferença entre LDI 5 e LDA 5?", "o": ["Nenhuma", "LDI coloca o valor 5 em A (imediato); LDA copia o conteúdo do endereço 5 (direto)", "LDA é mais rápida", "LDI guarda na memória"], "a": 1, "e": "Modos de endereçamento: imediato (o valor está na instrução) e direto (a instrução tem o endereço do valor)."}, {"q": "No programa de contagem, o JNZ 1 salta quando:", "o": ["A = 0", "A ≠ 0 (flag Z = 0)", "Sempre", "Nunca"], "a": 1, "e": "JNZ = “jump if not zero”: repete enquanto A não chegou a zero."}], "nota": {"t": "Conjunto de instruções", "l": ["Ciclo de instrução: busca → decodificação → execução.", "LDI n (imediato): A ← n. LDA m (direto): A ← mem[m].", "ADD/SUB/AND/XOR com n; ADDM/SUBM com o conteúdo da memória.", "JMP n sempre salta; JZ salta se Z = 1; JNZ salta se Z = 0.", "Linguagem de montagem: nomes (LDI, ADD…) que o montador troca por números (opcodes)."]}, "rel": "Escreva em linguagem de montagem e em hexadecimal um programa que soma 5 + 6 + 2 e mostra a saída. Quantas instruções ele tem e quantos bytes de memória usa?", "des": "Escreva um programa que conte de 1 até 5 (para cima) e pare no HLT. Dica: use SUB e JNZ com um contador auxiliar na memória."}, {"obs": ["Rode l0 e g e leia o CPI no Monitor Serial.", "Mude o clock com f 2 e depois f 10: o que acontece com o tempo total?", "Compare o CPI do programa l1 (acessa a memória) com o do l0."], "quiz": [{"q": "Um programa de 20 instruções gasta 50 ciclos. O CPI é:", "o": ["2,5", "0,4", "20", "50"], "a": 0, "e": "CPI = ciclos ÷ instruções = 50 ÷ 20 = 2,5."}, {"q": "Dobrando a frequência do clock (mesmo programa e mesmo CPI), o tempo de execução:", "o": ["Dobra", "Cai pela metade", "Não muda", "Dobra o CPI"], "a": 1, "e": "Tempo = instruções × CPI ÷ frequência."}], "nota": {"t": "Desempenho", "l": ["Tempo de CPU = instruções × CPI ÷ frequência do clock.", "CPI = ciclos por instrução (média).", "Instruções que acessam a memória costumam gastar mais ciclos.", "RISC: instruções simples e uniformes, CPI baixo. CISC: instruções complexas, CPI variável.", "O ATmega328P do Uno é RISC: a maioria das instruções leva 1 ou 2 ciclos de 16 MHz."]}, "rel": "Calcule o tempo de execução do programa de contagem regressiva para 1 Hz e 20 Hz e compare com o medido. Para executar o MESMO trabalho em 1 s com clock de 20 Hz, qual CPI você precisaria?", "des": "Mude o custo das instruções com acesso à memória para 4 ciclos e veja o efeito no CPI do programa de Fibonacci (l2)."}]}</script>
+<script>
+(function(){
+const P=JSON.parse(document.getElementById('pdata').textContent);
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function el(t,a,k){const e=document.createElement(t);for(const x in (a||{})){if(x==='text')e.textContent=a[x];else if(x==='html')e.innerHTML=a[x];else e.setAttribute(x,a[x]);}(k||[]).forEach(c=>e.appendChild(c));return e;}
+function copyText(t,btn,label){const done=()=>{if(btn){btn.textContent='Copiado!';setTimeout(()=>btn.textContent=label,1400);}};
+ function fb(){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');done();}catch(e){}a.remove();}
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,fb);else fb();}
+const CHIP='<svg viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Chip, o mascote"><g stroke="var(--ink)" stroke-width="3" stroke-linecap="round"><path d="M18 6v8M32 6v8M46 6v8M18 50v8M32 50v8M46 50v8M6 18h8M6 32h8M6 46h8M50 18h8M50 32h8M50 46h8"/></g><rect x="12" y="12" width="40" height="40" rx="8" fill="var(--accent)" stroke="var(--ink)" stroke-width="2.5"/><circle cx="25" cy="30" r="5.5" fill="#fff" stroke="var(--ink)" stroke-width="2"/><circle cx="39" cy="30" r="5.5" fill="#fff" stroke="var(--ink)" stroke-width="2"/><circle cx="26" cy="31" r="2.3" fill="#101936"/><circle cx="40" cy="31" r="2.3" fill="#101936"/><path d="M24 41q8 6 16 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>';
+$('#byteHero').innerHTML=CHIP;
+$$('.bytebox').forEach(b=>{const w=el('div');w.innerHTML=CHIP.replace('width="64" height="64"','width="48" height="48"');b.appendChild(w);b.appendChild(el('div',{class:'bubble',text:b.getAttribute('data-tip')}));});
+const links=$$('#navlist a'),secs=links.map(a=>$(a.getAttribute('href')));
+function onScroll(){let c=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<160)c=i;});links.forEach((a,i)=>a.classList.toggle('on',i===c&&scrollY>200));}
+addEventListener('scroll',onScroll,{passive:true});
+
+/* XP */
+const nF=P.fases.length;
+const ETAPAS=[{e:'🔌',n:'Montagem',xp:P.montagem.length*2}];
+P.fases.forEach((f,i)=>ETAPAS.push({e:P.icons[i],n:'Fase '+(i+1),xp:f.obs.length+6+4+3}));
+ETAPAS.push({e:'🏆',n:'Chefão',xp:10});
+const TOTAL=ETAPAS.reduce((a,x)=>a+x.xp,0);
+ETAPAS.forEach((x,i)=>$('#mapa').appendChild(el('a',{href:'#e'+(i+1)},[el('span',{class:'em',text:x.e}),el('b',{text:(i+1)+'. '+x.n}),el('span',{text:x.xp+' XP'})])));
+const BAD=ETAPAS.map((x,i)=>['Eletricista','Fase 1 concluída','Fase 2 concluída','Fase 3 concluída','Fase 4 concluída'][i]||'');
+BAD[0]='🔌 Eletricista';for(let i=0;i<nF;i++)BAD[i+1]=P.icons[i]+' Fase '+(i+1)+' concluída';BAD[nF+1]='🏆 Arquiteto de Computadores';
+const LEVELS=[{n:'Estagiário',e:'🔌',min:0},{n:'Montador',e:'🔧',min:Math.round(TOTAL*.15)},{n:'Programador de Bits',e:'🧮',min:Math.round(TOTAL*.4)},{n:'Arquiteto',e:'🧠',min:Math.round(TOTAL*.68)},{n:'Mestre dos Bits',e:'🏆',min:Math.round(TOTAL*.9)}];
+const state={xp:0,done:{},ex:ETAPAS.map(()=>0),badges:ETAPAS.map(()=>false)};
+function lv(x){let l=0;LEVELS.forEach((v,i)=>{if(x>=v.min)l=i;});return l;}
+function toast(m,big){const t=el('div',{class:'toast'+(big?' big':''),text:m});$('#toasts').appendChild(t);setTimeout(()=>t.remove(),big?3400:2000);}
+function hud(){const i=lv(state.xp),L=LEVELS[i],N=LEVELS[i+1];$('#lvl').textContent=L.e+' Nível '+(i+1)+' · '+L.n;
+ $('#xpfill').style.width=(N?Math.round(100*(state.xp-L.min)/(N.min-L.min)):100)+'%';
+ $('#xptxt').textContent='⭐ '+state.xp+' / '+TOTAL+' XP'+(N?' · faltam '+(N.min-state.xp)+' para '+N.n:' · nível máximo!');
+ const b=$('#badges');b.innerHTML='';BAD.forEach((x,k)=>b.appendChild(el('span',{class:'badge'+(state.badges[k]?' on':''),title:x,text:x.split(' ')[0]})));}
+function award(key,pts,et,msg){if(state.done[key])return false;state.done[key]=true;const b=lv(state.xp);state.xp+=pts;state.ex[et]+=pts;toast('+'+pts+' XP'+(msg?' · '+msg:''));
+ if(lv(state.xp)>b)toast('🎉 Nível '+(lv(state.xp)+1)+': '+LEVELS[lv(state.xp)].n+'!',true);
+ if(!state.badges[et]&&state.ex[et]>=Math.ceil(ETAPAS[et].xp*.7)){state.badges[et]=true;toast('🏅 Medalha: '+BAD[et],true);}hud();return true;}
+hud();
+
+function check(box,key,pts,et,text){const id='k_'+key;const i=el('input',{type:'checkbox',id});i.onchange=()=>{if(i.checked)award(key,pts,et,'feito!');};box.appendChild(el('label',{class:'chk',for:id},[i,el('span',{text:text+' ('+pts+' XP)'})]));}
+function quiz(box,key,pts,et,items){items.forEach((q,qi)=>{const w=el('div',{class:'c'});w.appendChild(el('h4',{text:'❓ '+q.q}));const o=el('div',{class:'opts'});const fb=el('div',{class:'score'});
+ q.o.forEach((t,k)=>{const b=el('button',{class:'opt',type:'button',text:t});b.onclick=()=>{if(w.dataset.d)return;if(k===q.a){w.dataset.d=1;b.classList.add('good');fb.className='score ok';fb.textContent='✅ '+q.e;award(key+qi,pts,et,'acertou!');}else{b.classList.add('bad');fb.className='score no';fb.textContent='Tente de novo.';}};o.appendChild(b);});
+ w.appendChild(o);w.appendChild(fb);box.appendChild(w);});}
+
+/* Montagem */
+const m=$('#ch1');P.montagem.forEach((t,i)=>check(m,'m_'+i,2,0,t));
+
+/* Fases */
+P.fases.forEach((f,i)=>{
+  const et=i+1,box=$('#ch'+(i+2));
+  const o=el('div',{class:'c'});o.appendChild(el('h4',{html:'👀 O que observar <span class="pill xp">'+f.obs.length+' XP</span>'}));f.obs.forEach((t,k)=>check(o,'o'+i+'_'+k,1,et,t));box.appendChild(o);
+  const qb=el('div',{class:'c'});qb.appendChild(el('h4',{html:'🧠 Quiz <span class="pill xp">6 XP</span>'}));const qq=el('div',{class:'chal'});qb.appendChild(qq);quiz(qq,'q'+i+'_',3,et,f.quiz);box.appendChild(qb);
+  const r=el('div',{class:'c'});r.appendChild(el('h4',{html:'📝 Pergunta do relatório <span class="pill xp">4 XP</span>'}));r.appendChild(el('p',{text:f.rel}));
+  const ta=el('textarea',{'aria-label':'Resposta da fase '+(i+1),placeholder:'Escreva a sua resposta (mínimo de 40 letras)...'});const fb=el('div',{class:'score'});const go=el('button',{class:'btn',type:'button',text:'Registrar resposta'});
+  go.onclick=()=>{if(ta.value.trim().length>=40){award('r'+i,4,et,'resposta registrada');fb.className='score ok';fb.textContent='✅ Anote também no caderno ou no relatório.';}else{fb.className='score no';fb.textContent='Escreva um pouco mais ('+ta.value.trim().length+'/40).';}};
+  r.appendChild(ta);r.appendChild(el('div',{class:'row'},[go,fb]));box.appendChild(r);
+  const d=el('div',{class:'c'});d.appendChild(el('h4',{html:'🏅 Desafio extra <span class="pill xp">3 XP</span>'}));d.appendChild(el('p',{text:f.des}));check(d,'d'+i,3,et,'Fiz o desafio extra e mostrei ao professor');box.appendChild(d);
+});
+
+/* Final */
+const c7=$('#ch'+(nF+2));
+check(c7,'fin_proj',5,nF+1,'O meu projeto está funcionando e eu o demonstrei ao professor');
+check(c7,'fin_rel',5,nF+1,'O relatório está pronto, com tabelas, respostas e desenhos');
+
+/* Cadernos */
+const NOTES=P.fases.map(f=>f.nota);
+function noteText(i){const N=NOTES[i];return N.t+'\n'+N.l.map(x=>'• '+x).join('\n');}
+function noteEl(i,bar){const N=NOTES[i];const n=el('div',{class:'note'});n.appendChild(el('h4',{text:'📝 Para o caderno: '+N.t}));n.appendChild(el('ul',{},N.l.map(x=>el('li',{text:x}))));
+ if(bar){const b=el('button',{class:'btn sec',type:'button',text:'Copiar texto'});b.onclick=()=>copyText(noteText(i),b,'Copiar texto');n.appendChild(el('div',{class:'bar'},[b,el('span',{class:'muted small',text:'ou copie à mão no caderno'})]));}return n;}
+$$('.notehost').forEach(h=>h.appendChild(noteEl(+h.dataset.note,true)));
+NOTES.forEach((n,i)=>$('#noteall').appendChild(noteEl(i,false)));
+$('#noteprint').onclick=()=>{document.body.classList.add('pc');window.print();};
+addEventListener('afterprint',()=>document.body.classList.remove('pc'));
+
+/* código */
+$$('.cp').forEach(b=>b.addEventListener('click',()=>copyText(document.getElementById(b.dataset.t).textContent,b,'Copiar código')));
+$$('.dl').forEach(b=>b.addEventListener('click',()=>{const blob=new Blob([document.getElementById(b.dataset.t).textContent],{type:'text/plain;charset=utf-8'});
+ const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=b.dataset.f;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);}));
+
+$('#pgo').onclick=()=>{const l=LEVELS[lv(state.xp)];const mm=BAD.filter((b,i)=>state.badges[i]);
+ $('#pout').innerHTML='<b>'+l.e+' '+l.n+'</b> · '+state.xp+' / '+TOTAL+' XP<br>Medalhas: '+(mm.length?mm.join(' · '):'ainda nenhuma')+'<br><span class="small">Tire um print e entregue com o relatório.</span>';};
+})();
+</script>
+</body>
+</html>

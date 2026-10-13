@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mini-ULA de 4 bits com teclado hexadecimal · Modo Jogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{--bg:#F1F3F8;--surface:#FFF;--ink:#101936;--muted:#4F5985;--line:#D3D9EB;--accent:#2B50F5;--accent-ink:#fff;--soft:#E6EBFF;--hi:#FFD93D;--hi-ink:#101936;
+--good:#0F7A58;--good-bg:#DDF4EA;--bad:#B3302A;--bad-bg:#FBE3E0;--code:#0F1630;--codeink:#E3E8FF;
+--paper:#FFFBE6;--paperink:#2B2A1F;--paperline:#CFE0F5;--margin:#E57373;
+--display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;--body:'DM Sans','Segoe UI',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0C1122;--surface:#151C36;--ink:#E9ECFA;--muted:#9BA5CC;--line:#2A3358;--accent:#7C93FF;--accent-ink:#0C1122;--soft:#1E2850;--good:#5FD9AA;--good-bg:#12372B;--bad:#FF9A92;--bad-bg:#40201F;--code:#080C1A;--paper:#23253A;--paperink:#E9ECFA;--paperline:#33406A;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--body);padding:0 16px 64px}
+.wrap{max-width:940px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0} a{color:var(--accent)} .mono{font-family:var(--mono)} .muted{color:var(--muted)} .small{font-size:.85rem}
+button,input,select,textarea{font:inherit;color:inherit} button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hero{padding:32px 0 20px;display:grid;gap:16px}
+.herotop{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.kicker{font:700 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(2rem,5.6vw,3.4rem);font-weight:800;letter-spacing:-.02em}
+.lead{font-size:1.1rem;max-width:64ch;color:var(--muted)}
+.bubble{background:var(--surface);border:2px solid var(--ink);border-radius:14px;padding:10px 14px;max-width:46ch;font-weight:500}
+.mapa{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.mapa a{display:grid;gap:2px;justify-items:center;text-align:center;text-decoration:none;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 6px;font-size:.8rem}
+.mapa a .em{font-size:1.7rem} .mapa a b{font-family:var(--display);font-size:.92rem} .mapa a:hover{border-color:var(--accent)}
+.rules{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.rules li{border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px;font-size:.9rem}
+nav.steps{position:sticky;top:0;z-index:6;background:var(--bg);border-bottom:1px solid var(--line);margin:0 -16px;padding:8px 16px}
+.hud{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;max-width:940px;margin:0 auto 6px}
+.lvl{font:800 1rem var(--display)} .xpw{flex:1;min-width:170px;display:grid;gap:2px}
+.xpbar{height:12px;border-radius:6px;background:var(--soft);overflow:hidden;border:1px solid var(--line)}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--hi));transition:width .4s}
+.xptxt{font:700 .75rem var(--mono);color:var(--muted)}
+.badges{display:flex;gap:4px} .badge{font-size:1.15rem;filter:grayscale(1);opacity:.3;transition:.3s} .badge.on{filter:none;opacity:1;transform:scale(1.15)}
+#navlist{display:flex;gap:6px;list-style:none;margin:0 auto;padding:0;max-width:940px;overflow-x:auto}
+#navlist a{display:flex;gap:6px;align-items:center;white-space:nowrap;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:.84rem;font-weight:500}
+#navlist a b{background:var(--accent);color:var(--accent-ink);border-radius:50%;min-width:20px;height:20px;display:grid;place-items:center;font-size:.72rem}
+#navlist a.on{border-color:var(--accent);background:var(--soft)}
+#toasts{position:fixed;right:14px;bottom:14px;display:grid;gap:8px;z-index:20;max-width:min(92vw,340px)}
+.toast{background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-weight:700;animation:in .25s} .toast.big{background:var(--accent);color:var(--accent-ink);font-size:1.05rem}
+@keyframes in{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+section.etapa{margin-top:44px;display:grid;gap:14px}
+.etapa-head{display:grid;gap:10px}
+.tag{font:700 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.etapa-head h2{font-size:clamp(1.6rem,4.4vw,2.4rem);font-weight:800} .etapa-head p{max-width:66ch;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;display:grid;gap:10px;align-content:start}
+.panel h3{font-size:1.1rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap} .panel ul,.panel ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.pill{font:700 .72rem var(--mono);background:var(--soft);border-radius:999px;padding:3px 9px} .pill.xp{background:var(--hi);color:var(--hi-ink)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem} th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top} th{background:var(--soft);font-family:var(--display)} tr:last-child td{border-bottom:0} td.c{text-align:center}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:9px 16px;font-weight:700;text-decoration:none} .btn:hover{filter:brightness(1.1)} .btn.sec{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.score{font-weight:700} .ok{color:var(--good)} .no{color:var(--bad)}
+label.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer} label.chk input{margin-top:5px;width:18px;height:18px;accent-color:var(--accent)}
+textarea{background:var(--bg);border:2px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-height:84px}
+.chal{display:grid;gap:18px} .chal .c{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:14px} .chal .c:first-child{border-top:0;padding-top:0}
+.chal h4{margin:0;font:800 1rem var(--display);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.opts{display:grid;gap:6px} .opt{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 12px} .opt:hover{border-color:var(--accent)} .opt.good{background:var(--good-bg);border-color:var(--good)} .opt.bad{background:var(--bad-bg);border-color:var(--bad)}
+details.codebox,details.prof{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 16px 12px} details summary{cursor:pointer;font-weight:700;padding:14px 0}
+pre{margin:0;background:var(--code);color:var(--codeink);border-radius:10px;padding:14px;overflow:auto;max-height:480px;font:400 .8rem/1.5 var(--mono)}
+.bytebox{display:flex;gap:10px;align-items:center} .bytebox .bubble{font-size:.92rem}
+.callout{border:1px solid var(--line);border-left:5px solid var(--hi);background:var(--surface);border-radius:10px;padding:12px 16px;display:grid;gap:6px}
+.note{background:var(--paper);color:var(--paperink);border:1px solid var(--paperline);border-left:4px solid var(--margin);border-radius:8px;padding:12px 16px;display:grid;gap:8px;background-image:repeating-linear-gradient(transparent,transparent 27px,var(--paperline) 28px)}
+.note h4{margin:0;font:800 1.02rem var(--display)} .note ul{margin:0;padding-left:20px} .note li{line-height:28px}
+.note .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.player{display:grid;gap:8px;text-align:center;padding:18px;background:var(--surface);border:2px solid var(--ink);border-radius:16px} .player .big{font:800 1.5rem var(--display)}
+footer.outros{margin-top:50px;display:grid;gap:10px}
+footer.outros .links{display:flex;flex-wrap:wrap;gap:8px} footer.outros a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;text-decoration:none;font-size:.9rem}
+@media print{nav.steps,.btn,#toasts,details.codebox,.bytebox,.chal,.mapa,.rules,footer.outros,details.prof{display:none!important} body.pc section.etapa:not(#caderno){display:none} .note{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">Arquitetura e Organização de Computadores · Projeto prático · 3 aulas</div>
+  <div class="herotop"><div id="byteHero"></div><div class="bubble">Eu sou o <b>Chip</b>. Complete as missões, ganhe XP e suba de nível. Boa montagem!</div></div>
+  <h1>🧮 Mini-ULA de 4 bits com teclado hexadecimal</h1>
+  <p class="lead">Um teclado 4×4 vira o painel de uma Unidade Lógica e Aritmética: você digita A, B e o opcode, e os LEDs mostram o resultado e os sinais (flags).</p>
+  <ul class="rules"><li>🧰 Tinkercad e Arduino físico</li><li>⭐ XP por desafio (uma vez só)</li><li>🏅 Medalha com 70% do XP da missão</li><li>📝 Caixas “Para o caderno”</li></ul>
+  <div class="mapa" id="mapa"></div>
+  <details class="prof"><summary>📚 Ementa: o que este projeto cobre</summary>
+    <div class="tablewrap"><table><thead><tr><th>Conteúdo da ementa</th><th>Fase</th></tr></thead><tbody><tr><td>Bases numéricas (hexadecimal) e codificação de dados</td><td class="c">1</td></tr><tr><td>Tipos de dados e complemento de dois</td><td class="c">1, 2</td></tr><tr><td>Introdução à lógica digital: portas e somador</td><td class="c">2, 3</td></tr><tr><td>Processador: ULA, registrador acumulador e flags</td><td class="c">2, 3</td></tr><tr><td>Conjunto de instruções (opcodes)</td><td class="c">2</td></tr><tr><td>Sistemas de E/S: varredura de teclado matricial</td><td class="c">1</td></tr></tbody></table></div></details>
+</header>
+
+<nav class="steps" aria-label="Missões e progresso">
+  <div class="hud"><div class="lvl" id="lvl"></div><div class="xpw"><div class="xpbar"><i id="xpfill"></i></div><div class="xptxt" id="xptxt"></div></div><div class="badges" id="badges"></div></div>
+  <ol id="navlist"><li><a href="#e1"><b>1</b>Montagem</a></li><li><a href="#e2"><b>2</b>Fase 1</a></li><li><a href="#e3"><b>3</b>Fase 2</a></li><li><a href="#e4"><b>4</b>Fase 3</a></li><li><a href="#e5"><b>5</b>Final</a></li><li><a href="#caderno"><b>📒</b>Caderno</a></li></ol>
+</nav>
+<div id="toasts" aria-live="polite"></div>
+
+<section class="etapa" id="e1">
+  <div class="etapa-head"><div class="tag">Missão 1 · Montagem</div><h2>🔌 Monte o circuito</h2><p>Separe os materiais e faça as ligações antes de carregar o primeiro código.</p></div>
+  <div class="cols">
+    <div class="panel"><h3>🧰 Materiais</h3><ul><li>1 Arduino Uno R3 + cabo USB</li><li>1 protoboard 830 pontos</li><li>1 teclado matricial de membrana 4×4</li><li>4 LEDs: verde, amarelo, vermelho e azul</li><li>1 LED RGB (catodo comum; veja o aviso)</li><li>7 resistores de 300 Ω (4 para os LEDs e 3 para o RGB)</li><li>Jumpers macho-macho e macho-fêmea</li></ul></div>
+    <div class="panel"><h3>⚠️ Antes de começar</h3><ul><li>O LED RGB pode ser de catodo comum (pino longo no GND) ou anodo comum (pino longo no 5V). Se as cores ficarem invertidas, troque COMUM_ANODO nas fases 2 e 3.</li><li>Se alguma tecla “falhar”, confira se as linhas e colunas não estão trocadas: a ordem dos 8 fios do teclado é L1, L2, L3, L4, C1, C2, C3, C4 (veja o desenho do seu modelo).</li><li>No Tinkercad existe o teclado 4×4 e o LED RGB; as ligações são as mesmas.</li></ul></div>
+  </div>
+  <div class="panel"><h3>📍 Ligações</h3><div class="tablewrap"><table><thead><tr><th>Peça</th><th>Onde liga</th><th>Observação</th></tr></thead><tbody><tr><td>Teclado: linhas L1 a L4</td><td>pinos 2, 3, 4, 5</td><td class="muted"></td></tr><tr><td>Teclado: colunas C1 a C4</td><td>pinos 6, 7, 8, 9</td><td class="muted"></td></tr><tr><td>LED verde (bit 0)</td><td>pino 13</td><td class="muted">300 Ω ao GND</td></tr><tr><td>LED amarelo (bit 1)</td><td>pino 12</td><td class="muted">300 Ω ao GND</td></tr><tr><td>LED vermelho (bit 2)</td><td>pino 11</td><td class="muted">300 Ω ao GND</td></tr><tr><td>LED azul (bit 3)</td><td>pino 10</td><td class="muted">300 Ω ao GND</td></tr><tr><td>LED RGB: vermelho, verde, azul</td><td>A0, A1, A2</td><td class="muted">300 Ω em cada cor; pino longo no GND (fases 2 e 3)</td></tr></tbody></table></div></div>
+  <div class="panel"><h3>✅ Checklist de montagem <span class="pill xp">10 XP</span></h3><div class="chal" id="ch1"></div></div>
+</section>
+
+<section class="etapa" id="e2">
+  <div class="etapa-head"><div class="tag">Missão 2 · Fase 1</div><h2>⌨️ Teclado, hexadecimal e complemento de dois</h2><p>Ler o teclado por varredura e mostrar cada tecla como número de 4 bits: nos LEDs, em hexadecimal, binário, decimal sem sinal e decimal com sinal (complemento de dois).</p></div>
+  <div class="panel"><div class="chal" id="ch2"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 1 <span class="mono">ula1_teclado_hex.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c1">Copiar código</button><button class="btn dl" type="button" data-t="c1" data-f="ula1_teclado_hex.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c1">/*
+  MINI-ULA DE 4 BITS - FASE 1: teclado matricial e numeros hexadecimais
+
+  Um teclado 4x4 tem 16 teclas = 16 valores = 1 digito HEXADECIMAL (4 bits).
+    Teclas 0-9 -&gt; 0 a 9 | A,B,C,D -&gt; 10 a 13 | * -&gt; 14 (E) | # -&gt; 15 (F)
+
+  Como o teclado funciona (varredura/multiplexacao):
+    4 linhas (saidas) + 4 colunas (entradas com pull-up) = 8 fios para 16 teclas.
+    O Arduino poe UMA linha em LOW de cada vez e olha qual coluna caiu para LOW.
+
+  Ligacoes:
+    Linhas do teclado  -&gt; pinos 2, 3, 4, 5
+    Colunas do teclado -&gt; pinos 6, 7, 8, 9
+    LEDs (cada um com resistor de 300 ohms para o GND):
+      bit 0 = LED verde no pino 13   bit 1 = LED amarelo no pino 12
+      bit 2 = LED vermelho no pino 11  bit 3 = LED azul no pino 10
+*/
+const uint8_t LINHAS[4]  = {2, 3, 4, 5};
+const uint8_t COLUNAS[4] = {6, 7, 8, 9};
+const uint8_t LEDS[4]    = {13, 12, 11, 10};   // bit 0 ... bit 3
+const char TECLAS[4][4]  = {
+  {&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;A&#x27;},
+  {&#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;, &#x27;B&#x27;},
+  {&#x27;7&#x27;, &#x27;8&#x27;, &#x27;9&#x27;, &#x27;C&#x27;},
+  {&#x27;*&#x27;, &#x27;0&#x27;, &#x27;#&#x27;, &#x27;D&#x27;}
+};
+
+void iniciarTeclado() {
+  for (uint8_t r = 0; r &lt; 4; r++) { pinMode(LINHAS[r], OUTPUT); digitalWrite(LINHAS[r], HIGH); }
+  for (uint8_t c = 0; c &lt; 4; c++) pinMode(COLUNAS[c], INPUT_PULLUP);
+}
+
+// Varredura: devolve a tecla pressionada ou 0
+char lerTecla() {
+  for (uint8_t r = 0; r &lt; 4; r++) {
+    digitalWrite(LINHAS[r], LOW);
+    for (uint8_t c = 0; c &lt; 4; c++) {
+      if (digitalRead(COLUNAS[c]) == LOW) {
+        digitalWrite(LINHAS[r], HIGH);
+        return TECLAS[r][c];
+      }
+    }
+    digitalWrite(LINHAS[r], HIGH);
+  }
+  return 0;
+}
+
+// Espera apertar, espera soltar (anti-repique) e devolve a tecla
+char esperarTecla() {
+  char t;
+  while ((t = lerTecla()) == 0) { }
+  delay(30);
+  while (lerTecla() != 0) { }
+  delay(30);
+  return t;
+}
+
+int8_t valorHex(char t) {
+  if (t &gt;= &#x27;0&#x27; &amp;&amp; t &lt;= &#x27;9&#x27;) return t - &#x27;0&#x27;;
+  if (t &gt;= &#x27;A&#x27; &amp;&amp; t &lt;= &#x27;D&#x27;) return 10 + (t - &#x27;A&#x27;);
+  if (t == &#x27;*&#x27;) return 14;
+  if (t == &#x27;#&#x27;) return 15;
+  return -1;
+}
+
+void mostrar4bits(uint8_t v) {
+  for (uint8_t b = 0; b &lt; 4; b++) digitalWrite(LEDS[b], (v &gt;&gt; b) &amp; 1);
+}
+
+void imprimirBinario(uint8_t v, uint8_t bits) {
+  for (int8_t i = bits - 1; i &gt;= 0; i--) Serial.print((v &gt;&gt; i) &amp; 1);
+}
+
+void setup() {
+  Serial.begin(9600);
+  iniciarTeclado();
+  for (uint8_t b = 0; b &lt; 4; b++) pinMode(LEDS[b], OUTPUT);
+  Serial.println(F(&quot;=== MINI-ULA - Fase 1: teclado hexadecimal ===&quot;));
+  Serial.println(F(&quot;Aperte uma tecla. * = E e # = F.&quot;));
+}
+
+void loop() {
+  char tecla = esperarTecla();
+  uint8_t v = valorHex(tecla);
+  mostrar4bits(v);
+
+  int8_t comSinal = (v &amp; 0b1000) ? (int8_t)v - 16 : (int8_t)v;   // complemento de dois em 4 bits
+
+  Serial.print(F(&quot;tecla &#x27;&quot;)); Serial.print(tecla);
+  Serial.print(F(&quot;&#x27; | HEX = &quot;)); Serial.print(v, HEX);
+  Serial.print(F(&quot; | BIN = &quot;)); imprimirBinario(v, 4);
+  Serial.print(F(&quot; | DEC sem sinal = &quot;)); Serial.print(v);
+  Serial.print(F(&quot; | DEC com sinal (compl. de 2) = &quot;)); Serial.println(comSinal);
+}
+</code></pre></details>
+  <div class="notehost" data-note="0"></div>
+</section>
+<section class="etapa" id="e3">
+  <div class="etapa-head"><div class="tag">Missão 3 · Fase 2</div><h2>🧮 A ULA: operações, opcodes e flags</h2><p>Montar uma “instrução” de 3 teclas (A, B, opcode) e executar a operação: ADD, SUB, AND, OR, XOR, NOT, deslocamentos. Os LEDs mostram o resultado e o RGB mostra as flags C, Z e N.</p></div>
+  <div class="panel"><div class="chal" id="ch3"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 2 <span class="mono">ula2_operacoes.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c2">Copiar código</button><button class="btn dl" type="button" data-t="c2" data-f="ula2_operacoes.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c2">/*
+  MINI-ULA DE 4 BITS - FASE 2: a Unidade Logica e Aritmetica (ULA)
+
+  Uma &quot;instrucao&quot; tem 3 teclas (como um mini codigo de maquina):
+      1a tecla = operando A    2a tecla = operando B    3a tecla = OPCODE
+  Opcodes (hexadecimal):
+      0 = A + B    1 = A - B    2 = A AND B   3 = A OR B
+      4 = A XOR B  5 = NOT A    6 = A &lt;&lt; 1    7 = A &gt;&gt; 1
+  O resultado aparece nos 4 LEDs. O LED RGB mostra os SINAIS (flags):
+      VERMELHO = C (vai-um / carry)   VERDE = Z (resultado zero)   AZUL = N (negativo)
+  A flag V (overflow, estouro com sinal) aparece no Monitor Serial.
+
+  Ligacoes: as mesmas da Fase 1, mais o LED RGB (cada cor com 300 ohms):
+      cor vermelha -&gt; A0   cor verde -&gt; A1   cor azul -&gt; A2
+      (catodo comum: pino longo no GND. Se o seu for anodo comum, mude COMUM_ANODO)
+*/
+const uint8_t LINHAS[4]  = {2, 3, 4, 5};
+const uint8_t COLUNAS[4] = {6, 7, 8, 9};
+const uint8_t LEDS[4]    = {13, 12, 11, 10};
+const uint8_t PIN_RGB[3] = {A0, A1, A2};
+const bool COMUM_ANODO   = false;
+const char TECLAS[4][4]  = {
+  {&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;A&#x27;}, {&#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;, &#x27;B&#x27;}, {&#x27;7&#x27;, &#x27;8&#x27;, &#x27;9&#x27;, &#x27;C&#x27;}, {&#x27;*&#x27;, &#x27;0&#x27;, &#x27;#&#x27;, &#x27;D&#x27;}
+};
+
+uint8_t resultado, flagC, flagZ, flagN, flagV;
+
+void iniciarTeclado() {
+  for (uint8_t r = 0; r &lt; 4; r++) { pinMode(LINHAS[r], OUTPUT); digitalWrite(LINHAS[r], HIGH); }
+  for (uint8_t c = 0; c &lt; 4; c++) pinMode(COLUNAS[c], INPUT_PULLUP);
+}
+char lerTecla() {
+  for (uint8_t r = 0; r &lt; 4; r++) {
+    digitalWrite(LINHAS[r], LOW);
+    for (uint8_t c = 0; c &lt; 4; c++) {
+      if (digitalRead(COLUNAS[c]) == LOW) { digitalWrite(LINHAS[r], HIGH); return TECLAS[r][c]; }
+    }
+    digitalWrite(LINHAS[r], HIGH);
+  }
+  return 0;
+}
+char esperarTecla() {
+  char t;
+  while ((t = lerTecla()) == 0) { }
+  delay(30);
+  while (lerTecla() != 0) { }
+  delay(30);
+  return t;
+}
+uint8_t valorHex(char t) {
+  if (t &gt;= &#x27;0&#x27; &amp;&amp; t &lt;= &#x27;9&#x27;) return t - &#x27;0&#x27;;
+  if (t &gt;= &#x27;A&#x27; &amp;&amp; t &lt;= &#x27;D&#x27;) return 10 + (t - &#x27;A&#x27;);
+  if (t == &#x27;*&#x27;) return 14;
+  return 15;
+}
+void imprimirBinario(uint8_t v, uint8_t bits) {
+  for (int8_t i = bits - 1; i &gt;= 0; i--) Serial.print((v &gt;&gt; i) &amp; 1);
+}
+void mostrarLeds(uint8_t v) {
+  for (uint8_t b = 0; b &lt; 4; b++) digitalWrite(LEDS[b], (v &gt;&gt; b) &amp; 1);
+}
+void mostrarFlags() {
+  uint8_t f[3] = {flagC, flagZ, flagN};
+  for (uint8_t i = 0; i &lt; 3; i++) digitalWrite(PIN_RGB[i], COMUM_ANODO ? !f[i] : f[i]);
+}
+
+// ---------- A ULA ----------
+void ula(uint8_t a, uint8_t b, uint8_t op) {
+  uint8_t r = 0, c = 0, v = 0;
+  switch (op) {
+    case 0: {                                   // soma
+      uint8_t s = a + b;
+      r = s &amp; 0xF; c = s &gt;&gt; 4;
+      v = (((a ^ r) &amp; (b ^ r)) &amp; 0b1000) ? 1 : 0;
+    } break;
+    case 1: {                                   // subtracao = A + (NOT B) + 1  (complemento de dois)
+      uint8_t s = a + ((~b) &amp; 0xF) + 1;
+      r = s &amp; 0xF; c = s &gt;&gt; 4;
+      v = (((a ^ b) &amp; (a ^ r)) &amp; 0b1000) ? 1 : 0;
+    } break;
+    case 2: r = a &amp; b; break;
+    case 3: r = a | b; break;
+    case 4: r = a ^ b; break;
+    case 5: r = (~a) &amp; 0xF; break;
+    case 6: c = (a &gt;&gt; 3) &amp; 1; r = (a &lt;&lt; 1) &amp; 0xF; break;
+    case 7: c = a &amp; 1;        r = a &gt;&gt; 1;         break;
+    default: r = 0; break;
+  }
+  resultado = r; flagC = c; flagV = v;
+  flagZ = (r == 0);
+  flagN = (r &gt;&gt; 3) &amp; 1;
+}
+
+const char* nomeOp(uint8_t op) {
+  const char* nomes[8] = {&quot;ADD&quot;, &quot;SUB&quot;, &quot;AND&quot;, &quot;OR&quot;, &quot;XOR&quot;, &quot;NOT A&quot;, &quot;SHL A&quot;, &quot;SHR A&quot;};
+  return op &lt; 8 ? nomes[op] : &quot;???&quot;;
+}
+
+void setup() {
+  Serial.begin(9600);
+  iniciarTeclado();
+  for (uint8_t b = 0; b &lt; 4; b++) pinMode(LEDS[b], OUTPUT);
+  for (uint8_t i = 0; i &lt; 3; i++) pinMode(PIN_RGB[i], OUTPUT);
+  Serial.println(F(&quot;=== MINI-ULA - Fase 2 ===&quot;));
+  Serial.println(F(&quot;Digite: A, B, opcode (0 ADD 1 SUB 2 AND 3 OR 4 XOR 5 NOT 6 SHL 7 SHR)&quot;));
+}
+
+void loop() {
+  Serial.println(F(&quot;--- nova instrucao ---&quot;));
+  uint8_t a = valorHex(esperarTecla());  Serial.print(F(&quot;A = &quot;));  Serial.println(a, HEX);
+  uint8_t b = valorHex(esperarTecla());  Serial.print(F(&quot;B = &quot;));  Serial.println(b, HEX);
+  uint8_t op = valorHex(esperarTecla()); Serial.print(F(&quot;opcode = &quot;)); Serial.println(op, HEX);
+
+  ula(a, b, op);
+  mostrarLeds(resultado);
+  mostrarFlags();
+
+  imprimirBinario(a, 4); Serial.print(&#x27; &#x27;); Serial.print(nomeOp(op)); Serial.print(&#x27; &#x27;);
+  imprimirBinario(b, 4); Serial.print(F(&quot; = &quot;)); imprimirBinario(resultado, 4);
+  Serial.print(F(&quot;  (HEX &quot;)); Serial.print(resultado, HEX); Serial.println(&#x27;)&#x27;);
+  Serial.print(F(&quot;flags: C=&quot;)); Serial.print(flagC);
+  Serial.print(F(&quot; Z=&quot;));       Serial.print(flagZ);
+  Serial.print(F(&quot; N=&quot;));       Serial.print(flagN);
+  Serial.print(F(&quot; V=&quot;));       Serial.println(flagV);
+}
+</code></pre></details>
+  <div class="notehost" data-note="1"></div>
+</section>
+<section class="etapa" id="e4">
+  <div class="etapa-head"><div class="tag">Missão 4 · Fase 3</div><h2>🔧 ULA só com portas lógicas e acumulador</h2><p>Trocar a soma “pronta” por um somador/subtrator de 4 bits montado com portas XOR, AND e OR (ripple carry), validar tudo com um autoteste de 512 operações e usar um registrador acumulador (ACC).</p></div>
+  <div class="panel"><div class="chal" id="ch4"></div></div>
+  <details class="codebox"><summary>💻 Código da fase 3 <span class="mono">ula3_portas_acumulador.ino</span></summary>
+    <div class="row" style="margin-bottom:10px"><button class="btn cp" type="button" data-t="c3">Copiar código</button><button class="btn dl" type="button" data-t="c3" data-f="ula3_portas_acumulador.ino">Baixar .ino</button><span class="muted small">Cole no Tinkercad (Código → Texto) ou na IDE do Arduino.</span></div>
+    <pre><code id="c3">/*
+  MINI-ULA DE 4 BITS - FASE 3: ULA feita so com portas logicas + acumulador
+
+  Novidades:
+    - A soma e a subtracao usam um SOMADOR/SUBTRATOR montado bit a bit com
+      portas logicas (XOR, AND, OR), igual ao hardware de verdade.
+      Subtracao: troca B por NOT B (XOR com 1) e entra com carry-in = 1.
+    - Comando &#x27;t&#x27; no Monitor Serial: AUTOTESTE com as 256 combinacoes de A e B.
+    - Comando &#x27;a&#x27;: liga/desliga o MODO ACUMULADOR. Nesse modo a ULA guarda o
+      resultado no registrador ACC e a proxima instrucao usa ACC como operando A
+      (so digite B e o opcode). Comando &#x27;z&#x27;: zera o ACC.
+
+  Ligacoes: as mesmas da Fase 2.
+*/
+const uint8_t LINHAS[4]  = {2, 3, 4, 5};
+const uint8_t COLUNAS[4] = {6, 7, 8, 9};
+const uint8_t LEDS[4]    = {13, 12, 11, 10};
+const uint8_t PIN_RGB[3] = {A0, A1, A2};
+const bool COMUM_ANODO   = false;
+const char TECLAS[4][4]  = {
+  {&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;A&#x27;}, {&#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;, &#x27;B&#x27;}, {&#x27;7&#x27;, &#x27;8&#x27;, &#x27;9&#x27;, &#x27;C&#x27;}, {&#x27;*&#x27;, &#x27;0&#x27;, &#x27;#&#x27;, &#x27;D&#x27;}
+};
+
+uint8_t resultado, flagC, flagZ, flagN, flagV;
+uint8_t acc = 0;
+bool modoAcumulador = false;
+
+void iniciarTeclado() {
+  for (uint8_t r = 0; r &lt; 4; r++) { pinMode(LINHAS[r], OUTPUT); digitalWrite(LINHAS[r], HIGH); }
+  for (uint8_t c = 0; c &lt; 4; c++) pinMode(COLUNAS[c], INPUT_PULLUP);
+}
+char lerTecla() {
+  for (uint8_t r = 0; r &lt; 4; r++) {
+    digitalWrite(LINHAS[r], LOW);
+    for (uint8_t c = 0; c &lt; 4; c++) {
+      if (digitalRead(COLUNAS[c]) == LOW) { digitalWrite(LINHAS[r], HIGH); return TECLAS[r][c]; }
+    }
+    digitalWrite(LINHAS[r], HIGH);
+  }
+  return 0;
+}
+// Igual a Fase 2, mas tambem atende comandos do Serial enquanto espera
+char esperarTecla() {
+  char t;
+  while ((t = lerTecla()) == 0) {
+    if (Serial.available()) return 0;
+  }
+  delay(30);
+  while (lerTecla() != 0) { }
+  delay(30);
+  return t;
+}
+uint8_t valorHex(char t) {
+  if (t &gt;= &#x27;0&#x27; &amp;&amp; t &lt;= &#x27;9&#x27;) return t - &#x27;0&#x27;;
+  if (t &gt;= &#x27;A&#x27; &amp;&amp; t &lt;= &#x27;D&#x27;) return 10 + (t - &#x27;A&#x27;);
+  if (t == &#x27;*&#x27;) return 14;
+  return 15;
+}
+void imprimirBinario(uint8_t v, uint8_t bits) {
+  for (int8_t i = bits - 1; i &gt;= 0; i--) Serial.print((v &gt;&gt; i) &amp; 1);
+}
+void mostrarLeds(uint8_t v) {
+  for (uint8_t b = 0; b &lt; 4; b++) digitalWrite(LEDS[b], (v &gt;&gt; b) &amp; 1);
+}
+void mostrarFlags() {
+  uint8_t f[3] = {flagC, flagZ, flagN};
+  for (uint8_t i = 0; i &lt; 3; i++) digitalWrite(PIN_RGB[i], COMUM_ANODO ? !f[i] : f[i]);
+}
+
+// ---------- Somador completo de 1 bit ----------
+void somaCompleta(uint8_t a, uint8_t b, uint8_t cin, uint8_t &amp;s, uint8_t &amp;cout) {
+  s    = a ^ b ^ cin;
+  cout = (a &amp; b) | (cin &amp; (a ^ b));
+}
+
+// ---------- Somador/Subtrator de 4 bits (ripple carry) ----------
+// sub = 0 -&gt; A + B      sub = 1 -&gt; A + (B XOR 1111) + 1  = A - B
+uint8_t somadorSubtrator(uint8_t a, uint8_t b, uint8_t sub, uint8_t &amp;carryFinal, uint8_t &amp;overflow) {
+  uint8_t carry = sub, r = 0, carryAntesDoUltimo = 0;
+  for (uint8_t i = 0; i &lt; 4; i++) {
+    uint8_t bi = ((b &gt;&gt; i) &amp; 1) ^ sub;          // XOR com &quot;sub&quot; inverte B na subtracao
+    uint8_t s;
+    if (i == 3) carryAntesDoUltimo = carry;
+    somaCompleta((a &gt;&gt; i) &amp; 1, bi, carry, s, carry);
+    r |= s &lt;&lt; i;
+  }
+  carryFinal = carry;
+  overflow = carry ^ carryAntesDoUltimo;        // overflow = carry que entra XOR carry que sai do bit de sinal
+  return r;
+}
+
+void ula(uint8_t a, uint8_t b, uint8_t op) {
+  uint8_t r = 0, c = 0, v = 0;
+  switch (op) {
+    case 0: r = somadorSubtrator(a, b, 0, c, v); break;
+    case 1: r = somadorSubtrator(a, b, 1, c, v); break;
+    case 2: r = a &amp; b; break;
+    case 3: r = a | b; break;
+    case 4: r = a ^ b; break;
+    case 5: r = (~a) &amp; 0xF; break;
+    case 6: c = (a &gt;&gt; 3) &amp; 1; r = (a &lt;&lt; 1) &amp; 0xF; break;
+    case 7: c = a &amp; 1;        r = a &gt;&gt; 1;         break;
+    default: r = 0; break;
+  }
+  resultado = r; flagC = c; flagV = v;
+  flagZ = (r == 0);
+  flagN = (r &gt;&gt; 3) &amp; 1;
+}
+
+// Referencia &quot;de verdade&quot; (aritmetica do C) para conferir o hardware simulado
+uint8_t referenciaSoma(uint8_t a, uint8_t b) { return (a + b) &amp; 0xF; }
+uint8_t referenciaSub(uint8_t a, uint8_t b)  { return (a - b) &amp; 0xF; }
+
+void autoteste() {
+  uint16_t erros = 0;
+  for (uint8_t a = 0; a &lt; 16; a++) {
+    for (uint8_t b = 0; b &lt; 16; b++) {
+      ula(a, b, 0); if (resultado != referenciaSoma(a, b)) erros++;
+      ula(a, b, 1); if (resultado != referenciaSub(a, b))  erros++;
+    }
+  }
+  Serial.print(F(&quot;AUTOTESTE: 512 operacoes, erros = &quot;));
+  Serial.println(erros);
+  if (erros == 0) Serial.println(F(&quot;A ULA de portas logicas esta CORRETA!&quot;));
+}
+
+void tratarComandosSerial() {
+  while (Serial.available()) {
+    char c = Serial.read();
+    if (c == &#x27;t&#x27;) autoteste();
+    if (c == &#x27;a&#x27;) { modoAcumulador = !modoAcumulador; Serial.print(F(&quot;&gt;&gt; modo acumulador: &quot;)); Serial.println(modoAcumulador ? F(&quot;LIGADO&quot;) : F(&quot;desligado&quot;)); }
+    if (c == &#x27;z&#x27;) { acc = 0; Serial.println(F(&quot;&gt;&gt; ACC = 0&quot;)); }
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  iniciarTeclado();
+  for (uint8_t b = 0; b &lt; 4; b++) pinMode(LEDS[b], OUTPUT);
+  for (uint8_t i = 0; i &lt; 3; i++) pinMode(PIN_RGB[i], OUTPUT);
+  Serial.println(F(&quot;=== MINI-ULA - Fase 3 ===&quot;));
+  Serial.println(F(&quot;Serial: t = autoteste | a = modo acumulador | z = zera ACC&quot;));
+}
+
+void loop() {
+  uint8_t a, b, op;
+  char t;
+
+  if (modoAcumulador) {
+    a = acc;
+    Serial.print(F(&quot;ACC = &quot;)); Serial.println(a, HEX);
+  } else {
+    t = esperarTecla(); if (t == 0) { tratarComandosSerial(); return; }
+    a = valorHex(t); Serial.print(F(&quot;A = &quot;)); Serial.println(a, HEX);
+  }
+  t = esperarTecla(); if (t == 0) { tratarComandosSerial(); return; }
+  b = valorHex(t); Serial.print(F(&quot;B = &quot;)); Serial.println(b, HEX);
+  t = esperarTecla(); if (t == 0) { tratarComandosSerial(); return; }
+  op = valorHex(t); Serial.print(F(&quot;opcode = &quot;)); Serial.println(op, HEX);
+
+  ula(a, b, op);
+  mostrarLeds(resultado);
+  mostrarFlags();
+  if (modoAcumulador) acc = resultado;       // o resultado volta para o registrador ACC
+
+  imprimirBinario(a, 4); Serial.print(F(&quot; op&quot;)); Serial.print(op, HEX); Serial.print(&#x27; &#x27;);
+  imprimirBinario(b, 4); Serial.print(F(&quot; = &quot;)); imprimirBinario(resultado, 4);
+  Serial.print(F(&quot; | C=&quot;)); Serial.print(flagC);
+  Serial.print(F(&quot; Z=&quot;));   Serial.print(flagZ);
+  Serial.print(F(&quot; N=&quot;));   Serial.print(flagN);
+  Serial.print(F(&quot; V=&quot;));   Serial.println(flagV);
+}
+</code></pre></details>
+  <div class="notehost" data-note="2"></div>
+</section>
+<section class="etapa" id="e5">
+  <div class="etapa-head"><div class="tag">Missão 5 · Chefão final</div><h2>🏆 Entrega</h2><p>Mostre o projeto funcionando e entregue o relatório com as respostas das perguntas de cada fase, as tabelas feitas à mão, fotos ou prints e a conclusão.</p></div>
+  <div class="panel"><h3>🏁 Entrega <span class="pill xp">10 XP</span></h3><div class="chal" id="ch5"></div>
+    <p class="muted small">Sugestão de avaliação (10,0): montagem e funcionamento 3,0 · medições e tabelas 3,0 · respostas do relatório 3,0 · demonstração oral 1,0.</p></div>
+  <div class="player" id="pcard"><div class="big">Seu progresso</div><div id="pout" class="muted">Complete missões para ver o seu cartão.</div><div class="row" style="justify-content:center"><button class="btn" id="pgo" type="button">Gerar meu cartão</button></div></div>
+</section>
+
+<section class="etapa" id="caderno">
+  <div class="etapa-head"><div class="tag">Folha final</div><h2>📒 Tudo para o caderno</h2><p>Todas as caixas juntas. Copie à mão, copie o texto ou imprima.</p></div>
+  <div class="row"><button class="btn" id="noteprint" type="button">Imprimir a folha</button></div>
+  <div id="noteall" style="display:grid;gap:12px"></div>
+</section>
+
+<details class="prof" style="margin-top:36px"><summary>👩‍🏫 Notas para o professor</summary><ul style="padding-left:20px;display:grid;gap:6px"><li>Pelas notas há 4 teclados 4×4: até 4 grupos fazem o projeto ao mesmo tempo (os outros podem montar o Radar ou as portas lógicas).</li><li>O teclado de membrana tem 8 pinos; confirme a ordem (L1 a L4, C1 a C4) em cada modelo.</li><li>Os 3 sketches foram compilados para o Uno. As funções do somador e as flags foram testadas por computador com as 256 combinações.</li><li>Sugestão de nota: fase 1 (digitação e conversões), fase 2 (ULA funcionando) e fase 3 (autoteste + acumulador).</li></ul></details>
+
+<footer class="outros"><b>Outros projetos</b><div class="links"><a href="projetos_arquitetura.html">📚 Catálogo de projetos</a><a href="projeto_cpu_didatica.html">🖥️ CPU didática: busca, decodificação e execução</a><a href="projeto_telegrafo_optico.html">💡 Telégrafo óptico: uma UART feita de luz</a><a href="projeto_portas_transistores.html">🔌 Laboratório de portas lógicas com transistores</a><a href="projeto_cofre_rfid.html">🔐 Cofre RFID com arquivo na EEPROM</a><a href="projeto_esp32_paralelo.html">⚡ ESP32: dois núcleos, speedup e condição de corrida</a></div></footer>
+</div>
+<script type="application/json" id="pdata">{"montagem": ["Liguei as 4 linhas e as 4 colunas do teclado aos pinos 2 a 9", "Montei os 4 LEDs com resistor, do bit 0 (pino 13) ao bit 3 (pino 10)", "Montei o LED RGB nos pinos A0, A1 e A2 (para as fases 2 e 3)", "Carreguei a Fase 1 e abri o Monitor Serial em 9600", "Apertei uma tecla e vi o LED e a linha do Monitor Serial"], "icons": ["⌨️", "🧮", "🔧"], "fases": [{"obs": ["Aperte 0, 5, 8, F (a tecla #) e compare os LEDs com o binário no Monitor Serial.", "Aperte 7 e depois 8: o que muda no valor “com sinal”?", "Descubra qual tecla vale E e qual vale F."], "quiz": [{"q": "Por que 8 fios bastam para 16 teclas?", "o": ["Cada tecla usa meio fio", "As teclas ficam em linhas e colunas e o Arduino varre uma linha de cada vez", "O teclado usa Wi-Fi", "Só 8 teclas funcionam"], "a": 1, "e": "Linhas × colunas: 4 + 4 fios formam 4 × 4 = 16 cruzamentos."}, {"q": "Em 4 bits com complemento de dois, 1000 vale:", "o": ["8", "−8", "−1", "0"], "a": 1, "e": "O bit mais à esquerda é o sinal. A faixa vai de −8 a +7."}], "nota": {"t": "Hexadecimal e complemento de dois", "l": ["Hexadecimal: 0 a 9 e A a F (A=10 … F=15). 1 dígito hex = 4 bits.", "Tabela: 0=0000 5=0101 8=1000 A=1010 F=1111.", "4 bits sem sinal: 0 a 15. Com sinal (complemento de dois): −8 a +7.", "Complemento de dois: inverta os bits e some 1 (0101 → 1010 + 1 = 1011 = −5).", "Varredura do teclado: 4 linhas (saída) + 4 colunas (entrada com pull-up) = 16 teclas."]}, "rel": "Converta à mão 0xB, 0x6 e 0xE para binário e para decimal (sem sinal e com sinal). Mostre que o Monitor Serial concorda.", "des": "Faça o programa mostrar também o valor em octal e acender o LED azul se o número for negativo (com sinal)."}, {"obs": ["Faça 3 + 4 (opcode 0), 7 + 1 e 15 + 1 e observe C, Z, N e V.", "Faça 5 − 5 (opcode 1): qual flag acende?", "Teste AND, OR e XOR com os mesmos operandos e confira a tabela-verdade."], "quiz": [{"q": "Como a ULA calcula A − B usando um somador?", "o": ["Inverte A e soma 1", "Soma A com o complemento de dois de B (NOT B + 1)", "Multiplica por −1", "Troca os LEDs"], "a": 1, "e": "A − B = A + (NOT B) + 1. Não é preciso um circuito de subtração separado."}, {"q": "A flag V (overflow) indica que:", "o": ["O resultado é zero", "O resultado não cabe em 4 bits com sinal (ex.: 7 + 1)", "Saiu um vai-um do bit 3", "Uma tecla repetiu"], "a": 1, "e": "Overflow é erro de faixa COM sinal; o carry (C) é o vai-um para números SEM sinal."}], "nota": {"t": "A ULA e as flags", "l": ["ULA = Unidade Lógica e Aritmética: recebe A, B e o opcode e devolve o resultado e as flags.", "Opcodes: 0 ADD, 1 SUB, 2 AND, 3 OR, 4 XOR, 5 NOT, 6 SHL, 7 SHR.", "Flags: C (vai-um), Z (resultado zero), N (negativo), V (overflow com sinal).", "Subtração: A − B = A + (NOT B) + 1.", "Deslocar à esquerda multiplica por 2; à direita divide por 2 (inteiro)."]}, "rel": "Com 4 bits, calcule à mão 7 + 1 e 8 + 8. Qual sinaliza overflow e qual sinaliza carry? Explique a diferença com suas palavras.", "des": "Acrescente o opcode 8 (INC: A + 1) e o opcode 9 (DEC: A − 1) à ULA."}, {"obs": ["No Monitor Serial envie t e leia o resultado do autoteste.", "Envie a para ligar o modo acumulador e faça 3 + 2, depois + 4, depois + 1 (digite só B e o opcode).", "Envie z para zerar o ACC e confira o painel de LEDs."], "quiz": [{"q": "O XOR de cada bit de B com 1 serve para:", "o": ["Inverter B (preparar a subtração)", "Dobrar B", "Apagar B", "Contar bits"], "a": 0, "e": "Com “sub = 1”, cada bit de B é invertido e o carry de entrada vale 1: A + NOT B + 1."}, {"q": "Para que serve o autoteste de 512 operações?", "o": ["Aquecer a placa", "Comparar o hardware simulado com a aritmética de referência e achar erros", "Gravar na EEPROM", "Trocar o teclado"], "a": 1, "e": "Testar todas as combinações (16 × 16) é possível porque o espaço é pequeno."}], "nota": {"t": "Somador e acumulador", "l": ["Somador completo: soma = A XOR B XOR Cin; Cout = A·B + Cin·(A XOR B).", "Ripple carry: o “vai-um” passa de um somador para o seguinte.", "Overflow = carry que entra no bit de sinal XOR carry que sai dele.", "Acumulador (ACC): registrador que guarda o resultado e serve de operando A na próxima conta.", "Teste exaustivo: conferir todas as entradas possíveis (16 × 16 = 256)."]}, "rel": "Desenhe o somador completo com portas lógicas e mostre como 4 deles formam o somador de 4 bits. Quanto tempo o “vai-um” leva a atravessar os 4 estágios (atraso de propagação)?", "des": "Implemente a flag de “Paridade” (quantidade de bits 1 do resultado) e mostre no LED RGB (roxo = paridade ímpar)."}]}</script>
+<script>
+(function(){
+const P=JSON.parse(document.getElementById('pdata').textContent);
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function el(t,a,k){const e=document.createElement(t);for(const x in (a||{})){if(x==='text')e.textContent=a[x];else if(x==='html')e.innerHTML=a[x];else e.setAttribute(x,a[x]);}(k||[]).forEach(c=>e.appendChild(c));return e;}
+function copyText(t,btn,label){const done=()=>{if(btn){btn.textContent='Copiado!';setTimeout(()=>btn.textContent=label,1400);}};
+ function fb(){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');done();}catch(e){}a.remove();}
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,fb);else fb();}
+const CHIP='<svg viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Chip, o mascote"><g stroke="var(--ink)" stroke-width="3" stroke-linecap="round"><path d="M18 6v8M32 6v8M46 6v8M18 50v8M32 50v8M46 50v8M6 18h8M6 32h8M6 46h8M50 18h8M50 32h8M50 46h8"/></g><rect x="12" y="12" width="40" height="40" rx="8" fill="var(--accent)" stroke="var(--ink)" stroke-width="2.5"/><circle cx="25" cy="30" r="5.5" fill="#fff" stroke="var(--ink)" stroke-width="2"/><circle cx="39" cy="30" r="5.5" fill="#fff" stroke="var(--ink)" stroke-width="2"/><circle cx="26" cy="31" r="2.3" fill="#101936"/><circle cx="40" cy="31" r="2.3" fill="#101936"/><path d="M24 41q8 6 16 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>';
+$('#byteHero').innerHTML=CHIP;
+$$('.bytebox').forEach(b=>{const w=el('div');w.innerHTML=CHIP.replace('width="64" height="64"','width="48" height="48"');b.appendChild(w);b.appendChild(el('div',{class:'bubble',text:b.getAttribute('data-tip')}));});
+const links=$$('#navlist a'),secs=links.map(a=>$(a.getAttribute('href')));
+function onScroll(){let c=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<160)c=i;});links.forEach((a,i)=>a.classList.toggle('on',i===c&&scrollY>200));}
+addEventListener('scroll',onScroll,{passive:true});
+
+/* XP */
+const nF=P.fases.length;
+const ETAPAS=[{e:'🔌',n:'Montagem',xp:P.montagem.length*2}];
+P.fases.forEach((f,i)=>ETAPAS.push({e:P.icons[i],n:'Fase '+(i+1),xp:f.obs.length+6+4+3}));
+ETAPAS.push({e:'🏆',n:'Chefão',xp:10});
+const TOTAL=ETAPAS.reduce((a,x)=>a+x.xp,0);
+ETAPAS.forEach((x,i)=>$('#mapa').appendChild(el('a',{href:'#e'+(i+1)},[el('span',{class:'em',text:x.e}),el('b',{text:(i+1)+'. '+x.n}),el('span',{text:x.xp+' XP'})])));
+const BAD=ETAPAS.map((x,i)=>['Eletricista','Fase 1 concluída','Fase 2 concluída','Fase 3 concluída','Fase 4 concluída'][i]||'');
+BAD[0]='🔌 Eletricista';for(let i=0;i<nF;i++)BAD[i+1]=P.icons[i]+' Fase '+(i+1)+' concluída';BAD[nF+1]='🏆 Arquiteto de Computadores';
+const LEVELS=[{n:'Estagiário',e:'🔌',min:0},{n:'Montador',e:'🔧',min:Math.round(TOTAL*.15)},{n:'Programador de Bits',e:'🧮',min:Math.round(TOTAL*.4)},{n:'Arquiteto',e:'🧠',min:Math.round(TOTAL*.68)},{n:'Mestre dos Bits',e:'🏆',min:Math.round(TOTAL*.9)}];
+const state={xp:0,done:{},ex:ETAPAS.map(()=>0),badges:ETAPAS.map(()=>false)};
+function lv(x){let l=0;LEVELS.forEach((v,i)=>{if(x>=v.min)l=i;});return l;}
+function toast(m,big){const t=el('div',{class:'toast'+(big?' big':''),text:m});$('#toasts').appendChild(t);setTimeout(()=>t.remove(),big?3400:2000);}
+function hud(){const i=lv(state.xp),L=LEVELS[i],N=LEVELS[i+1];$('#lvl').textContent=L.e+' Nível '+(i+1)+' · '+L.n;
+ $('#xpfill').style.width=(N?Math.round(100*(state.xp-L.min)/(N.min-L.min)):100)+'%';
+ $('#xptxt').textContent='⭐ '+state.xp+' / '+TOTAL+' XP'+(N?' · faltam '+(N.min-state.xp)+' para '+N.n:' · nível máximo!');
+ const b=$('#badges');b.innerHTML='';BAD.forEach((x,k)=>b.appendChild(el('span',{class:'badge'+(state.badges[k]?' on':''),title:x,text:x.split(' ')[0]})));}
+function award(key,pts,et,msg){if(state.done[key])return false;state.done[key]=true;const b=lv(state.xp);state.xp+=pts;state.ex[et]+=pts;toast('+'+pts+' XP'+(msg?' · '+msg:''));
+ if(lv(state.xp)>b)toast('🎉 Nível '+(lv(state.xp)+1)+': '+LEVELS[lv(state.xp)].n+'!',true);
+ if(!state.badges[et]&&state.ex[et]>=Math.ceil(ETAPAS[et].xp*.7)){state.badges[et]=true;toast('🏅 Medalha: '+BAD[et],true);}hud();return true;}
+hud();
+
+function check(box,key,pts,et,text){const id='k_'+key;const i=el('input',{type:'checkbox',id});i.onchange=()=>{if(i.checked)award(key,pts,et,'feito!');};box.appendChild(el('label',{class:'chk',for:id},[i,el('span',{text:text+' ('+pts+' XP)'})]));}
+function quiz(box,key,pts,et,items){items.forEach((q,qi)=>{const w=el('div',{class:'c'});w.appendChild(el('h4',{text:'❓ '+q.q}));const o=el('div',{class:'opts'});const fb=el('div',{class:'score'});
+ q.o.forEach((t,k)=>{const b=el('button',{class:'opt',type:'button',text:t});b.onclick=()=>{if(w.dataset.d)return;if(k===q.a){w.dataset.d=1;b.classList.add('good');fb.className='score ok';fb.textContent='✅ '+q.e;award(key+qi,pts,et,'acertou!');}else{b.classList.add('bad');fb.className='score no';fb.textContent='Tente de novo.';}};o.appendChild(b);});
+ w.appendChild(o);w.appendChild(fb);box.appendChild(w);});}
+
+/* Montagem */
+const m=$('#ch1');P.montagem.forEach((t,i)=>check(m,'m_'+i,2,0,t));
+
+/* Fases */
+P.fases.forEach((f,i)=>{
+  const et=i+1,box=$('#ch'+(i+2));
+  const o=el('div',{class:'c'});o.appendChild(el('h4',{html:'👀 O que observar <span class="pill xp">'+f.obs.length+' XP</span>'}));f.obs.forEach((t,k)=>check(o,'o'+i+'_'+k,1,et,t));box.appendChild(o);
+  const qb=el('div',{class:'c'});qb.appendChild(el('h4',{html:'🧠 Quiz <span class="pill xp">6 XP</span>'}));const qq=el('div',{class:'chal'});qb.appendChild(qq);quiz(qq,'q'+i+'_',3,et,f.quiz);box.appendChild(qb);
+  const r=el('div',{class:'c'});r.appendChild(el('h4',{html:'📝 Pergunta do relatório <span class="pill xp">4 XP</span>'}));r.appendChild(el('p',{text:f.rel}));
+  const ta=el('textarea',{'aria-label':'Resposta da fase '+(i+1),placeholder:'Escreva a sua resposta (mínimo de 40 letras)...'});const fb=el('div',{class:'score'});const go=el('button',{class:'btn',type:'button',text:'Registrar resposta'});
+  go.onclick=()=>{if(ta.value.trim().length>=40){award('r'+i,4,et,'resposta registrada');fb.className='score ok';fb.textContent='✅ Anote também no caderno ou no relatório.';}else{fb.className='score no';fb.textContent='Escreva um pouco mais ('+ta.value.trim().length+'/40).';}};
+  r.appendChild(ta);r.appendChild(el('div',{class:'row'},[go,fb]));box.appendChild(r);
+  const d=el('div',{class:'c'});d.appendChild(el('h4',{html:'🏅 Desafio extra <span class="pill xp">3 XP</span>'}));d.appendChild(el('p',{text:f.des}));check(d,'d'+i,3,et,'Fiz o desafio extra e mostrei ao professor');box.appendChild(d);
+});
+
+/* Final */
+const c7=$('#ch'+(nF+2));
+check(c7,'fin_proj',5,nF+1,'O meu projeto está funcionando e eu o demonstrei ao professor');
+check(c7,'fin_rel',5,nF+1,'O relatório está pronto, com tabelas, respostas e desenhos');
+
+/* Cadernos */
+const NOTES=P.fases.map(f=>f.nota);
+function noteText(i){const N=NOTES[i];return N.t+'\n'+N.l.map(x=>'• '+x).join('\n');}
+function noteEl(i,bar){const N=NOTES[i];const n=el('div',{class:'note'});n.appendChild(el('h4',{text:'📝 Para o caderno: '+N.t}));n.appendChild(el('ul',{},N.l.map(x=>el('li',{text:x}))));
+ if(bar){const b=el('button',{class:'btn sec',type:'button',text:'Copiar texto'});b.onclick=()=>copyText(noteText(i),b,'Copiar texto');n.appendChild(el('div',{class:'bar'},[b,el('span',{class:'muted small',text:'ou copie à mão no caderno'})]));}return n;}
+$$('.notehost').forEach(h=>h.appendChild(noteEl(+h.dataset.note,true)));
+NOTES.forEach((n,i)=>$('#noteall').appendChild(noteEl(i,false)));
+$('#noteprint').onclick=()=>{document.body.classList.add('pc');window.print();};
+addEventListener('afterprint',()=>document.body.classList.remove('pc'));
+
+/* código */
+$$('.cp').forEach(b=>b.addEventListener('click',()=>copyText(document.getElementById(b.dataset.t).textContent,b,'Copiar código')));
+$$('.dl').forEach(b=>b.addEventListener('click',()=>{const blob=new Blob([document.getElementById(b.dataset.t).textContent],{type:'text/plain;charset=utf-8'});
+ const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=b.dataset.f;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);}));
+
+$('#pgo').onclick=()=>{const l=LEVELS[lv(state.xp)];const mm=BAD.filter((b,i)=>state.badges[i]);
+ $('#pout').innerHTML='<b>'+l.e+' '+l.n+'</b> · '+state.xp+' / '+TOTAL+' XP<br>Medalhas: '+(mm.length?mm.join(' · '):'ainda nenhuma')+'<br><span class="small">Tire um print e entregue com o relatório.</span>';};
+})();
+</script>
+</body>
+</html>
