@@ -184,6 +184,51 @@ code{background:rgba(79,179,255,.16);color:#CFE6FF}
 .top{border-bottom:1px solid var(--line)}
 .traces{color:var(--line);opacity:.8}
 footer{border-top:1.5px solid var(--line)}
+
+/* dinâmica */
+.sim{background:rgba(11,19,52,.78);border:1px solid var(--line);border-radius:18px;padding:clamp(14px,3vw,26px);display:grid;gap:18px;box-shadow:0 0 0 1px rgba(79,179,255,.06),0 10px 30px rgba(0,0,0,.28)}
+.sim-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(14px,3vw,28px);align-items:start}
+@media (max-width:760px){.sim-grid{grid-template-columns:1fr}}
+.sim svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:12px}
+.sim .stage{font:700 .78rem var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.sg .gh{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4;opacity:.45;transition:all .25s}
+.sg.on .gh{fill:rgba(79,179,255,.32);stroke:var(--accent);stroke-dasharray:none;opacity:1}
+.sg.gpu.on .gh{fill:rgba(139,92,246,.4);stroke:var(--violet)}
+.sg.cooler.on .gh{fill:rgba(34,211,238,.22);stroke:var(--cyan)}
+.sg.psu.on .gh{fill:rgba(255,201,60,.22);stroke:var(--copper)}
+.sg text{font:600 9px var(--f-mono);fill:var(--muted);pointer-events:none}
+.sg.on text{fill:var(--ink)}
+.sg .cab{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:5 5;opacity:.3}
+.sg.on .cab{stroke-dasharray:none;opacity:1}
+.sg .screw{fill:var(--bg);stroke:var(--muted);stroke-width:1.5}
+.sg.on .screw{fill:var(--ok);stroke:var(--ok)}
+.slot{fill:none;stroke:var(--line);stroke-width:1.5}
+#simcase{fill:none;stroke:var(--line);stroke-width:2.5;stroke-dasharray:6 5}
+#simcase.solid{stroke:var(--accent);stroke-dasharray:none}
+.tray{display:flex;flex-wrap:wrap;gap:8px}
+.tray button{min-width:0}
+.tray button.done{opacity:.4;text-decoration:line-through;cursor:default}
+.tray button.shake{animation:shake .35s;border-color:var(--bad)}
+@keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){.tray button.shake{animation:none}}
+.stats{display:flex;flex-wrap:wrap;gap:8px}
+.stat{background:var(--soft);border-radius:10px;padding:8px 12px;display:grid;gap:0;min-width:5.5rem}
+.stat .lab{font:600 .68rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat .val{font:600 1.35rem/1.2 var(--f-mono);font-variant-numeric:tabular-nums}
+.simmsg{min-height:4.2rem;padding:.7rem 1rem;border-radius:10px;background:rgba(79,179,255,.09);border-left:4px solid var(--accent)}
+.simmsg.good{background:var(--ok-soft);border-color:var(--ok)} .simmsg.bad{background:var(--bad-soft);border-color:var(--bad)}
+.nivel{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.badge{font:800 .78rem var(--f-display);letter-spacing:.1em;text-transform:uppercase;padding:.3rem .8rem;border-radius:999px;background:var(--grad);color:#fff;box-shadow:0 0 16px rgba(99,102,241,.45)}
+.stopw .clock{font:600 clamp(2.2rem,8vw,3.2rem)/1 var(--f-mono);font-variant-numeric:tabular-nums;color:var(--cyan)}
+.laps{margin:0;padding:0;list-style:none;display:grid;gap:4px;font:500 .9rem var(--f-mono)}
+.laps li{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--line);padding-bottom:3px}
+.tree .opts{display:grid;gap:8px}
+.tree .opts button{text-align:left;text-transform:none;letter-spacing:0;font-family:var(--f-body);font-weight:700}
+.tree .res{padding:.8rem 1rem;border-radius:10px;background:var(--ok-soft);border-left:4px solid var(--ok)}
+.tree .path{font:500 .8rem var(--f-mono);color:var(--muted)}
+.game .claim{font:700 clamp(1.1rem,3vw,1.35rem)/1.35 var(--f-display);min-height:4.2rem}
+.game .score{display:flex;gap:1.2rem;flex-wrap:wrap;font:600 .9rem var(--f-mono);color:var(--muted)}
+.game .score b{color:var(--cyan)}
 </style>
 
 <div class="wrap">
@@ -198,22 +243,59 @@ footer{border-top:1.5px solid var(--line)}
   <p class="dek">Você abre um PC, tira cada peça na ordem certa, monta tudo de novo e faz o primeiro boot. Cada fase termina com uma lista de conferência para marcar na própria bancada.</p>
   <div class="facts"><span>3 h</span><span>Iniciante</span><span>Duplas</span><span>1 PC por dupla</span></div>
   <div class="prog" aria-label="Progresso geral"><div class="bar"><i id="gbar"></i></div><b id="gtxt">0%</b></div>
+  <div class="nivel"><span class="badge" id="nivel">Visitante</span><span class="muted small" id="nivelt">Marque os passos para subir de nível.</span></div>
   <nav class="chips" aria-label="Seções">
-    <a href="#roteiro">Roteiro</a><a href="#seguranca">Segurança</a><a href="#pecas">Peças</a><a href="#mapa">Placa-mãe</a><a href="#compat">Compatibilidade</a>
-    <a href="#fase1">Fase 1</a><a href="#fase2">Fase 2</a><a href="#fase3">Fase 3</a><a href="#fase4">Fase 4</a><a href="#praticar">Praticar</a><a href="#avaliacao">Avaliação</a><a href="#duvidas">Dúvidas</a><a href="#desafios">Desafios</a>
+    <a href="#simulador">Simulador</a><a href="#roteiro">Roteiro</a><a href="#seguranca">Segurança</a><a href="#pecas">Peças</a><a href="#mapa">Placa-mãe</a><a href="#compat">Compatibilidade</a>
+    <a href="#fase1">Fase 1</a><a href="#fase2">Fase 2</a><a href="#fase3">Fase 3</a><a href="#fase4">Fase 4</a><a href="#praticar">Praticar</a><a href="#jogo">Jogo</a><a href="#avaliacao">Avaliação</a><a href="#duvidas">Dúvidas</a><a href="#desafios">Desafios</a>
   </nav>
 </header>
+
+<section id="simulador">
+  <div class="head"><div class="eyebrow">Aquecimento</div><h2>Monte o PC virtual</h2><p class="lead">Antes de pegar nas peças de verdade, clique nelas na ordem em que o curso monta. Errou? Você recebe uma dica, e o contador de erros sobe.</p></div>
+  <div class="sim">
+    <div class="sim-grid">
+      <div>
+        <svg viewBox="0 0 460 380" role="img" aria-label="Diagrama do gabinete com a placa-mãe; as peças aparecem conforme são instaladas">
+          <rect id="simcase" x="10" y="10" width="440" height="360" rx="12"/>
+          <rect class="pcb" x="130" y="26" width="300" height="300" rx="6"/>
+          <rect class="slot" x="300" y="50" width="10" height="120"/><rect class="slot" x="336" y="50" width="10" height="120"/>
+          <rect class="slot" x="150" y="212" width="240" height="12"/>
+          <g class="sg" id="sg-cpu"><rect class="gh" x="190" y="70" width="64" height="64" rx="4"/><text x="222" y="106" text-anchor="middle">CPU</text></g>
+          <g class="sg" id="sg-ram"><rect class="gh" x="318" y="50" width="10" height="120"/><rect class="gh" x="354" y="50" width="10" height="120"/><text x="341" y="186" text-anchor="middle">RAM</text></g>
+          <g class="sg" id="sg-hd"><rect class="gh" x="24" y="170" width="88" height="62" rx="4"/><text x="68" y="205" text-anchor="middle">HD SATA</text></g>
+          <g class="sg cooler" id="sg-cooler"><circle class="gh" cx="222" cy="102" r="46"/><text x="222" y="60" text-anchor="middle">COOLER</text></g>
+          <g class="sg psu" id="sg-psu"><rect class="gh" x="24" y="280" width="96" height="76" rx="4"/><text x="72" y="322" text-anchor="middle">FONTE</text></g>
+          <g class="sg" id="sg-board"><circle class="screw" cx="142" cy="38" r="5"/><circle class="screw" cx="418" cy="38" r="5"/><circle class="screw" cx="142" cy="314" r="5"/><circle class="screw" cx="418" cy="314" r="5"/><text x="280" y="288" text-anchor="middle">PLACA-MÃE</text></g>
+          <g class="sg" id="sg-cabos"><path class="cab" stroke="#FFC93C" d="M100 280V300H438V90"/><path class="cab" stroke="#22D3EE" d="M40 280V18H200V28"/><path class="cab" stroke="#8B5CF6" d="M100 356H330V326"/></g>
+          <g class="sg gpu" id="sg-gpu"><rect class="gh" x="150" y="190" width="240" height="26" rx="4"/><text x="270" y="207" text-anchor="middle">PLACA DE VÍDEO</text></g>
+        </svg>
+      </div>
+      <div style="display:grid;gap:14px;min-width:0">
+        <div class="stage" id="simstage">Na bancada</div>
+        <div class="tray" id="simtray" aria-label="Peças para instalar"></div>
+        <div class="stats"><div class="stat"><span class="lab">Passo</span><span class="val" id="simstep">0/8</span></div><div class="stat"><span class="lab">Erros</span><span class="val" id="simerr">0</span></div><div class="stat"><span class="lab">Tempo</span><span class="val" id="simtime">0:00</span></div></div>
+        <div class="simmsg" id="simmsg" aria-live="polite">Escolha a primeira peça. Comece por quem fica no coração da placa.</div>
+        <div><button class="btn" id="simreset" type="button">Recomeçar</button></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="roteiro">
   <div class="head"><div class="eyebrow">Visão geral</div><h2>Roteiro das 3 horas</h2><p class="lead">O curso segue o caminho de um técnico: abrir, entender, desmontar, montar e provar que funciona.</p></div>
   <ol class="timeline">
     <li><span class="t">15 min</span><div><b>Segurança e material</b><span class="d">Estática, tomada, ferramentas e organização da bancada.</span></div></li>
     <li><span class="t">35 min</span><div><b>Fase 1 · Desmontagem</b><span class="d">Fotografar, desligar cabos, soltar as peças e guardar os parafusos.</span></div></li>
-    <li><span class="t">35 min</span><div><b>Fase 2 · Montagem na bancada</b><span class="d">Processador, memória, SSD M.2 e cooler direto na placa-mãe.</span></div></li>
-    <li><span class="t">45 min</span><div><b>Fase 3 · Montagem no gabinete</b><span class="d">Fonte, placa-mãe, armazenamento, cabos, painel frontal e placa de vídeo.</span></div></li>
+    <li><span class="t">35 min</span><div><b>Fase 2 · Montagem na bancada</b><span class="d">Processador, memória e cooler direto na placa-mãe.</span></div></li>
+    <li><span class="t">45 min</span><div><b>Fase 3 · Montagem no gabinete</b><span class="d">Fonte, placa-mãe, HD, cabos, painel frontal e placa de vídeo.</span></div></li>
     <li><span class="t">30 min</span><div><b>Fase 4 · Primeiro boot</b><span class="d">Ligar, entrar na BIOS, conferir peças e temperatura, resolver defeitos.</span></div></li>
     <li><span class="t">20 min</span><div><b>Avaliação</b><span class="d">Ordem de montagem, questionário e conferência da bancada pelo instrutor.</span></div></li>
   </ol>
+  <div class="card stopw" style="margin-top:1rem"><h3>Cronômetro da dupla</h3>
+    <p class="muted small">Inicie ao começar a fase 1 e toque em “Marcar fase” ao terminar cada uma. No fim, vocês veem quanto tempo cada fase levou.</p>
+    <div class="clock" id="swclock" aria-live="off">00:00</div>
+    <div class="row"><button class="btn primary" id="swgo" type="button">Iniciar</button><button class="btn" id="swlap" type="button">Marcar fase</button><button class="btn" id="swreset" type="button">Zerar</button></div>
+    <ul class="laps" id="swlaps"></ul></div>
 </section>
 
 <section id="seguranca">
@@ -242,7 +324,7 @@ footer{border-top:1.5px solid var(--line)}
     <tr><td>Processador (CPU)</td><td>Executa os cálculos.</td><td>Quadrado pequeno, com triângulo dourado em um canto.</td><td>Não toque nos contatos. Nunca force.</td></tr>
     <tr><td>Cooler</td><td>Tira o calor do processador.</td><td>Dissipador de metal com ventoinha, sobre o processador.</td><td>Aperte os parafusos em cruz.</td></tr>
     <tr><td>Memória RAM</td><td>Guarda o que está em uso agora.</td><td>Pente comprido e fino, nos slots ao lado do processador.</td><td>DDR4 e DDR5 não são intercambiáveis.</td></tr>
-    <tr><td>SSD / HD</td><td>Guarda arquivos e o sistema.</td><td>M.2: lâmina pequena na placa. SATA: caixa de 2,5" com dois cabos.</td><td>Respeite o parafuso do M.2.</td></tr>
+    <tr><td>HD (SATA)</td><td>Guarda arquivos e o sistema.</td><td>Caixa metálica de 3,5" com dois conectores: um de dados e um de energia.</td><td>Sensível a pancadas. Não mova com o PC ligado.</td></tr>
     <tr><td>Fonte</td><td>Converte a tomada em energia para as peças.</td><td>Caixa metálica com ventoinha e muitos cabos.</td><td>Potência e conectores têm que servir à placa de vídeo.</td></tr>
     <tr><td>Placa de vídeo (GPU)</td><td>Gera a imagem e acelera gráficos.</td><td>Placa longa no slot PCIe mais comprido, com saídas de monitor.</td><td>Pesada. Prenda com parafuso no gabinete.</td></tr>
     <tr><td>Gabinete</td><td>Sustenta as peças e guia o ar.</td><td>Caixa metálica com painel frontal e baias.</td><td>Bordas cortantes. Use espaçadores só onde há furo.</td></tr>
@@ -270,7 +352,7 @@ footer{border-top:1.5px solid var(--line)}
       <g class="z" data-z="cpu" tabindex="0" role="button" aria-label="Soquete do processador"><rect x="150" y="80" width="112" height="112"/><text x="206" y="140" text-anchor="middle">SOQUETE CPU</text></g>
       <g class="z" data-z="ram" tabindex="0" role="button" aria-label="Slots de memória"><rect x="320" y="50" width="16" height="210"/><rect x="344" y="50" width="16" height="210"/><rect x="368" y="50" width="16" height="210"/><rect x="392" y="50" width="16" height="210"/><text x="364" y="280" text-anchor="middle">SLOTS DE RAM</text></g>
       <g class="z" data-z="atx24" tabindex="0" role="button" aria-label="Conector de 24 pinos"><rect x="448" y="60" width="38" height="200"/><text x="467" y="162" text-anchor="middle" transform="rotate(90 467 162)">ATX 24 PINOS</text></g>
-      <g class="z" data-z="m2" tabindex="0" role="button" aria-label="Slot M.2"><rect x="150" y="215" width="140" height="20"/><text x="220" y="229" text-anchor="middle">SLOT M.2</text></g>
+      <g class="z" data-z="m2" tabindex="0" role="button" aria-label="Slot M.2, não usado no curso"><rect x="150" y="215" width="140" height="20"/><text x="220" y="229" text-anchor="middle">SLOT M.2</text></g>
       <g class="z" data-z="pcie" tabindex="0" role="button" aria-label="Slots PCIe"><rect x="90" y="292" width="250" height="18"/><rect x="90" y="340" width="160" height="14"/><text x="215" y="326" text-anchor="middle">SLOT PCIe x16 (VÍDEO)</text></g>
       <g class="z" data-z="chip" tabindex="0" role="button" aria-label="Chipset"><rect x="380" y="320" width="64" height="64"/><text x="412" y="355" text-anchor="middle">CHIPSET</text></g>
       <g class="z" data-z="sata" tabindex="0" role="button" aria-label="Portas SATA"><rect x="460" y="300" width="36" height="84"/><text x="478" y="346" text-anchor="middle" transform="rotate(90 478 346)">SATA</text></g>
@@ -289,7 +371,7 @@ footer{border-top:1.5px solid var(--line)}
     <tr><td>Memória</td><td>DDR4 ou DDR5, conforme a placa. O entalhe fica em posição diferente, então a errada não entra.</td></tr>
     <tr><td>Tamanho</td><td>Placa ATX, micro-ATX ou ITX tem que caber no gabinete. Placa de vídeo e cooler também.</td></tr>
     <tr><td>Fonte</td><td>Potência suficiente e os conectores que a placa de vídeo pede.</td></tr>
-    <tr><td>Armazenamento</td><td>Slot M.2 livre ou portas SATA livres, conforme o disco.</td></tr>
+    <tr><td>Armazenamento</td><td>Uma porta SATA livre na placa e um cabo SATA de energia livre na fonte.</td></tr>
   </tbody></table></div>
   <div class="card" style="margin-top:1rem"><h3>Calculadora de fonte</h3>
     <p class="muted small">Estimativa: soma do consumo das peças principais mais 30% de folga, arredondada para cima em passos de 50 W. Use o valor de TDP ou consumo informado pelo fabricante.</p>
@@ -309,7 +391,7 @@ footer{border-top:1.5px solid var(--line)}
     <li><label class="step"><input type="checkbox" data-k="f1-3"><span class="n"></span><span><b>Abra o gabinete e descarregue a estática</b><span class="x">Retire a tampa lateral. Coloque a pulseira em metal sem pintura ou toque nele antes de cada peça.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f1-4"><span class="n"></span><span><b>Remova a placa de vídeo</b><span class="x">Solte os parafusos do painel traseiro e os cabos de energia. Empurre a trava do slot PCIe e puxe a placa reta, para fora.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f1-5"><span class="n"></span><span><b>Solte os cabos</b><span class="x">Painel frontal, USB, áudio, ventoinhas, SATA, EPS do processador e 24 pinos. Aperte a trava do conector e puxe pelo plástico.</span></span></label></li>
-    <li><label class="step"><input type="checkbox" data-k="f1-6"><span class="n"></span><span><b>Retire o armazenamento</b><span class="x">SATA: tire parafusos ou gaveta. M.2: solte o parafuso único e o disco sobe em ângulo. Guarde o parafuso junto com o disco.</span></span></label></li>
+    <li><label class="step"><input type="checkbox" data-k="f1-6"><span class="n"></span><span><b>Retire o HD</b><span class="x">Solte os dois cabos (dados e energia) e os parafusos da baia. Segure o HD pelas laterais, sem batê-lo, e guarde os parafusos junto com ele.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f1-7"><span class="n"></span><span><b>Retire a memória RAM</b><span class="x">Abra as travas nas pontas do slot. O pente sobe sozinho; segure pelas laterais.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f1-8"><span class="n"></span><span><b>Remova o cooler</b><span class="x">Solte os parafusos em cruz, aos poucos. Gire o cooler levemente para descolar da pasta térmica antes de puxar.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f1-9"><span class="n"></span><span><b>Retire o processador</b><span class="x">Levante a alavanca do soquete e pegue o processador pelas bordas. Coloque-o na embalagem ou sobre superfície antiestática.</span></span></label></li>
@@ -320,16 +402,15 @@ footer{border-top:1.5px solid var(--line)}
 </section>
 
 <section id="fase2">
-  <div class="head"><div class="eyebrow">Fase 2 · 35 min</div><h2>Montagem na bancada</h2><p class="goal">Objetivo: instalar processador, memória, SSD M.2 e cooler na placa-mãe ainda fora do gabinete. Há mais espaço e mais visão.</p></div>
+  <div class="head"><div class="eyebrow">Fase 2 · 35 min</div><h2>Montagem na bancada</h2><p class="goal">Objetivo: instalar processador, memória e cooler na placa-mãe ainda fora do gabinete. Há mais espaço e mais visão.</p></div>
   <ol class="steps">
     <li><label class="step"><input type="checkbox" data-k="f2-1"><span class="n"></span><span><b>Prepare a superfície</b><span class="x">Apoie a placa sobre a caixa dela ou outra base que não conduza eletricidade. Deixe o manual aberto na página do soquete.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f2-2"><span class="n"></span><span><b>Instale o processador</b><span class="x">Levante a alavanca, alinhe o triângulo dourado do processador com a marca do soquete, assente sem pressão e baixe a alavanca. Se houver tampa de plástico, ela sai sozinha. Guarde-a.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f2-3"><span class="n"></span><span><b>Encaixe a memória RAM</b><span class="x">Com dois pentes, use os slots que o manual indica para dual channel (em geral o 2º e o 4º a partir do processador). Alinhe o entalhe e pressione as duas pontas até o clique.</span></span></label></li>
-    <li><label class="step"><input type="checkbox" data-k="f2-4"><span class="n"></span><span><b>Instale o SSD M.2</b><span class="x">Retire o dissipador da placa, encaixe o disco inclinado a cerca de 30°, abaixe e prenda com o parafuso na posição do comprimento (2280 é o mais comum). Recoloque o dissipador.</span></span></label></li>
-    <li><label class="step"><input type="checkbox" data-k="f2-5"><span class="n"></span><span><b>Fixe o cooler</b><span class="x">Se o cooler não vier com pasta pronta, ponha um ponto do tamanho de uma ervilha no centro do processador. Assente o cooler e aperte os parafusos em cruz, um pouco de cada vez.</span></span></label></li>
-    <li><label class="step"><input type="checkbox" data-k="f2-6"><span class="n"></span><span><b>Ligue a ventoinha do cooler</b><span class="x">O cabo vai no conector <code>CPU_FAN</code> da placa. Sem ele, o processador esquenta e a placa avisa na tela.</span></span></label></li>
+        <li><label class="step"><input type="checkbox" data-k="f2-4"><span class="n"></span><span><b>Fixe o cooler</b><span class="x">Se o cooler não vier com pasta pronta, ponha um ponto do tamanho de uma ervilha no centro do processador. Assente o cooler e aperte os parafusos em cruz, um pouco de cada vez.</span></span></label></li>
+    <li><label class="step"><input type="checkbox" data-k="f2-5"><span class="n"></span><span><b>Ligue a ventoinha do cooler</b><span class="x">O cabo vai no conector <code>CPU_FAN</code> da placa. Sem ele, o processador esquenta e a placa avisa na tela.</span></span></label></li>
   </ol>
-  <div class="alert" style="margin-top:1rem"><strong>Se a peça não entra</strong><p>Confira a marca de alinhamento. Processador, memória e M.2 só encaixam de uma forma. Força não resolve e entorta pinos.</p></div>
+  <div class="alert" style="margin-top:1rem"><strong>Se a peça não entra</strong><p>Confira a marca de alinhamento. Processador e memória só encaixam de uma forma. Força não resolve e entorta pinos.</p></div>
   <div class="think"><b>Para pensar:</b> o que acontece com a temperatura se houver uma camada grossa de pasta térmica em vez de uma fina?</div>
 </section>
 
@@ -339,7 +420,7 @@ footer{border-top:1.5px solid var(--line)}
     <li><label class="step"><input type="checkbox" data-k="f3-1"><span class="n"></span><span><b>Prepare o gabinete</b><span class="x">Retire as tampas e confira os espaçadores (standoffs): só nos furos que a placa tem. Espaçador a mais pode causar curto. Se o espelho do painel traseiro vem solto, encaixe-o agora.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f3-2"><span class="n"></span><span><b>Instale a fonte</b><span class="x">Ventoinha voltada para a abertura de ar, se houver. Parafuse pela traseira. Passe os cabos pelos orifícios do gabinete.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f3-3"><span class="n"></span><span><b>Encaixe a placa-mãe</b><span class="x">Alinhe as portas com o espelho, apoie nos espaçadores e coloque os parafusos em cruz, sem apertar tudo de uma vez.</span></span></label></li>
-    <li><label class="step"><input type="checkbox" data-k="f3-4"><span class="n"></span><span><b>Fixe discos SATA</b><span class="x">Se houver, instale nas baias. O SSD M.2 já está na placa.</span></span></label></li>
+    <li><label class="step"><input type="checkbox" data-k="f3-4"><span class="n"></span><span><b>Instale o HD SATA</b><span class="x">Prenda o HD na baia de 3,5" com os parafusos. Ligue o cabo SATA de dados do HD a uma porta SATA da placa e o cabo SATA de energia da fonte ao HD. Os dois conectores em L só entram de um jeito.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f3-5"><span class="n"></span><span><b>Ligue as energias</b><span class="x">24 pinos na borda direita. EPS de 8 pinos do processador no alto. Nos dois, empurre até a trava clicar.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f3-6"><span class="n"></span><span><b>Ligue o painel frontal</b><span class="x">F_PANEL (botão liga, reset, LEDs), USB 3.0, USB 2.0 e áudio HD. Siga o desenho do manual.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f3-7"><span class="n"></span><span><b>Instale a placa de vídeo</b><span class="x">Retire as tampas do painel traseiro, encaixe no slot PCIe x16 até ouvir o clique, parafuse e ligue os cabos PCIe da fonte, um cabo por conector.</span></span></label></li>
@@ -351,7 +432,7 @@ footer{border-top:1.5px solid var(--line)}
     <tr><td>24 pinos ATX</td><td>Borda direita da placa</td><td>Energia principal</td><td>Empurre até a trava clicar.</td></tr>
     <tr><td>EPS 4+4 (8 pinos)</td><td>Canto superior</td><td>Energia do processador</td><td>Não use o cabo PCIe da GPU aqui.</td></tr>
     <tr><td>PCIe 6+2 ou 12V-2x6</td><td>Na placa de vídeo</td><td>Energia da GPU</td><td>Encaixe total. Não dobre rente ao conector.</td></tr>
-    <tr><td>SATA dados e SATA energia</td><td>Portas SATA e cabos da fonte</td><td>HD e SSD SATA</td><td>O formato em L só entra de um jeito.</td></tr>
+    <tr><td>SATA dados e SATA energia</td><td>Portas SATA e cabos da fonte</td><td>HD SATA</td><td>O formato em L só entra de um jeito.</td></tr>
     <tr><td>F_PANEL</td><td>Borda inferior</td><td>Botão liga, reset e LEDs</td><td>Botões não têm polaridade. LEDs têm: + e −.</td></tr>
     <tr><td>USB 3.0 frontal</td><td>Borda inferior ou lateral</td><td>USB azul da frente</td><td>Só encaixa de um jeito. Não force.</td></tr>
     <tr><td>USB 2.0 (9 pinos)</td><td>Borda inferior</td><td>USB 2.0 frontal</td><td>O pino faltando é a chave.</td></tr>
@@ -367,7 +448,7 @@ footer{border-top:1.5px solid var(--line)}
     <li><label class="step"><input type="checkbox" data-k="f4-1"><span class="n"></span><span><b>Revise antes de ligar</b><span class="x">Nada solto dentro do gabinete. Cabos longe de ventoinhas. Todos os conectores de energia encaixados até o fim.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f4-2"><span class="n"></span><span><b>Conecte monitor, teclado e energia</b><span class="x">Com placa de vídeo dedicada, o cabo do monitor vai nela, não na placa-mãe. Chave da fonte em I.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f4-3"><span class="n"></span><span><b>Ligue</b><span class="x">As ventoinhas devem girar e a imagem aparece em alguns segundos. A primeira inicialização pode demorar mais por causa do teste de memória.</span></span></label></li>
-    <li><label class="step"><input type="checkbox" data-k="f4-4"><span class="n"></span><span><b>Entre na BIOS/UEFI</b><span class="x">Aperte <code>Del</code> ou <code>F2</code> logo ao ligar. Confirme o modelo do processador, a quantidade de memória e o SSD.</span></span></label></li>
+    <li><label class="step"><input type="checkbox" data-k="f4-4"><span class="n"></span><span><b>Entre na BIOS/UEFI</b><span class="x">Aperte <code>Del</code> ou <code>F2</code> logo ao ligar. Confirme o modelo do processador, a quantidade de memória e o HD.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f4-5"><span class="n"></span><span><b>Ative o perfil da memória</b><span class="x">XMP (Intel) ou EXPO (AMD) faz a RAM rodar na velocidade anunciada. Sem isso, ela roda na velocidade padrão, bem mais baixa.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f4-6"><span class="n"></span><span><b>Confira temperaturas</b><span class="x">Em repouso, perto de 30 a 50 °C. Sob carga, abaixo de uns 85 °C. Acima disso, reveja o cooler e a pasta.</span></span></label></li>
     <li><label class="step"><input type="checkbox" data-k="f4-7"><span class="n"></span><span><b>Instale o sistema (opcional)</b><span class="x">Pendrive de instalação, ordem de boot em primeiro lugar, e siga o instalador.</span></span></label></li>
@@ -378,10 +459,15 @@ footer{border-top:1.5px solid var(--line)}
     <tr><td>Liga e desliga em ciclos</td><td>RAM mal encaixada ou cooler sem contato.</td><td>Reencaixe a RAM. Teste com um pente só. Reveja o cooler.</td></tr>
     <tr><td>Ventoinhas giram, mas sem imagem</td><td>Cabo do monitor na saída errada, RAM ou GPU mal encaixada.</td><td>Passe o cabo para a placa de vídeo. Reencaixe RAM e GPU. Observe os LEDs de diagnóstico (CPU, DRAM, VGA, BOOT).</td></tr>
     <tr><td>Bipes ao ligar</td><td>O padrão indica a falha e muda com o fabricante.</td><td>Procure a tabela de bipes no manual da placa.</td></tr>
-    <tr><td>SSD não aparece</td><td>M.2 sem parafuso ou cabo SATA solto.</td><td>Reencaixe o disco e confira a seção de armazenamento na BIOS.</td></tr>
+    <tr><td>HD não aparece</td><td>Cabo SATA de dados ou de energia solto, ou porta errada.</td><td>Reencaixe os dois cabos do HD até o fim e confira a seção de armazenamento na BIOS. Se o HD não gira ou faz cliques repetidos, ele pode estar com defeito.</td></tr>
     <tr><td>Processador passa de 90 °C</td><td>Cooler frouxo, sem pasta, ou ventoinha fora do CPU_FAN.</td><td>Desmonte o cooler, limpe a pasta, reaplique e aperte em cruz.</td></tr>
     <tr><td>USB da frente não funciona</td><td>Cabo interno solto.</td><td>Reencaixe os conectores USB do painel frontal.</td></tr>
   </tbody></table></div>
+  <div class="card tree" style="margin-top:1.2rem"><h3>Assistente de diagnóstico</h3>
+    <p class="muted small">Responda o que você vê e siga as dicas. Simula o raciocínio de um técnico.</p>
+    <div class="path" id="trpath"></div>
+    <div id="trbox" aria-live="polite"></div>
+    <div><button class="btn" id="trback" type="button">Voltar</button> <button class="btn" id="trreset" type="button">Recomeçar</button></div></div>
 </section>
 
 <section id="praticar">
@@ -394,6 +480,15 @@ footer{border-top:1.5px solid var(--line)}
   <div style="display:grid;gap:.8rem;margin-top:1.2rem" id="quiz"></div>
   <div class="row" style="margin-top:1rem"><button class="btn primary" id="qcheck" type="button">Corrigir questionário</button><button class="btn" id="qreset" type="button">Limpar respostas</button></div>
   <div id="qfb" class="fb info" style="margin-top:.8rem" hidden aria-live="polite"></div>
+<section id="jogo">
+  <div class="head"><div class="eyebrow">Jogo rápido</div><h2>Encaixa ou não encaixa?</h2><p class="lead">Oito situações de bancada. Decida em segundos e monte uma sequência de acertos.</p></div>
+  <div class="card game">
+    <div class="score"><span>Rodada <b id="gn">1/8</b></span><span>Acertos <b id="gok">0</b></span><span>Sequência <b id="gst">0</b></span><span>Melhor <b id="gbest">0</b></span></div>
+    <div class="claim" id="gclaim"></div>
+    <div class="row" id="gbtns"><button class="btn primary" type="button" id="gyes">Encaixa</button><button class="btn" type="button" id="gno">Não encaixa</button></div>
+    <div class="fb info" id="gfb" aria-live="polite" hidden></div>
+    <div class="row"><button class="btn" type="button" id="gnext" hidden>Próxima</button><button class="btn" type="button" id="grestart" hidden>Jogar de novo</button></div>
+  </div>
 </section>
 
 <section id="avaliacao">
@@ -444,6 +539,9 @@ footer{border-top:1.5px solid var(--line)}
     var pct=boxes.length?Math.round(done*100/boxes.length):0;
     document.getElementById('gbar').style.width=pct+'%';
     document.getElementById('gtxt').textContent=pct+'%';
+    var NV=[[0,'Visitante','Marque os passos para subir de nível.'],[10,'Aprendiz','Começou! Siga para a próxima fase.'],[40,'Técnico','Você já domina a bancada.'],[70,'Mestre da bancada','Falta pouco para fechar o curso.'],[100,'Montador completo','Tudo marcado. Chame o instrutor para a avaliação.']],nv=NV[0];
+    NV.forEach(function(n){if(pct>=n[0])nv=n});
+    document.getElementById('nivel').textContent=nv[1];document.getElementById('nivelt').textContent=nv[2];
     [].slice.call(document.querySelectorAll('[data-prog]')).forEach(function(el){
       var p=el.getAttribute('data-prog'),g=boxes.filter(function(b){return b.getAttribute('data-k').indexOf(p)===0});
       el.textContent=g.filter(function(b){return b.checked}).length+'/'+g.length;
@@ -463,10 +561,10 @@ footer{border-top:1.5px solid var(--line)}
     cpu:['Soquete do processador','Procure o triângulo no canto. Ele tem que coincidir com o triângulo dourado do processador. Levante a alavanca, assente sem pressão e baixe a alavanca.'],
     ram:['Slots de memória RAM','Quatro slots ao lado do processador. Com dois pentes, use os slots que o manual indica para dual channel. As travas das pontas fecham com um clique.'],
     atx24:['Conector ATX de 24 pinos','Energia principal da placa. O cabo mais largo da fonte. A trava de plástico indica o lado certo.'],
-    m2:['Slot M.2','Recebe o SSD em forma de lâmina. Encaixa inclinado e é preso por um parafuso na outra ponta, na medida certa (2280 é comum).'],
+    m2:['Slot M.2 (não usado)','Recebe SSD em forma de lâmina. Este curso usa HD SATA, então o slot fica vazio. Vale saber que ele existe.'],
     pcie:['Slots PCIe','O mais longo e mais próximo do processador é o x16, destinado à placa de vídeo. Há uma trava de plástico no fim do slot.'],
     chip:['Chipset','Circuito que organiza USB, SATA e outros dispositivos. Quase sempre sob um pequeno dissipador. Não se mexe.'],
-    sata:['Portas SATA','Para HD e SSD de 2,5". Cada disco usa um cabo de dados aqui e um cabo de energia vindo da fonte.'],
+    sata:['Portas SATA','Aqui liga o HD do curso. Ele usa um cabo de dados, que vai da porta SATA ao HD, e um cabo de energia vindo da fonte.'],
     fpanel:['F_PANEL e USB frontal','Fileira de pinos onde entram botão liga, reset e LEDs do gabinete, além dos conectores USB 3.0 e USB 2.0. O manual traz o desenho exato.'],
     audio:['HD_AUDIO','Conector do áudio da frente do gabinete (fone e microfone). Tem pino-chave para não ser invertido.']
   };
@@ -499,7 +597,7 @@ footer{border-top:1.5px solid var(--line)}
   [cp,gp,op].forEach(function(i){i.addEventListener('input',calc)});calc();
 
   /* ordenar */
-  var correct=['Instalar o processador na placa-mãe','Encaixar a memória RAM','Instalar o SSD M.2','Fixar o cooler','Instalar a fonte no gabinete','Colocar a placa-mãe no gabinete','Ligar os cabos de energia e do painel frontal','Instalar a placa de vídeo'];
+  var correct=['Instalar o processador na placa-mãe','Encaixar a memória RAM','Fixar o cooler','Instalar a fonte no gabinete','Colocar a placa-mãe no gabinete','Instalar o HD SATA na baia','Ligar os cabos de energia, SATA e do painel frontal','Instalar a placa de vídeo'];
   var order=[4,1,6,0,2,7,3,5];
   var ol=document.getElementById('ord'),ofb=document.getElementById('ordfb'),marks=null;
   function drawOrd(){
@@ -531,7 +629,7 @@ footer{border-top:1.5px solid var(--line)}
   });
   document.getElementById('ordshow').addEventListener('click',function(){
     order=[0,1,2,3,4,5,6,7];marks=1;drawOrd();ofb.hidden=false;ofb.className='fb info';
-    ofb.textContent='Na bancada (fase 2) ficam processador, memória, M.2 e cooler. No gabinete (fase 3) entram fonte, placa, cabos e placa de vídeo.';
+    ofb.textContent='Na bancada (fase 2) ficam processador, memória e cooler. No gabinete (fase 3) entram fonte, placa, HD, cabos e placa de vídeo.';
   });
 
   /* questionário */
@@ -575,6 +673,152 @@ footer{border-top:1.5px solid var(--line)}
     document.querySelectorAll('#quiz input').forEach(function(r){r.checked=false;r.parentNode.className=''});
     document.querySelectorAll('.why').forEach(function(w){w.hidden=true});qfb.hidden=true;
   });
+
+  /* simulador de montagem */
+  var PARTS=[
+   {id:'cpu',n:'Processador',h:'Primeiro vai o coração da placa. Alinhe o triângulo dourado com a marca do soquete.',ok:'Processador assentado. Sem pressão: a alavanca fecha sozinha.'},
+   {id:'ram',n:'Memória RAM',h:'Fica ao lado do processador e ainda é simples de encaixar com a placa livre.',ok:'Memória no lugar. Você ouviu o clique das duas travas?'},
+   {id:'cooler',n:'Cooler',h:'O processador já está lá. Agora é hora de esfriá-lo, com pasta térmica e parafusos em cruz.',ok:'Cooler fixo e ligado no CPU_FAN. Fim da bancada.'},
+   {id:'psu',n:'Fonte',h:'Agora no gabinete: a fonte vai primeiro, para os cabos passarem por trás.',ok:'Fonte instalada. O gabinete está pronto para a placa.'},
+   {id:'board',n:'Placa-mãe',h:'Com a fonte no lugar, a placa vai nos espaçadores e é parafusada em cruz.',ok:'Placa fixada nos espaçadores.'},
+   {id:'hd',n:'HD SATA',h:'Com a placa fixa, o HD vai na baia de 3,5" e é preso por parafusos.',ok:'HD preso na baia. Ele vai usar dois cabos: dados e energia.'},
+   {id:'cabos',n:'Cabos',h:'Com tudo no lugar, ligue 24 pinos, EPS, painel frontal e os dois cabos do HD.',ok:'Energia, HD e painel frontal ligados. Falta a placa de vídeo.'},
+   {id:'gpu',n:'Placa de vídeo',h:'Por último, para não atrapalhar o resto. Encaixa no slot PCIe x16 até o clique.',ok:'Placa de vídeo no slot, com cabo próprio.'}
+  ];
+  var MIX=[4,2,7,0,5,1,6,3];
+  var st={step:0,err:0,t0:0,tm:null};
+  var tray=document.getElementById('simtray'),smsg=document.getElementById('simmsg');
+  function fmt(s){var m=Math.floor(s/60),r=s%60;return m+':'+(r<10?'0':'')+r}
+  function simDraw(){
+    PARTS.forEach(function(pt,i){
+      var g=document.getElementById('sg-'+pt.id);g.classList.toggle('on',i<st.step);
+    });
+    document.getElementById('simcase').setAttribute('class',st.step>=4?'solid':'');
+    document.getElementById('simstage').textContent=st.step>=8?'Concluído':(st.step>=3?'No gabinete':'Na bancada');
+    document.getElementById('simstep').textContent=st.step+'/8';
+    document.getElementById('simerr').textContent=st.err;
+    [].slice.call(tray.children).forEach(function(b){b.classList.toggle('done',+b.getAttribute('data-i')<st.step)});
+  }
+  function simBuild(){
+    tray.innerHTML='';
+    MIX.forEach(function(i){
+      var b=document.createElement('button');b.type='button';b.className='btn';b.setAttribute('data-i',i);b.textContent=PARTS[i].n;
+      b.addEventListener('click',function(){simPick(i,b)});tray.appendChild(b);
+    });
+  }
+  function simPick(i,b){
+    if(st.step>=8||i<st.step)return;
+    if(!st.t0){st.t0=Date.now();st.tm=setInterval(function(){document.getElementById('simtime').textContent=fmt(Math.round((Date.now()-st.t0)/1000))},500)}
+    if(i===st.step){
+      smsg.className='simmsg good';smsg.textContent=PARTS[i].ok;st.step++;
+      if(st.step===8){
+        clearInterval(st.tm);var s=Math.round((Date.now()-st.t0)/1000);document.getElementById('simtime').textContent=fmt(s);
+        smsg.textContent='PC montado em '+fmt(s)+' com '+st.err+(st.err===1?' erro':' erros')+'. '+(st.err===0?'Perfeito. Agora é com as peças de verdade.':'Tente de novo para zerar os erros.');
+      }
+    }else{
+      st.err++;smsg.className='simmsg bad';smsg.textContent='Ainda não é a vez de '+PARTS[i].n.toLowerCase()+'. Dica: '+PARTS[st.step].h;
+      b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');
+    }
+    simDraw();
+  }
+  document.getElementById('simreset').addEventListener('click',function(){
+    clearInterval(st.tm);st={step:0,err:0,t0:0,tm:null};document.getElementById('simtime').textContent='0:00';
+    smsg.className='simmsg';smsg.textContent='Escolha a primeira peça. Comece por quem fica no coração da placa.';simDraw();
+  });
+  simBuild();simDraw();
+
+  /* cronômetro da dupla */
+  var sw={run:false,base:0,t0:0,tm:null,laps:[]};
+  function swNow(){return sw.base+(sw.run?Date.now()-sw.t0:0)}
+  function swFmt(ms){var s=Math.floor(ms/1000),m=Math.floor(s/60);s=s%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
+  var swc=document.getElementById('swclock'),swgo=document.getElementById('swgo'),swl=document.getElementById('swlaps');
+  var LAPN=['Fase 1 · Desmontagem','Fase 2 · Bancada','Fase 3 · Gabinete','Fase 4 · Primeiro boot'];
+  function swDraw(){swc.textContent=swFmt(swNow())}
+  swgo.addEventListener('click',function(){
+    if(sw.run){sw.base=swNow();sw.run=false;clearInterval(sw.tm);swgo.textContent='Continuar'}
+    else{sw.t0=Date.now();sw.run=true;sw.tm=setInterval(swDraw,250);swgo.textContent='Pausar'}
+  });
+  document.getElementById('swlap').addEventListener('click',function(){
+    if(!sw.run&&!sw.base)return;
+    var now=swNow(),prev=sw.laps.length?sw.laps[sw.laps.length-1]:0;
+    sw.laps.push(now);
+    var li=document.createElement('li'),a=document.createElement('span'),b=document.createElement('span');
+    a.textContent=LAPN[sw.laps.length-1]||('Volta '+sw.laps.length);b.textContent=swFmt(now-prev)+' (total '+swFmt(now)+')';
+    li.appendChild(a);li.appendChild(b);swl.appendChild(li);
+  });
+  document.getElementById('swreset').addEventListener('click',function(){
+    clearInterval(sw.tm);sw={run:false,base:0,t0:0,tm:null,laps:[]};swgo.textContent='Iniciar';swl.innerHTML='';swDraw();
+  });
+
+  /* assistente de diagnóstico */
+  var TR={
+   start:{q:'O que acontece quando você aperta o botão liga?',o:[['Nada: sem luz, sem ventoinha','nada'],['Ventoinhas giram, mas não há imagem','semimg'],['Liga e desliga em ciclos','ciclo'],['Liga e dá imagem, mas algo está estranho','estranho']]},
+   nada:{q:'A chave da fonte está em I (ligada) e o cabo está firme na tomada e na fonte?',o:[['Não, estava desligada ou solta','r_chave'],['Sim, tudo certo','led']]},
+   led:{q:'Há algum LED aceso na placa-mãe?',o:[['Sim, a placa tem luz','r_pwrsw'],['Nenhum LED','r_cabos']]},
+   semimg:{q:'O cabo do monitor está na placa de vídeo (e não na placa-mãe)?',o:[['Não, está na placa-mãe','r_gpu'],['Sim, está na placa de vídeo','leds']]},
+   leds:{q:'A placa tem LEDs de diagnóstico (CPU, DRAM, VGA, BOOT)? Algum fica aceso?',o:[['DRAM aceso','r_ram'],['VGA aceso','r_vga'],['CPU aceso','r_cpu'],['Não tem LED ou nenhum acende','r_gen']]},
+   ciclo:{q:'Há quantos pentes de memória instalados?',o:[['Dois ou mais','r_um'],['Só um','r_ram']]},
+   estranho:{q:'Qual é o problema?',o:[['O HD não aparece na BIOS','r_ssd'],['O processador esquenta demais','r_temp'],['A memória aparece com velocidade baixa','r_xmp'],['O USB da frente não funciona','r_usb']]},
+   r_chave:{r:'Ligue a chave da fonte (posição I) e encaixe o cabo nas duas pontas. Tente de novo. Se ainda não ligar, volte ao início e escolha “Nada”.'},
+   r_pwrsw:{r:'A placa recebe energia, então o provável é o botão. Confira o cabo PWR_SW no F_PANEL (veja o manual). Para testar, encoste uma chave de fenda nos dois pinos PWR_SW por um instante: se ligar, o problema é o cabo do painel frontal.'},
+   r_cabos:{r:'Sem LED, a placa não recebe energia. Reencaixe o cabo de 24 pinos e o EPS do processador até a trava clicar. Teste outra tomada e confirme que o interruptor da fonte está em I.'},
+   r_gpu:{r:'Passe o cabo do monitor para a saída da placa de vídeo. As saídas da placa-mãe ficam desativadas quando existe placa de vídeo dedicada.'},
+   r_ram:{r:'Desligue da tomada e reencaixe a memória com pressão firme nas duas pontas, até as travas clicarem. Teste com um pente de cada vez, em outro slot.'},
+   r_vga:{r:'Reencaixe a placa de vídeo no slot PCIe e confira o cabo de energia dela (um cabo por conector). Verifique se o parafuso do painel traseiro não está forçando a placa.'},
+   r_cpu:{r:'Confira o cabo EPS do processador e o cooler. Se o problema persistir, desmonte o cooler e veja se o processador está bem assentado, sem pinos tortos.'},
+   r_gen:{r:'Siga em ordem: reencaixe a RAM, depois a placa de vídeo, depois o EPS. Tire tudo que não é essencial e ligue só com processador, uma memória e vídeo. Adicione uma peça por vez.'},
+   r_um:{r:'Isso costuma ser memória mal encaixada ou cooler sem contato. Reencaixe a RAM e teste com um pente só. Depois reveja o cooler: parafusos em cruz e pasta térmica em quantidade certa.'},
+   r_ssd:{r:'Reencaixe os dois cabos do HD: dados (SATA, na placa) e energia (fonte). Se o HD não gira ou faz cliques repetidos, ele pode estar com defeito. Depois olhe a seção de armazenamento na BIOS.'},
+   r_temp:{r:'Desmonte o cooler, limpe a pasta velha com álcool isopropílico e aplique pasta nova (um ponto do tamanho de uma ervilha). Aperte em cruz. Confirme que o cabo da ventoinha está no CPU_FAN.'},
+   r_xmp:{r:'Entre na BIOS e ative o perfil XMP (Intel) ou EXPO (AMD). Sem ele a memória roda na velocidade padrão.'},
+   r_usb:{r:'Abra o gabinete e reencaixe os cabos USB 3.0 e USB 2.0 do painel frontal. Eles só encaixam de um jeito, então não force.'}
+  };
+  var hist=['start'],trbox=document.getElementById('trbox'),trpath=document.getElementById('trpath');
+  function trDraw(){
+    var id=hist[hist.length-1],n=TR[id];trbox.innerHTML='';
+    trpath.textContent=hist.length>1?'Passo '+(hist.length-1)+' respondido':'Comece aqui';
+    if(n.r){var d=document.createElement('div');d.className='res';d.innerHTML='<b>O que fazer</b><br>';d.appendChild(document.createTextNode(n.r));trbox.appendChild(d);return}
+    var h=document.createElement('p');h.style.fontWeight='700';h.textContent=n.q;trbox.appendChild(h);
+    var w=document.createElement('div');w.className='opts';
+    n.o.forEach(function(o){var b=document.createElement('button');b.type='button';b.className='btn';b.textContent=o[0];b.addEventListener('click',function(){hist.push(o[1]);trDraw()});w.appendChild(b)});
+    trbox.appendChild(w);
+  }
+  document.getElementById('trback').addEventListener('click',function(){if(hist.length>1){hist.pop();trDraw()}});
+  document.getElementById('trreset').addEventListener('click',function(){hist=['start'];trDraw()});
+  trDraw();
+
+  /* jogo encaixa ou não */
+  var G=[
+   {c:'Processador AM5 em placa-mãe com soquete AM5.',a:true,w:'Mesmo soquete: encaixa. Confira só se a BIOS reconhece o modelo.'},
+   {c:'Memória DDR5 em placa-mãe que aceita só DDR4.',a:false,w:'O entalhe fica em posição diferente. A DDR5 não entra no slot DDR4.'},
+   {c:'Placa-mãe ATX num gabinete mini-ITX.',a:false,w:'A ATX é bem maior que o espaço do mini-ITX.'},
+   {c:'HD SATA ligado só ao cabo de dados, sem o cabo de energia da fonte.',a:false,w:'O HD precisa dos dois cabos. Sem o de energia, o disco não gira e não aparece na BIOS.'},
+   {c:'Cabo PCIe da fonte no conector EPS do processador.',a:false,w:'Parecem iguais, mas a ligação dos pinos é diferente. Use o EPS do processador.'},
+   {c:'Cooler de 160 mm de altura num gabinete que aceita no máximo 155 mm.',a:false,w:'Sobram 5 mm que não existem. A tampa lateral não fecha.'},
+   {c:'Fonte de 450 W para um PC de 300 W estimados.',a:true,w:'Há folga de 150 W, o que é bom para a fonte trabalhar tranquila.'},
+   {c:'Cabo modular de outra marca de fonte.',a:false,w:'A ordem dos pinos muda de fabricante para fabricante. Pode queimar peças.'}
+  ];
+  var gs={i:0,ok:0,st:0,best:0,lock:false};
+  var gc=document.getElementById('gclaim'),gfb=document.getElementById('gfb'),gnext=document.getElementById('gnext'),grs=document.getElementById('grestart');
+  function gDraw(){
+    document.getElementById('gn').textContent=Math.min(gs.i+1,G.length)+'/'+G.length;
+    document.getElementById('gok').textContent=gs.ok;document.getElementById('gst').textContent=gs.st;document.getElementById('gbest').textContent=gs.best;
+    if(gs.i>=G.length){gc.textContent='Fim de jogo: '+gs.ok+' de '+G.length+' certas. Melhor sequência: '+gs.best+'.';document.getElementById('gbtns').hidden=true;gnext.hidden=true;grs.hidden=false;return}
+    gc.textContent=G[gs.i].c;document.getElementById('gbtns').hidden=false;gfb.hidden=true;gnext.hidden=true;grs.hidden=true;gs.lock=false;
+  }
+  function gAns(v){
+    if(gs.lock||gs.i>=G.length)return;gs.lock=true;
+    var it=G[gs.i],ok=(v===it.a);
+    if(ok){gs.ok++;gs.st++;if(gs.st>gs.best)gs.best=gs.st}else gs.st=0;
+    gfb.hidden=false;gfb.className='fb '+(ok?'good':'bad');gfb.textContent=(ok?'Certo. ':'Não foi dessa vez. ')+it.w;
+    gs.i++;gnext.hidden=false;gnext.textContent=gs.i>=G.length?'Ver resultado':'Próxima';
+    document.getElementById('gok').textContent=gs.ok;document.getElementById('gst').textContent=gs.st;document.getElementById('gbest').textContent=gs.best;
+  }
+  document.getElementById('gyes').addEventListener('click',function(){gAns(true)});
+  document.getElementById('gno').addEventListener('click',function(){gAns(false)});
+  gnext.addEventListener('click',gDraw);
+  grs.addEventListener('click',function(){gs={i:0,ok:0,st:0,best:gs.best,lock:false};gDraw()});
+  gDraw();
 })();
 </script>
 
